@@ -59,8 +59,3 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2V
 -X PUT localhost:8080/api/v2/birds/c6e57799-9ac2-4e1a-b3ba-117c0a79a9a6 \
 -d "name=Eagle&species=Aquila&picture_url=https://en.wikipedia.org/wiki/Eagle#/media/File:%C3%81guila_calva.jpg"
 ```
-
-## To-do
-- Don't save clear text user password, use [bcrypt](https://www.npmjs.com/package/bcrypt) to create a hash from it, then store the hash in the User table of the DB. In the `/api/v2/auth` compare clear text password in the request to bcrypt hash from the User table.
-- Validate request payload data by [joi](https://github.com/hapijs/joi)
-- Refactor routes to return HTTP friendly error objects using [boom](https://github.com/hapijs/boom).  

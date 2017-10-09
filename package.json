@@ -1,0 +1,26 @@
+{
+  "name": "hepic-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bootstrap.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^16.6.2",
+    "hapi-auth-jwt": "^4.0.0",
+    "jsonwebtoken": "^8.0.1",
+    "knex": "^0.13.0",
+    "lodash": "^4.17.4",
+    "mysql": "^2.15.0",
+    "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.0"
+  }
+}

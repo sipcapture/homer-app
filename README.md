@@ -39,9 +39,7 @@ This token should be included in every API request, in the header section. It wi
 
 List all birds:
 ```
-curl --header "Authorization: Bearer\
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2VkZTdjLWIxMjEtNDExMi1iY2M3LTEzMGEzZTg3OTg4YyIsImlhdCI6MTUwNzUzMDc1OSwiZXhwIjoxNTA3NTM0MzU5fQ.iDkeBJfPfj-MYGdbZDZJrzuTZOcQjRKM5Qi3SxmcBts" \
--X GET localhost:8080/api/v2/birds
+curl -X GET localhost:8080/api/v2/birds
 ```
 
 Add a new bird:

@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.3",
+    "bluebird": "^3.5.1",
     "hapi": "^16.6.2",
     "hapi-auth-jwt": "^4.0.0",
     "jsonwebtoken": "^8.0.1",

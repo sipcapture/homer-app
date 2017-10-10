@@ -1,6 +1,7 @@
 import Knex from '../db/knex';
 import jwt from 'jsonwebtoken';
 import jwtSettings from '../private/jwt_settings';
+import bcrypt from 'bcrypt';
 
 export default [
   // Authenticate user
@@ -30,7 +31,7 @@ export default [
         .where({
           username,
         })
-        .select('guid', 'password')
+        .select('guid', 'hash')
         .then(function ([user]) {
           if (!user) {
             reply({
@@ -40,25 +41,28 @@ export default [
             return;
           }
 
-          if (user.password === password) { // To-do: store password hash in db, use bcrypt to compare 
-            const token = jwt.sign({
-              username,
-              scope: user.guid
-            }, jwtSettings.key,
-            {
-              algorithm: jwtSettings.algorithm,
-              expiresIn: jwtSettings.expires_in
-            });
+          return bcrypt.compare(password, user.hash)
+            .then(function (isCorrect) {
+              if (isCorrect) {
+                const token = jwt.sign({
+                  username,
+                  scope: user.guid
+                }, jwtSettings.key,
+                {
+                  algorithm: jwtSettings.algorithm,
+                  expiresIn: jwtSettings.expires_in
+                });
 
-            reply({
-              token,
-              scope: user.guid
+                reply({
+                  token,
+                  scope: user.guid
+                });
+              } else {
+                reply({
+                  message: 'incorrect password'
+                });
+              }
             });
-          } else {
-            reply({
-              message: 'incorrect password'
-            });
-          }
         })
         .catch(function (error) {
           reply({

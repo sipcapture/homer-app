@@ -41,7 +41,7 @@ export default [
             return;
           }
 
-          bcrypt.compare(password, user.hash)
+          return bcrypt.compare(password, user.hash)
             .then(function (isCorrect) {
               if (isCorrect) {
                 const token = jwt.sign({

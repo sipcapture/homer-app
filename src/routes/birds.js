@@ -1,5 +1,7 @@
 import Knex from '../db/knex';
-import GUID from 'node-uuid';
+import uuid from 'uuid/v4';
+import Joi from 'joi';
+import Boom from 'boom';
 
 export default [
   // GET info about all isPublic birds
@@ -14,10 +16,7 @@ export default [
         .select('name', 'species', 'picture_url')
         .then(function (data) {
           if (!data || !data.length) {
-            reply({
-              error: true,
-              message: 'no public bird found'
-            });
+            reply(Boom.notFound('no public bird found')).takeover();
           }
   
           reply({
@@ -27,10 +26,7 @@ export default [
   
         })
         .catch(function (error) {
-          reply({
-            error: true,
-            message: error
-          });
+          reply(Boom.serverUnavailable(error));
         });
     }
   },
@@ -41,27 +37,18 @@ export default [
     config: {
       auth: {
         strategy: 'token'
+      },
+      validate: {
+        payload: {
+          name: Joi.string().min(2).max(250).required(),
+          species: Joi.string().min(2).max(250).required(),
+          picture_url: Joi.string().min(10).max(250).required()
+        }
       }
     },
     handler: function (request, reply) {
-      if (!request.payload) {
-        reply({
-          error: true,
-          message: 'request is malformed'
-        });
-        return;
-      }
-
       const { name, species, picture_url } = request.payload;
-      const guid = GUID.v4();
-
-      if (!name || !species || !picture_url) {
-        reply({
-          error: true,
-          message: 'you have to specify bird properties: name, species and picture_url'
-        });
-        return;
-      }
+      const guid = uuid();
 
       Knex('birds')
         .insert({
@@ -75,13 +62,10 @@ export default [
           reply({
             data: guid,
             message: 'successfully created bird'
-          });
+          }).code(201);
         })
         .catch(function (error) {
-          reply({
-            error: true,
-            message: error
-          });
+          reply(Boom.serverUnavailable(error));
         });
     }
   },
@@ -92,6 +76,17 @@ export default [
     config: {
       auth: {
         strategy: 'token'
+      },
+      validate: {
+        params: {
+          birdGuid: Joi.string().min(12).max(46).required()
+        },
+        payload: {
+          name: Joi.string().min(2).max(250).required(),
+          species: Joi.string().min(2).max(250).required(),
+          picture_url: Joi.string().min(10).max(250).required(),
+          isPublic: Joi.number().integer().min(0).max(1).required()
+        }
       },
       pre: [
         {
@@ -106,17 +101,11 @@ export default [
               .select('owner')
               .then(function ([result]) {
                 if (!result) {
-                  reply({
-                    error: true,
-                    message: `the bird with id ${birdGuid} was not found`
-                  }).takeover();
+                  reply(Boom.notFound(`the bird with id ${birdGuid} was not found`)).takeover();
                 }
 
                 if (result.owner !== scope) {
-                  reply({
-                    error: true,
-                    message: `the bird with id ${birdGuid} is not in the current scope`
-                  }).takeover();
+                  reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`)).takeover();
                 }
 
                 return reply.continue();
@@ -126,24 +115,8 @@ export default [
       ]
     },
     handler: function (request, reply) {
-      if (!request.payload) {
-        reply({
-          error: true,
-          message: 'request is malformed'
-        });
-        return;
-      }
-
       const { name, species, picture_url, isPublic } = request.payload;
       const { birdGuid } = request.params;
-
-      if (!name || !species || !picture_url) {
-        reply({
-          error: true,
-          message: 'you have to specify bird properties: name, species and picture_url'
-        });
-        return;
-      }
 
       Knex('birds')
         .where({
@@ -161,10 +134,7 @@ export default [
           });
         })
         .catch(function (error) {
-          reply({
-            error: true,
-            message: error
-          });
+          reply(Boom.serverUnavailable(error));
         });
     }
   }

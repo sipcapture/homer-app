@@ -40,3 +40,5 @@ server.start(function (error) {
   }
   console.log(`Server started at ${server.info.uri}`);
 });
+
+module.exports = server;

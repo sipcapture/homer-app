@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/lab/bin/lab -c -I 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__'",
     "start": "node bootstrap.js"
   },
   "keywords": [],
@@ -24,6 +24,8 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "expect.js": "^0.3.1",
+    "lab": "^14.3.1",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0"
   }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --require babel-core/register",
+    "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js"
   },
   "keywords": [],
@@ -25,10 +25,22 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.0",
     "expect.js": "^0.3.1",
     "inject-then": "^2.0.9",
     "mocha": "^4.0.1",
-    "lab": "^14.3.1"
-  }
+    "nyc": "^11.2.1"
+  },
+	"nyc": {
+	  "require": [
+	    "babel-core/register"
+	  ],
+	  "reporter": [
+	    "lcov",
+	    "text"
+	  ],
+	  "sourceMap": false,
+	  "instrument": false
+	}
 }

@@ -1,13 +1,20 @@
-import Knex from '../db/knex';
 import jwt from 'jsonwebtoken';
 import jwtSettings from '../private/jwt_settings';
 import bcrypt from 'bcrypt';
 import Joi from 'joi';
 import Boom from 'boom';
+import User from '../classes/user';
 
 export default [
-  // Authenticate user
   {
+    /**
+     * Authenticate user
+     *
+     * @payload
+     *  @param {string} username
+     *  @param {string} password
+     *  @return {object} JWT token and user guid - { token: 'jwt tocken string', scope: 'user guid' }
+     */
     path: '/api/v2/auth',
     method: 'POST',
     config: {
@@ -20,15 +27,12 @@ export default [
     },
     handler: function (request, reply) {
       const { username, password } = request.payload;
+      const user = new User(username);
 
-      Knex('users')
-        .where({
-          username,
-        })
-        .select('guid', 'hash')
-        .then(function ([user]) {
+      user.get(['guid', 'hash'])
+        .then(function (user) {
           if (!user) {
-            reply(Boom.notFound('the user was not found')).takeover();
+            reply(Boom.notFound('the user was not found'));
           }
 
           return bcrypt.compare(password, user.hash)

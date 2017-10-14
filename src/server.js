@@ -21,13 +21,13 @@ server.register([
   }
 
   server.auth.strategy('token', 'jwt', {
-    key: jwtSettings.key, // the private key
+    key: jwtSettings.key, // the JWT private key
     verifyOptions: {
       algorithms: [ jwtSettings.algorithm ],
     }
   });
 
-  // Routes
+  // Initialize routes
   forEach([authRoutes, birdsRoutes], function (routes) {
     forEach(routes, function (route) {
       server.route(route);

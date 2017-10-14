@@ -2,9 +2,9 @@
   "include": [
     "src/**/*.js"
   ],
-	"exclude": [
-		"src/**/__test__/*.js"
-	],
+  "exclude": [
+    "src/**/__test__/*.js"
+  ],
   "cache": true,
   "all": true
 }

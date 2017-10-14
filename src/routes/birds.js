@@ -1,22 +1,24 @@
-import Knex from '../db/knex';
 import uuid from 'uuid/v4';
 import Joi from 'joi';
 import Boom from 'boom';
+import Bird from '../classes/bird';
 
 export default [
-  // GET info about all isPublic birds
   {
+    /**
+     * GET all public birds
+     *
+     * @return list of birds data
+     */
     path: '/api/v2/birds',
     method: 'GET',
     handler: function (request, reply) {
-      Knex('birds')
-        .where({
-          isPublic: true
-        })
-        .select('name', 'species', 'picture_url')
+      const bird = new Bird();
+
+      bird.getAll(['name', 'species', 'picture_url'])
         .then(function (data) {
           if (!data || !data.length) {
-            reply(Boom.notFound('no public bird found')).takeover();
+            reply(Boom.notFound('no public bird found'));
           }
   
           reply({
@@ -30,8 +32,18 @@ export default [
         });
     }
   },
-  // Create a bird
   {
+    /**
+     * Create (POST) a new bird
+     *
+     * @header
+     *  @param {string} JWT token - authentication
+     * @payload
+     *  @param {string} name
+     *  @param {string} species
+     *  @param {string} picture_url
+     * @return bird guid
+     */
     path: '/api/v2/birds',
     method: 'POST',
     config: {
@@ -49,15 +61,15 @@ export default [
     handler: function (request, reply) {
       const { name, species, picture_url } = request.payload;
       const guid = uuid();
+      const bird = new Bird();
 
-      Knex('birds')
-        .insert({
-          owner: request.auth.credentials.scope,
-          name,
-          species,
-          picture_url,
-          guid,
-        })
+      bird.add({
+        owner: request.auth.credentials.scope,
+        name,
+        species,
+        picture_url,
+        guid,
+      })
         .then(function () {
           reply({
             data: guid,
@@ -69,8 +81,20 @@ export default [
         });
     }
   },
-  // Update bird
   {
+    /**
+     * Update (PUT) a bird
+     *
+     * @header
+     *  @param {string} JWT token - authentication
+     * @request
+     *  @param {string} birdGuid - id of a bird
+     * @payload
+     *  @param {string} name
+     *  @param {string} species
+     *  @param {string} picture_url
+     *  @param {boolean} isPublic
+     */
     path: '/api/v2/birds/{birdGuid}',
     method: 'PUT',
     config: {
@@ -93,22 +117,22 @@ export default [
           method: function (request, reply) {
             const { birdGuid } = request.params;
             const { scope } = request.auth.credentials;
+            const bird = new Bird(birdGuid);
 
-            Knex('birds')
-              .where({
-                guid: birdGuid
-              })
-              .select('owner')
-              .then(function ([result]) {
+            bird.get(['owner'])
+              .then(function (result) {
                 if (!result) {
-                  reply(Boom.notFound(`the bird with id ${birdGuid} was not found`)).takeover();
+                  reply(Boom.notFound(`the bird with id ${birdGuid} was not found`));
                 }
 
                 if (result.owner !== scope) {
-                  reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`)).takeover();
+                  reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`));
                 }
 
                 return reply.continue();
+              })
+              .catch(function (error) {
+                reply(Boom.serverUnavailable(error));
               });
           }
         }
@@ -117,17 +141,14 @@ export default [
     handler: function (request, reply) {
       const { name, species, picture_url, isPublic } = request.payload;
       const { birdGuid } = request.params;
+      const bird = new Bird(birdGuid);
 
-      Knex('birds')
-        .where({
-          guid: birdGuid
-        })
-        .update({
-          name,
-          species,
-          picture_url,
-          isPublic,
-        })
+      bird.update({
+        name,
+        species,
+        picture_url,
+        isPublic,
+      })
         .then(function () {
           reply({
             message: 'successfully updated bird'

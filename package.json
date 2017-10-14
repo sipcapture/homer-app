@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/lab/bin/lab -c -I 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__'",
+    "test": "./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js"
   },
   "keywords": [],
@@ -24,9 +24,11 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "lab": "^14.3.1",
     "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.0"
+    "babel-preset-env": "^1.6.0",
+    "expect.js": "^0.3.1",
+    "inject-then": "^2.0.9",
+    "mocha": "^4.0.1",
+    "lab": "^14.3.1"
   }
 }

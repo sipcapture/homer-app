@@ -32,15 +32,15 @@
     "mocha": "^4.0.1",
     "nyc": "^11.2.1"
   },
-	"nyc": {
-	  "require": [
-	    "babel-core/register"
-	  ],
-	  "reporter": [
-	    "lcov",
-	    "text"
-	  ],
-	  "sourceMap": false,
-	  "instrument": false
-	}
+  "nyc": {
+    "require": [
+      "babel-core/register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  }
 }

@@ -1,7 +1,7 @@
 import Hapi from 'hapi';
 import { forEach } from 'lodash';
 import jwtSettings from './private/jwt_settings';
-import systemRoutes from './routes/system';
+import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
 
 const server = new Hapi.Server();
@@ -11,21 +11,24 @@ server.connection({
 });
 
 // JWT authentication and encryption
-server.register(require('hapi-auth-jwt'), function (error) {
+server.register([
+  require('hapi-auth-jwt'),
+  require('inject-then')
+], function (error) {
   if (error) {
     console.log('Error was handled!');
     console.log(error);
   }
 
   server.auth.strategy('token', 'jwt', {
-    key: jwtSettings.key, // the private key
+    key: jwtSettings.key, // the JWT private key
     verifyOptions: {
       algorithms: [ jwtSettings.algorithm ],
     }
   });
 
-  // Routes
-  forEach([systemRoutes, birdsRoutes], function (routes) {
+  // Initialize routes
+  forEach([authRoutes, birdsRoutes], function (routes) {
     forEach(routes, function (route) {
       server.route(route);
     });
@@ -40,3 +43,5 @@ server.start(function (error) {
   }
   console.log(`Server started at ${server.info.uri}`);
 });
+
+export default server;

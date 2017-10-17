@@ -57,3 +57,10 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2V
 -X PUT localhost:8080/api/v2/birds/c6e57799-9ac2-4e1a-b3ba-117c0a79a9a6 \
 -d "isPublic=1&name=Eagle&species=Aquila&picture_url=https://en.wikipedia.org/wiki/Eagle#/media/File:%C3%81guila_calva.jpg"
 ```
+
+### HTTPS
+
+API natively supports HTTPS connection using TLS.
+```
+curl -k -X GET https://localhost:443/api/v2/birds
+```

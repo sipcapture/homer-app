@@ -1,4 +1,5 @@
 import Hapi from 'hapi';
+import fs from 'fs';
 import { forEach } from 'lodash';
 import jwtSettings from './private/jwt_settings';
 import authRoutes from './routes/authentication';
@@ -6,8 +7,18 @@ import birdsRoutes from './routes/birds';
 
 const server = new Hapi.Server();
 
+const tls = {
+  key: fs.readFileSync('/Users/sergibondarenko/dev/qxip/hepic-api/src/private/key.pem'),
+  cert: fs.readFileSync('/Users/sergibondarenko/dev/qxip/hepic-api/src/private/certificate.pem')
+};
+
 server.connection({
   port: 8080
+});
+
+server.connection({
+  port: 443,
+  tls
 });
 
 // JWT authentication and encryption
@@ -41,7 +52,12 @@ server.start(function (error) {
     console.log('Error was handled!');
     console.log(error);
   }
-  console.log(`Server started at ${server.info.uri}`);
+
+  if (server.info) {
+    console.log(`Server started at ${server.info.uri}`);
+  } else {
+    console.log('Server started');
+  }
 });
 
 export default server;

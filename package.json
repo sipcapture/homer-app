@@ -11,27 +11,27 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
-    "bluebird": "^3.5.1",
-    "boom": "^6.0.0",
-    "hapi": "^16.6.2",
-    "hapi-auth-jwt": "^4.0.0",
-    "joi": "^11.3.4",
-    "jsonwebtoken": "^8.0.1",
-    "knex": "^0.13.0",
-    "lodash": "^4.17.4",
-    "mysql": "^2.15.0",
-    "uuid": "^3.1.0"
+    "bcrypt": "1.0.3",
+    "bluebird": "3.5.1",
+    "boom": "6.0.0",
+    "hapi": "16.6.2",
+    "hapi-auth-jwt": "4.0.0",
+    "joi": "11.4.0",
+    "jsonwebtoken": "8.1.0",
+    "knex": "0.13.0",
+    "lodash": "4.17.4",
+    "mysql": "2.15.0",
+    "uuid": "3.1.0"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-istanbul": "^4.1.5",
-    "babel-preset-env": "^1.6.0",
-    "expect.js": "^0.3.1",
-    "inject-then": "^2.0.9",
-    "mocha": "^4.0.1",
-    "nodemon": "^1.12.1",
-    "nyc": "^11.2.1"
+    "babel-core": "6.26.0",
+    "babel-plugin-istanbul": "4.1.5",
+    "babel-preset-env": "1.6.0",
+    "expect.js": "0.3.1",
+    "inject-then": "2.0.9",
+    "mocha": "4.0.1",
+    "nodemon": "1.12.1",
+    "nyc": "11.2.1"
   },
   "nyc": {
     "require": [

@@ -13,11 +13,11 @@ const tls = {
 };
 
 server.connection({
-  port: 8080
+  port: 8001
 });
 
 server.connection({
-  port: 443,
+  port: 8000,
   tls
 });
 

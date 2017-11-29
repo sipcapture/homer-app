@@ -1,48 +1,270 @@
-{
-	"hep _header":{
-      "fields":{
-         "version":{
-            "type":"string",
-            "index":"none",
-            "description":"version of HEP"
-         },
-         "protocol":{
-            "type":"int",
-            "index":"none",
-            "description":"Protocol of HEP: UDP/TCP/SCTP/TLS"
-         },
-         "time_sec":{
-            "type":"int",
-            "index":"none",
-            "description":"Time in seconds"
-         },
-         "time_usec":{
-            "type":"int",
-            "index":"secondary",
-            "description":"Time in microseconds"
-         },
-         "capture_id":{
-            "type":"int",
-            "index":"secondary",
-            "description":"Capture ID of captagent"
-         },
-         "capture_ip":{
-            "type":"string",
-            "index":"none",
-            "description":"IP of capture"
-         },
-         "payload_len":{
-            "type":"int",
-            "index":"none",
-            "description":"Len of payload"
-         },
-         "correlation_id":{
-            "type":"string",
-            "index":"secondary",
-            "description":"Correlation ID of HEP"
-         }
-      },
-      "protocol":"hep",
-      "timestamp":1234567
-   }
+{  
+    "protocol":"sip",
+    "timestamp":1234567,
+    "transaction":"call",
+    "hep_protocol":1,
+    "schema":{  
+        "hep_header":{  
+            "fields":{  
+                "version":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"version of HEP"
+                },
+                "protocol":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"Protocol of HEP: UDP/TCP/SCTP/TLS"
+                },
+                "time_sec":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"Time in seconds"
+                },
+                "time_usec":{  
+                    "type":"int",
+                    "index":"secondary",
+                    "description":"Time in microseconds"
+                },
+                "capture_id":{  
+                    "type":"int",
+                    "index":"secondary",
+                    "description":"Capture ID of captagent"
+                },
+                "capture_ip":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"IP of capture"
+                },
+                "payload_len":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"Len of payload"
+                },
+                "correlation_id":{  
+                    "type":"string",
+                    "index":"secondary",
+                    "description":"Correlation ID of HEP"
+                }
+            },
+            "protocol":"hep",
+            "timestamp":1234567
+        },
+        "ip_header":{  
+            "type":"ip",
+            "fields":{  
+                "dscp":{  
+                    "type":"bool",
+                    "index":"none",
+                    "description":"Diff serv was set or not"
+                },
+                "vlan":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"VLAN ID"
+                },
+                "ip_proto":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"IP Protocol: UDP/TCP/SCTP"
+                },
+                "tcp_flag":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"TCP Flag: SYN, PUSH"
+                },
+                "ip_defrag":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"type of IP defragmentation"
+                },
+                "ip_family":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"IP Family: IPv4 - IPv6"
+                },
+                "source_ip":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"Source IP"
+                },
+                "source_mac":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"Source MAC"
+                },
+                "source_port":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"Source port"
+                },
+                "destination_ip":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"Destination IP"
+                },
+                "destination_mac":{  
+                    "type":"string",
+                    "index":"none",
+                    "description":"Destination MAC"
+                },
+                "destination_port":{  
+                    "type":"int",
+                    "index":"none",
+                    "description":"Destination port"
+                }
+            },
+            "protocol":"hep",
+            "timestamp":1234567
+        }
+    },
+    "payload":{  
+        "fields":{  
+            "cseq":{  
+                "type":"string",
+                "index":"none",
+                "description":"CSeq including full header"
+            },
+            "ruri":{  
+                "type":"string",
+                "index":"secondary",
+                "description":"Request URI"
+            },
+            "via_1":{  
+                "type":"string",
+                "index":"none",
+                "description":"VIA - the first"
+            },
+            "callid":{  
+                "type":"string",
+                "index":"none",
+                "description":"Callid"
+            },
+            "method":{  
+                "type":"string",
+                "index":"secondary",
+                "description":"Method or Reply"
+            },
+            "reason":{  
+                "type":"string",
+                "index":"none",
+                "description":"Reason"
+            },
+            "to_tag":{  
+                "type":"string",
+                "index":"none",
+                "description":"Tag of To:"
+            },
+            "to_user":{  
+                "type":"string",
+                "index":"none",
+                "description":"User of To:"
+            },
+            "from_tag":{  
+                "type":"string",
+                "index":"none",
+                "description":"Tag of From"
+            },
+            "pid_user":{  
+                "type":"string",
+                "index":"none",
+                "description":"P-Asserted-Identity User"
+            },
+            "rtp_stat":{  
+                "type":"string",
+                "index":"none",
+                "description":"X-RTP-Stats"
+            },
+            "auth_user":{  
+                "type":"string",
+                "index":"none",
+                "description":"Auth: User"
+            },
+            "diversion":{  
+                "type":"string",
+                "index":"none",
+                "description":"Diversion"
+            },
+            "from_user":{  
+                "type":"string",
+                "index":"none",
+                "description":"User of From:"
+            },
+            "ruri_user":{  
+                "type":"string",
+                "index":"secondary",
+                "description":"User part of RURI"
+            },
+            "to_domain":{  
+                "type":"string",
+                "index":"none",
+                "description":"Domain of To:"
+            },
+            "contact_ip":{  
+                "type":"string",
+                "index":"none",
+                "description":"IP of Contact:"
+            },
+            "user_agent":{  
+                "type":"string",
+                "index":"none",
+                "description":"User-Agent:"
+            },
+            "callid_aleg":{  
+                "type":"string",
+                "index":"none",
+                "description":"Callid of A leg . I.e. X-CID"
+            },
+            "from_domain":{  
+                "type":"string",
+                "index":"none",
+                "description":"Domain of From:"
+            },
+            "ruri_domain":{  
+                "type":"string",
+                "index":"none",
+                "description":"Domain part or RURI"
+            },
+            "contact_port":{  
+                "type":"int",
+                "index":"none",
+                "description":"Port of Contact:"
+            },
+            "contact_user":{  
+                "type":"string",
+                "index":"none",
+                "description":"Contact user"
+            },
+            "content_type":{  
+                "type":"string",
+                "index":"none",
+                "description":"Content-Type"
+            },
+            "reply_reason":{  
+                "type":"string",
+                "index":"none",
+                "description":"Reply text"
+            },
+            "via_1_branch":{  
+                "type":"string",
+                "index":"none",
+                "description":"branch of VIA"
+            },
+            "authorization":{  
+                "type":"string",
+                "index":"none",
+                "description":"Authorization:"
+            },
+            "originator_ip":{  
+                "type":"string",
+                "index":"none",
+                "description":"Originator IP - I.e. X-OIP:"
+            },
+            "originator_port":{  
+                "type":"int",
+                "index":"none",
+                "description":"Originator port from X-OIP"
+            }
+        }
+    }
 }

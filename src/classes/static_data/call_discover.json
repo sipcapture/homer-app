@@ -1,0 +1,48 @@
+{
+	"hep _header":{
+      "fields":{
+         "version":{
+            "type":"string",
+            "index":"none",
+            "description":"version of HEP"
+         },
+         "protocol":{
+            "type":"int",
+            "index":"none",
+            "description":"Protocol of HEP: UDP/TCP/SCTP/TLS"
+         },
+         "time_sec":{
+            "type":"int",
+            "index":"none",
+            "description":"Time in seconds"
+         },
+         "time_usec":{
+            "type":"int",
+            "index":"secondary",
+            "description":"Time in microseconds"
+         },
+         "capture_id":{
+            "type":"int",
+            "index":"secondary",
+            "description":"Capture ID of captagent"
+         },
+         "capture_ip":{
+            "type":"string",
+            "index":"none",
+            "description":"IP of capture"
+         },
+         "payload_len":{
+            "type":"int",
+            "index":"none",
+            "description":"Len of payload"
+         },
+         "correlation_id":{
+            "type":"string",
+            "index":"secondary",
+            "description":"Correlation ID of HEP"
+         }
+      },
+      "protocol":"hep",
+      "timestamp":1234567
+   }
+}

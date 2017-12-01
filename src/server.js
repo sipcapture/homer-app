@@ -4,6 +4,7 @@ import { forEach } from 'lodash';
 import jwtSettings from './private/jwt_settings';
 import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
+import protocolRoutes from './routes/protocol';
 
 const server = new Hapi.Server();
 
@@ -13,11 +14,11 @@ const tls = {
 };
 
 server.connection({
-  port: 8080
+  port: 8001
 });
 
 server.connection({
-  port: 443,
+  port: 8000,
   tls
 });
 
@@ -39,7 +40,7 @@ server.register([
   });
 
   // Initialize routes
-  forEach([authRoutes, birdsRoutes], function (routes) {
+  forEach([authRoutes, birdsRoutes, protocolRoutes], function (routes) {
     forEach(routes, function (route) {
       server.route(route);
     });

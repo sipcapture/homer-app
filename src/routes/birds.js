@@ -10,7 +10,7 @@ export default [
      *
      * @return list of birds data
      */
-    path: '/api/v2/birds',
+    path: '/api/v3/birds',
     method: 'GET',
     handler: function (request, reply) {
       const bird = new Bird();
@@ -44,7 +44,7 @@ export default [
      *  @param {string} picture_url
      * @return bird guid
      */
-    path: '/api/v2/birds',
+    path: '/api/v3/birds',
     method: 'POST',
     config: {
       auth: {
@@ -95,7 +95,7 @@ export default [
      *  @param {string} picture_url
      *  @param {boolean} isPublic
      */
-    path: '/api/v2/birds/{birdGuid}',
+    path: '/api/v3/birds/{birdGuid}',
     method: 'PUT',
     config: {
       auth: {

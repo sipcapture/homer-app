@@ -1,10 +1,10 @@
 # hepic-api
 
 ## Routes
-- http://localhost:8080/api/v2/auth (POST) - get JWT Web Tocken to secure API
-- http://localhost:8080/api/v2/birds (GET) - get list of `public` birds
-- http://localhost:8080/api/v2/birds (POST) - add a new bird
-- http://localhost:8080/api/v2/birds/:id (PUT) - update specific bird 
+- http://localhost:8001/api/v3/auth (POST) - get JWT Web Tocken to secure API
+- http://localhost:8001/api/v3/birds (GET) - get list of `public` birds
+- http://localhost:8001/api/v3/birds (POST) - add a new bird
+- http://localhost:8001/api/v3/birds/:id (PUT) - update specific bird 
 
 ## To run
 1. Install libraries `npm install`
@@ -23,7 +23,7 @@ knex seed:run
 
 First, get JWT token.
 ```
-curl -X POST localhost:8080/api/v2/auth \
+curl -X POST localhost:8001/api/v3/auth \
 -d "username=trex&password=password"
 ```
 You will receive a message similiar to the following one:
@@ -39,14 +39,14 @@ This token should be included in every API request, in the header section. It wi
 
 List all birds:
 ```
-curl -X GET localhost:8080/api/v2/birds
+curl -X GET localhost:8001/api/v3/birds
 ```
 
 Add a new bird:
 ```
 curl --header "Authorization: Bearer\
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2VkZTdjLWIxMjEtNDExMi1iY2M3LTEzMGEzZTg3OTg4YyIsImlhdCI6MTUwNzUzMDc1OSwiZXhwIjoxNTA3NTM0MzU5fQ.iDkeBJfPfj-MYGdbZDZJrzuTZOcQjRKM5Qi3SxmcBts" \
--X POST localhost:8080/api/v2/birds \
+-X POST localhost:8001/api/v3/birds \
 -d "name=eagle&species=aquila&picture_url=https://en.wikipedia.org/wiki/Eagle#/media/File:%C3%81guila_calva.jpg"
 ```
 
@@ -54,7 +54,7 @@ Update a bird:
 ```
 curl --header "Authorization: Bearer\
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2VkZTdjLWIxMjEtNDExMi1iY2M3LTEzMGEzZTg3OTg4YyIsImlhdCI6MTUwNzUzMDc1OSwiZXhwIjoxNTA3NTM0MzU5fQ.iDkeBJfPfj-MYGdbZDZJrzuTZOcQjRKM5Qi3SxmcBts" \
--X PUT localhost:8080/api/v2/birds/c6e57799-9ac2-4e1a-b3ba-117c0a79a9a6 \
+-X PUT localhost:8001/api/v3/birds/c6e57799-9ac2-4e1a-b3ba-117c0a79a9a6 \
 -d "isPublic=1&name=Eagle&species=Aquila&picture_url=https://en.wikipedia.org/wiki/Eagle#/media/File:%C3%81guila_calva.jpg"
 ```
 
@@ -62,5 +62,5 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyZXgiLCJzY29wZSI6ImYwM2V
 
 API natively supports HTTPS connection using TLS.
 ```
-curl -k -X GET https://localhost:443/api/v2/birds
+curl -k -X GET https://localhost:8000/api/v3/birds
 ```

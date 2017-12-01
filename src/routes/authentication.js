@@ -15,7 +15,7 @@ export default [
      *  @param {string} password
      *  @return {object} JWT token and user guid - { token: 'jwt tocken string', scope: 'user guid' }
      */
-    path: '/api/v2/auth',
+    path: '/api/v3/auth',
     method: 'POST',
     config: {
       validate: {

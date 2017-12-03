@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import jwtSettings from '../private/jwt_settings';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import Boom from 'boom';
 import User from '../classes/user';

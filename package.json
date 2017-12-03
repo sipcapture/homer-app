@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "1.0.3",
+    "bcryptjs": "2.4.3",
     "bluebird": "3.5.1",
     "boom": "6.0.0",
     "hapi": "16.6.2",
@@ -21,6 +21,7 @@
     "knex": "0.13.0",
     "lodash": "4.17.4",
     "mysql": "2.15.0",
+    "pem": "^1.12.3",
     "uuid": "3.1.0"
   },
   "devDependencies": {

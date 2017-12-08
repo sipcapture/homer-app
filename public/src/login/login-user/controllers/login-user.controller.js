@@ -1,24 +1,28 @@
-const loginUser  = function($location, $state, $log, AuthenticationService) {
-  const self = this;
+class LoginUser {
 
-  self.$onInit = function() {
-    self.username = null;
-    self.password = null;
-    AuthenticationService.logout();
-  };
+  constructor($state, $log, AuthenticationService) {
+    this.username = null;
+    this.password = null;
+    this.$state = $state;
+    this.AuthenticationService = AuthenticationService;
+  }
+
+  $onInit() {
+    this.AuthenticationService.logout();
+  }
   
-  self.login = function() {
-    self.loading = true;
-    AuthenticationService.login(self.username, self.password).then(function() {
-      $state.go('home');
-      //$location.path('/');
-    }).catch(function(error) {
-      self.error = error;
-      self.loading = false;
-      $log.error(error);
+  login() {
+    this.loading = true;
+    this.AuthenticationService.login(this.username, this.password).then(() => {
+      this.$state.go('home');
+    }).catch((error) => {
+      this.error = error;
+      this.loading = false;
+      this.$log.error(error);
     });
-  };
-};
+  }
 
-loginUser.$inject = ['$location', '$state', '$log', 'AuthenticationService'];
-export default loginUser;
+}
+
+LoginUser.$inject = ['$state', '$log', 'AuthenticationService'];
+export default LoginUser;

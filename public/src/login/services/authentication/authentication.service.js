@@ -2,7 +2,8 @@ import Promise from 'bluebird';
 
 class AuthenticationService {
 
-  constructor($http, $localStorage) {
+  constructor($state, $http, $localStorage) {
+    this.$state = $state;
     this.$http = $http;
     this.$localStorage = $localStorage;
   }
@@ -28,6 +29,7 @@ class AuthenticationService {
     return new Promise((resolve) => {
       delete this.$localStorage.user;
       this.$http.defaults.headers.common.Authorization = '';
+      this.$state.go('login');
       resolve(null);
     });
   }

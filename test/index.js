@@ -1,1 +1,1 @@
-import '../src/routes/__test__';
+import '../server/routes/__test__';

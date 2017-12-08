@@ -1,4 +1,4 @@
-import Knex from '../db/knex';
+import Knex from '../config/db/knex';
 import LivingBeing from './living_being';
 
 const table = 'users';

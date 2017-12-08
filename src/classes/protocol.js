@@ -1,4 +1,4 @@
-import Knex from '../db/knex';
+import Knex from '../config/db/knex';
 import Promise from 'bluebird';
 import callDiscoverData from './static_data/call_discover';
 

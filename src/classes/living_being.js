@@ -1,4 +1,4 @@
-import Knex from '../db/knex';
+import Knex from '../config/db/knex';
 
 /**
  * A class to handle living beings in DB

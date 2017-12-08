@@ -16,6 +16,7 @@
     "boom": "6.0.0",
     "hapi": "16.6.2",
     "hapi-auth-jwt": "4.0.0",
+    "inert": "4.2.1",
     "joi": "11.4.0",
     "jsonwebtoken": "8.1.0",
     "knex": "0.13.0",

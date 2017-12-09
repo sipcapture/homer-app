@@ -4,6 +4,7 @@
     "test": {
       "plugins": ["istanbul"]
     }
-  }
+  },
+  "plugins": ["angularjs-annotate"]
 }
 

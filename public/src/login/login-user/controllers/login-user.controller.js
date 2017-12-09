@@ -1,6 +1,7 @@
 class LoginUser {
 
   constructor($state, $log, $location, AuthenticationService) {
+   'ngInject';
     this.username = null;
     this.password = null;
     this.$state = $state;
@@ -29,5 +30,4 @@ class LoginUser {
 
 }
 
-LoginUser.$inject = ['$state', '$log', '$location', 'AuthenticationService'];
 export default LoginUser;

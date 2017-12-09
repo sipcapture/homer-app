@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf public/dist && webpack --bail --progress --profile",
+    "build": "rimraf public/dist && webpack --optimize-minimize --bail --progress --profile",
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js",
     "dev": "nodemon --inspect bootstrap.js"
@@ -86,6 +86,7 @@
   "devDependencies": {
     "babel-core": "6.26.0",
     "babel-loader": "7.1.2",
+    "babel-plugin-angularjs-annotate": "0.8.2",
     "babel-plugin-istanbul": "4.1.5",
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-polyfill": "6.23.0",

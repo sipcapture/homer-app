@@ -1,15 +1,15 @@
 class HomePage {
 
-  constructor($log, AuthenticationService) {
+  constructor($log, $state) {
     this.$log = $log;
-    this.AuthenticationService = AuthenticationService;
+    this.$state = $state;
   }
 
   logout() {
-    this.AuthenticationService.logout().catch(this.$log.error);
+    this.$state.go('login');
   }
   
 }
 
-HomePage.$inject = ['$log', 'AuthenticationService'];
+HomePage.$inject = ['$log', '$state'];
 export default HomePage;

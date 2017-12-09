@@ -73,10 +73,10 @@ angular.module('hepicApp', [
   .run(run);
 
 function config($urlRouterProvider) {
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/home');
 }
 
-function run($rootScope, $http, $location, $localStorage) {
+function run($rootScope, $http, $location, $localStorage, $state) {
   if ($localStorage.user) {
     $http.defaults.headers.common.Authorization = `Bearer ${$localStorage.user.token}`;
   }
@@ -84,8 +84,8 @@ function run($rootScope, $http, $location, $localStorage) {
   $rootScope.$on('$locationChangeStart', function() {
     var publicPages = ['/login'];
     var restrictedPage = publicPages.indexOf($location.path()) === -1;
-    if (restrictedPage && !$localStorage.currentUser) {
-      $location.path('/login');
+    if (restrictedPage && !$localStorage.user) {
+      $state.go('login');
     }
   });
 }

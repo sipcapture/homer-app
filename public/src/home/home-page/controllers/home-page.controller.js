@@ -1,6 +1,7 @@
 class HomePage {
 
   constructor($log, $state) {
+    'ngInject';
     this.$log = $log;
     this.$state = $state;
   }
@@ -11,5 +12,4 @@ class HomePage {
   
 }
 
-HomePage.$inject = ['$log', '$state'];
 export default HomePage;

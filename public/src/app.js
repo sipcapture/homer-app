@@ -32,7 +32,7 @@ import './style/app.css';
 import Login from './login';
 import Home from './home';
 
-angular.module('hepicApp', [
+const app = angular.module('hepicApp', [
   'ui.router',
   'ui.bootstrap',
   'gridster',
@@ -68,15 +68,17 @@ angular.module('hepicApp', [
   'angularFileUpload',
   Login.name,
   Home.name
-])
-  .config(config)
-  .run(run);
+]);
+//  .config(config)
+//  .run(run);
 
-function config($urlRouterProvider) {
+app.config(function ($urlRouterProvider) {
+  'ngInject';
   $urlRouterProvider.otherwise('/home');
-}
+});
 
-function run($rootScope, $http, $location, $localStorage, $state) {
+app.run(function($rootScope, $http, $location, $localStorage, $state) {
+  'ngInject';
   if ($localStorage.user) {
     $http.defaults.headers.common.Authorization = `Bearer ${$localStorage.user.token}`;
   }
@@ -88,4 +90,4 @@ function run($rootScope, $http, $location, $localStorage, $state) {
       $state.go('login');
     }
   });
-}
+});

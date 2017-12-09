@@ -7,7 +7,8 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       _: 'lodash'
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin()
   ],
   entry: {
     app: ['./public/src/app.js']
@@ -20,12 +21,12 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: '/.js$/',
+        test: /.js$/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015']
+          presets: ['env']
         },
-        exclude: /(node_modules|lib)/
+        exclude: /(node_modules|lib|server|test|migrations|seeds)/
       },
       {
         test: /\.css$/,

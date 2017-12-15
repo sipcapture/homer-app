@@ -1,0 +1,159 @@
+<div>
+    <form name="_form" class="form-horizontal">
+        <div class="modal-header">
+            <h4 class="modal-title">Widget Settings</h4>
+            <button type="button" class="close" ng-click="dismiss()" aria-hidden="true">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <uib-tabset>
+                <uib-tab heading="Data Metrics">
+                    <!--<label for="path">API Query Fields</label>-->
+                    <div class="row">
+                    <!--    <h3 class="modal-body-title">Settings</h3> -->
+
+			<div class="input-group">
+				<div class="input-group-addon">
+				  <div>
+				    <label for="Title" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;line-height:30px;" class="ng-binding">Widget Title</label>
+				  </div>
+				</div>                                            
+				<input required type="text" id="Title" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="config.title" style="height:35px !important;">
+				<!-- <span class="fa fa-search-plus form-control-search" title="search type"></span> -->
+			</div>
+
+
+                        <h3 class="modal-body-title">Add Query</h3>
+                        <div class="modal-filter-inputs col-md-12">
+                            <div class="input-group">
+                                <label for="widgetMetricsDatasources" class="input-label">Panel Datasource</label>
+                                <div class="select-wr">
+                                    <i class="fa  fa-angle-down  select-ico"></i>
+                                    <select id="widgetMetricsDatasources" ng-change="reset()" ng-options="source as source.name for source in metricsdatasources track by source.name " ng-model="panel.metricsdatasource" class="form-control" required></select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <div class="modal-filter-inputs-btn-wr">
+                                    <button class="btn btn-default" type='button' ng-click="addQuery()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <h3 class="modal-body-title  wihout-border">Query</h3>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr ng-repeat="query in config.panel.queries">
+                                            <td class="text-center">{{query.name}}</td>
+                                            <td class="text-center">{{query.type.name}}</td>
+                                            <td class="text-center" contentEditable="true" ng-model="query.value">{{query.value}}</td>
+                                            <td class="text-center">
+                                                <a ng-click="removeQuery($index)"><i class="remove-ico fa fa-trash-o" aria-hidden="true"></i>Delete</a> &nbsp;
+                                                <a ng-click="editQuery($index)"><i class="edit-ico fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="queryExpert" class="modal-sub-tabs" ng-show="displayQuery">
+                        <uib-tabset>
+
+                            <uib-tab heading="Data Source">
+                                <div id="queryTab">
+                                    <div class="input-group" ng-repeat="src in fieldsdata">
+					<div ng-hide="src.value == 'limit' || src.value == 'colors'">
+
+                                        <!--	<label for="path" class="input-label">{{src.name}}</label> -->
+
+                                                            <div ng-if="src.type=='input'"><input type="input" class="form-control border-radius" ng-model="config.dataquery.data[localindex][src.value]" /></div>
+
+                                                            <div ng-if="src.type=='checkbox'">
+                                                            	<label for="sum" class="checkbox-label">                                                            	
+									<input type="checkbox" ng-init="config.dataquery.data[localindex][src.value] ? true : false" id="sum" name="sum" ng-model="config.dataquery.data[localindex][src.value]">
+									<span><i class="fa fa-check"></i></span>
+								</label>
+                                                            </div>
+
+                                                            <div ng-if="src.type=='select'">
+                                                                <div class="input-group">
+								    <div class="input-group-addon">
+									<label for="Transaction" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;line-height:30px;margin-bottom:5px;" class="ng-binding">{{src.name}}</label>
+								    </div> 
+                                                                    <i class="fa  fa-angle-down  select-ico"></i>
+                                                                    <select id="widgetMetricsDatasources" ng-change="checkSourceSelection(src.value, localindex)" ng-options="dat as dat.name for dat in src.data track by dat.name " ng-model="config.dataquery.data[localindex][src.value]" class="form-control" required></select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-if="src.type=='select2'">
+                                                                <div class="select-wr">
+                                                                    <ui-select multiple tagging="tagTransform" ng-model="config.dataquery.data[localindex][src.value]" style="height: 50px;" theme="bootstrap" title="Select Counter">
+                                                                    <i class="fa  fa-angle-down  select-ico"></i>
+                                                                        <ui-select-match placeholder="Select...">{{$item.name}}</ui-select-match>
+                                                                        <ui-select-choices repeat="counter in myRemotedata  | propsFilter: {name: $select.search, value: $select.search}">
+                                                                            <div ng-if="counter.isTag" ng-bind-html="(counter.name | highlight: $select.search) +' (new)'"></div>
+                                                                            <div ng-if="!counter.isTag" ng-bind-html="counter.name + counter.isTag| highlight: $select.search"></div>
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-if="src.name=='Metrics'">
+                                                                <div class="select-wr">
+                                                                    <!-- <i class="fa  fa-angle-down  select-ico"></i> -->
+                                                                    <select id="MetricsSub1" ng-change="checkMetricsSourceSelection(src.name)" ng-options="dat as dat.name for dat in metrics.sub1data track by dat.name " ng-model="config.panel.metricsub1" class="form-control" required></select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-if="src.name=='Group By'">
+                                                                <div class="select-wr">
+                                                                    <!-- <i class="fa  fa-angle-down  select-ico"></i> -->
+                                                                    <select id="GroupBy1" ng-change="checkGroupBySourceSelection(src.name)" ng-options="dat as dat.name for dat in groupby.sub1data track by dat.name " ng-model="config.panel.groupbysubb1" class="form-control" required></select>
+                                                                </div>
+                                                            </div>
+					     </div>
+					</div>
+
+
+                                </div>
+                            </uib-tab>
+
+
+
+                            <uib-tab heading="Query">
+                                <div id="queryTab">
+                                    <div class="input-group">
+                                        <label for="path" class="input-label">API Query Path</label>
+                                        <input type="text" class="form-control" id="path" ng-model="config.path" ng-change="updateDebugUrl()" placeholder="Enter Path (call/function)">
+                                    </div>
+                                    <div class="input-group input-group--last">
+                                        <label for="query" class="input-label">API Query Value</label>
+                                        <textarea style="height: 200px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
+                                    </div>
+                                    <p ng-class="parsingColorClass" class="syntax-error">{{parsingStatus}}</p>
+                                </div>
+                            </uib-tab>
+                            <uib-tab heading="Debug">
+                                <label for="path" class="input-label">CURL Debug:</label>
+                                <div class="input-group">
+                                    <textarea style="height: 100px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label for="path" class="input-label">CURL Response:</label>
+                                    <textarea style="height: 120px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
+                                </div>
+                            </uib-tab>
+                    </div>
+                </uib-tab>
+                </uib-tabset>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+            <button ng-click="save()" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+        </div>
+    </form>
+</div>

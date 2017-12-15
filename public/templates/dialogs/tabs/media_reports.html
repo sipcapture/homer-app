@@ -1,0 +1,20 @@
+<!-- INCLUDE: MEDIA REPORTS TAB -->
+								
+				<div id="chars-container" class="jumotron" ng-show="d3chart.data" style="height:100%;width:100%;margin-top:8px;">			
+                                      <div ng-repeat="(key,ctype) in d3chart.data">
+					 <button class="btn-primary" style="text-transform:uppercase;margin-right:8px;">{{ key }}</button>
+					 <button class="btn-warning" style="text-transform:uppercase;">min: {{ d3chart.stats[key].min }}</button>
+					 <button class="btn-info" style="text-transform:uppercase;">avg: {{ (( d3chart.stats[key].min+d3chart.stats[key].max)/2).toFixed(2) }}</button>
+					 <button class="btn-success" style="text-transform:uppercase;">max: {{ d3chart.stats[key].max }}</button>
+					 <nvd3 id="{{key}}" options="options" data="ctype.series" config="configD3" events="events" api="apiD3" on-ready="callbackD3"></nvd3>					        
+				      </div>
+
+
+				</div>
+
+				<div id="no-reports" ng-hide="enableQualityReport|| enableXRTPReport || enableRTCPReport" class="alert alert-warning alert-dismissible" role="alert">
+					 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+					  <strong>Oops!</strong> No Reports available for this session
+				</div>
+
+

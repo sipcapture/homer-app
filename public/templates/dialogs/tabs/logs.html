@@ -1,0 +1,31 @@
+<!-- INCLUDE: LOGS TAB -->
+								
+		<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No Logs available for this session
+			</div>
+			<div id="log-root" ng-if="enableLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<!-- <p>SysLog from {{ logreport[0].source_ip }}:{{logreport[0].source_port}}</p> -->
+				  <div class="form-group">
+					<input ng-hide="!log.msg" type="text" ng-model="logsearch" class="form-control" placeholder="Filter Logs" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+					<div ng-repeat="log in logreport | filter: {msg: logsearch}" style="margin-left:15px;width: 98%;overflow: hidden;text-overflow: ellipsis;">
+						<div ng-hide="!log.msg" ng-class-odd="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{log.msg}}</div>
+					</div>
+
+					<div ng-repeat="log in logreport" style="margin-left:15px;width: 98%;overflow: hidden;text-overflow: ellipsis;">
+						<div ng-hide="!log.data" 
+							ng-class-odd="(log.data.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" 
+							style="margin-bottom:5px;white-space: pre;"> {{ log.data|json }} </div>
+					</div>
+
+					<div ng-repeat="log in LiveLogs" style="margin-left:15px;width: 98%;overflow: hidden;text-overflow: ellipsis;">
+						<div ng-hide="!log.data" 
+							ng-class-odd="(log.data.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" 
+							style="margin-bottom:5px;white-space: pre;"> {{ log.data|json }} </div>
+					</div>
+		</div>				
+	     

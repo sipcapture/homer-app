@@ -1,0 +1,432 @@
+<div class="topbar" data-ng-controller="datepickerController">
+   <div id="header" access="users" access-permission-type="AtLeastOne">
+
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="js-nav navbar navbar-default navbar-top nd-navbar-default" role="navigation">
+ 		
+ 		<div class="navbar-header">            
+ 			<a href="/#/dashboard/home" class="navbar-brand nd-navbar-brand" >
+	                <div class="new-my-logo nd-logo">hepic.<span translate="hepic.global.CUSTOM"></span> </div> 
+            		<!-- <img src="img/homer_logo.svg" \> -->
+			</a> 		
+	        </div>
+		<div class="nav-wrapper">
+            <!-- START Right Navbar-->
+            <ul class="nav navbar-nav  navbar-right">
+           
+               <!-- START Messages menu (dropdown-list)-->             
+               <!--
+               <li class="dropdown dropdown-list">
+                  <a href="javascript:void(0);" data-toggle="dropdown" data-play="fadeIn" class="dropdown-toggle">
+                     <em class="fa fa-envelope-o"></em>
+                     <div class="label label-danger">21</div>
+                  </a>
+               </li>
+               -->
+
+               <li class="dropdown js-dropdown" ng-class="{open:boolDropDownUserMenu}">
+                  <a ng-click="showUserMenuBox();" data-play="fadeIn" class="dropdown-toggle" translate="hepic.header.menu.PROFILE">Profile</a>
+                  <ul class="dropdown-menu  dropdown-color dropdown-content profile-dropdown">
+                     
+                     <li ng-controller="settingsNavController"><a ng-click="showUserMenuBox();showSettings();void(0);" class="dropdown__link"translate="hepic.header.submenu.SETTINGS">Settings</a>
+                     </li>
+                     
+                     <li><a ng-click="showUserMenuBox();showUserMessages();" class="dropdown__link" translate="hepic.header.menu.MESSAGES">Messages<div class="label label-danger messages-qty">0</div></a></li>                     
+                     </li>                     
+                     <li><a class="dropdown__link" ng-click="showUserMenuBox();doSaveGridState();" class="dropdown__link" translate="hepic.header.submenu.SAVEGRID">Save Grid</a></li>
+                     <li><a class="dropdown__link" ng-click="showUserMenuBox();doRestoreGridState();" class="dropdown__link" translate="hepic.header.submenu.RESTOREGRID">Restore Grid</a></li>
+                     <li><a class="dropdown__link" ng-click="showUserMenuBox();doResetGridState();" class="dropdown__link" translate="hepic.header.submenu.RESETGRID">Reset Grid</a></li>
+                     <li><a ng-click="showUserMenuBox();doResetProfile();" class="dropdown__link" translate="hepic.header.submenu.RESETPROF">Reset Profile</a>                  
+                     <li><a ng-click="showUserMenuBox();doResetDashboard();" class="dropdown__link" translate="hepic.header.submenu.RESETDASH">Reset Dashboard</a>                  
+                     <li><a class="dropdown__link" ng-click="showUserMenuBox();doLogout();" translate="hepic.header.submenu.LOGOUT">Logout</a>
+                     </li>
+                  </ul>
+               </li>
+               
+               <li ng-init="backdash = false; activePanel='Home'" ng-class="{active: backdash}" class="js-dropdown nav-dropdown nav-dropdown-panel nav-dropdown-mess">
+                  <a    ng-click="backdash = !backdash">Messages <span class="messages-quantity">{{messagesQuanity}}</span></a>
+                   <div id="dashSwitch" ng-hide="!backdash" class="dropdown-content  ng-hide">
+                      <ul class="dropdown__list">
+                         <div>
+                        <li class="massage__title">
+                           <a class="dropdown__link">
+                              <span>{{messagesQuanity}} unread message(s)</span>
+                           </a>
+                        </li>                        
+			<div ng-repeat="message in messagesPool">
+	                        <li class="massage__wr-notification {{message.class}}">
+        	                   <a class="dropdown__link dropdown__link_mess">
+                	              <span class="massage__notification">{{message.text}}</span>
+                        	      <span class="massage__time">{{message.timerecv}}</span>
+	                           </a>
+	                           <a ng-click="closeMessage($index)">
+	        	                   <i class="fa fa-times-circle massage__close" aria-hidden="true"></i>
+	        	           </a>
+                	        </li>
+			</div>
+                      </ul>
+                   </div>
+                   <div id="backdash" ng-hide="!backdash" class="ng-hide backwindow" ng-click="backdash = false;"></div>
+                   <div id="newMessage" ng-hide="!showNewMessage" class="dropdown-content ng-hide">
+                      <ul class="dropdown__list">
+                         <div>
+				<li class="massage__wr-notification {{newmessage.class}}">
+        	                   <a class="dropdown__link dropdown__link_mess">
+                	              <span class="massage__notification">{{newmessage.text}}</span>
+                        	      <span class="massage__time">{{mewmessage.timerecv}}</span>
+	                           </a>
+                	        </li>
+			</div>
+                      </ul>
+                   </div>                                      
+                </li>               
+               <li>
+                  <a  ng-click="showSearchBox();" ui-sref="dashboard({ boardID:'search'})"> Search</a>
+               </li>
+
+               <li  ng-controller="panelController" ng-init="backdash = false; activePanel='Home'" ng-class="{active: backdash}" class="js-dropdown nav-dropdown nav-dropdown-panel">
+                 <a    ng-click="backdash = !backdash">Panels: &nbsp;<span> {{activePanel}}</span></a>
+                  <div id="dashSwitch" ng-hide="!backdash" class="dropdown-content  ng-hide">
+                     <ul class="dropdown__list">
+                        <li class="input">
+                           <input type="text" class="form-control" placeholder="Filter by Name" ng-model="searchDash"/>
+                        </li>
+                        <div ng-repeat="item in items | filter:searchDash">
+                        
+	                        <li ng-show="item.id != '0' && item.type == '0'" ng-class="{active: isActive('/dashboard/{{item.href}}')}">
+        	                      <a class="dropdown__link" ui-sref="dashboard({ boardID:'{{item.href}}'})" ng-click="$parent.backdash = false; $parent.activePanel = item.name">
+                	                 <span ng-show="!item.shared"><i class="fa fa-user" aria-hidden="true"></i>&nbsp; </span>
+                	                 <span ng-show="item.shared"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;</span>
+                	                 <span>{{item.name}}</span>
+                        	      </a>
+	                        </li>
+	                        <li ng-show="item.id != '0' && item.type == '1'" ng-class="{active: isActive('/dashframe/{{item.href}}')}">
+        	                      <a class="dropdown__link" ui-sref="dashframe({ boardID:'{{item.href}}'})" ng-click="$parent.backdash = false; $parent.activePanel = item.name">
+                	                 <span ng-show="!item.shared"><i class="fa fa-user" aria-hidden="true"></i>&nbsp: </span>
+                	                 <span ng-show="item.shared"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp; </span>
+                	                 <span>{{item.name}}</span>
+                        	      </a>
+	                        </li>
+                        </div>
+                        <li>
+                           <a ng-click="addDashBoardDialog();" class="dropdown__link  add-new-panel" href="javascript:;">+ Add New Panel</a>
+                        </li>
+                     </ul>
+                  </div>
+                  <div id="backdash" ng-hide="!backdash" class="ng-hide backwindow" ng-click="backdash = false;"></div>
+               </li>
+
+
+               <li class="nav-dropdown js-dropdown" ng-class="{active: timeWindow}">
+                    <a id="filterIndicator" ng-click="toggleTimeWindow();">
+                        <i class="fa fa-clock-o"></i>{{ filterIndicator }}
+                    </a>
+                    <div id="timeselector" class="dropdown-content" ng-hide="!timeWindow" class="ng-hide fadeInDownBig animated">
+                        <uib-tabset active="activeJustified" justified="true">
+                            <uib-tab index="0" heading="Quick Range">
+                                <div id="quickRanges">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="dropdown__list">
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="dayselect(-1, 'Yesterday');" ng-class="{active: isActive('Yesterday')}">Yesterday</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="dayselect(0, 'Today');" ng-class="{active: isActive('Today')}">Today</a>
+                                                    </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="dayselect(1, 'Tomorrow');" ng-class="{active: isActive('Tomorrow')}">Tomorrow</a>
+                                                </li>
+
+						<!-- next section -->
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="next(5, 'Next 5 Minutes');" ng-class="{active: isActive('Next 5 Minutes')}">Next 5 Minutes</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="next(10, 'Next 10 Minutes');" ng-class="{active: isActive('Next 10 Minutes')}">Next 10 Minutes</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="next(30, 'Next 30 Minutes');" ng-class="{active: isActive('Next 30 Minutes')}">Next 30 Minutes</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="next(60, 'Next Hour');" ng-class="{active: isActive('Next Hour')}">Next Hour</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <ul class="dropdown__list">
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(10, 'Last 10 Minutes');" ng-class="{active: isActive('Last 10 Minutes')}">Last 10 Minutes</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(30, 'Last 30 Minutes');" ng-class="{active: isActive('Last 30 Minutes')}">Last 30 Minutes</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(60, 'Last Hour');" ng-class="{active: isActive('Last Hour')}">Last Hour</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(180, 'Last 3 Hours');" ng-class="{active: isActive('Last 3 Hours')}">Last 3 Hours</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(360, 'Last 6 Hours');" ng-class="{active: isActive('Last 6 Hours')}">Last 6 Hours</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(720, 'Last 12 Hours');" ng-class="{active: isActive('Last 12 Hours')}">Last 12 Hours</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown__link" href ng-click="last(1440, 'Last 24 Hours');" ng-class="{active: isActive('Last 24 Hours')}">Last 24 Hours</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+					<br>
+					<!-- custom range -->
+	                                    <div class="input-group" style="width:99%;">
+	                                        <span class="input-label">Custom Quick Range</span>
+						<span class="form-control">
+						<center>
+                                        	<button class="lastRangeButton"
+							ng-click="last(timerange_last, 'Last '+timerange_last+' Minutes');"> Set To </button>
+						Last <input type="number" ng-model="timerange_last" min="1" max="59" required
+								style="margin-right:5px;" ng-init="timerange_last=5"> Minutes
+						</center>
+						</span>
+				  	    </div>
+				    </div>
+
+
+
+
+
+                                </div>
+                            </uib-tab>
+                            <uib-tab index="1" heading="Custom Range">
+                                <div id="customRanges">
+                                    <div class="row">
+                                        <div class="col-md-6 date-picker--from">
+                                            <label class="input-label" for="datetimepickerFrom">From</label>
+                                            <div class="input-group input-group--date-picker">
+                                                <input id="datetimepickerFrom" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="timerange.customFrom" is-open="modelDateP.openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                                <button class="calendar-btn" ng-click="open($event, 'openedFromdate')"  >
+                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-btn input-time">
+                                                    <uib-timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false" show-meridian="false" show-seconds="true"></uib-timepicker>
+                                                </span>
+                                            </div>
+                                            <button class="btn  btn-white" ng-click="setToNow(1);" uib-tooltip="Set Now">
+                                                Set Now
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6  date-picker--to">
+                                            <label class="input-label" for="datetimepickerTo">To</label>
+                                                      <!--            <p class="input-group">
+                                                <input id="datetimepickerTo" type="text" class="form-control" ng-model="timerange.customTo" ng-required="true">
+                                            </p>
+                                                -->
+                                            <div class="input-group  input-group--date-picker">
+                                                <input id="datetimepickerTo" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.customTo" is-open="modelDateP.openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                                <button class="calendar-btn" ng-click="open($event, 'openedTodate')"  >
+                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-btn input-time">
+                                                   <uib-timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false"  show-meridian="false" show-seconds="true"></uib-timepicker>
+                                                </span>
+                                            </div>
+                                            <button class="btn  btn-white" ng-click="setToNow(2);" uib-tooltip="Set Now">
+                                                Set Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                          <!--
+                                    <p class="input-group">
+                                    From:
+                                    </p>
+                                    <p class="input-group">
+                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                    <span class="input-group-btn">
+                                       <a uib-tooltip-placement="bottom" uib-tooltip="Set Now">
+                                          <button class="btn btn-info" ng-click="setToNow(1);"><span class="glyphicon glyphicon-refresh"></span></button>
+                                       </a>
+                                       <button class="btn btn-primary" ng-click="open($event, 'openedFromdate')">
+                                          <span class="glyphicon glyphicon-calendar"></span>
+                                       </button>
+                                    </span>
+                                    </p>
+                                    <p class="input-group">
+                                      <span class="input-group-btn input-time">
+                                          <uib-timepicker ng-model="timerange.from" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
+                                                </span>
+                                    </p>
+                                    <p class="input-group">
+                                    To:
+                                    </p>
+                                    <p class="input-group">
+                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                    <span class="input-group-btn">
+                                       <a uib-tooltip-placement="bottom" uib-tooltip="Set Now">         
+                                          <button class="btn btn-info" ng-click="setToNow(2);"><span class="glyphicon glyphicon-refresh"></span></button>
+                                       </a>
+                                       <button class="btn btn-primary" ng-click="open($event, 'openedTodate')">
+                                          <span class="glyphicon glyphicon-calendar"></span>
+                                       </button>
+                                    </span>
+                                    </p>
+                                    <p class="input-group">
+                                    <span class="input-group-btn input-time">
+                                       <uib-timepicker ng-model="timerange.to" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
+                                              </span>
+                                    </p>
+                                              -->            
+                                    
+				<!-- custom range -->
+                                    <div class="input-group">
+                                        <span class="input-label">Custom Quick Range</span>
+					<span class="form-control">
+					Last <input type="number" name="input" ng-model="timerange.customLast"
+					           min="1" max="59" required> Minutes
+					</span>
+			  	    </div>
+
+                                    <div class="input-group">
+                                        <span class="input-label">Timezone</span>
+                                        <label class="select-wr" for="tz">
+                                            <i class="fa  fa-angle-down  select-ico"></i>
+                                            <select ng-options="opt.value as opt.name for opt in timezones" ng-model="timezone.value"></select>
+                                        </label>
+                                    </div>
+
+
+
+                                     <div class="text-right">
+					<br>
+                                        <button class="btn btn-primary" ng-click="selectCustomeTime()">Set</button>
+                                     </div>
+                                </div>
+                            </uib-tab>
+                        </uib-tabset>
+                        
+                      <!-- <div class="col-md-4 col-xs-4 leftBorder">
+                         <h2 class="text-center">Auto update</h2>
+                         <hr>
+                         <ul>
+                            <li><a href ng-click="refresh(2, 'Every 2 seconds');" ng-class="{active: isUpdatingActive('Every 2 seconds')}">Every 2 seconds</a></li>
+                            <li><a href ng-click="refresh(5, 'Every 5 seconds');" ng-class="{active: isUpdatingActive('Every 5 seconds')}">Every 5 seconds</a></li>
+                            <li><a href ng-click="refresh(10, 'Every 10 seconds');" ng-class="{active: isUpdatingActive('Every 10 seconds')}">Every 10 seconds</a></li>
+                            <li><a href ng-click="refresh(30, 'Every 30 seconds');" ng-class="{active: isUpdatingActive('Every 30 seconds')}">Every 30 seconds</a></li>
+                            <li><a href ng-click="refresh(60, 'Every 1 minute');" ng-class="{active: isUpdatingActive('Every 1 minute')}">Every 1 minute</a></li>
+                            <li><a href ng-click="refresh(300, 'Every 5 minutes');" ng-class="{active: isUpdatingActive('Every 5 minutes')}">Every 5 minutes</a></li>
+                            <li><a href ng-click="refresh(600, 'Every 10 minutes');" ng-class="{active: isUpdatingActive('Every 10 minutes')}">Every 10 minutes</a></li>
+                            <li><a href ng-click="refresh(1800, 'Every 30 minutes');" ng-class="{active: isUpdatingActive('Every 30 minutes')}">Every 30 minutes</a></li>
+                            <li><a href ng-click="refresh(3600, 'Every 60 minutes');" ng-class="{active: isUpdatingActive('Every 60 minutes')}">Every 60 minutes</a></li>
+                            <li><a href ng-click="cancelRefresh(1);" ng-class="{active: isUpdatingActive('')}">Off</a>
+                            </li>
+                         </ul>
+                      </div> -->
+                   </div>
+                </li> 
+
+                <li class="dropdown  nav-dropdown js-dropdown" ng-class="{open:boolDropDownRefreshMenu}">                                               
+                    <a  ng-click="showRefreshMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+                     <em class="fa fa-refresh" alt="refresh"></em>
+                        {{textAutoUp}}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-color dropdown-content">
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('off');cancelRefresh(1);refresh(0);">No Autorefresh</a> <!-- OFF -->
+                        </li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('2 sec');refresh(2);">Refresh @ 2 seconds</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('5 sec');refresh(5);">Refresh @ 5 seconds</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('10 sec');refresh(10);">Refresh @ 10 seconds</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('30 sec');refresh(30);">Refresh @ 30 seconds</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('1 min');refresh(60);">Refresh @ 1 minute</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('5 min');refresh(300);">Refresh @ 5 minutes</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('10 min');refresh(600);">Refresh @ 10 minutes</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('30 min');refresh(1800);">Refresh @ 30 minutes</a></li>
+                        <li><a href class="dropdown__link" ng-click="showRefreshMenuBox('60 min');refresh(3600);">Refresh @ 60 minutes</a></li>
+<!--                         <li><a href class="dropdown__link" ng-click="showRefreshMenuBox();cancelRefresh(1);">Cancel</a> -->
+                        </li>
+                    </ul>
+                </li> 
+<!--
+               <li>
+                  <a class="reload-btn" aa href="javascript:location.reload(true)" data-toggle="reset">
+                     <em class="fa fa-refresh" alt="refresh"></em>
+                  </a>
+               </li>
+-->
+
+               <li>
+                  <a class="reload-btn" aa ng-click="doLogout()" data-toggle="reset">
+                     <em class="fa fa-sign-out" alt="refresh"></em>
+                  </a>
+               </li>
+
+
+
+              <!--  <li>
+                 <a uib-tooltip-placement="bottom" uib-tooltip="Refresh Now" uib-tooltip-popup-delay='1000' ng-click="refresh(0);" >
+                    <em class="fa fa-rotate-right"></em>
+                 </a>
+              </li> -->
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <!-- <li ng-hide="!updateFrequency" class="ng-hide" ng-class="{active: timeWindow}">
+                    <a id="updateIndicator" ng-click="toggleTimeWindow();">
+                        <i class="fa fa-refresh"></i>{{ updateFrequency }}
+                    </a>
+                </li> -->
+<!-- 
+                <li>               
+                    <span class="timerange-info">
+              		    <a uib-tooltip-placement="bottom" uib-tooltip="Now -> + 5 min" ng-click="setFromNow();">
+              			    <i class="fa fa-chevron-circle-right"></i>
+					    </a>
+                    </span>
+		            <span ng-click="launch();" class="timerange-info">{{timerange.from | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>
+                    <span class="timerange-info"><i class="fa fa-arrow-right"></i></span>
+		            <span ng-click="launch();"  class="timerange-info">{{timerange.to | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>	       
+	           </li>
+ -->
+              <!--  <li class="dropdown" ng-class="{open:boolDropDownLastMenu}">                                               
+                   <a uib-tooltip-placement="bottom" uib-tooltip="Range Select" ng-click="showLastMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+                                       <em class="fa fa-calendar"></em>
+                                 </a>
+                   <ul class="dropdown-menu dropdown-color">
+                       <li><a href ng-click="showLastMenuBox();last(10);">Last 10 Minutes</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(30);">Last 30 Minutes</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(60);">Last 1 Hour</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(180);">Last 3 Hours</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(360);">Last 6 Hours</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(720);">Last 12 Hours</a>
+                       </li>
+                       <li><a href ng-click="showLastMenuBox();last(1440);">Last 24 Hours</a>
+                       </li>
+                       <li><a href ng-click="launch();showLastMenuBox();" >Custom Range...</a>
+                       </li>
+                 </ul>
+              
+              </li> -->
+               
+            </ul>
+         </div>	            
+       </nav>       
+   </div>
+   
+<div id="backtimer" ng-hide="!timeWindow" class="ng-hide backwindow" ng-click="timeWindow = false;"></div>
+</div>
+            

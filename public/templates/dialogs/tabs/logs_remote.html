@@ -1,0 +1,25 @@
+<!-- INCLUDE: REMOTE LOGS TAB -->
+								
+			<div id="no-reports" ng-hide="enableRemoteLogReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No Logs available for this session
+			</div>
+			<div id="log-root" ng-if="enableRemoteLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<p>Elasticsearch Result from {{ remotelogreport[0].source_ip }}:{{remotelogreport[0].source_port}}</p>
+				  <div class="form-group">
+					<input type="text" ng-model="remotelogsearch" class="form-control" placeholder="Filter Logs" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+					<div ng-repeat="log in remotelogreport  | filter :{msg:remotelogsearch}" >
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{log.msg}}</div> -->
+						<div ng-class-odd="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{log}}</div>
+					</div>
+				<!--	
+					<ol ng-model="logreport">
+						<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
+					</ol>
+	   			-->
+			</div>				
+

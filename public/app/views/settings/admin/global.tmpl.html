@@ -1,0 +1,146 @@
+<nav>
+<div class="modal-body" style="padding-left: 40px; padding-bottom: 40px;">
+  <form role="form" name="myForm">
+
+    <div class="row">
+      <h3 class="setting__main-title">Global Settings</h3>
+	<p>Globals are used to manage and configure partition settings and features available to all active users.</p>
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="recording">
+                	<span ng-show="profile.recording" ng-click="profile.recording = !profile.recording"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.recording" ng-click="profile.recording = !profile.recording"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="recording" class="checkbox-label" style="display: inline-block;"> &nbsp; Enable RTP Lookups </label>
+        	</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+
+            <div class="form-group" id="holder"> <small id="label" for="recordingUrl">RTP API URL</small>
+                <input type="text" class="form-control" id="recordingUrl" ng-model="profile.recording_url" placeholder="vendor provided">
+            </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="blacklist">
+                	<span ng-show="profile.blacklist" ng-click="profile.blacklist = !profile.blacklist"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.blacklist" ng-click="profile.blacklist = !profile.blacklist"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="blacklist" class="checkbox-label" style="display: inline-block;"> &nbsp; Enable Blacklist Lookups </label>
+		</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+
+            <div class="form-group" id="holder"> <small id="label" for="blacklistUrl">BLACKLIST API URL</small>
+                <input type="text" class="form-control" id="blacklistUrl" ng-model="profile.blacklist_url" placeholder="some url">
+            </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="geolookups">
+                	<span ng-show="profile.geolookup" ng-click="profile.geolookup = !profile.geolookup"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.geolookup" ng-click="profile.geolookup = !profile.geolookup"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="blacklist" class="checkbox-label" style="display: inline-block;"> &nbsp; Enable IP Geo Lookups </label>
+		</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+
+            <div class="form-group" id="holder"> <small id="label" for="geolookupUrl">GEO API URL</small>
+                <input type="text" class="form-control" id="geolookupUrl" ng-model="profile.geolookup_url" placeholder="some url">
+            </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="cloudshare">
+                	<span ng-show="profile.cloudshare" ng-click="profile.cloudshare = !profile.cloudshare"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.cloudshare" ng-click="profile.cloudshare = !profile.cloudshare"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="blacklist" class="checkbox-label" style="display: inline-block;"> &nbsp; Enable Cloud Share </label>
+		</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+
+            <div class="form-group" id="holder"> <small id="label" for="cloudshareUrl">PCAP POST URL</small>
+                <input type="text" class="form-control" id="cloudshareUrl" ng-model="profile.cloudshare_url" placeholder="some url">
+            </div>
+
+      </div>
+    </div>
+
+
+      <h3 class="setting__main-title">Session Features</h3>
+	<p>Session Features determine what is predented to Users when inspecting a call, session or protocol via User-Interface.</p>
+
+    <!-- TIMELINE SETTINGS -->
+    <div class="row">
+
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="timeline">
+                	<span ng-show="profile.timeline_disable" ng-click="profile.timeline_disable = !profile.timeline_disable"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.timeline_disable" ng-click="profile.timeline_disable = !profile.timeline_disable"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="blacklist" class="checkbox-label" style="display: inline-block;"> &nbsp; Disable Timeline </label>
+		</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+		<br><br><small>Display Session Events on a precise Timeline</small>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- EMERGENCY SETTINGS -->
+    <div class="row">
+      <h3 class="setting__main-title">Emergency Settings</h3>
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4">
+	<div class="form-group"><br>
+		<div id="lockdown">
+                	<span ng-show="profile.lockdown" ng-click="profile.lockdown = !profile.lockdown"><i class="fa fa-check-square-o fa-1x"></i></span>
+                	<span ng-show="!profile.lockdown" ng-click="profile.lockdown = !profile.lockdown"><i class="fa fa-square-o fa-1x"></i></span>
+        	<label for="lockdown" class="checkbox-label" style="display: inline-block;"> &nbsp; Lock-Down Access </label>
+		</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+            <div class="form-group" id="holder"> <small id="label" for="lockdownMsg">LOCKDOWN MESSAGE</small>
+                <input type="text" class="form-control" id="lockdownMsg" ng-model="profile.lockdown_message" placeholder="Sorry, Access is currently Disabled by Admins. Try again later.">
+            </div>
+      </div>
+    </div>
+
+
+
+   </form>
+</div>
+<div style="float:left; margin-left:40px;" class="modal-footer">
+  <button type="button" ng-click="saveProfile();" class="btn btn-primary " style="float:right" ng-disabled="false">
+            <i class="fa" ng-class="{'fa-spinner fa-spin': isBusy, '': !isBusy}"></i>
+            Save
+  </button> 
+  
+<!--   <button type="button" class="btn btn-primary" ng-click="closeDialog()">Close</button> -->
+</div>
+</nav>

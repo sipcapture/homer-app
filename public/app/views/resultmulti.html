@@ -1,0 +1,45 @@
+<div class="search-results  Refresh Results  " access="users" access-permission-type="AtLeastOne">
+	<div id="resultheader" class="header-action-area">
+	        <h1 class="lath"><small class="text-header-sip">SIP Search Results</small>
+	        <input  ng-class="searchClass" class="searchForm" type="text" ng-model="searchText" ng-change="searchData()" placeholder="Regex Filter" /> 
+	        <button ng-show="!dataLoading" id="mainSipSearch" class="btn btn-white" ng-class="searchClass" type="submit" ng-click="processSearchResult();" ng-disabled="false" translate="hepic.buttons.REFRESH"> Refresh Results </button>
+        	<button ng-show="dataLoading" class="wait-label" id="mainSipSearchWait" ng-class="searchClass" type="submit" ng-click="processSearchResult();" ng-disabled="true" translate="hepic.buttons.WAIT"> Wait.. </button>
+
+			<small ng-repeat="(key,value) in searchParams">
+				<button class="wait-label search-refine" ng-class="searchClass"><i class="fa fa-times-circle" ng-click="killParam(key);"></i> {{key}}: {{value}}</button>
+			</small>
+
+<!-- 		
+		<a href="javascript:history.back();" ng-show="!dataLoading">
+                     <em class="fa fa-step-backward" style="font-size: 20pt;"></em>
+        	</a> 
+-->
+	        &nbsp;	
+	        </h1>
+	</div>
+	<div ng-show="dataLoading">
+        	<div id="loadingWidget" class="row-fluid ui-corner-all" style="text-align: center;">
+			<!--
+                        <i class="fa fa-adjust fa-spin fa-5x" style="color: #f4c20d;"></i>
+                        <i class="fa fa-adjust fa-spin fa-5x" style="color:#3cba54; font-size: 172px;"></i>
+                        <i class="fa fa-adjust fa-spin fa-5x" style="color: #db3236;"></i>
+			-->
+			<i class="fa fa-circle-o-notch fa-spin fa-4x" style="color:#1DC27C; font-size: 172px;"></i>
+
+
+	        </div>
+	</div>
+        <!--
+        <div ng-show="dataLoading">
+		<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
+        		<div class="loadingContent"><p><img alt="Loading  Content" src="img/ajax-loader.gif" /> </p></div>
+		</div>
+	</div>
+	-->
+	<div class="row nd-row" ng-show="showtable">
+		<div class="box-homer-results" >
+                	<div id="grid1"  ui-grid="gridOpts" class="gridStyle" ui-grid-auto-fit-columns ui-grid-auto-resize ui-grid-selection ui-grid-pagination ui-grid-resize-columns ui-grid-save-state  ui-grid-move-columns ui-grid-pinning ui-grid-grouping ui-grid-exporter resize></div>
+		</div><!-- /.box-body external-scopes="gridHandlers" -->
+		
+	</div>
+</div>

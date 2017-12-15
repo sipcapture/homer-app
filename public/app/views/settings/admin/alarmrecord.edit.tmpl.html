@@ -1,0 +1,101 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title">Settings of {{alarmrecord.name}}</h4>
+        <button type="button" class="close" ng-click="dismiss()" aria-hidden="true">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        <form role="form" name="myForm">
+            <div class="row">
+                <h3 class="setting__main-title">Main Settings</h3>
+                <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+                <div class="col-lg-7 col-sm-7 col_margin-r">
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmName">Name</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmName" ng-model="alarmrecord.name" >
+                    </div>
+
+		     <div class="input-group">
+                     		<label for="widgetLibrary" class="input-label">Main Key</label>
+                                <div class="select-wr">
+                                	<i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in mainKeys " ng-model="alarmrecord.main_key" class="form-control" ng-change="selectMainKey()"></select>
+                                </div>
+		     </div>
+		     
+		     <div class="input-group">
+                     		<label for="widgetLibrary" class="input-label">Second Key</label>
+                                <div class="select-wr">
+                                	<i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in secondKeys " ng-model="alarmrecord.second_key" class="form-control" ng-change="selectSecondKey()"></select>
+                                </div>
+		     </div>
+
+		     <div class="input-group">
+                     		<label for="widgetLibrary" class="input-label">Third Key</label>
+                                <div class="select-wr">
+                                	<i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in thirdKeys " ng-model="alarmrecord.third_key" class="form-control"></select>
+                                </div>
+		     </div>
+
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmMath">Math [<=>]</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmMath" ng-model="alarmrecord.math" >
+                    </div>
+
+		    <div class="form-group">
+			<label class="label-sett" for="alarmLimitDaily">Value:</label>
+			<input type="number" min="0" step="1" pattern="\d*" class="form-control" id="alarmValue"  ng-model="alarmrecord.value" placeholder="Enter Value">
+	            </div>
+	            
+	            <div class="input-group">
+                     		<label for="widgetLibrary" class="input-label">Host Group</label>
+                                <div class="select-wr">
+                                	<i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in groupIPs " ng-model="alarmrecord.host_group" class="form-control"></select>
+                                </div>
+		     </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmDescription">Description</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmDescription" ng-model="alarmrecord.description" >
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-4">
+		    <div class="form-group">
+		    	<label class="input-label" for="alarmStart">Start time</label>
+                        <div class="input-group input-group--date-picker">
+                                	<input id="alarmExpire" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="alarmrecord.ts_start" is-open="modelDateP.openedFromdate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <button class="calendar-btn" ng-click="openCalendar($event, 'openedFromdate')"  >
+                                        	<i class="fa fa-calendar" aria-hidden="true"></i>
+                                        </button>
+			</div>
+	            </div>
+
+		    <div class="form-group">
+		    	<label class="input-label" for="alarmStop">Stop time</label>
+                        <div class="input-group input-group--date-picker">
+                                	<input id="alarmExpire" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="alarmrecord.ts_stop" is-open="modelDateP.openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <button class="calendar-btn" ng-click="openCalendar($event, 'openedTodate')"  >
+                                        	<i class="fa fa-calendar" aria-hidden="true"></i>
+                                        </button>
+			</div>
+	            </div>
+		    
+		    <div class="form-group">
+			<label for="legend" class="checkbox-label">Enable</label>
+		                <input type="checkbox" id="alarmEnable" name="alarmEnable" ng-model="alarmrecord.enable">
+                		<span><i class="fa fa-check"></i></span>
+		    </div>
+            </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button ng-click="dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+    <button ng-click="save()" ng-disabled="myForm.$invalid || !myForm.$dirty" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+</div>
+</form>
+</div>

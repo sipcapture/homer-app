@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <h4 class="modal-title">Edit Panel</h4>
+</div>
+<div class="modal-body modal--edit-panel">
+
+  <ng-form name="nameDialog" novalidate role="form">
+
+    <div class="modal-body__separator">
+      <span>Panel Details</span>
+    </div>
+    
+    <div class="form-group input-group-lg">
+      <label class="control-label" for="dashboardname">Name your panel</label>
+      <input type="text" class="form-control" name="dashboard" id="dashboard" ng-model="$ctrl.dashboard.name" ng-keypress="$ctrl.hitEnter($event)">
+    </div>
+
+    <div class="form-group input-group-lg">
+      <label class="control-label" for="dashboardname">Type</label>
+      <select id="dashboardtype" name="dashboardtype" ng-model="$ctrl.dashboard.type" 
+        ng-options="option.value as option.name for option in $ctrl.types">
+      </select>
+    </div>
+    
+    <div class="form-group input-group-lg">
+      <label class="control-label" for="dashboardparam">Param</label>
+      <input type="text" class="form-control" name="param" id="param" ng-model="$ctrl.dashboard.param" ng-keypress="$ctrl.hitEnter($event)">
+    </div>
+      
+    <div class="form-group">
+      <label>Shared: <input type="checkbox" ng-model="$ctrl.dashboard.shared" ng-disabled="sharedDisabled">
+        <span><i class="fa fa-check"></i></span>
+      </label>
+    </div>
+    
+    <div class="modal-body__separator">
+      <span>Grid Configuration</span>
+    </div>
+
+    <div class="form-group">
+      <label>Columns <input type="text" class="form-control" name="columns" id="columns" ng-model="$ctrl.dashboard.config.columns">
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>MaxRows <input type="text" class="form-control" name="rows" id="rows" ng-model="$ctrl.dashboard.config.maxRows">
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Pushing: <input type="checkbox" ng-model="$ctrl.dashboard.config.pushing">
+        <span><i class="fa fa-check"></i></span>
+      </label>
+    </div>
+
+  </ng-form>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning btn-modal" ng-click="$ctrl.dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary btn-modal" ng-click="$ctrl.save()">Save</button>
+</div>

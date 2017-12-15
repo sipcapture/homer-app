@@ -1,0 +1,9 @@
+{
+    "UTC/UTC": "0",
+    "Europe/London": "0",
+    "Europe/Amsterdam": "+2",
+    "America/Los Angeles": "-8",
+    "America/New York": "-5",
+    "Europe/Moscow": "+3",
+    "Asia/Novosibirsk": "+6"
+}

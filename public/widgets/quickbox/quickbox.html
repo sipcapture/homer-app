@@ -1,0 +1,68 @@
+  <div style="height:100% !important;">
+    <div class="alert alert-info" ng-if="!boxEnabled">
+      Please select a query from the widget configuration
+    </div>
+
+    <!-- no data -->
+    <div ng-if="boxEnabled && !data[0][0]" style="height:95%;width:100%;">
+	<div style="display: table;position: absolute;height: 90%;width: 100%;">
+	  <div style="display: table-cell;vertical-align: middle;">
+	    <div style="margin-left: auto;margin-right: auto;width:80%;">
+
+		    <h2 data-fittext data-fittext-max="30" style="display: inline-flex;color: #d2d2d2;">
+			No Data
+		    </h2>
+		    <hr/>
+
+	    </div>
+	  </div>
+	</div>
+    </div>
+
+    <div ng-if="boxEnabled && data[0][0] && summode" style="height:95%;width:100%;">
+
+	<div style="display: table;position: absolute;height: 90%;width: 100%;">
+	  <div style="display: table-cell;vertical-align: middle;">
+	    <div style="margin-left: auto;margin-right: auto;width:80%;">
+
+		<div ng-repeat="sub in data">
+		  <div ng-repeat="hit in sub">
+		    <h1 data-fittext data-fittext-max="40" style="display: inline-flex;"> 
+			{{ (hit.value > 1000) ? (hit.value/1000).toFixed(1)+'k' : hit.value }}
+		    </h1>
+		    <span data-fittext data-fittext-max="15" style="margin-top:0px;float:right;">{{ hit.countername }}</span>
+		    <hr/>
+
+		  </div>	
+		</div>	
+	
+	    </div>
+	  </div>
+	</div>
+
+    </div>
+
+    <div ng-if="boxEnabled && data[0].stats && !summode" style="height:95%;width:100%;">
+	<div style="display: table;position: absolute;height: 90%;width: 100%;">
+	  <div style="display: table-cell;vertical-align: middle;">
+	    <div style="margin-left: auto;margin-right: auto;width:80%;">
+
+		<div ng-repeat="(key,hit) in data[0].stats">
+		    <h1 data-fittext data-fittext-max="60" style="display: inline-flex;">
+			{{ (hit.sum > 1000) ? ((hit.sum/1000)/hit.tot).toFixed(1)+'k' : (hit.sum/hit.tot).toFixed(1) }}
+		    </h1>
+		    <span data-fittext data-fittext-max="15" style="margin-top:0px;float:right;">AVG {{ key }}</span>
+		    <hr/>
+
+		</div>	
+	
+	    </div>
+	  </div>
+	</div>
+
+    </div>
+
+
+  </div>
+
+

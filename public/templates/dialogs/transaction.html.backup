@@ -1,0 +1,570 @@
+<script type="text/ng-template" id="reports_renderer.html">
+  <div nodrag>
+    
+    <a ng-class="{{ report.msg.QualityEst.MOSCQ > 3 }} ? 'btn btn-success btn-xs' : 'btn btn-warning btn-xs'" nodrag ng-click="toggleTree(report.id)">
+	{{ report.msg.QualityEst.MOSCQ ? report.msg.QualityEst.MOSCQ : '' }}
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[report.id],
+          'glyphicon-chevron-down': collapsed[report.id]
+        }"></span></a>
+    {{report.date}}: [{{report.correlation_id}}]
+  </div>
+  <ol ng-model="report.msg" ng-class="{hidden: !collapsed[report.id]}" nodrag>
+    <li ng-repeat="(property, value) in report.msg">
+      <div class="tree-report tree-report-content" nodrag> {{property}}:{{value}}</div>
+	  <ol  ng-model="value" nodrag>
+		<li ng-repeat="(p, v) in value">{{p}}: {{v}}</li>
+	  </ol>                 
+    </li>
+  </ol>
+</script>
+
+<script type="text/ng-template" id="logs_renderer.html">
+
+  <div nodrag>
+    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(log.id)">
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[log.id],
+          'glyphicon-chevron-down': collapsed[log.id]
+        }"></span></a>
+    {{log.date}}: [{{log.correlation_id}}]
+  </div>
+  <ol ng-model="log.msg" ng-class="{hidden: collapsed[log.id]}" nodrag>
+        {{log.msg}}
+  </ol>
+</script>
+
+
+<div class="modal-header homer-modal-header nd-modal-header" style="border-bottom:0;" ng-dblclick="expandModal(this.id);resizeNull();">
+	<button type="button" class="close nd-close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" ><img src="img/Close.svg" alt=""></button>
+	<button type="button" class="close nd-close nd-resize-full" data-dismiss="modal" aria-hidden="true" ng-click="expandModal(this.id);resizeNull();" \><span style="font-size: 16px; vertical-align: middle;"  class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>
+</button>
+
+        	<h4 class="modal-title nd-modal-title"> Call-ID: <i> {{msgCallId}} </i>
+		</h4> 
+</div>
+<div ng-show="dataLoading">
+	<div id="loadingWidget" class="row-fluid ui-corner-all" style="text-align: center;position:absolute;left:50%;">
+
+			<i class="fa fa-asterisk fa-spin fa-5x" style="color: #f4c20d;"></i>
+                        <i class="fa fa-gear fa-spin fa-5x" style="color:#3cba54; font-size: 172px;"></i>
+                        <i class="fa fa-asterisk fa-spin fa-5x" style="color: #db3236;"></i>
+        </div>
+</div>
+
+<div class="modal-body homer-modal-body nd-homer-modal-body" style="height:90%;width:99%;">
+<div class="modal-body-buttons" ng-hide="dataLoading">
+
+	<uib-tabset>
+	     <uib-tab select="refreshGrid()">
+		     <uib-tab-heading><i class="zmdi zmdi-grid"></i> Messages </uib-tab-heading>	     	     
+			<div class="row nd-row-bord" ng-show="showtable">
+				<div class="box-homer-results">
+					<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped ng-isolate-scope">
+					  <thead>
+						    <tr>
+						        <th width="8%" st-sort-default="true" st-sort="locationId">Id</th>
+						        <th width="12%">Date</th>
+						        <th width="12%">Time</th>
+						      		<!--  <th>CallID</th> -->
+						        <th width="10%">Method</th>
+						        <th width="8%">Msg Size</th>
+						        <th width="12%">Src IP/Host</th>
+						        <th width="8%">Sport</th>
+						        <th width="12%">Dst IP/Host</th>
+						        <th width="8%">Dport</th>
+						      		<!--    <th>TSS</th> -->
+						      		<!--  <th>TSU</th> -->
+						        <th width="10%">Proto</th>
+						    </tr>
+					    </thead>
+					    <tbody ng-show="!dataLoading">
+						    <tr ng-repeat="row in displayedCollection" ng-class-odd="'shark0'" ng-class-even="'shark1'" >
+						        <td width="8%"><a ng-click="showMessage(row,$event)">{{row.id}}</a></td>
+						        <td width="12%">{{row.micro_ts/1000 | date:'dd-MM-yyyy'}}</td>
+						        <td width="12%">{{row.micro_ts/1000 | date:'hh:mm:ss.sss'}}</td>
+						     <!--   <td>{{row.callid}}</td> -->
+						        <td width="10%">{{methodCheck(row.method, row.reply_reason)}}</td>
+						        <td width="8%">{{ (row.message).length }}</td>
+						        <td width="12%">{{row.source_ip}}</td>
+						        <td width="8%">{{row.source_port}}</td>
+						        <td width="12%">{{row.destination_ip}}</td>
+						        <td width="8%">{{row.destination_port}}</td>
+						      <!--  <td>{{row.tss}}</td> -->
+						      <!--  <td>{{row.tsu}}</td> -->
+						        <td width="10%">{{protoCheck(row.proto)}}</td>
+						    </tr>
+					   </tbody>
+					</table>					
+				</div><!-- /.box-body external-scopes="gridHandlers" -->
+		
+			</div>
+	     </uib-tab>
+	     	     
+
+	     <uib-tab>
+			<uib-tab-heading><i class="fa fa-exchange"></i> Call-Flow</uib-tab-heading>
+				<div class="wr-wr-cflowsvg">
+						<table class="wr-table-call wr-table-call_icons">
+							<tr>
+								<td style='width: {{100/hostsflow.length}}%' ng-repeat="item in hostsflow track by $index">
+									<div class="wr-last-rec">
+										 <div class="info {{item.type}}">
+
+											<div ng-if="$first" class="wr-info__rectangle">
+												<img src="img/caller.svg" alt="">
+											</div>
+											<div ng-if="!$first" class="wr-info__rectangle">
+												<img src="img/host1.svg" alt="">
+											</div>									
+											<div class="wr-info-text wr-info-text_left">
+						                                        	<div class="info-text">{{item.description}}</div>
+				                        			                <div class="info-text-port">{{item.name}}</div>
+											</div>
+
+										</div>
+
+										<div ng-if="$last == true" class="info {{lasthosts.type}}">
+											<div class="wr-info__rectangle">
+												<img src="img/host2.svg" alt="">
+											</div>
+											<div class="wr-info-text">
+							                                	<div class="info-text">{{lasthosts.description}}</div>
+					                        			        <div class="info-text-port">{{lasthosts.name}}</div>
+											</div>
+										</div>
+										</div>
+								</td>
+							</tr>
+						</table> 
+				<div class="wr-cflowsvg">
+				<table id="cflowsvg" class="wr-table-call">
+					<thead>
+						<tr>
+							<td style='width: {{100/hostsflow.length}}%' ng-repeat="item in hostsflow track by $index">
+								<div class="wr-last-rec">
+									 <div class="info {{item.type}}">
+									 	<!--
+									 	<div ng-if="$index==maxhosts" class="wr-info-text wr-info-text_left">
+					                                        	<div class="info-text">{{item.description}}</div>
+			                        			                <div class="info-text-port">{{item.name}}</div>
+										</div>									 										 										
+										-->
+
+										<div ng-if="$first" class="wr-info__rectangle">
+											<!-- <img src="img/caller.svg" alt=""> -->
+										</div>
+										<div ng-if="!$first" class="wr-info__rectangle">
+											<!-- <img src="img/host1.svg" alt=""> -->
+										</div>
+										<!-- <div ng-if="$index!=maxhosts" class="wr-info-text wr-info-text_left"> -->										
+										<div class="wr-info-text wr-info-text_left">
+					                                    <!--     	<div class="info-text">{{item.description}}</div>
+			                        			                <div class="info-text-port">{{item.name}}</div> -->
+										</div>
+
+									</div>
+
+									<div ng-if="$last == true" class="info {{lasthosts.type}}">
+										<div class="wr-info-text">
+						       <!--                          	<div class="info-text">{{lasthosts.description}}</div>
+				                        			        <div class="info-text-port">{{lasthosts.name}}</div> -->
+										</div>
+										<div class="wr-info__rectangle">
+											<!-- <img src="img/host2.svg" alt=""> -->
+										</div>
+									</div>
+									</div>
+							</td>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="item in messagesflow">																		
+								<td ng-if="item.begin_c > 0" colspan="{{item.begin_c}}"></td>
+								<td colspan="{{item.midle_c}}">
+									<div ng-class="wr-call">																												 								
+										<div ng-click="showMessageById(item.pid,$event)" ng-class="item.direction ? 'call call_caller text-right' : 'call call_recipient'">
+        						        	                <div class="call_text"> {{ item.method }}</div>
+        						        	                <div class="call_text-mini"> {{ item.method_ext | limitTo: 30 }}{{item.method_ext.length > 30 ? '...' : ''}}</div> 
+        						        	             <!--   <div class="call_text"> {{item.method}} {{item.x_pos}} = {{item.y_pos}}</div> -->
+						                        	        <div class="call_text-date">[{{item.pid}}] {{item.date}}</div>
+							                        </div>						
+							                </div>
+								</td>
+						</tr>
+						</tbody>			      	                			      	 									
+			      </table>
+			      </div>
+			      </div>	      			      			      
+	    </uib-tab>
+	     
+	     <uib-tab select="refreshChart();resizeNull();"  ng-show="enableTransaction">             
+		     <!-- hack for highcharts render in div size -->
+	 	     <uib-tab-heading><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Call Info </uib-tab-heading>
+
+				<div id="no-reports" ng-hide="call_transaction" class="alert alert-warning alert-dismissible" role="alert">
+					 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+					  <strong>Oops!</strong> No Transactions available for this session
+				</div>
+                                <div id="transaction-root" ng-if="call_transaction">
+					<div ng-repeat="trans in call_transaction">
+					<br>
+					 <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <div class="panel-body header-action-area" 
+							style="width:100%;padding-bottom:18px !important;padding-top:18px !important;">
+
+							<div class="row" style="font-size:9px;">
+						          <div class="col-xs-1"><span class="align-left" style="font-size:9px">type</span></div>
+						          <div class="col-xs-1"><span class="align-left" style="font-size:9px">duration</span></div>
+						          <div class="col-xs-3"><span class="align-left" style="font-size:9px">from</span></div>
+						          <div class="col-xs-3"><span class="align-left" style="font-size:9px">ruri</span></div>
+						          <div class="col-xs-2"><span class="align-left" style="font-size:9px">src ip:port</span></div>
+						          <div class="col-xs-2"><span class="align-left" style="font-size:9px">dst ip:port</span></div>
+							</div>
+						        <div class="row" style="font-size:15px;">
+						          <div class="col-xs-1">{{ trans.transaction }}</div>
+						          <div class="col-xs-1">{{ trans.duration }}</div>
+						          <div class="col-xs-3">{{ trans.from_user }}@{{ trans.from_domain }} </div>
+						          <div class="col-xs-3">{{ trans.ruri_user ? trans.ruri_user : trans.to_user}}@{{ trans.ruri_domain ? trans.ruri_domain : trans.to_domain }} </div>
+						          <div class="col-xs-2">{{ trans.source_ip }}:{{ trans.source_port }} </div>
+						          <div class="col-xs-2">{{ trans.destination_ip }}:{{ trans.destination_port }}</div>
+
+						        </div> 
+					      </div>
+					    </div>
+					<!-- VQR ROWS -->
+					    <div class="pull-center day" style="padding-left:2%;background-color:{{trans.vqr_a.col ? trans.vqr_a.col : '#87CEEB' }};color: #ffffff;" ng-show="trans.vqr_a">	
+
+						<div class="row">
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">A-Leg</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">mos</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">rfactor</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">lost</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">jitter</span></div>
+						        <div class="col-xs-2"><span class="align-left" style="font-size:9px">sdp ip</span></div>
+						        <div class="col-xs-2"><span class="align-left" style="font-size:9px">origin</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">ports</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">codecs</span></div>
+						</div>
+					       <div class="row" style="font-size:15px;padding-bottom:8px;">
+       					 		<div class="col-xs-1" ng-show="trans.vqr_a.mos > 3"><i class="fa fa-heartbeat fa-1x" ng-class="trans.vqr_a.mos < 5 ? 'bump' : ''"></i></div>
+       					 		<div class="col-xs-1" ng-show="trans.vqr_a.mos <= 3"><i class="fa fa-ambulance fa-1x bump"></i></div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_a.mos}}</div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_a.rf}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_a.pl}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_a.jt}}</div>
+						        <div class="col-xs-2">{{ trans.sdp[0].mediaIpAudio ? trans.sdp[0].mediaIpAudio : trans.sdmedia_ip }}</div>
+						        <div class="col-xs-2">{{ trans.sdp[0].sdpOrigin }}</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[0].audioObject"><span class="fa fa-sign-in"> {{ trans.sdp[0].mediaPortAudio ? trans.sdp[0].mediaPortAudio : trans.sdp_ap  }}</div>
+								<div ng-show="trans.sdp[0].videoObject"><span class="fa fa-sign-in"> {{ trans.sdp[0].mediaPortVideo ? trans.sdp[0].mediaPortVideo : trans.sdp_ap }}</div>
+							</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[0].audioObject"><span class="fa fa-volume-up"> {{ trans.sdp[0].audioCodec }}</div>
+								<div ng-show="trans.sdp[0].videoObject"><span class="fa fa-video-camera"> {{ trans.sdp[0].videoCodec }}</div>
+							</div>
+						</div>
+					   </div>
+
+					    <div class="pull-center day" style="padding-left:2%;background-color:{{trans.vqr_a.col ? trans.vqr_a.col : '#87CEEB' }};color: #ffffff;" ng-show="trans.vqr_b">	
+
+						<div class="row">
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">B-Leg</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">mos</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">rfactor</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">lost</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">jitter</span></div>
+						        <div class="col-xs-2"><span class="align-left" style="font-size:9px">sdp ip</span></div>
+						        <div class="col-xs-2"><span class="align-left" style="font-size:9px">origin</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">ports</span></div>
+						        <div class="col-xs-1"><span class="align-left" style="font-size:9px">codecs</span></div>
+						</div>
+					<!-- audio only -->
+					       <div class="row" style="font-size:15px;padding-bottom:8px;" ng-hide="trans.sdp[2]">
+       					 		<div class="col-xs-1" ng-show="trans.vqr_b.mos > 3"><i class="fa fa-heartbeat fa-1x" ng-class="trans.vqr_a.mos < 5 ? 'bump' : ''"></i></div>
+       					 		<div class="col-xs-1" ng-show="trans.vqr_b.mos <= 3"><i class="fa fa-ambulance fa-1x bump"></i></div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_b.mos}}</div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_b.rf}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_b.pl}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_b.jt}}</div>
+						        <div class="col-xs-2">{{ trans.sdp[1].mediaIpAudio ? trans.sdp[1].mediaIpAudio : "0.0.0.0" }}</div>
+						        <div class="col-xs-2">{{ trans.sdp[1].sdpOrigin }}</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[1].audioObject"><span class="fa fa-sign-in"> {{ trans.sdp[1].mediaPortAudio }}</div>
+								<div ng-show="trans.sdp[1].videoObject"><span class="fa fa-sign-in"> {{ trans.sdp[1].mediaPortVideo }}</div>
+							</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[1].audioObject"><span class="fa fa-volume-up"> {{ trans.sdp[1].audioCodec }}</div>
+								<div ng-show="trans.sdp[1].videoObject"><span class="fa fa-video-camera"> {{ trans.sdp[1].videoCodec }}</div>
+							</div>
+						</div>
+					<!-- video legs -->
+					       <div class="row" style="font-size:15px;padding-bottom:8px;" ng-show="trans.sdp[2]">
+       					 		<div class="col-xs-1" ng-show="trans.vqr_b.mos > 3"><i class="fa fa-heartbeat fa-1x" ng-class="trans.vqr_a.mos < 5 ? 'bump' : ''"></i></div>
+       					 		<div class="col-xs-1" ng-show="trans.vqr_b.mos <= 3"><i class="fa fa-ambulance fa-1x bump"></i></div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_b.mos}}</div>
+						        <div class="col-xs-1"><span class="align-left">{{ trans.vqr_b.rf}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_b.pl}}</div>
+						        <div class="col-xs-1">{{ trans.vqr_b.jt}}</div>
+						        <div class="col-xs-2">{{ trans.sdp[2].mediaIpAudio ? trans.sdp[2].mediaIpAudio : "0.0.0.0" }}</div>
+						        <div class="col-xs-2">{{ trans.sdp[2].sdpOrigin }}</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[2].audioObject"><span class="fa fa-sign-in"> {{ trans.sdp[2].mediaPortAudio }}</div>
+								<div ng-show="trans.sdp[2].videoObject"><span class="fa fa-sign-in"> {{ trans.sdp[2].mediaPortVideo }}</div>
+							</div>
+						        <div class="col-xs-1">
+								<div ng-show="trans.sdp[2].audioObject"><span class="fa fa-volume-up"> {{ trans.sdp[2].audioCodec }}</div>
+								<div ng-show="trans.sdp[2].videoObject"><span class="fa fa-video-camera"> {{ trans.sdp[2].videoCodec }}</div>
+							</div>
+						</div>
+					   </div>
+
+
+					   <!-- START Doctor -->
+					   <div class="pull-center day" style="padding-left:2%;background-color:red;color: #ffffff;" ng-show="doctor.auth > (doctor.two+doctor.ring)">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-exclamation-circle fa-2x bump"></i></div>
+						        <div class="col-xs-5"><span class="align-left">SUSPECT BEHAVIOUR: {{ trans.uas }} </div>
+						        <div class="col-xs-2"><span class="align-left">ACTIONS:</div>
+						        <div class="col-xs-4"><span class="align-left">Investigate Auth Failures ({{ doctor.auth }})</div>
+						</div>
+					   </div>
+					   <div class="pull-center day" style="padding-left:2%;background-color:red;color: #ffffff;" ng-show="doctor.five > doctor.two">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-exclamation-circle fa-2x bump"></i></div>
+						        <div class="col-xs-4"><span class="align-left">SUSPECT MALFUNCTION: {{ trans.destination_ip }} </div>
+						        <div class="col-xs-2"><span class="align-left">ACTIONS:</div>
+						        <div class="col-xs-4"><span class="align-left">Check Services running on {{ trans.destination_ip}}:{{ trans.destination_port }}</div>
+						</div>
+					   </div>
+					   <div class="pull-center day" style="padding-left:2%;background-color:orange;color: #ffffff;" 
+							ng-show="trans.sdp[0].mediaPortAudio == 0 || trans.sdp[1].mediaPortAudio == 0">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-warning fa-1x"></i></div>
+						        <div class="col-xs-4"><span class="align-left">SUSPECT ONE-WAY AUDIO </div>
+						</div>
+					   </div>
+					   <div class="pull-center day" style="padding-left:2%;background-color:orange;color: #ffffff;" 
+							ng-show="trans.sdp[0].mediaPortVideo == 0 || trans.sdp[2].mediaPortVideo == 0">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-warning fa-1x"></i></div>
+						        <div class="col-xs-4"><span class="align-left">SUSPECT ONE-WAY VIDEO </div>
+						</div>
+					   </div>
+
+					   <div class="pull-center day" style="padding-left:2%;background-color:orange;color: #ffffff;" 
+							ng-show="angular.equals(trans.sdp[0].videoCodec, trans.sdp[2].videoCodec)">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-warning fa-1x"></i></div>
+						        <div class="col-xs-4"><span class="align-left">VIDEO CODEC MISMATCH </div>
+						</div>
+					   </div>
+					   <div class="pull-center day" style="padding-left:2%;background-color:orange;color: #ffffff;" 
+							ng-show="angular.equals(trans.sdp[0].audioCodec,trans.sdp[1].audioCodec)">	
+					       	<div class="row" style="font-size:15px;padding:8px;">
+       					 		<div class="col-xs-1"><i class="fa fa-warning fa-1x bump"></i></div>
+						        <div class="col-xs-4"><span class="align-left">AUDIO CODEC MISMATCH </div>
+						</div>
+					   </div>
+
+					<!-- END doctor -->
+
+
+					<!-- static maps -->
+					<!--
+					   <div style="height:102px;" ng-show="trans.geo_lan && trans.geo_lat">	
+						   <div class="col-xs-6" style="min-height:100px;background-size:contain;background-image:url(https://maps.googleapis.com/maps/api/staticmap?center={{trans.geo_lat}},{{trans.geo_lan}}&zoom=6&size=400x100);"></div>
+						   <div class="col-xs-6" style="min-height:100px;background-size:contain;background-image:url(https://maps.googleapis.com/maps/api/staticmap?center={{trans.dest_lat}},{{trans.dest_lan}}&zoom=6&size=400x100);"></div>
+					   </div>
+					-->
+					<!-- leaflet maps -->
+					   <div style="height:182px;" ng-show="trans.geo_lan && trans.geo_lat">	
+						<div class="col-xs-12" style="height:180px;"> 
+						    <leaflet id="map-marker" markers="markers" center="leaflet" defaults="defaults"
+							 lf-center="leaflet" width="100%" height="100%"></leaflet>
+						</div>
+					   </div>
+
+					</div>
+					<!--
+					 	<div ng-repeat="(key, value) in trans" class="trans-block" ng-show="value">{{key}}: {{value}}</div>
+					-->				
+					<br>
+					</div>
+                                </div>                                            
+	     </uib-tab>
+
+<!--
+	     <uib-tab select="refreshChart();resizeNull();"  ng-show="enableQualityReport || enableXRTPReport || enableRTCPReport">           
+	 	     <uib-tab-heading><i class="glyphicon glyphicon-signal"></i> Media Reports </uib-tab-heading>
+				<div id="chartist-container" class="jumotron" ng-show="chartist.data" style="height:100%;width:100%;">
+
+	                                        <div ng-repeat="(key,ctype) in chartist.data">
+							<button class="btn-primary" style="text-transform:uppercase;margin-right:8px;">{{ key }}</button>
+							<button class="btn-warning" style="text-transform:uppercase;">min: {{ chartist.stats[key].min }}</button>
+							<button class="btn-info" style="text-transform:uppercase;">avg: {{ ((chartist.stats[key].min+chartist.stats[key].max)/2).toFixed(2) }}</button>
+							<button class="btn-success" style="text-transform:uppercase;">max: {{ chartist.stats[key].max }}</button>
+							<div id="legend_{{ctype}}"></div>
+							<chartist class="ct-chart" 
+								chartist-data="ctype" 
+								chartist-chart-type="{{ key != 'pl' ? chartist.chartType : 'Bar' }}" 
+								chartist-chart-options="chartist.options" 
+								chartist-responsive-options="chartist.responsiveOptions">
+							</chartist>
+						</div>
+				</div>
+
+				<div id="no-reports" ng-hide="enableQualityReport|| enableXRTPReport || enableRTCPReport" class="alert alert-warning alert-dismissible" role="alert">
+					 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+					  <strong>Oops!</strong> No Reports available for this session
+				</div>
+	     </uib-tab>	     	
+-->	
+								
+	      <uib-tab select="refreshChart();resizeNull();"  ng-show="enableQualityReport || enableXRTPReport || enableRTCPReport">           
+		     <!-- hack for highcharts render in div size -->
+	 	     <uib-tab-heading><i class="glyphicon glyphicon-signal"></i> Media Reports </uib-tab-heading>
+				<div id="chars-container" class="jumotron" ng-show="d3chart.data" style="height:100%;width:100%;margin-top:8px;">			
+                                      <div ng-repeat="(key,ctype) in d3chart.data">
+					 <button class="btn-primary" style="text-transform:uppercase;margin-right:8px;">{{ key }}</button>
+					 <button class="btn-warning" style="text-transform:uppercase;">min: {{ d3chart.stats[key].min }}</button>
+					 <button class="btn-info" style="text-transform:uppercase;">avg: {{ (( d3chart.stats[key].min+d3chart.stats[key].max)/2).toFixed(2) }}</button>
+					 <button class="btn-success" style="text-transform:uppercase;">max: {{ d3chart.stats[key].max }}</button>
+					 <nvd3 id="{{key}}" options="options" data="ctype.series" config="configD3" events="events" api="apiD3" on-ready="callbackD3"></nvd3>					        
+				      </div>
+				</div>
+
+				<div id="no-reports" ng-hide="enableQualityReport|| enableXRTPReport || enableRTCPReport" class="alert alert-warning alert-dismissible" role="alert">
+					 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+					  <strong>Oops!</strong> No Reports available for this session
+				</div>
+
+	     </uib-tab>	     									
+
+	     <uib-tab ng-show="enableLogReport">
+	        <uib-tab-heading><i class="fa fa-file-text-o"></i> Logs </uib-tab-heading>	     	     
+			<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No Logs available for this session
+			</div>
+			<div id="log-root" ng-if="enableLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<!-- <p>SysLog from {{ logreport[0].source_ip }}:{{logreport[0].source_port}}</p> -->
+				  <div class="form-group">
+					<input type="text" ng-model="logsearch" class="form-control" placeholder="Filter Logs" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+					<div ng-repeat="log in logreport  | filter :{msg:logsearch}">
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{log.msg}}</div> -->
+						<div ng-hide="!log.msg" ng-class-odd="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{log.msg}}</div>
+					</div>
+					<div ng-repeat="log in logreport  | filter :{data:logsearch}">
+						<div ng-hide="!log.data" 
+							ng-class-odd="(log.data.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" 
+							style="margin-bottom:5px;white-space: pre;"> {{ log.data|json }} </div>
+					</div>
+				<!--	
+					<ol ng-model="logreport">
+						<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
+					</ol>
+	   			-->
+			</div>				
+
+	     </uib-tab>
+	     
+	     <uib-tab ng-show="enableRemoteLogReport">
+	     <uib-tab-heading><i class="fa fa-file-text-o"></i>Remote Logs </uib-tab-heading>	     	     
+			<div id="no-reports" ng-hide="enableRemoteLogReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No Logs available for this session
+			</div>
+			<div id="log-root" ng-if="enableRemoteLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<p>Elasticsearch Result from {{ remotelogreport[0].source_ip }}:{{remotelogreport[0].source_port}}</p>
+				  <div class="form-group">
+					<input type="text" ng-model="remotelogsearch" class="form-control" placeholder="Filter Logs" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+					<div ng-repeat="log in remotelogreport  | filter :{msg:remotelogsearch}" >
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{log.msg}}</div> -->
+						<div ng-class-odd="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{log}}</div>
+					</div>
+				<!--	
+					<ol ng-model="logreport">
+						<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
+					</ol>
+	   			-->
+			</div>				
+
+	     </uib-tab>
+
+	     <uib-tab ng-show="enableRtcReport">
+	     <uib-tab-heading><i class="fa fa-exchange"></i> WSS/RTC </uib-tab-heading>	     	     
+			<div id="no-reports" ng-hide="enableRtcReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No RTC available for this session
+			</div>
+			<div id="rtc-root" ng-if="enableRtcReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<p>RTC Session from {{ rtcreport[0].source_ip }}:{{rtcreport[0].source_port}}</p>
+				  <div class="form-group">
+					<input type="text" ng-model="rtcsearch" class="form-control" placeholder="Filter Data" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+				<!-- mermaid placeholder -->
+
+					<div ng-repeat="rtc in rtcreport  | filter :{msg:rtcsearch}" >
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{rtc.msg}}</div> -->
+						<div ng-class-odd="(rtc.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(rtc.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{rtc.msg}}</div>
+					</div>
+				<!--	
+					<ol ng-model="rtcreport">
+						<li ng-repeat="rtc in rtcreport" ng-include="'rtc_renderer.html'"></li>
+					</ol>
+	   			-->
+			</div>				
+
+	     </uib-tab>
+
+	     <uib-tab>
+	     <uib-tab-heading><i class="glyphicon glyphicon-download-alt"></i> Export</uib-tab-heading>
+	     		<div class="export-title">Export Call ID Properties</div>
+                <div style="margin:auto; width: 395.6px;">
+                        <button class="btn btn-normal btn-export btn-info btn-export_blue" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-code-o" aria-hidden="true"></i>
+                                <span> Export PCAP</span>
+                        </button>
+                        <button class="btn btn-normal btn-export btn-info btn-export_green" ng-hide="sharelink" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;">
+                                <i class="fa fa-share-alt"></i>
+                                <span>Share Link</span>
+                        </button>
+                        <button class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;"><i class="fa fa-file-image-o" aria-hidden="true"></i>
+                        	<span>Export PNG</span></button>
+                        <button class="btn btn-normal btn-export btn-info btn-export_green" ng-click="exportCloud()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-cloud-download" aria-hidden="true"></i>
+                                <span>Share Cloud</span>
+                        </button>
+
+                        <!-- share link -->
+                        <button class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                <span>Export TEXT</span>
+                        </button>
+                        <a ng-if="sharelink" href="{{sharelink}}" target="_blank" class="btn btn-normal btn-warning" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;background-color:#f39c12;color:#ffffff;">
+                                <i class="fa fa-share-alt fa-spin"></i>
+                                <span>Link Ready</span>
+                        </a>
+                </div>
+                        
+             </uib-tab>
+             
+	     <uib-tab disable="true" ng-show="call_duration">
+		     <uib-tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{call_duration}}</uib-tab-heading>
+	     </uib-tab>
+
+	  </uib-tabset>
+</div>
+

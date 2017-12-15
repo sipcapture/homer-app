@@ -1,0 +1,40 @@
+<div class="quicksearch-widget-settings">
+  <form name="_form" class="form-horizontal" ng-submit="$ctrl.submit(_form)">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+      <h3>Settings</h3>
+    </div> <!-- END modal-header -->
+
+    <div class="modal-body">
+      <p>
+        <label for=widgetTitle>Panel Title</label>
+        <input type=text class=form-control id=widgetTitle ng-model="$ctrl.widget.config.title" placeholder="Enter title"
+          required>
+      </p>
+      <p>
+        <label style="display:block; margin-bottom:10px;">Search Button: 
+          <input type="checkbox" ng-model="$ctrl.widget.config.searchbutton"/><span><i class="fa fa-check"></i></span>
+        </label>
+        <button ng-click="$ctrl.addField()" class="btn btn-default">Add Form Field</button>
+      </p>
+      <div ng-repeat="field in $ctrl.widget.fields" style="display: inline-block; vertical-align: top;">
+        <div field-display="field.selection" field-name="field.name" field-headers="$ctrl.headers"
+          style="display:inline-block;">
+        </div>
+        <i class="fa fa-trash-o fa-custom" ng-click="$ctrl.removeField($index);"
+          style="display: inline-block;margin-right:10px;margin-top:3px;">
+            <span class="drop-down-wid__del">Delete</span>
+        </i>
+        <div style="clear:none;" ng-if="($index % 4)">
+        </div>
+      </div>
+    </div> <!-- END modal-body-->
+
+    <div class="modal-footer">
+      <button ng-click="$ctrl.dismiss()" class="btn btn-lg"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+      <button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+    </div> <!-- END modal-footer -->
+  </form>
+</div>
+
+

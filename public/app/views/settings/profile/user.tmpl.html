@@ -1,0 +1,74 @@
+<!-- <div class="modal-header">
+  <h4 class="modal-title">Edit Profile</h4>
+</div> -->
+<nav>
+<div class="modal-body" style="padding-left: 40px; padding-bottom: 40px;">
+  <form role="form" name="myForm">
+    <div class="row">
+      <h3 class="setting__main-title">User Settings</h3>
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+        <div class="form-group">
+          <label class="label-sett" for="profileUsername">Username</label>
+          <input type="text" ng-readonly="true" class="form-control form-control-settings" id="profileUsername" ng-model="profile.username" required="">
+        </div>
+
+        <div class="form-group">
+          <label class="label-sett" for="profileGroup">Group</label>
+          <input type="text" ng-readonly="true" class="form-control form-control-settings" id="profileGrp" ng-model="profile.group" required="">
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label class="label-sett" for="profilePassword">Password</label>
+          <input type="password" class="form-control form-control-settings" id="profilePassword" name="profilePassword" ng-model="profile.password" ng-required />
+        </div>
+
+        <div class="form-group">
+          <label class="label-sett" for="profilePassword">Repeat password</label>
+          <input type="password" class="form-control form-control-settings" id="profilePassword2" name="profilePassword2" ng-model="profile.password2" ng-required pw-check="profilePassword" />
+          <div class="msg-block" ng-show="myForm.$error"> 
+            <span style="color:red;" class="msg-error" ng-show="myForm.profilePassword2.$error.pwmatch">
+                  Passwords don't match.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <h3 class="setting__main-title">Personal information</h3>
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      <div class="col-lg-4 col-sm-4 col_margin-r">
+        <div class="form-group">
+          <label class="label-sett" for="profileFirstname">First name</label>
+          <input type="text" class="form-control form-control-settings" id="profileFirstname" ng-model="profile.firstname" required="">
+        </div>
+
+        <div class="form-group">
+          <label class="label-sett" for="profileLastname">Last name</label>
+          <input type="text" class="form-control form-control-settings" id="profileLastname" ng-model="profile.lastname" required="">
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label class="label-sett" for="profileEmail">Email</label>
+          <input type="text" class="form-control form-control-settings" id="profileEmail" ng-model="profile.email" required="">
+        </div>
+
+        <div class="form-group">
+          <label class="label-sett" for="profileDepartment">Department</label>
+          <input type="text" class="form-control form-control-settings" id="profileDepartment" ng-model="profile.department" required="">
+        </div>
+      </div>
+    </div>
+   </form>
+</div>
+<div style="float:left; margin-left:40px;" class="modal-footer">
+  <button type="button" ng-click="saveProfile();" class="btn btn-primary " style="float:right" ng-disabled="false">
+            <i class="fa" ng-class="{'fa-spinner fa-spin': isBusy, '': !isBusy}"></i>
+            Save
+  </button> 
+<!--   <button type="button" class="btn btn-primary" ng-click="closeDialog()">Close</button> -->
+</div>
+</nav>

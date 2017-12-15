@@ -1,0 +1,69 @@
+<!-- <div class="modal-header">
+  <h4 class="modal-title">Edit Profile</h4>
+</div> -->
+<nav>
+<div class="modal-body" style="padding-left: 40px; padding-bottom: 40px;">
+  <form role="form" name="myForm">
+    <div class="row">
+      <h3 class="setting__main-title">Alarms</h3>
+      <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+			<div class="row nd-row-bord">
+					<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped ng-isolate-scope">
+					  <thead>
+						    <tr>
+						        <th width="5%" st-sort-default="true" st-sort="id">Id</th>
+						        <th width="5%" st-sort="gid">GID</th>
+						        <th width="10%" st-sort="name">Name</th>
+						        <th width="10%" st-sort="type">Type</th>
+						        <th width="10%" st-sort="host">Host</th>
+						        <th width="10%" st-sort="from">From</th>
+							<th width="10%" st-sort="to">To</th>
+						        <th width="10%" st-sort="ts_create">Create</th>
+						        <th width="15%" st-sort="description">Description</th>
+						        <th width="5%" st-sort="enable">Enable</th>
+							<th width="10%">Action</th>
+						    </tr>
+						      <tr>
+                                                        <th colspan="5"><input st-search="" class="form-control" placeholder="Alarm search ..." type="text"/></th>
+                                                     </tr>
+					    </thead>
+					    <tbody ng-show="!dataLoading">
+						    <tr ng-repeat="row in displayedCollection">
+						        <td width="5%"><a ng-click="editAlarm(row,$event)">{{row.id}}</a></td>
+						        <td width="5%">{{row.gid}}</td>
+						        <td width="10%">{{row.name}}</td>
+						        <td width="10%">{{row.type}}</td>
+						        <td width="10%">{{row.host}}</td>
+						        <td width="10%">{{row.from}}</td>
+						        <td width="10%">{{row.to}}</td>
+						        <td width="10%">{{row.ts_create | date:'dd-MM-yyyy hh:mm:ss'}}</td>
+						        <td width="15%">{{row.description}}</td>
+							<td width="5%">{{row.enable}}</td>
+							<td width="10%">
+								<button type="button" ng-click="editAlarmProfile(row,$event)" class="btn-sm btn-info">
+									<i class="glyphicon glyphicon-cog"></i>
+								</button>
+								<button type="button" ng-click="deleteAlarmProfile(row)" class="btn-sm btn-danger">
+									<i class="glyphicon glyphicon-remove-circle"></i>
+								</button>
+							</td>
+						    </tr>
+					   </tbody>
+					   <tfoot>
+							<tr>
+								<td colspan="5" class="text-center">
+									<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+								</td>
+							</tr>
+					   </tfoot>
+					</table>					
+			</div>            
+    </div>
+   </form>
+</div>
+<div style="float:left; margin-left:40px;" class="modal-footer">
+  <button type="button" ng-click="addAlarmProfile();" class="btn btn-primary " style="float:right" ng-disabled="false">
+            <i class="fa fa-plus"></i> Add
+  </button> 
+</div>
+</nav>

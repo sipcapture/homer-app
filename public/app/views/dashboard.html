@@ -1,0 +1,72 @@
+<div class="search-results" access="users" access-permission-type="AtLeastOne">
+  <div class="header-action-area">
+	<h1 class="lath">
+		<small class="text-header-sip">
+			<i class="fa fa-h-square" aria-hidden="true" style="margin-right:5px;"></i>
+			{{dashboard.name}}
+		</small>
+
+	<button ng-disabled="dashboardEditDisable" ng-click="addNewWidget()" class="btn btn-whiter btn-primary" type="submit" ng-mouseover="hoverA=true" ng-mouseout="hoverA=false">
+		<i title="Add New Widget" class="glyphicon glyphicon-plus"></i>
+	<!--
+		<span ng-show="hoverA">
+		Widget
+		</span>
+	-->
+	</button>
+	<button ng-disabled="dashboardEditDisable" ng-click="saveBoard()" class="btn btn-whiter btn-primary" type="submit" ng-mouseover="hoverB=true" ng-mouseout="hoverB=false">
+		<i title="Save Changes" class="glyphicon glyphicon-save"></i>
+	<!--
+		<span ng-show="hoverB">
+		Save
+		</span>
+	-->
+	</button>
+	<button ng-disabled="dashboardEditDisable" ng-click="deleteBoard()" class="btn btn-whiter btn-primary" type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false">
+		<i title="Delete Dashboard" class="glyphicon glyphicon-trash"></i> 
+	<!--
+		<span ng-show="hoverC">
+		Delete
+		</span>
+	-->
+	</button>
+	<button ng-disabled="dashboardEditDisable" ng-click="editBoard()" class="btn btn-whiter btn-primary" type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false">
+		<i title="Edit Dashboard" class="glyphicon glyphicon-edit"></i>
+	<!--
+		<span ng-show="hoverD">
+		Edit
+		</span>
+	-->
+	</button>
+
+	<!--
+	<button class="pull-right btn btn-primary" ng-click="addNewWidget()"><i class="glyphicon glyphicon-plus"></i> Add Widget NEW</button>
+	<button class="pull-right btn btn-primary" ng-click="saveBoard()"><i class="glyphicon glyphicon-save"></i> Save</button>
+	<button class="pull-right btn btn-warning" ng-click="deleteBoard()"><i class="glyphicon glyphicon-trash"></i> Delete</button>
+	<button class="pull-right btn btn-warning" ng-click="editBoard()"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+	-->
+	</h1>
+
+	<!-- <h1 style="display: inline-block; width: 200px;">{{dashboard.name}}</h1> -->
+	
+  </div>
+  <div gridster="gridsterOptions">
+	<ul>
+		<li gridster-item="widget" ng-repeat="widget in dashboard.widgets">
+			<div class="box" dynamic-ctrl="widget.controller" ng-init='init(widget.config, widget.api)' element-size key="boxSize">			
+				<div class="box-header" ng-class="'{box-header-hover: hoverme}'" ng-mouseenter="hoverme=true" ng-mouseleave="hoverme=false">
+					<h3>{{ widget.config.title }}</h3>
+					<div class="box-header-btns pull-right" ng-show="hoverme">
+						<div ng-if="widget.refresh" style="display: inline-block;"><a title="refresh" ng-click="refreshWidget()"><i class="glyphicon glyphicon-refresh"></i></a></div>
+						<a title="settings" ng-click="openSettings(widget)"><i class="glyphicon glyphicon-cog"></i></a>
+						<a title="Remove widget" ng-click="remove(widget)"><i class="glyphicon glyphicon-trash"></i></a>
+					</div>
+				</div>
+				<div class="box-content">
+					<div static-include="{{widget.templateUrl}}" style="height:90%;"></div>
+				</div>
+			</div>
+		</li>
+	</ul>
+  </div>
+</div>

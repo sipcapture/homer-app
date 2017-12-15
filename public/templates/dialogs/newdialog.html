@@ -1,0 +1,73 @@
+		<div nv-file-drop="" uploader="uploader" filters="queueLimit,customFilter">
+			<div class="modal-header">
+				<h4 class="modal-title">Add New Panel</h4>
+			</div>
+			<div class="modal-body modal--edit-panel">
+				<ng-form name="nameDialog" novalidate role="form">
+					<div class="form-group input-group-lg" ng-class="{true: 'has-error'}[nameDialog.dashboard.$dirty && nameDialog.dashboard.$invalid]">
+						<label class="control-label" for="dashboardname">Name your panel</label>
+						<input type="text" class="form-control" name="dashboard" id="dashboard" ng-model="dashboard.name" ng-keyup="hitEnter($event)" required>
+					</div>
+					<div class="form-group input-group-lg">
+						<label class="control-label" for="dashboardname">Type</label>
+						<select id="dashboardtype" name="dashboardtype" ng-init="dashboard.type = dashboard.type || type_result[0].value"  ng-model="dashboard.type" data-ng-options="option.value as option.name for option in type_result"></select>
+					</div>
+					
+					<div class="form-group input-group-lg">
+						<label class="control-label" for="dashboardparam">Param</label>
+						<input type="text" class="form-control" name="param" id="param" ng-model="dashboard.param" ng-keyup="hitEnter($event)">
+					</div>
+				</ng-form>
+			 	<div class="modal-body__separator">
+			 		<span>or create from template</span>
+			 	</div>
+                <div ng-show="uploader.isHTML5">
+	                <!-- 3. nv-file-over uploader="link" over-class="className" -->
+        	        <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
+                	    Drop JSON file here
+                    </div>
+        	    </div>
+
+			    <div ng-show="!!uploader.queue.length">
+
+	                    <table class="table">
+        	                <thead>
+                	            <tr>
+                        	        <th width="50%">Name</th>
+                                	<th ng-show="uploader.isHTML5">Size</th>
+	                                <th ng-show="uploader.isHTML5">Progress</th>
+        	                        <th>Status</th>
+                	                <th>Actions</th>
+                        	    </tr>
+	                        </thead>
+        	                <tbody>
+                	            <tr ng-repeat="item in uploader.queue">
+                        	        <td><strong>{{ item.file.name }}</strong></td>
+                                	<td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024|number:2 }} KB</td>
+	                                <td ng-show="uploader.isHTML5">
+        	                            <div class="progress" style="margin-bottom: 0;">
+                	                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                        	            </div>
+                                	</td>
+	                                <td class="text-center">
+        	                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                	                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        	            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                	</td>
+	                                <td nowrap>
+        	                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                	                        <span class="glyphicon glyphicon-trash"></span> Remove
+                        	            </button>
+                                	</td>
+	                            </tr>
+        	                </tbody>
+        	            </table>
+	
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-warning btn-modal" ng-click="cancel()">Cancel</button>
+				<button type="button" class="btn btn-primary btn-modal" ng-click="save()">Save</button>
+			</div>
+		</div>
+		

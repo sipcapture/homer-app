@@ -1,0 +1,107 @@
+{
+ "hepic" : {
+  	"global" : {
+  	  	"CUSTOM" : "",
+  	  	"LOADING" : "Loading"
+  	},
+  	"header" : {
+  		"menu" : {
+  		  	"PROFILE" : "Profile",
+  		  	"MESSAGES" : "Messages",
+  		  	"SEARCH" : "Search",
+  		  	"PANELS" : "Panels",
+  		  	"HOME" : "Home"
+  		},
+  		"submenu" : {
+  		  	"ADDPANEL" : "Add New Panel",
+  		  	"ADDWIDGET" : "Add New Widget",
+  		  	"EDITDASH" : "Edit Dashboard",
+  		  	"DELETEDASH" : "Delete Dashboard",
+  		  	"SAVEDASH" : "Save Dashboard"
+		},
+	  	"submenu" : {
+	  	  	"SETTINGS" : "Settings",
+	  	  	"MESSAGES" : "Messages",
+	  	  	"SAVEGRID" : "Save Grid",
+	  	  	"RESTOREGRID" : "Restore Grid",
+	  	  	"RESETGRID" : "Reset Grid",
+	  	  	"RESETPROF" : "Reset Profile",
+	  	  	"RESETDASH" : "Reset Dashboards",
+	  	  	"LOGOUT" : "Log Out"
+	  	}
+	},
+	"buttons" : {
+  		  "SEARCH" : "Search",
+  		  "REFRESH" : "Refresh Search",
+  		  "WAIT" : "Please Wait...",
+  		  "CANCEL" : "Cancel"
+	},
+	"pages" : {
+  		"search" : {
+  		  	"SEARCH" : "Search",
+  		  	"CANCEL" : "Cancel",
+			"RESULTS": "Search Results"
+		},
+  		"results" : {
+  		  	"ID" : "Id",
+  		  	"DATE" : "Date & Time",
+  		  	"CALLID" : "Call-ID",
+  		  	"CORRELATION_ID" : "Correlation ID",
+  		  	"FROMUSER" : "From User",
+  		  	"RURIUSER" : "RURI User",
+  		  	"TOUSER" : "TO User",
+  		  	"GEOSRC" : "Geo Source",
+  		  	"GEODST" : "Geo Dest.",
+  		  	"USERAGENT" : "User-Agent",
+  		  	"STATUS" : "Status",
+  		  	"SRCIP" : "SRC IP",
+  		  	"SRCPORT" : "SRC Port",
+  		  	"DSTIP" : "DST IP",
+  		  	"DSTPORT" : "DST Port",
+  		  	"DURATION" : "Duration",
+  		  	"CDRSTART" : "CDR Start",
+  		  	"CDRSTOP" : "CDR Stop",
+  		  	"PROTO" : "Proto",
+  		  	"EVENT" : "Event",
+  		  	"NODE" : "Node",
+  		  	"SRD" : "SRD",
+  		  	"SRS" : "SSS",
+  		  	"GEOLAT" : "Latitude",
+  		  	"GEOLAN" : "Longitude",
+  		  	"SDPAUDIO" : "SDP Audio",
+  		  	"SDPCODEC" : "SDP Codec",
+  		  	"SDPMEDIA" : "SDP Media IP",
+  		  	"XGROUP" : "X-Group",
+  		  	"MOS" : "MOS Raw",
+  		  	"RFC" : "R-Factor",
+  		  	"RESERVED" : "MOS"
+		},
+  		"status" : {
+			"INIT" : "Init",
+			"UNAUTH" : "Unauthorized",
+			"PROGRESS" : "Progress",
+			"RINGING" : "Ringing",
+			"CONNECTED" : "Connected",
+			"MOVED" : "Moved",
+			"BUSY" : "Busy",
+			"USERFAIL" : "User Failure",
+			"HARDFAIL" : "Hard Failure",
+			"FINISHED" : "Finished",
+			"CANCELED" : "Canceled",
+			"TIMEOUT" : "Timed-Out",
+			"BADTERM" : "Bad Termination",
+			"DECLINED" : "Declined",
+			"UNKNOWN" : "Unknown",
+			"UNKNOWNTERM" : "Unknown Term",
+  		  	"CUSTOM" : "Custom"
+		},
+  		"extended" : {
+			"TRADE_ID" : "H.TradeID",
+  		  	"ORIG_ID" : "H. Orig.TrID",
+  		  	"TERM_ID" : "H. Term.TrID",
+  		  	"RATE_ID" : "H. RateID",
+  		  	"ROUTE_ID" : "H. RouteID"
+		}
+	}
+  }
+}

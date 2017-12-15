@@ -1,0 +1,28 @@
+<div class="modal-header homer-modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" style="margin-right:4px;">&times;</button>
+
+        	<h4 class="modal-title" style="float:left;margin-left:4px;">MSG ID: {{msgId}}</h4>
+</div>
+<div ng-show="dataLoading">
+	<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
+        	<div class="loadingContent"><p><img alt="Loading  Content" src="../img/ajax-loader.gif" /> Loading</p></div>
+        </div>
+</div>
+
+<div class="modal-body homer-modal-body">
+		<div class="modal-body-buttons">
+
+        <uib-tabset>
+            <uib-tab>
+		<uib-tab-heading><i class="glyphicon glyphicon-earphone"></i> Message</uib-tab-heading>
+                <div id='sippath' ng-show="showSipMessage" class="sipmessage">{{msgDate | date:'yyyy-MM-dd HH:mm:ss Z'}} : {{sipPath}}</div>
+                <div id='sipmsg' ng-show="showSipMessage" class="sipmessage" data-ng-bind-html="sipMessage"></div>
+            </uib-tab>
+            <uib-tab>
+		<uib-tab-heading><i class="glyphicon glyphicon-info-sign"></i> Details</uib-tab-heading>
+                <div id='sipdetails' ng-show="showSipMessage" class="sipmessage" data-ng-bind-html="trustedHtmlDetails"></div>                
+             </uib-tab>
+          </uib-tabset>
+
+</div>
+

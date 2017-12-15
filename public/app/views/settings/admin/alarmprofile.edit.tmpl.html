@@ -1,0 +1,73 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title">Alarm Profile Settings {{alarmprofile.uuid}}</h4>
+        <button type="button" class="close" ng-click="dismiss()" aria-hidden="true">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        <form role="form" name="myForm">
+            <div class="row">
+                <h3 class="setting__main-title">Main Settings</h3>
+                <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+                <div class="col-lg-8 col-sm-8 col_margin-r">
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmName">Name</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmName" ng-model="alarmprofile.name" >
+                    </div>
+
+		     <div class="input-group">
+                                <label for="widgetLibrary" class="input-label">Type</label>
+                                <div class="select-wr">
+                                        <i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in alarmTypes " ng-model="alarmprofile.type" class="form-control"></select>
+                                </div>
+                     </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmFrom">From</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmFrom" ng-model="alarmprofile.from" >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmTo">To</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmTo" ng-model="alarmprofile.to" >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmSubject">Subject</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmSubject" ng-model="alarmprofile.subject" >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmMessage">Message</label>
+                        <textarea class="form-control form-control-settings" id="alarmMessage" ng-model="alarmprofile.message"></textarea>
+                    </div>
+
+		    <div class="input-group">
+                                <label for="widgetLibrary" class="input-label">Action</label>
+                                <div class="select-wr">
+                                        <i class="fa  fa-angle-down  select-ico"></i>
+                                        <select ng-options="opt.value as opt.label for opt in alarmActions" ng-model="alarmprofile.action" class="form-control"></select>
+                                </div>
+                     </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="alarmDescription">Description</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="alarmDescription" ng-model="alarmprofile.description" >
+                    </div>
+                </div>
+
+		<div class="form-group">
+			<label for="legend" class="checkbox-label">Enable</label>
+		                <input type="checkbox" id="alarmEnable" name="alarmEnable" ng-model="alarmprofile.enable">
+                		<span><i class="fa fa-check"></i></span>
+		</div>
+            </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button ng-click="dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+    <button ng-click="save()" ng-disabled="myForm.$invalid || !myForm.$dirty" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+</div>
+</form>
+</div>

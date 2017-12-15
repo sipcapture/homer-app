@@ -1,0 +1,22 @@
+<div class="setting__nav-title">Profile Settings</div>
+<nav class="js-nav navbar" role="navigation">
+	<ul class="setting__nav-items">         
+		<li class="setting__nav-item" ng-repeat="setting in settingsUserList">
+		    <a class="setting__nav-link cng-setting__nav-link" ui-sref="settings.profile({paramID: '{{setting.param}}'})" ng-click="setActive($event);">
+		            {{setting.name}}
+		    </a>
+		</li>		
+	</ul> 
+</nav>
+
+<div ng-hide="!settingsIsAdmin" class="setting__nav-title">Admin Settings</div>
+<nav ng-hide="!settingsIsAdmin" class="js-nav navbar" role="navigation">
+	<ul class="setting__nav-items">         
+
+		<li class="setting__nav-item" ng-repeat="setting in settingsAdminList">
+		    <a class="setting__nav-link cng-setting__nav-link" ui-sref="settings.admin({paramID: '{{setting.param}}'})" ng-click="setActive($event);">
+		            {{setting.name}}
+		    </a>
+		</li>
+	</ul>
+</nav>

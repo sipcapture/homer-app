@@ -1,0 +1,38 @@
+  <div style="height:100% !important;">
+    <div class="alert alert-info" ng-if="!boxEnabled">
+      Please select a query from the widget configuration
+    </div>
+
+    <!-- no data -->
+    <div ng-if="boxEnabled && !config.html" style="height:95%;width:100%;">
+	<div style="display: table;position: absolute;height: 90%;width: 100%;">
+	  <div style="display: table-cell;vertical-align: middle;">
+	    <div style="margin-left: auto;margin-right: auto;width:80%;">
+
+		    <h2 data-fittext data-fittext-max="30" style="display: inline-flex;color: #d2d2d2;">
+			No Data
+		    </h2>
+		    <hr/>
+
+	    </div>
+	  </div>
+	</div>
+    </div>
+
+    <div ng-if="boxEnabled" style="height:95%;width:100%;">
+
+	<div style="display: table;position: absolute;height: 90%;width: 100%;">
+	  <div style="display: table-cell;vertical-align: top;">
+	    <div style="margin-left: auto;margin-right: auto;width:80%;">
+
+			    <div ng-bind-html="config.html"></div>
+	
+	    </div>
+	  </div>
+	</div>
+
+    </div>
+
+  </div>
+
+

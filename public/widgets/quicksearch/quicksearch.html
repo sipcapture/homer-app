@@ -1,0 +1,204 @@
+<div class="row" ng-show="tooSmall">
+   	<div class="form-group">
+		<h5>This DIV is too small to display content!</h5>
+	</div>
+</div>
+<div class="row" ng-hide="tooSmall">
+	<div ng-repeat="field in fields" class="col-md-12  panel-body-column">    
+	   <ng-form name="form">
+	   <!-- TEXT FIELDS -->
+
+<!--     	   <div ng-if="field.selection=='B2B ext'">
+	    		<div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <input type="checkbox" class="btn" ng-model="newObject[field.name]"/>
+                    </div>
+	    		</div>
+    	   </div> -->
+    	   
+    	   <div ng-if="field.selection=='Logic OR'">
+	    	<div class="form-group">
+                   <label  style="cursor:pointer">
+                    <div class="input-group">
+	                    <div class="input-group-addon" style="height:35px !important;">
+	                        <div ng-switch on="field.name">
+		                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+	                        </div>
+	                    </div>                                            
+                        <input type="checkbox" name="{{field.selection}}" id="{{field.selection}}"  ng-model="newObject[field.name]">
+				<span style="width:40px;height:40px;"><i class="fa fa-check"></i></span>
+			</input>
+                    </div>
+                    </label> 
+	    	</div>
+    	   </div>
+    	   
+    	   <div ng-if="field.selection=='Limit Query'">
+    	   	<div ng-if="field.selection" class="form-group">
+	              <!--  <label class="input-label" for="{{field.selection}}">{{field.selection}}</label> -->
+        	        <div class="input-group">
+                	    <div class="input-group-addon">
+                        	<div ng-switch on="field.name">
+				    <!-- <div ng-if="field.index == 1">Index</div> -->
+		                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                	        </div>
+	                    </div>               
+        	            <input title="Limit" type="number" name="mylimit" id="mylimit" class="form-control" ng-model="newResult['limit']" style="height:35px !important;"/>
+	                </div>
+    		</div>
+    	   </div>
+    	   
+    	   <div ng-if="field.selection=='Unique'">
+        		<div class="form-group">
+                    <label style="cursor:pointer">
+                    <div class="input-group">
+	                    <div class="input-group-addon">
+	                        <div ng-switch on="field.name">
+		                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+	                        </div>
+	                    </div>                                            
+                        <input type="checkbox" class="btn btn-check" ng-model="newObject[field.name]"/><span><i class="fa fa-check"></i></span>
+                    </div>
+                    <label>
+        		</div>
+    	   </div>
+    	       	   
+    	   <div class="multi-select" ng-if="field.selection=='Proto Type'">
+        		<div class="form-group">
+                    <div class="input-group">
+                        <!-- <span class="input-label">{{field.selection}}</span> -->
+                        <label for="{{field.selection}}" class="select-wr">
+                            <i class="fa  fa-angle-down  select-ico"></i>
+                          		<ui-select multiple ng-model="newProtoType[field.name]" theme="bootstrap" close-on-select="false" title="Select Proto Type(s)">
+					<ui-select-match placeholder="Select Proto Type...">{{$item.name}}</ui-select-match> 
+					<ui-select-choices repeat="tr in type_prototype | filter:$select.search">{{tr.name}}</ui-select-choices>
+					</ui-select>
+                        </label>
+                    </div>
+        		</div>
+    	   </div>
+
+<!--
+    	   <div ng-if="field.selection=='Transaction'">
+        		<div class="form-group">
+                    <div class="input-group">
+                        <label for="{{field.selection}}" class="select-wr">
+                            <i class="fa  fa-angle-down  select-ico"></i> 
+        				    <select id="{{field.selection}}" name="{{field.selection}}" ng-model="newResult[field.name]" ng-selected="$index==0" data-ng-options="tr as tr.value for tr in type_transaction track by tr.value"></select>
+                        </label>
+                    </div>
+        		</div>
+    	   </div>
+-->
+
+    	   
+	<!-- TEST NEW TRANSACTION FORM -->
+    	   <div ng-if="field.selection=='Transaction'">
+        	<div class="form-group">
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                        <div ng-switch on="field.name">
+	                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                        </div>
+                    </div>                                            
+                    <i class="fa  fa-angle-down  select-ico"></i> 
+        		    <select style="height: 35px;" id="{{field.selection}}" name="{{field.selection}}" ng-model="newResult[field.name]" ng-selected="$index==0" data-ng-options="tr as tr.value for tr in type_transaction track by tr.value"></select>
+                  </div>
+
+        	</div>
+    	   </div>
+
+
+    	   <div ng-if="field.selection=='Call Status' || field.selection=='Call status'">
+        	<div class="form-group">
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                        <div ng-switch on="field.name">
+			    <!-- <div ng-if="field.index == 1">Index</div> -->
+	                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                        </div>
+                    </div>                                            
+                    <i class="fa  fa-angle-down  select-ico"></i> 
+			<select ng-model="newObject[field.name]" style="height: 35px;">
+			        <option ng-repeat="item in type_mono_status" value="{{item.name}}">{{item.value}}</option>
+      			</select>
+                  </div>
+
+        	</div>
+    	   </div>
+
+
+    	   <div ng-if="field.selection=='Result Type'">
+        		<div class="form-group">
+                    <div class="input-group">
+                      <!--  <span class="input-label">{{field.selection}}</span> -->
+                        <label for="{{field.selection}}" class="select-wr">
+                            <i class="fa  fa-angle-down  select-ico"></i> 
+        				    <select id="{{field.selection}}" name="{{field.selection}}" ng-model="newResult[field.name]" ng-selected="$index==0" data-ng-options="tr as tr.value for tr in type_result track by tr.value"></select>
+                        </label>
+                    </div>
+        		</div>
+    	   </div>
+
+    	   <div class="multi-select" ng-if="field.selection=='DB Node'">
+        		<div class="form-group">
+                    <div class="input-group">
+                      <!--   <span class="input-label">{{field.selection}}</span> -->
+                        <label for="{{field.selection}}" class="select-wr">
+                            <i class="fa  fa-angle-down  select-ico"></i> 
+                          		<ui-select multiple ng-model="newNode[field.name]" theme="bootstrap" close-on-select="false" title="Select Database(s)">
+					<ui-select-match placeholder="Select DB...">{{$item.name}}</ui-select-match> 
+					<ui-select-choices repeat="tr in db_node | filter:$select.search">{{tr.name}}</ui-select-choices>
+					</ui-select>
+                        </label>
+                    </div>
+        		</div>
+    	   </div>
+    	   
+    	   <div ng-if="field.selection=='Method'">
+        		<div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-search"></i>
+                        </div>
+        			     <input-dropdown input-placeholder="" input-name="method" input-required="true" selected-item="newObject[field.name]" default-dropdown-items="method_list"
+        			          filter-list-method="filterStringList(userInput)" item-selected-method="itemMethodSelected(item)">
+        			     </input-dropdown>
+                    </div>
+        		</div>
+    	   </div>
+
+
+
+    	   
+        <div ng-if="field.selection!='Limit Query' && field.selection!='Proto Type' && field.selection!='Call Status' && field.selection!='Logic OR' && field.selection!='Unique' && field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node' && field.selection!='Method'">
+    	    <div ng-if="field.selection" class="form-group">
+              <!--  <label class="input-label" for="{{field.selection}}">{{field.selection}}</label> -->
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <div ng-switch on="field.name">
+			    <!-- <div ng-if="field.index == 1">Index</div> -->
+	                    <label for="{{field.selection}}" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                        </div>
+                    </div>                                            
+                    <input title="{{getIndexType(field.name)}}" type="text" name="{{field.selection}}" id="{{field.selection}}"  ng-enter="processSearchForm();" ng-focus="nullSafe(field.name)" class="form-control" ng-model="newObject[field.name]" style="height:35px !important;"/>
+			<span class="fa {{ getIndexIconType(field.name)}} form-control-search" title="search type"></span>
+                </div>
+    	    </div>
+    	</div>
+
+    </div>
+    <div class="form-group form-group-custom-3" ng-show="config.searchbutton" style="padding-right:0px;height:30px;">              
+        <button type="submit" ng-click="clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
+        <button type="submit" ng-click="processSearchForm();" class="btn btn-primary " style="float:right;margin-right: 5px;height:auto;" ng-disabled="false"> 
+            <i class="fa" ng-class="{'fa-spinner fa-spin': isBusy, '': !isBusy}"></i>                                
+            Search
+        </button> 
+    </div><!-- /.box -->
+</div>
+

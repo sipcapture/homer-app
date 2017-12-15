@@ -1,0 +1,80 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title">Settings for Agent: {{captagent.name}}</h4>
+        <button type="button" class="close" ng-click="dismiss()" aria-hidden="true">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        <form role="form" name="myForm">
+            <div class="row">
+                <h3 class="setting__main-title">Agent Settings</h3>
+                <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+                <div class="col-lg-6 col-sm-6 col_margin-r">
+                    <div class="form-group">
+                        <label class="label-sett" for="captagentName">Name</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="captagentName" ng-model="captagent.name" required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="captagentIP">IP</label>
+                        <input type="text" ng-readonly="false" class="form-control form-control-settings" id="captagentIp" ng-model="captagent.ip" required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-sett" for="captagentGroup">GID</label>
+	                <input type="number" min="1" step="1" pattern="\d*" class="form-control" id="captagentGid"  ng-model="captagent.gid">
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-4">
+                    <div class="form-group">
+                        <label class="label-sett" for="captagentAuthKey">AuthKey</label>
+                        <input type="text" class="form-control form-control-settings" id="captagentAuthKey" ng-model="captagent.authkey" required="">
+                    </div>
+
+		    <div class="form-group">
+		    	<label class="input-label" for="captagentExpire">Expire</label>
+                        <div class="input-group input-group--date-picker">
+                                	<input id="captagentExpire" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="captagent.ts_expire" is-open="modelDateP.openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <button class="calendar-btn" ng-click="openCalendar($event, 'openedFromdate')"  >
+                                        	<i class="fa fa-calendar" aria-hidden="true"></i>
+                                        </button>
+			</div>
+	            </div>
+		    
+		    <div class="form-group">
+			<label for="legend" class="checkbox-label">Active</label>
+		                <input type="checkbox" id="captagentActive" name="captagentActive" ng-model="captagent.active">
+                		<span><i class="fa fa-check"></i></span>
+		    </div>
+            </div>
+    </div>
+    <div class="row">
+        <h3 class="setting__main-title">Traffic Limits:</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-3 col-sm-3 col_margin-r">
+            <div class="form-group">
+                <label class="label-sett" for="captagentLimitDaily">Daily:</label>
+                <input type="number" min="0" step="1" pattern="\d*" class="form-control" id="captagentLimitDaily"   ng-init="captagent.limit_day = 0" ng-model="captagent.limit_day" placeholder="Enter daily limit (0) = unlimited">
+            </div>
+	</div>
+        <div class="col-lg-3 col-sm-3 col_margin-r">
+            <div class="form-group">
+                <label class="label-sett" for="captagentLimitMonthly">Monthly:</label>
+                <input type="number" min="0" step="1" pattern="\d*" class="form-control" id="captagentLimitMonth" ng-init="captagent.limit_month = 0" ng-model="captagent.limit_month" placeholder="Enter monthly limit (0) = unlimited">
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-3">
+            <div class="form-group">
+                <label class="label-sett" for="captagentLimitTotal">Total:</label>
+                <input type="number" min="0" step="1" pattern="\d*" class="form-control" id="captagentLimitTotal" ng-init="captagent.limit_total = 0" ng-model="captagent.limit_total" placeholder="Enter global limit (0) = unlimited">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button ng-click="dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+    <button ng-click="save()" ng-disabled="myForm.$invalid || !myForm.$dirty" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+</div>
+</form>
+</div>

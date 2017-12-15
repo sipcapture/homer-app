@@ -7,7 +7,7 @@
 - http://localhost:8001/api/v3/birds/:id (PUT) - update specific bird 
 
 ## To run
-1. Install libraries `npm install`
+1. Install libraries `npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json`
 2. Put correct MySQL connection parameters in `knexfile.js` and `src/db/knex.js` 
 3. Execute migrations and insert first data into MySQL DB from `seeds` folder:
 **ATTENTION!** Go into `seeds` folder and check table names, be sure you don't overwrite or eliminate your current DB data. 

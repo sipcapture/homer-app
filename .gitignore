@@ -4,3 +4,5 @@ coverage
 .nyc_output
 package-lock.json
 public/dist
+knexfile.js
+server/config/db/knex.js

@@ -10,7 +10,7 @@ module.exports = {
     connection: {
       host: '127.0.0.1',
       user: 'root',
-      password: 's1pc4ptur3',
+      password: 'password',
       database: 'homerdatadev',
       charset: 'utf8',
     }

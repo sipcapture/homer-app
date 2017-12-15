@@ -2,10 +2,10 @@ export default require('knex')({
   dialect: 'mysql',
   client: 'mysql',
   connection: {
-    host: '192.168.1.35',
-    user: 'birdbase',
+    host: 'localhost',
+    user: 'homer',
     password: 'password',
-    database: 'birdbase',
+    database: 'homerdatadev',
     charset: 'utf8',
   }
 });

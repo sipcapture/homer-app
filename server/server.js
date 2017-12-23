@@ -2,11 +2,12 @@ import Hapi from 'hapi';
 import { forEach } from 'lodash';
 import pem from 'pem';
 import jwtSettings from './private/jwt_settings';
+import config from './config/server_config';
 import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
 import protocolRoutes from './routes/protocol';
 import uiRoutes from './routes/ui';
-import config from './config/server_config';
+import oldAPIRoutes from './routes/old_api_proxy'; // to-do: deprecate it when this server API is ready
 
 const server = new Hapi.Server();
 
@@ -34,6 +35,7 @@ pem.createCertificate({
   
   // JWT authentication and encryption
   server.register([
+    require('h2o2'),
     require('hapi-auth-jwt'),
     require('inject-then'),
     require('inert')
@@ -51,7 +53,7 @@ pem.createCertificate({
     });
   
     // Initialize routes
-    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes], function (routes) {
+    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes, oldAPIRoutes], function (routes) {
       forEach(routes, function (route) {
         server.route(route);
       });

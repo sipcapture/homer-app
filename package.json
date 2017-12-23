@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf public/dist && webpack --optimize-minimize --bail --progress --profile",
+    "build": "rimraf public/dist && webpack --bail --progress --profile",
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js",
     "dev": "nodemon --inspect bootstrap.js"
@@ -52,6 +52,7 @@
     "extract-text-webpack-plugin": "3.0.0",
     "file-saver": "1.3.3",
     "font-awesome": "4.5.0",
+    "h2o2": "5.2.0",
     "hapi": "16.6.2",
     "hapi-auth-jwt": "4.0.0",
     "highlight.js": "9.12.0",

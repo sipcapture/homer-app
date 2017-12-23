@@ -8,10 +8,10 @@ module.exports = {
       jQuery: 'jquery',
       _: 'lodash'
     }),
-    new webpack.optimize.UglifyJsPlugin()
+    //new webpack.optimize.UglifyJsPlugin()
   ],
   entry: {
-    app: ['./public/src/app.js']
+    app: ['./public/app/app.js']
   },
   output: {
     path: __dirname + '/public/dist/',

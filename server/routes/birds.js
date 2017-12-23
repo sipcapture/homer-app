@@ -18,17 +18,17 @@ export default [
       bird.getAll(['name', 'species', 'picture_url'])
         .then(function (data) {
           if (!data || !data.length) {
-            reply(Boom.notFound('no public bird found'));
+            return reply(Boom.notFound('no public bird found'));
           }
   
-          reply({
+          return reply({
             count: data.length,
             data
           });
   
         })
         .catch(function (error) {
-          reply(Boom.serverUnavailable(error));
+          return reply(Boom.serverUnavailable(error));
         });
     }
   },
@@ -71,13 +71,13 @@ export default [
         guid,
       })
         .then(function () {
-          reply({
+          return reply({
             data: guid,
             message: 'successfully created bird'
           }).code(201);
         })
         .catch(function (error) {
-          reply(Boom.serverUnavailable(error));
+          return reply(Boom.serverUnavailable(error));
         });
     }
   },
@@ -122,17 +122,17 @@ export default [
             bird.get(['owner'])
               .then(function (result) {
                 if (!result) {
-                  reply(Boom.notFound(`the bird with id ${birdGuid} was not found`));
+                  return reply(Boom.notFound(`the bird with id ${birdGuid} was not found`));
                 }
 
                 if (result.owner !== scope) {
-                  reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`));
+                  return reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`));
                 }
 
                 return reply.continue();
               })
               .catch(function (error) {
-                reply(Boom.serverUnavailable(error));
+                return reply(Boom.serverUnavailable(error));
               });
           }
         }
@@ -150,12 +150,12 @@ export default [
         isPublic,
       })
         .then(function () {
-          reply({
+          return reply({
             message: 'successfully updated bird'
           });
         })
         .catch(function (error) {
-          reply(Boom.serverUnavailable(error));
+          return reply(Boom.serverUnavailable(error));
         });
     }
   }

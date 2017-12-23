@@ -12,7 +12,7 @@ describe('Authentication', function () {
 
     const options = {
       method: 'POST',
-      url: '/api/v2/auth',
+      url: '/api/v3/auth',
       payload
     };
 
@@ -31,7 +31,7 @@ describe('Authentication', function () {
 
     const options = {
       method: 'POST',
-      url: '/api/v2/auth',
+      url: '/api/v3/auth',
       payload
     };
 

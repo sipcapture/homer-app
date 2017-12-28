@@ -1,61 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>HEPIC</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta charset="utf-8">
+  <head>
+    <title>HEPIC</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8">
     
-        <link rel="icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
-        <link rel="shortcut icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
-    
-        <link rel="stylesheet" href="css/new-design/style-flow.css" />
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" href="css/font-awesome.min.css" />
-        <link rel="stylesheet" href="css/dialogs.min.css" />
-        <link rel="stylesheet" href="css/ui-grid.min.css" />
-        <link rel="stylesheet" href="css/angular-chart.min.css" />
-        <link rel="stylesheet" href="css/sweetalert.min.css" />   
-        <link rel="stylesheet" href="css/inputDropdownStyles.css" />
-        <link rel="stylesheet" href="css/report-style.css" />
-        <link rel="stylesheet" href="css/nv.d3.css" />
-        <link rel="stylesheet" href="lib/angular-clock/angular-clock.css" />
-        <link rel="stylesheet" href="css/select.css" />      
-        <link rel="stylesheet" href="css/themes/base/jquery-ui.min.css" />
-        <link rel="stylesheet" href="css/new-design/style.css" />
-        <link rel="stylesheet" href="css/material/css/material-design-iconic-font.min.css">
-    
-        <link href="css/angular-gridster.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="css/leaflet.css" />
-        <link rel="stylesheet" href="css/select.css" />        
-        
-         <link rel="stylesheet" href="css/wavesurfer/wavesurfer.angular.min.css" />        
-           
-        <link href="css/demo-style.css" rel="stylesheet "/> 
-        <link href="css/dashboard-style.css" rel="stylesheet" />
-        <link href="css/style-test.css" rel="stylesheet" />
-    
-        <link href="css/vis.css" rel="stylesheet" />
-        
-    </head>
+    <link rel="icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="css/new-design/style-flow.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/dialogs.min.css" />
+    <link rel="stylesheet" href="css/ui-grid.min.css" />
+    <link rel="stylesheet" href="css/angular-chart.min.css" />
+    <link rel="stylesheet" href="css/sweetalert.min.css" />   
+    <link rel="stylesheet" href="css/inputDropdownStyles.css" />
+    <link rel="stylesheet" href="css/report-style.css" />
+    <link rel="stylesheet" href="css/nv.d3.css" />
+    <link rel="stylesheet" href="lib/angular-clock/angular-clock.css" />
+    <link rel="stylesheet" href="css/select.css" />      
+    <link rel="stylesheet" href="css/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="css/new-design/style.css" />
+    <link rel="stylesheet" href="css/material/css/material-design-iconic-font.min.css">
+    <link href="css/angular-gridster.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/select.css" />        
+    <link rel="stylesheet" href="css/wavesurfer/wavesurfer.angular.min.css" />        
+    <link href="css/demo-style.css" rel="stylesheet "/> 
+    <link href="css/dashboard-style.css" rel="stylesheet" />
+    <link href="css/style-test.css" rel="stylesheet" />
+    <link href="css/vis.css" rel="stylesheet" />
+  </head>
+  
+  <script type="application/javascript" src="dist/bundle.js"></script>
+  
+  <body ng-app="hepicApp" data-ng-cloak ng-controller="hepicController as hepicCtrl">
+    <header-navbar ng-show="hepicCtrl.authenticated"></header-navbar>
 
-    <script type="application/javascript" src="app/variable.js" ></script>
-    <script type="application/javascript" src="dist/bundle.js" ></script>
-    
-    <body ng-app="hepicApp" data-ng-cloak ng-controller="hepicController as vm">
+    <main bathemerun="" class="ng2">
+      <div id="main" role="main" auto-height>
+        <ng-include src="ribbon"></ng-include>
+        <div ui-view></div>
+      </div>
+    </main>
 
-        <main bathemerun="" class="ng2">
-            <header id="header" class="header">
-                <ng-include src="header"></ng-include>
-            </header>
-        
-            <div id="main" role="main" auto-height>
-                <ng-include src="ribbon"></ng-include>
-                <div ui-view></div>
-            </div>
-        
-            <ng-include src="footer"></ng-include>
-            <ng-include src="shoortcut"></ng-include>
-        </main>
-    
-    </body>
+    <footer-bar ng-show="hepicCtrl.authenticated"></footer-bar>
+  </body>
 </html>

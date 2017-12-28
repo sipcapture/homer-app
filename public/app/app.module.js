@@ -3,9 +3,10 @@ import 'jquery';
 import angular from 'angular';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap';
+import 'angular-aria';
+import 'angular-animate';
 import 'angular-gridster';
 import 'angular-ui-grid';
-import 'angular-animate';
 import 'angular-cookies';
 import 'angular-sanitize';
 import 'ui-select';
@@ -24,6 +25,7 @@ import 'angular-visjs';
 import 'angular-file-upload/angular-file-upload';
 import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
+import 'ngstorage';
 
 // static libs
 import '../lib/angular-third/wavesurfer-angular';
@@ -33,24 +35,20 @@ import '../lib/angular-third/inputDropdown';
 import './homer/homerModal';
 import './homer/homerCflow';
 
+import Constants from './constants';
+import Sections from './sections';
+import Login from './login';
 import Dashboards from './dashboards';
 import Widgets from './widgets';
 import Search from './search';
-
-// constants
-import ROUTER from './constants/router.js';
-import DATASOURCES from './constants/metricsdatasource';
-import CONFIGURATION from './constants/configuration.js';
-import EVENTS from './constants/events.js';
-import RESOURCES from './constants/resources.js';
 
 // services
 import Storage from './services/demo.storage.service';
 import routeResolver from './services/routeResolver';
 import dashboardResolver from './services/dashboardResolver';
-import sessionRecovererFactory from './services/sessionRecoverer';
+//import sessionRecovererFactory from './services/sessionRecoverer';
 import eventFactory from './services/eventbus';
-import authFactory from './services/authService';
+//import authFactory from './services/authService';
 import profileFactory from './services/user-profile.service';
 import adminFactory from './services/adminService';
 import searchFactory from './services/searchService';
@@ -144,10 +142,12 @@ var app = angular.module('hepicApp', [
   'ui.grid.exporter',
   'oitozero.ngSweetAlert',
   'ngAnimate',
+  'ngAria',
   'ngCookies',
   'ui.select',
   'inputDropdown',
   'ngSanitize',
+  'ngStorage',
   'dialogs.main',
   'LocalStorageModule',
   'homer.modal',
@@ -163,17 +163,20 @@ var app = angular.module('hepicApp', [
   'ngVis',
   'angularFileUpload',
   'ds.clock',
+  Constants.name,
+  Sections.name,
+  Login.name,
   Dashboards.name,
   Search.name,
   Widgets.name
 ])
   .factory('StorageService', () => new Storage())
+  .controller('hepicController', HepicController)
   .controller('loginController', LoginController)
   .controller('CustomWidgetCtrl', customWidgetCtrl)
   .controller('datepickerController', DatepickerController)
   .controller('drawCtrl', DrawCtrlController)
   //.controller('editBoardDialogCtrl', EditDashboardController)
-  .controller('hepicController', HepicController)
   .controller('dashframeController', dashframeController)
   .controller('HomeController', HomeController)
   .controller('messageCtrl', MessageCtrlController)
@@ -216,9 +219,9 @@ var app = angular.module('hepicApp', [
   .provider('routeResolver', routeResolver)
   .service('dashboardResolver', dashboardResolver)
   //.provider('dashboardResolver', dashboardResolver)
-  .factory('sessionRecoverer', sessionRecovererFactory)
+  //.factory('sessionRecoverer', sessionRecovererFactory)
   .factory('eventbus', eventFactory)
-  .factory('authService', authFactory)
+  //.factory('authService', authFactory)
   .factory('userProfile', profileFactory)
   .factory('adminService', adminFactory)
   .factory('searchService', searchFactory)
@@ -240,12 +243,7 @@ var app = angular.module('hepicApp', [
   .directive('nagPrism', hepicPrismDirective)
   .directive('pwCheck', hepicpwCheckDirective)
   .directive('resize', hepicResizeDirective)
-  .directive('staticInclude', appWidgetTemplateDirective)
-  .constant('ROUTER', ROUTER)
-  .constant('DATASOURCES', DATASOURCES)
-  .constant('CONFIGURATION', CONFIGURATION)
-  .constant('EVENTS', EVENTS)
-  .constant('RESOURCES', RESOURCES);
+  .directive('staticInclude', appWidgetTemplateDirective);
 
 Date.prototype.stdTimezoneOffset = function() {
   var jan = new Date(this.getFullYear(), 0, 1);

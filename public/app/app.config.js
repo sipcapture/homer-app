@@ -25,7 +25,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'routeResolverProvider', '$c
     $translateProvider.useUrlLoader('lang/en.json');
     $translateProvider.preferredLanguage('en');
     
-    $httpProvider.interceptors.push('sessionRecoverer');
+    //$httpProvider.interceptors.push('sessionRecoverer');
   
     const dashframeState = {
       'name': 'dashframe',
@@ -36,14 +36,14 @@ app.config(['$stateProvider', '$urlRouterProvider', 'routeResolverProvider', '$c
       'secure': true
     };
     
-    const loginState = {
-      'name': 'login',
-      'url': '/login',
-      'templateUrl': 'app/views/login.html',
-      'controller': 'loginController',
-      'controllerAs': 'login',
-      'secure':false
-    };
+    //const loginState = {
+    //  'name': 'login',
+    //  'url': '/login',
+    //  'templateUrl': 'app/views/login.html',
+    //  'controller': 'loginController',
+    //  'controllerAs': 'login',
+    //  'secure':false
+    //};
     
     const aboutState = {
       'name': 'about',
@@ -95,7 +95,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'routeResolverProvider', '$c
     };
     
     $stateProvider.state(dashframeState);
-    $stateProvider.state(loginState);
+    //$stateProvider.state(loginState);
     $stateProvider.state(aboutState);
     $stateProvider.state(settingsState);
     $stateProvider.state(profileState);

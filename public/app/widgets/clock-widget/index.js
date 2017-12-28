@@ -2,8 +2,8 @@ import angular from 'angular';
 import component from './clock-widget.component';
 
 export default angular.module('hepicApp.clockWidget', [])
-  .config(['dashboardWidgetStateProvider', function(dashboardWidgetStateProvider) {
-    dashboardWidgetStateProvider.set('visualize', 'clock-widget', {
+  .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
+    DashboardWidgetStateProvider.set('visualize', 'clock-widget', {
       title: 'World Clock',
       group: 'Tools',
       name: 'clock',

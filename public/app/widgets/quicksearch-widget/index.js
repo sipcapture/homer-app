@@ -2,8 +2,8 @@ import angular from 'angular';
 import component from './quicksearch-widget.component';
 
 export default angular.module('hepicApp.quicksearchWidget', [])
-  .config(['dashboardWidgetStateProvider', function(dashboardWidgetStateProvider) {
-    dashboardWidgetStateProvider.set('visualize', 'quicksearch-widget', {
+  .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
+    DashboardWidgetStateProvider.set('visualize', 'quicksearch-widget', {
       title: 'Search',
       group: 'Search',
       name: 'quicksearch',

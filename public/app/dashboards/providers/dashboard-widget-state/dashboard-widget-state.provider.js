@@ -1,7 +1,7 @@
 /*
  * Provider to inject widget default config/state into dashboard
  */
-const dashboardWidgetState = function() {
+const DashboardWidgetState = function() {
   const widgets = {};
 
   return {
@@ -26,10 +26,10 @@ const dashboardWidgetState = function() {
     set: function(category, name, data) {
       if (!widgets[category]) {
         widgets[category] = {};
-      } 
+      }
       widgets[category][name] = data;
     }
   };
 };
 
-export default dashboardWidgetState;
+export default DashboardWidgetState;

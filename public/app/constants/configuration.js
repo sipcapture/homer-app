@@ -12,6 +12,9 @@ const CONFIGURATION = {
     draggable: {
       handle: '.box-header'
     }
+  },
+  FOOTER: {
+    URL: 'https://www.sipcapture.org'
   }
 };
 

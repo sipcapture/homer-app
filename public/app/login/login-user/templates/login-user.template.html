@@ -1,0 +1,27 @@
+<div class="col-md-6 col-md-offset-3">
+	<div class="alert alert-info">
+	  Username: trex<br />
+	  Password: password
+	</div>
+	<h2>Login</h2>
+	<form name="form" ng-submit="form.$valid && $ctrl.login()" novalidate>
+	  <div class="form-group" ng-class="{ 'has-error': form.$submitted && form.username.$invalid }">
+	    <label for="username">Username</label>
+	    <input type="text" name="username" class="form-control" ng-model="$ctrl.username" required />
+	    <div ng-messages="form.$submitted && form.username.$error" class="help-block">
+	     	<div ng-message="required">Username is required</div>
+	    </div>
+	  </div>
+	  <div class="form-group" ng-class="{ 'has-error': form.$submitted && form.password.$invalid }">
+	    <label for="password">Password</label>
+	    <input type="password" name="password" class="form-control" ng-model="$ctrl.password" required />
+	    <div ng-messages="form.$submitted && form.password.$error" class="help-block">
+	    	<div ng-message="required">Password is required</div>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	  	<button ng-disabled="$ctrl.loading" class="btn btn-primary">Login</button>
+	  </div>
+	  <div ng-if="$ctrl.error" class="alert alert-danger">{{$ctrl.error}}</div>
+	</form>
+</div>

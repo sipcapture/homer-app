@@ -1,6 +1,6 @@
-    var injectParams = ['$scope', '$state', '$stateParams', '$location','$rootScope','eventbus', 'settingsService', '$uibModal', 'authService'];                                           
+    var injectParams = ['$scope', '$state', '$stateParams', '$location','$rootScope','eventbus', 'settingsService', '$uibModal'];                                           
 
-    var SettingsNavController = function ($scope, $state, $stateParams, $location, $rootScope, eventbus, settings, $uibModal, authService) {
+    var SettingsNavController = function ($scope, $state, $stateParams, $location, $rootScope, eventbus, settings, $uibModal) {
 
             this.name = $stateParams.boardID;            
             var that = this;
@@ -32,9 +32,11 @@
             
 
 	    /* Check if Admin */
-	    var currentUser = authService.getCurrentLoginUser();
+	    //var currentUser = authService.getCurrentLoginUser();
             $scope.settingsIsAdmin = false;
-            if ( currentUser.permissions && (currentUser.permissions.indexOf("admins") > -1 || currentUser.permissions.indexOf("superadmin") > -1 )) $scope.settingsIsAdmin = true;
+            
+            //if ( currentUser.permissions && (currentUser.permissions.indexOf("admins") > -1 || currentUser.permissions.indexOf("superadmin") > -1 ))
+            $scope.settingsIsAdmin = true;
 
             //console.log("AR", settingsList);
                                                             

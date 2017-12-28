@@ -5,13 +5,12 @@ var injectPanelParams = [
   '$location',
   '$rootScope',
   'eventbus',
-  'authService',
   'storeService',
   'EVENTS',
   '$log'
 ];
                                        
-var PanelController = function ($scope, $location, $rootScope, eventbus, authService, storeService, EVENTS, $log) {
+var PanelController = function ($scope, $location, $rootScope, eventbus, storeService, EVENTS, $log) {
   $scope.showChilds = function(item) {
     item.active = !item.active;
   };
@@ -35,7 +34,7 @@ var PanelController = function ($scope, $location, $rootScope, eventbus, authSer
 
   $scope.addNewDashboard = function(dashboard) {
     var id = '_' + new Date().getTime();
-    var currentUser = authService.getCurrentLoginUser();
+    //var currentUser = authService.getCurrentLoginUser();
     var name = dashboard.name;
     var type = dashboard.type;
     var param = '';
@@ -64,8 +63,8 @@ var PanelController = function ($scope, $location, $rootScope, eventbus, authSer
       type: stype,
       param: param,
       shared: shared,
-      uuid: currentUser.uuid,
-      gid: currentUser.gid,
+      //uuid: currentUser.uuid,
+      //gid: currentUser.gid,
       title: name,
       weight: 10,
       widgets: []

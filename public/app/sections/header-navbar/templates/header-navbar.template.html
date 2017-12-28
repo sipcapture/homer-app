@@ -22,16 +22,19 @@
         <ul class="nav navbar-nav navbar-right">
           <li>
             <div class="btn-group" uib-dropdown is-open="$ctrl.status.isopen">
-              <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: </a>
+              <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: {{$ctrl.status.activeDashboardName}}</a>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                 <li role="menuitem" ng-click="$event.stopPropagation()">
-                  <input type="search" ng-model="q" placeholder="filter panels..." aria-label="filter panels" />
+                  <input type="search" ng-model="q" placeholder="filter dashboards..." aria-label="filter dashboards" />
                 </li>
-                <li role="menuitem" ng-repeat="panel in $ctrl.panels | filter:q">
-                  <a ui-sref="dashboard({ boardID:'{{panel.href}}'})">{{panel.name}}</a>
+                <li role="menuitem" ng-repeat="dash in $ctrl.dashboards | filter:q">
+<!--
+                  <a ui-sref="dashboard({ boardID:'{{dash.href}}'})">{{dash.name}}</a>
+-->
+                  <a ng-click="$ctrl.goDashboard(dash)">{{dash.name}}</a>
                 </li>
                 <li role="menuitem">
-                  <a ng-click="$ctrl.addDashboard();">+ Add new panel</a>
+                  <a ng-click="$ctrl.addDashboard();">+ Add New Dashboard</a>
                 </li>
               </ul>
             </div>

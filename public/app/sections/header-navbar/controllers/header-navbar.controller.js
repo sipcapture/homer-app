@@ -2,28 +2,42 @@ import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
 
-  constructor($log, $uibModal, storeService) {
+  constructor($log, $location, $state, $uibModal, $scope, storeService) {
     'ngInject';
     this.$log = $log;
+    this.$location = $location;
+    this.$state = $state;
     this.$uibModal = $uibModal;
+    this.$scope = $scope;
     this.storeService = storeService;
   }
 
   $onInit() {
     this.isCollapsed = true;
     this.status = {
-      isopen: false
+      isopen: false,
+      activeDashboardName: this.$state.current.name || this.getDashboardNameFromUrl() || 'Home'
     };
 
-    this.panels = [];
-    this.getPanels().then((panels) => {
-      this.panels = panels.data;
+    this.dashboards = [];
+    this.getDashboards().then((dashboards) => {
+      this.dashboards = dashboards.data;
     }).catch((error) => {
-      this.$log.error('[HeaderNavbar]', error);
+      this.$log.error('[HeaderNavbar]', '[load dashboards list]', error);
     });
   }
 
-  getPanels() {
+  getDashboardNameFromUrl() {
+    const name = this.$location.$$url.split('/').slice(-1)[0];
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  goDashboard(dashboard) {
+    this.$state.go('dashboard', {boardID: dashboard.href});
+    this.status.activeDashboardName = dashboard.name;
+  }
+
+  getDashboards() {
     return this.storeService.getAll();
   }
 
@@ -43,7 +57,7 @@ class HeaderNavbar {
         this.$log.error('[HeaderNavbar]', '[save dashboard]', error);
       });
     }).catch((reason) => {
-      this.$log.info('[HeaderNavbar]', '[close modal]', reason);
+      this.$log.info('[HeaderNavbar]', '[add dashboard modal]', reason);
     });
   }
 

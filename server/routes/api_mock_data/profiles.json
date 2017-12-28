@@ -1,0 +1,1 @@
+{"total":3,"data":{"dashboard":"{\"recording\":false,\"blacklist\":false,\"geolookup\":true,\"blacklist_url\":\"https://cymon.io/api/nexus/v1/ip/\",\"geolookup_url\":\"http://ip-api.com/json/\",\"timeline\":true,\"timeline_disable\":false,\"multicolor\":true,\"autosave\":true,\"geomap\":true,\"ipgraph\":true,\"alias_disable\":false}"},"auth":"ok","status":"ok"}

@@ -327,18 +327,6 @@
       "title": "bear",
       "weight": 10,
       "widgets": []
-    },
-    {
-      "id": "_1514710937201",
-      "alias": "_1514710937201",
-      "name": "crappy",
-      "selectedItem": "",
-      "type": 0,
-      "param": "",
-      "shared": 0,
-      "title": "crappy",
-      "weight": 10,
-      "widgets": []
     }
   ]
 }

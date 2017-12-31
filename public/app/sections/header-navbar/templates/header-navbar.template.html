@@ -2,7 +2,7 @@
   <nav class="navbar navbar-default hepic2-navbar" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">
+        <button type="button" class="navbar-toggle" ng-click="$ctrl.navbar.isCollapsed = !$ctrl.navbar.isCollapsed">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -13,7 +13,7 @@
         </a> <!-- END logo -->
       </div>
   
-      <div class="navbar-collapse collapse" uib-collapse="$ctrl.isCollapsed">
+      <div class="navbar-collapse collapse" uib-collapse="$ctrl.navbar.isCollapsed">
         <ul class="nav navbar-nav navbar-right">
           <li>
             <a class="hepic2-navbar-icon" href="#"><i class="fa fa-sign-out"></i></a>
@@ -22,16 +22,13 @@
         <ul class="nav navbar-nav navbar-right">
           <li>
             <div class="btn-group" uib-dropdown is-open="$ctrl.status.isopen">
-              <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: {{$ctrl.status.activeDashboardName}}</a>
+              <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: {{$ctrl.navbar.activeDashboardTitle}}</a>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                 <li role="menuitem" ng-click="$event.stopPropagation()">
-                  <input type="search" ng-model="q" placeholder="filter dashboards..." aria-label="filter dashboards" />
+                  <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
                 </li>
-                <li role="menuitem" ng-repeat="dash in $ctrl.dashboards | filter:q">
-<!--
-                  <a ui-sref="dashboard({ boardID:'{{dash.href}}'})">{{dash.name}}</a>
--->
-                  <a ng-click="$ctrl.goDashboard(dash)">{{dash.name}}</a>
+                <li role="menuitem" ng-repeat="dash in $ctrl.navbar.dashboards | filter:q">
+                  <a ng-click="$ctrl.goDashboard(dash)">{{dash.title}}</a>
                 </li>
                 <li role="menuitem">
                   <a ng-click="$ctrl.addDashboard();">+ Add New Dashboard</a>

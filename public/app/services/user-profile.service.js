@@ -1,8 +1,8 @@
 /*global angular*/
 import { forEach } from 'lodash';
 
-const injectParams = ['$q','$http','eventbus','$log'];
 const profileFactory = function ($q, $http) {
+  'ngInject';
   var loadedProfile = false;
   var factory = {};
   var myProfile = {};
@@ -228,5 +228,4 @@ const profileFactory = function ($q, $http) {
   return factory;
 };
 
-profileFactory.$inject = injectParams;
 export default profileFactory;

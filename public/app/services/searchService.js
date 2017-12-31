@@ -1,6 +1,5 @@
-    var injectParams = ['$q','$http','eventbus','userProfile'];
-
-    var searchFactory = function ($q, $http, eventbus, userProfile) {
+    var searchFactory = function ($q, $http, userProfile) {
+      'ngInject';
 
 
 		var GEOAPI = 'http://ip-api.com/json/';
@@ -834,5 +833,4 @@
                 };
     };
 
-    searchFactory.$inject = injectParams;
 export default searchFactory;

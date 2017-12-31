@@ -3,26 +3,29 @@ import {findIndex, cloneDeep} from 'lodash';
 
 class MainDashboard {
   
-  constructor($stateParams, $log, storeService, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage) {
+  constructor($stateParams, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper) {
     'ngInject';
     this.$stateParams = $stateParams;
     this.$log = $log;
-    this.storeService = storeService;
+    this.DashboardStorage = DashboardStorage;
     this.EVENTS = EVENTS;
     this.SweetAlert = SweetAlert;
     this.$state = $state;
     this.$uibModal = $uibModal;
     this.CONFIGURATION = CONFIGURATION;
     this.DashboardWidgetState = DashboardWidgetState;
-    this.DashboardStorage = DashboardStorage;
+    this.ModalHelper = ModalHelper;
   }
 
   $onInit() {
     this.gridsterOptions = this.CONFIGURATION.DASHBOARD_DEFAULT;
     this.registeredWidgets = this.DashboardWidgetState.widgets;
+    this.initDashboard();
+  }
 
-    this.DashboardStorage.get(this.$stateParams.boardID).then((_dashboard_) => {
-      this.dashboard = _dashboard_;
+  initDashboard() {
+    return this.DashboardStorage.get(this.$stateParams.boardID).then((dashboard) => {
+      this.dashboard = dashboard;
 
       if (!this.dashboard) {
         this.dashboard = {};
@@ -30,18 +33,8 @@ class MainDashboard {
       if (!this.dashboard.widgets) {
         this.dashboard.widgets = [];
       }
-
-      //const currentUser = authService.getCurrentLoginUser(); // to-do: add user scopes
-      //if (currentUser.permissions && currentUser.permissions.indexOf('admins') > -1) {
-      //  this.dashboardEditDisable = false;
-      //}
-
-      //if (status.uuid && status.uuid != currentUser.uuid) {
-      //  this.dashboardEditDisable = true;
-      //} else {
-      //  this.dashboardEditDisable = false;
-      //}
-    }).catch(function (error) {
+      // to-do: add user scopes
+    }).catch((error) => {
       this.$log.error('[MainDashboard]', '[load dashboards]', error);
     });
   }
@@ -72,7 +65,7 @@ class MainDashboard {
   }
 
   saveBoard() {
-    this.storeService.set(this.dashboard.alias, angular.toJson(this.dashboard));
+    this.DashboardStorage.set(this.dashboard.alias, angular.toJson(this.dashboard));
   }
 
   deleteBoard() {
@@ -85,13 +78,19 @@ class MainDashboard {
       confirmButtonText: 'Yes, delete it!',
       closeOnConfirm: true,
       closeOnCancel: true
-    }).then((confirm) => {
-      if (confirm) {
-        this.storeService.delete(this.dashboard.id);
-        this.$state.go('dashboard', { boardID: 'home' });
+    }, (confirm) => {
+      if (this.dashboard.alias === 'home') {
+        this.$log.warn('Dashboard "Home" cannot be deleted.');
+        return;
       }
-    }).catch((error) => {
-      this.$log.error('[MainDashboard]', '[delete board]', error);
+
+      if (confirm) {
+        this.DashboardStorage.delete(this.dashboard.id).then(() => {
+          return this.$state.go('dashboard', {boardID: 'home'});
+        }).catch((error) => {
+          this.$log.error('[MainDashboard]', '[delete board]', error);
+        });
+      }
     });
   }
 
@@ -103,7 +102,7 @@ class MainDashboard {
           return cloneDeep(this.dashboard);
         }
       }
-    }).result.then(function (dashboard) {
+    }).result.then((dashboard) => {
       this.gridsterOptions = dashboard.config;
       this.dashboard = dashboard;
       this.dashboard.title = this.dashboard.name;
@@ -125,11 +124,11 @@ class MainDashboard {
         config.param.param = dashboard.param;
       }
 
-      return this.storeService.update(dashboard.id, config).catch((error) => {
-        this.$log.error('[MainDashboard]', '[update dashboard]', error);
-      });
-    }).catch((reason) => {
-      this.$log.info('[MainDashboard]', '[edit dashboard modal]', reason);
+      return this.DashboardStorage.update(dashboard.id, config);
+    }).catch((error) => {
+      if (this.ModalHelper.isError(error)) {
+        this.$log.info('[MainDashboard]', '[update dashboard]', error);
+      }
     });
   }
 

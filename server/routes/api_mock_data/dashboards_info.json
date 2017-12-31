@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "id": "home",
+      "name": "Home",
+      "title": "Home",
+      "cssclass": "fa",
+      "type": 0,
+      "shared": 0,
+      "weight": 0,
+      "param": ""
+    },
+    {
+      "id": "_1514709452274",
+      "alias": "_1514709452274",
+      "protect": false,
+      "title": "bear",
+      "type": 0,
+      "param": "",
+      "weight": 10,
+      "shared": 0,
+      "icon": ""
+    }
+  ]
+}

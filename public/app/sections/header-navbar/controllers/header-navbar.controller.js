@@ -2,68 +2,68 @@ import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
 
-  constructor($log, $location, $state, $uibModal, $scope, storeService) {
+  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper) {
     'ngInject';
     this.$log = $log;
     this.$location = $location;
     this.$state = $state;
     this.$uibModal = $uibModal;
-    this.$scope = $scope;
-    this.storeService = storeService;
+    this.$rootScope = $rootScope;
+    this.DashboardStorage = DashboardStorage;
+    this.ModalHelper = ModalHelper;
   }
 
   $onInit() {
-    this.isCollapsed = true;
-    this.status = {
-      isopen: false,
-      activeDashboardName: this.$state.current.name || this.getDashboardNameFromUrl() || 'Home'
+    this.$rootScope.navbar = {
+      activeDashboardTitle: 'Home',
+      dashboards: [],
+      isCollapsed: true
     };
 
-    this.dashboards = [];
-    this.getDashboards().then((dashboards) => {
-      this.dashboards = dashboards.data;
+    this.navbar = this.$rootScope.navbar;
+
+    this.loadDashboardsMenu().then((dashboards) => {
+      this.navbar.dashboards = dashboards;
+      return null;
     }).catch((error) => {
-      this.$log.error('[HeaderNavbar]', '[load dashboards list]', error);
+      this.$log.error('[HeaderNavbar]', '[init menu]', error);
     });
   }
 
-  getDashboardNameFromUrl() {
-    const name = this.$location.$$url.split('/').slice(-1)[0];
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  }
-
   goDashboard(dashboard) {
-    this.$state.go('dashboard', {boardID: dashboard.href});
-    this.status.activeDashboardName = dashboard.name;
+    return this.$state.go('dashboard', {boardID: dashboard.id});
   }
 
-  getDashboards() {
-    return this.storeService.getAll();
+  loadDashboardsMenu() {
+    return this.DashboardStorage.getAll();
   }
 
-  setData(id, data) {
-    return this.storeService.set(id, data);
+  storeDashboardData(id, data) {
+    return this.DashboardStorage.set(id, data);
   }
 
-  setMenu(id, menu) {
-    return this.storeService.menu(id, menu);
+  storeDashboardMenu(id, menu) {
+    return this.DashboardStorage.menu(id, menu);
   }
 
   addDashboard() {
     this.$uibModal.open({
       component: 'addDashboard'
     }).result.then((dashboard) => {
-      return this.saveDashboard(dashboard).catch((error) => {
-        this.$log.error('[HeaderNavbar]', '[save dashboard]', error);
+      return this.saveDashboard(dashboard).then((item) => {
+        this.navbar.dashboards.push(item);
+        return this.goDashboard(item);
       });
-    }).catch((reason) => {
-      this.$log.info('[HeaderNavbar]', '[add dashboard modal]', reason);
+    }).catch((error) => {
+      if (this.ModalHelper.isError(error)) {
+        this.$log.error('[HeaderNavbar]', '[add dashboard]', error);
+      }
     });
   }
 
   saveDashboard(dashboard) {
     const id = '_' + new Date().getTime();
-    //var currentUser = authService.getCurrentLoginUser();
+    //var currentUser = authService.getCurrentLoginUser(); // to-do: introduce user scopes
     let name = dashboard.name;
     let type = dashboard.type;
     let param = '';
@@ -85,14 +85,14 @@ class HeaderNavbar {
     }
 
     const data = {
-      id: id,
-      name: name,
-      alias: alias,
+      id,
+      alias,
+      name,
       selectedItem: '',
       type: stype,
-      param: param,
-      shared: shared,
-      //uuid: currentUser.uuid,
+      param,
+      shared,
+      //uuid: currentUser.uuid, //to-do: introduce user scopes
       //gid: currentUser.gid,
       title: name,
       weight: 10,
@@ -100,22 +100,20 @@ class HeaderNavbar {
     };
 
     const menu = {
-      param: {
-        id,
-        protect,
-        title: name,
-        type: stype,
-        param,
-        weight,
-        shared,
-        alias,
-        icon: ''
-      }
+      id,
+      alias,
+      protect,
+      title: name,
+      type: stype,
+      param,
+      weight,
+      shared,
+      icon: ''
     };
 
-    return this.setData(data.id, data).then(() => {
-      return this.setMenu(menu.param.id, menu);
-    });
+    return this.storeDashboardData(data.id, data).then(() => {
+      return this.storeDashboardMenu(menu.id, menu);
+    }).then(() => menu);
   }
   
 }

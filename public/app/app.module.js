@@ -27,10 +27,6 @@ import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
 
-// homer. To-do: refactor homer old code into component
-import './homer-modal/homerModal';
-import './homer-modal/homerCflow';
-
 import Constants from './constants';
 import Services from './services';
 import Sections from './sections';
@@ -41,9 +37,6 @@ import Search from './search';
 
 import profileFactory from './services/user-profile.service';
 import searchFactory from './services/searchService';
-
-// directives
-//import fieldDisplay from './directives/field-display/field-display.directive';
 
 // controllers
 import HepicController from './controllers/hepic.controller';
@@ -73,8 +66,6 @@ var app = angular.module('hepicApp', [
   'ngStorage',
   'dialogs.main',
   'LocalStorageModule',
-  'homer.modal',
-  'homer.cflow',
   'smart-table',
   'nvd3',
   'nemLogging',

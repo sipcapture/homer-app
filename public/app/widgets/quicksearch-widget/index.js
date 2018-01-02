@@ -1,6 +1,8 @@
 import angular from 'angular';
 import component from './quicksearch-widget.component';
 
+// to-do: refactor into two separate components: widget and settings modal
+
 export default angular.module('hepicApp.quicksearchWidget', [])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
     DashboardWidgetStateProvider.set('visualize', 'quicksearch-widget', {

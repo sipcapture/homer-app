@@ -1,6 +1,8 @@
 import angular from 'angular';
 import component from './clock-widget.component';
 
+// to-do: refactor into two separate components: widget and settings modal
+
 export default angular.module('hepicApp.clockWidget', [])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
     DashboardWidgetStateProvider.set('visualize', 'clock-widget', {

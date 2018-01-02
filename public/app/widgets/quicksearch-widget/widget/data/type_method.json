@@ -1,0 +1,23 @@
+[
+  { "id": 1, "value": "INVITE", "checked": false },
+  { "id": 2, "value": "REGISTER", "checked": false },
+  { "id": 3, "value": "BYE", "checked": false },
+  { "id": 4, "value": "CANCEL", "checked": false },
+  { "id": 5, "value": "OPTIONS", "checked": false },
+  { "id": 6, "value": "ACK", "checked": false },
+  { "id": 7, "value": "PRACK", "checked": false },
+  { "id": 8, "value": "SUBSCRIBE", "checked": false },
+  { "id": 9, "value": "NOTIFY", "checked": false },
+  { "id": 10, "value": "PUBLISH", "checked": false },
+  { "id": 11, "value": "INFO", "checked": false },
+  { "id": 12, "value": "REFER", "checked": false },
+  { "id": 13, "value": "MESSAGE", "checked": false },
+  { "id": 14, "value": "UPDATE", "checked": false },
+  { "id": 15, "value": "1xx", "checked": false },
+  { "id": 16, "value": "2xx", "checked": false },
+  { "id": 17, "value": "3xx", "checked": false },
+  { "id": 18, "value": "4xx", "checked": false },
+  { "id": 19, "value": "5xx", "checked": false },
+  { "id": 20, "value": "6xx", "checked": false },
+  { "id": 21, "value": "", "checked": false }
+]

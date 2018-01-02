@@ -34,18 +34,18 @@ export default [
       protocol.discover(type, transaction)
         .then(function (data) {
           if (!data) {
-            reply(Boom.notFound('no transaction found'));
+            return reply(Boom.notFound('no transaction found'));
           }
   
-          reply({
+          return reply({
             count: data.length,
             data
           }).code(201);
   
         })
         .catch(function (error) {
-          reply(Boom.serverUnavailable(error));
+          return reply(Boom.serverUnavailable(error));
         });
     }
   }
-]
+];

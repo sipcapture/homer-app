@@ -32,7 +32,7 @@ export default [
       user.get(['guid', 'hash'])
         .then(function (user) {
           if (!user) {
-            reply(Boom.notFound('the user was not found'));
+            return reply(Boom.notFound('the user was not found'));
           }
 
           return bcrypt.compare(password, user.hash)
@@ -47,17 +47,17 @@ export default [
                   expiresIn: jwtSettings.expires_in
                 });
 
-                reply({
+                return reply({
                   token,
                   scope: user.guid
                 });
               } else {
-                reply(Boom.unauthorized('incorrect password'));
+                return reply(Boom.unauthorized('incorrect password'));
               }
             });
         })
         .catch(function (error) {
-          reply(Boom.serverUnavailable(error));
+          return reply(Boom.serverUnavailable(error));
         });
     }
   }

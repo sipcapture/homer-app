@@ -1,0 +1,42 @@
+<div class="search-results" access="users" access-permission-type="AtLeastOne">
+    <div class="header-action-area">
+        <h1 class="lath">
+            <small class="text-header-sip">
+                <i class="fa fa-h-square" aria-hidden="true" style="margin-right:5px;"></i>
+                {{$ctrl.dashboard.name}}
+            </small> <!-- END text-header-sip -->
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.addWidget()" class="btn btn-whiter btn-primary"
+                type="submit" ng-mouseover="hoverA=true" ng-mouseout="hoverA=false">
+                <i title="Add New Widget" class="glyphicon glyphicon-plus"></i>
+            </button>
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.saveBoard()" class="btn btn-whiter btn-primary"
+                type="submit" ng-mouseover="hoverB=true" ng-mouseout="hoverB=false">
+                <i title="Save Changes" class="glyphicon glyphicon-save"></i>
+            </button>
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.deleteBoard()" class="btn btn-whiter btn-primary"
+                type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false">
+                <i title="Delete Dashboard" class="glyphicon glyphicon-trash"></i> 
+            </button>
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.editBoard()" class="btn btn-whiter btn-primary"
+                type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false">
+                <i title="Edit Dashboard" class="glyphicon glyphicon-edit"></i>
+            </button>
+        </h1> <!-- END lath -->
+    </div> <!-- END header-action-area -->
+    <div gridster="$ctrl.gridsterOptions">
+        <ul>
+            <li gridster-item="widget" ng-repeat="widget in $ctrl.dashboard.widgets track by widget.uuid">
+              <!--
+                to-do: compile widgets on the view run to prevent manual insertion here
+              -->
+                <clock-widget ng-if="widget.name==='clock'" widget=widget
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </clock-widget>
+                <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </quicksearch-widget>
+            </li> <!-- END gridster-item, widget -->
+        </ul>
+    </div> <!-- END gridsterOptions -->
+</div> <!-- search-results -->
+

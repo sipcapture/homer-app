@@ -1,0 +1,13 @@
+.clock-widget-settings .dropdown-toggle {
+    width: 180px;
+}
+
+.clock-widget-settings .dropdown-menu {
+    height: auto;
+    max-height: 100px;
+    overflow-x: hidden;
+}
+
+.clock-widget-settings .modal-body {
+    height: 180px;
+}

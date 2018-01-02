@@ -1,0 +1,10 @@
+.box {
+    height: 100%;
+    /* border: 1px solid #ccc; */
+    background-color: #fff;
+}
+
+.box-header h3 {
+    width: 100%;
+    display: inline-block;
+}

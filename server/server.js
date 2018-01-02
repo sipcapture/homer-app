@@ -2,13 +2,19 @@ import Hapi from 'hapi';
 import { forEach } from 'lodash';
 import pem from 'pem';
 import jwtSettings from './private/jwt_settings';
+import config from './config/server_config';
 import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
 import protocolRoutes from './routes/protocol';
 import uiRoutes from './routes/ui';
-import config from './config/server_config';
+import apiMock from './routes/api_mock'; // to-so: delete it when API is ready
 
-const server = new Hapi.Server();
+const server = new Hapi.Server({
+  debug: {
+    log: ['error', 'implementation', 'internal'],
+    request: ['error', 'implementation', 'internal']
+  }
+});
 
 pem.createCertificate({
   days: config.certificate.days,
@@ -34,6 +40,7 @@ pem.createCertificate({
   
   // JWT authentication and encryption
   server.register([
+    require('h2o2'),
     require('hapi-auth-jwt'),
     require('inject-then'),
     require('inert')
@@ -51,7 +58,7 @@ pem.createCertificate({
     });
   
     // Initialize routes
-    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes], function (routes) {
+    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes, apiMock], function (routes) {
       forEach(routes, function (route) {
         server.route(route);
       });

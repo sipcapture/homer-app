@@ -1,7 +1,7 @@
 import template from './templates/clock-widget-settings.template.html';
 import controller from './controllers/clock-widget-settings.controller';
 
-const clockWidget = {
+const clockWidgetSettings = {
   bindings: {
     modalInstance: '<',
     resolve: '<'
@@ -10,4 +10,4 @@ const clockWidget = {
   template
 };
 
-export default clockWidget;
+export default clockWidgetSettings;

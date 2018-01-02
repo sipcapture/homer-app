@@ -1,25 +1,24 @@
 import template from './field-display.template.html';
 
-// to-do: refactor in a component and use in this widget modal settings
+class FieldDisplay {
 
-const injectParams = [];
-const fieldDisplay = function () {
-  return {
-    scope: {
+  constructor() {
+    this.scope = {
       fieldDisplay: '=', //import referenced model to our directives scope
       fieldName: '=', //import referenced model to our directives scope
       fieldHeaders: '='
-    },
-    template,
-    link: function(scope) {
-      scope.selectedItem = { name: scope.fieldName, selection: scope.fieldDisplay };
-      scope.$watch('selectedItem', function(val) {
-        scope.fieldDisplay = val.selection;
-        scope.fieldName = val.name;
-      }, true);
-    }
-  };
-};
+    };
+    this.template = template;
+    this.link = this.linkFunc;
+  }
 
-fieldDisplay.$inject = injectParams;
-export default fieldDisplay;
+  linkFunc(scope) {
+    scope.selectedItem = { name: scope.fieldName, selection: scope.fieldDisplay };
+    scope.$watch('selectedItem', function(val) {
+      scope.fieldDisplay = val.selection;
+      scope.fieldName = val.name;
+    }, true);
+  }
+}
+
+export default FieldDisplay;

@@ -26,6 +26,7 @@ import 'angular-file-upload/angular-file-upload';
 import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
+import 'angular-filter';
 
 // components
 import Constants from './constants';
@@ -55,11 +56,13 @@ var app = angular.module('hepicApp', [
   'ui.grid.pinning',
   'ui.grid.grouping',
   'ui.grid.exporter',
+  'ui.ace',
+  'ui.select',
+  'angular.filter',
   'oitozero.ngSweetAlert',
   'ngAnimate',
   'ngAria',
   'ngCookies',
-  'ui.select',
   'ngSanitize',
   'ngStorage',
   'dialogs.main',
@@ -68,7 +71,6 @@ var app = angular.module('hepicApp', [
   'nvd3',
   'nemLogging',
   'ui-leaflet',
-  'ui.ace',
   'ngWebSocket',
   'ngFitText',
   'pascalprecht.translate',

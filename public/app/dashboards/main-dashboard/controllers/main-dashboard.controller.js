@@ -3,9 +3,10 @@ import {findIndex, cloneDeep} from 'lodash';
 
 class MainDashboard {
   
-  constructor($stateParams, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper) {
+  constructor($stateParams, $scope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper) {
     'ngInject';
     this.$stateParams = $stateParams;
+    this.$scope = $scope;
     this.$log = $log;
     this.DashboardStorage = DashboardStorage;
     this.EVENTS = EVENTS;
@@ -30,22 +31,24 @@ class MainDashboard {
       if (!this.dashboard) {
         this.dashboard = {};
       }
+
       if (!this.dashboard.widgets) {
         this.dashboard.widgets = [];
       }
+
       // to-do: add user scopes
     }).catch((error) => {
       this.$log.error('[MainDashboard]', '[load dashboards]', error);
     });
   }
 
-  deleteWidget(widget) {
-    const index = findIndex(this.dashboard.widgets, w => w.name === widget.name);
+  deleteWidget(uuid) {
+    const index = findIndex(this.dashboard.widgets, w => w.uuid === uuid);
     this.dashboard.widgets.splice(index, 1);
   }
 
-  updateWidget(widget) {
-    const index = findIndex(this.dashboard.widgets, w => w.name === widget.name);
+  updateWidget(uuid, widget) {
+    const index = findIndex(this.dashboard.widgets, w => w.uuid === uuid);
     this.dashboard.widgets[index] = widget;
   }
 

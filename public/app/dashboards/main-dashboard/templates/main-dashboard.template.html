@@ -25,19 +25,16 @@
     </div> <!-- END header-action-area -->
     <div gridster="$ctrl.gridsterOptions">
         <ul>
-            <li gridster-item="widget" ng-repeat="widget in $ctrl.dashboard.widgets track by $index">
+            <li gridster-item="widget" ng-repeat="widget in $ctrl.dashboard.widgets track by widget.uuid">
               <!--
                 to-do: compile widgets on the view run to prevent manual insertion here
               -->
                 <clock-widget ng-if="widget.name==='clock'" widget=widget
-                  on-delete="$ctrl.deleteWidget(widget)" on-update="$ctrl.updateWidget(widget)">
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </clock-widget>
                 <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
-                  on-delete="$ctrl.deleteWidget(widget)" on-update="$ctrl.updateWidget(widget)">
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </quicksearch-widget>
-                <a-widget ng-if="widget.name==='awidget'" widget=widget
-                  on-delete="$ctrl.deleteWidget(widget)" on-update="$ctrl.updateWidget(widget)">
-                </a-widget>
             </li> <!-- END gridster-item, widget -->
         </ul>
     </div> <!-- END gridsterOptions -->

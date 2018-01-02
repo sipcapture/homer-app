@@ -1,3 +1,5 @@
+import uuid from 'uuid/v4';
+
 class AddWidget {
 
   constructor() {}
@@ -11,6 +13,7 @@ class AddWidget {
   }
   
   addWidget(widget) {
+    widget.uuid = uuid();
     this.modalInstance.close(widget);
   }
   

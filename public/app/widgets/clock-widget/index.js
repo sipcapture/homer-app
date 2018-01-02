@@ -1,5 +1,6 @@
 import angular from 'angular';
-import component from './clock-widget.component';
+import widget from './widget/clock-widget.component';
+import settings from './settings/clock-widget-settings.component';
 
 // to-do: refactor into two separate components: widget and settings modal
 
@@ -22,4 +23,5 @@ export default angular.module('hepicApp.clockWidget', [])
       }
     });
   }])
-  .component('clockWidget', component);
+  .component('clockWidgetSettings', settings)
+  .component('clockWidget', widget);

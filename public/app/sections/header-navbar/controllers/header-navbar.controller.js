@@ -2,7 +2,7 @@ import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
 
-  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper) {
+  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper, AuthenticationService) {
     'ngInject';
     this.$log = $log;
     this.$location = $location;
@@ -11,6 +11,7 @@ class HeaderNavbar {
     this.$rootScope = $rootScope;
     this.DashboardStorage = DashboardStorage;
     this.ModalHelper = ModalHelper;
+    this.AuthenticationService = AuthenticationService;
   }
 
   $onInit() {
@@ -26,6 +27,12 @@ class HeaderNavbar {
       this.navbar.dashboards = dashboards;
       return null;
     }).catch((error) => {
+      this.$log.error('[HeaderNavbar]', '[init menu]', error);
+    });
+  }
+
+  logout() {
+    this.AuthenticationService.logout().catch((error) => {
       this.$log.error('[HeaderNavbar]', '[init menu]', error);
     });
   }

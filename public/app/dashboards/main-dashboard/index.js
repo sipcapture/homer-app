@@ -2,11 +2,10 @@ import angular from 'angular';
 import component from './main-dashboard.component';
 
 export default angular.module('hepicApp.mainDashboard', [])
-  .config(function ($stateProvider) {
-    $stateProvider.state('dashboard', {
-      url: '/dashboard/:boardID',
-      component: 'mainDashboard',
-      secure: true
+  .config(function ($stateProvider, ROUTER) {
+    $stateProvider.state(ROUTER.DASHBOARD.NAME, {
+      url: ROUTER.DASHBOARD.PATH,
+      component: 'mainDashboard'
     });
   })
   .component('mainDashboard', component);

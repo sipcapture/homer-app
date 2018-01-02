@@ -1,31 +1,12 @@
-/* global angular */
+/* global angular, window */
 
 import { forEach } from 'lodash';
 
 import data_grid_options from '../data/grid_options';
 
-const injectParams = [
-  '$scope',
-  '$rootScope',
-  'eventbus',
-  '$http',
-  '$location',
-  'searchService',
-  '$timeout',
-  '$window',
-  '$homerModal',
-  'userProfile',
-  'localStorageService',
-  '$filter',
-  'SweetAlert',
-  '$state',
-  'EVENTS',
-  '$log',
-  'CONFIGURATION'
-];
-
-const SearchCallController = function($scope, $rootScope, eventbus, $http, $location, searchService,
-  $timeout, $window, $homerModal, userProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
+const SearchCallController = function($scope, $rootScope, eventbus, $http, $location, SearchService,
+  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
+  'ngInject';
   const self = this;
 
   self.$onInit = function () {
@@ -59,14 +40,14 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
       timestamp: {}
     };
 
-    var transaction = userProfile.getProfile('transaction');
-    var limit = userProfile.getProfile('limit');
-    var timezone = userProfile.getProfile('timezone');
-    var value = userProfile.getProfile('search');
+    var transaction = UserProfile.getProfile('transaction');
+    var limit = UserProfile.getProfile('limit');
+    var timezone = UserProfile.getProfile('timezone');
+    var value = UserProfile.getProfile('search');
     let timedate;
 
     /* force time update for "last x minutes" ranges */
-    var timeNow = userProfile.getProfile('timerange_last');
+    var timeNow = UserProfile.getProfile('timerange_last');
     if (timeNow > 0) {
       console.log('fast-forward to last ' + timeNow + ' minutes...');
       var diff = (new Date().getTimezoneOffset() - timezone.value);
@@ -76,9 +57,9 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
         to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
         custom: 'Now() - ' + timeNow
       };
-      userProfile.setProfile('timerange', timedate);
+      UserProfile.setProfile('timerange', timedate);
     } else {
-      timedate = userProfile.getProfile('timerange');
+      timedate = UserProfile.getProfile('timerange');
     }
 
     /* query manipulation functions & store */
@@ -190,7 +171,6 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
       if (sObj.hasOwnProperty('tranreg')) data.param.transaction['registration'] = true;
       if (sObj.hasOwnProperty('tranrest')) data.param.transaction['rest'] = true;
 
-      //search_callid                                       
       if (sObj.hasOwnProperty('search_callid')) searchValue['callid'] = sObj['search_callid'];
       if (sObj.hasOwnProperty('search_ruri_user')) searchValue['ruri_user'] = sObj['search_ruri_user'];
       if (sObj.hasOwnProperty('search_from_user')) searchValue['from_user'] = sObj['search_from_user'];
@@ -203,13 +183,13 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
       /* set back timerange */
       timedate.from = new Date(data.timestamp.from - diff);
       timedate.to = new Date(data.timestamp.to - diff);
-      userProfile.setProfile('timerange', timedate);
+      UserProfile.setProfile('timerange', timedate);
       eventbus.broadcast(EVENTS.SET_TIME_RANGE, timedate);
     }
 
     self.dataLoading = true;
 
-    searchService.searchCallByParam(data).then(function(sdata) {
+    SearchService.searchCallByParam(data).then(function(sdata) {
       if (sdata) {
         self.restoreState();
         self.count = sdata.length;
@@ -226,10 +206,10 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
     });
   };
 
-  userProfile.getAllServerRemoteProfile();
+  UserProfile.getAllServerRemoteProfile();
 
   /* first get profile */
-  userProfile.getAll().then(function() {
+  UserProfile.getAll().then(function() {
     self.processSearchResult();
   }).catch(function(error) {
     $log.error('search-call', error);
@@ -616,14 +596,14 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
     };
 
     /* set to to our last search time */
-    var timezone = userProfile.getProfile('timezone');
+    var timezone = UserProfile.getProfile('timezone');
     localrow.entity.trans = 'call';
     search_data['param']['transaction'][localrow.entity.trans] = true;
     var trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
 
-    nodes = userProfile.getProfile('node');
+    nodes = UserProfile.getProfile('node');
 
-    var search_profile = userProfile.getProfile('search');
+    var search_profile = UserProfile.getProfile('search');
     if (search_profile.hasOwnProperty('uniq')) {
       search_data['param']['search']['uniq'] = search_profile.uniq;
     }
@@ -964,6 +944,4 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
   };
 };
 
-
-SearchCallController.$inject = injectParams;
 export default SearchCallController;

@@ -1,4 +1,4 @@
-/* global angular */
+/* global angular, window */
 import Promise from 'bluebird';
 import { cloneDeep, has } from 'lodash';
 import fileSaver from 'file-saver';
@@ -16,17 +16,8 @@ import data_type_method from '../data/type_method';
 import data_type_call_status from '../data/type_call_status';
 import data_db_node from '../data/db_node';
 
-const injectParams = [
-  '$scope',
-  '$state',
-  'userProfile',
-  '$log',
-  'searchService',
-  '$uibModal',
-  'CONFIGURATION'
-];
-
-const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, searchService, $uibModal, CONFIGURATION) {
+const QuicksearchWidgetCtrl = function($scope, $state, UserProfile, $log, SearchService, $uibModal, CONFIGURATION) {
+  'ngInject';
   const self = this;
 
   self.$onInit = function () {
@@ -48,23 +39,23 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
     self.method_list = data_method_list;
     self.db_node_selected = [];
 
-    searchService.loadNode().then(function (data) {
+    SearchService.loadNode().then(function (data) {
       self.db_node = data.length ? data : data_db_node;
     }).then(function () {
       self.type_method_selected = [];
       self.type_method = data_type_method;
       self.type_call_status = data_type_call_status;
 
-      if (userProfile.profileScope.search && userProfile.profileScope.search instanceof Array) {
-        userProfile.profileScope.search={};
+      if (UserProfile.profileScope.search && UserProfile.profileScope.search instanceof Array) {
+        UserProfile.profileScope.search={};
       }
-      self.newObject = userProfile.profileScope.search;
-      self.newResult = userProfile.profileScope.result;
-      self.newResult.limit = self.newResult.limit || userProfile.profileScope.limit;
+      self.newObject = UserProfile.profileScope.search;
+      self.newResult = UserProfile.profileScope.result;
+      self.newResult.limit = self.newResult.limit || UserProfile.profileScope.limit;
       self.newResult.restype =  self.type_result[0];
-      self.newNode = userProfile.profileScope.node;
+      self.newNode = UserProfile.profileScope.node;
       self.newNode.node =  self.db_node[0];
-      self.timerange = userProfile.profileScope.timerange;
+      self.timerange = UserProfile.profileScope.timerange;
       // END To-do
     }).catch(function (error) {
       $log.error('quicksearch', 'widget', 'controller', error);
@@ -103,7 +94,7 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
   /* update if timerange will be changed */
   (function () {
     $scope.$watch(function () {
-      return userProfile.profileScope.search;
+      return UserProfile.profileScope.search;
     }, function (newVal, oldVal) {
       if ( newVal !== oldVal ) {
         self.newObject = newVal;
@@ -121,10 +112,10 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
       self.newObject[field.name] = self.newObject[field.name] || '';
     });
     
-    userProfile.setProfile('search', self.newObject);
-    userProfile.setProfile('result', self.newResult);
-    userProfile.setProfile('node', self.newNode);
-    userProfile.setProfile('limit', self.newResult.limit);
+    UserProfile.setProfile('search', self.newObject);
+    UserProfile.setProfile('result', self.newResult);
+    UserProfile.setProfile('node', self.newNode);
+    UserProfile.setProfile('limit', self.newResult.limit);
     self.isBusy = true;
     
     var tres = self.newResult.restype.name;
@@ -150,19 +141,19 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
   };
 
   self.clearSearchForm = function() {
-    userProfile.profileScope.search = {};
-    userProfile.setProfile('search', self.newObject);
+    UserProfile.profileScope.search = {};
+    UserProfile.setProfile('search', self.newObject);
   };
 
   self.processSearchResult = function(type) {
     /* save data for next search */
     var data = {param:{}, timestamp:{}};
     
-    var transaction = userProfile.getProfile('transaction');
-    var limit = userProfile.getProfile('limit');
-    var timedate = userProfile.getProfile('timerange');
-    var value = userProfile.getProfile('search');
-    var node = userProfile.getProfile('node').dbnode;
+    var transaction = UserProfile.getProfile('transaction');
+    var limit = UserProfile.getProfile('limit');
+    var timedate = UserProfile.getProfile('timerange');
+    var value = UserProfile.getProfile('search');
+    var node = UserProfile.getProfile('node').dbnode;
     
     /* make construct of query */
     data.param.transaction = {};
@@ -179,7 +170,7 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
     
     var ts = new Date().getTime();
     
-    searchService.makePcapTextData(data, type).then(function (msg) {
+    SearchService.makePcapTextData(data, type).then(function (msg) {
       self.isBusy = false;
 
       let filename;
@@ -232,7 +223,7 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
         return;
       }
       // END To-do
-      var blob = new Blob([msg], {type: content_type});
+      var blob = new Blob([msg], {type: content_type}); // to-do: define Blob lib
       fileSaver.saveAs(blob, filename);
     }).catch(function (error) {
       $log.error('quicksearch', 'widget', 'controller', error);
@@ -274,5 +265,4 @@ const QuicksearchWidgetCtrl = function($scope, $state, userProfile, $log, search
   };
 };
 
-QuicksearchWidgetCtrl.$inject = injectParams;
 export default QuicksearchWidgetCtrl;

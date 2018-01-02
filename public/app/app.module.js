@@ -27,6 +27,7 @@ import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
 
+// components
 import Constants from './constants';
 import Services from './services';
 import Sections from './sections';
@@ -34,9 +35,6 @@ import Login from './login';
 import Dashboards from './dashboards';
 import Widgets from './widgets';
 import Search from './search';
-
-import profileFactory from './services/user-profile.service';
-import searchFactory from './services/searchService';
 
 // controllers
 import HepicController from './controllers/hepic.controller';
@@ -84,19 +82,6 @@ var app = angular.module('hepicApp', [
   Dashboards.name,
   Search.name,
   Widgets.name
-])
-  .factory('userProfile', profileFactory)
-  .factory('searchService', searchFactory)
-  .controller('hepicController', HepicController);
-
-Date.prototype.stdTimezoneOffset = function() {
-  var jan = new Date(this.getFullYear(), 0, 1);
-  var jul = new Date(this.getFullYear(), 6, 1);
-  return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-};
-
-Date.prototype.dst = function() {
-  return this.getTimezoneOffset() < this.stdTimezoneOffset();
-};
+]).controller('hepicController', HepicController);
 
 export default app;

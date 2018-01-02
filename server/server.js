@@ -7,13 +7,12 @@ import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
 import protocolRoutes from './routes/protocol';
 import uiRoutes from './routes/ui';
-//import oldAPIRoutes from './routes/old_api_proxy'; // to-do: deprecate it when this server API is ready
 import apiMock from './routes/api_mock'; // to-so: delete it when API is ready
 
 const server = new Hapi.Server({
   debug: {
-      log: ['error', 'implementation', 'internal'],
-      request: ['error', 'implementation', 'internal']
+    log: ['error', 'implementation', 'internal'],
+    request: ['error', 'implementation', 'internal']
   }
 });
 

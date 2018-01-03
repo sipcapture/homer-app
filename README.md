@@ -17,7 +17,7 @@ NVM howto:
   . list all versions - `nvm ls`
   . enable certain version - `nvm use x.x.x`
   . define default version - `nvm alias default x.x.x`
-5. Install MySQL. Create new user and database. Put correct MySQL database connection parameters in `knexfile.js` (for seeding) and `src/db/knex.js` (for API)
+5. Install MySQL. Create new user and database. Put correct MySQL database connection parameters in `knexfile.js` (for seeding) and `server/config/db/knex.js` (for API)
 6. Install all Hepic libraries and helpers `npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json`
 7. Execute commands below to create migrations and seed default data into MySQL database:
 **ATTENTION!** Go into `seeds` folder and check table names, be sure you don't overwrite or eliminate your current DB data. Do not edit or eleminate existing migrations. If you need to change/add database scheme - create a new [knex migration](http://perkframework.com/v1/guides/database-migrations-knex.html). 

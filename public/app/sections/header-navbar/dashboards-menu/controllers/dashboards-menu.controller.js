@@ -1,6 +1,4 @@
-import '../style/header-navbar.style.css';
-
-class HeaderNavbar {
+class DashboardsMenu {
 
   constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper, AuthenticationService, ROUTER) {
     'ngInject';
@@ -16,41 +14,38 @@ class HeaderNavbar {
   }
 
   $onInit() {
-    this.navbar = {
-      dashboards: {
-        title: 'Home',
-        menu: [],
-        isOpen: false
-      },
-      isCollapsed: true,
+    this.dashboards = {
+      title: 'Home',
+      menu: [],
+      isOpen: false
     };
 
     this.loadDashboardsMenu().then((dashboards) => {
-      this.navbar.dashboards.menu = dashboards;
+      this.dashboards.menu = dashboards;
       return null;
     }).catch((error) => {
-      this.$log.error('[HeaderNavbar]', '[init menu]', error);
+      this.$log.error('[DashboardsMenu]', '[init menu]', error);
     });
   }
 
   openDashboardsMenu() {
     this.loadDashboardsMenu().then((dashboards) => {
-      this.navbar.dashboards.menu = dashboards;
+      this.dashboards.menu = dashboards;
       return null;
     }).catch((error) => {
-      this.$log.error('[HeaderNavbar]', '[init menu]', error);
+      this.$log.error('[DashboardsMenu]', '[init menu]', error);
     });
   }
 
   logout() {
     this.AuthenticationService.logout().catch((error) => {
-      this.$log.error('[HeaderNavbar]', '[init menu]', error);
+      this.$log.error('[DashboardsMenu]', '[init menu]', error);
     });
   }
 
   goDashboard(dashboard) {
     return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
-      this.navbar.dashboards.title = dashboard.title;
+      this.dashboards.title = dashboard.title;
     });
   }
 
@@ -71,12 +66,12 @@ class HeaderNavbar {
       component: 'addDashboard'
     }).result.then((dashboard) => {
       return this.saveDashboard(dashboard).then((item) => {
-        this.navbar.dashboards.menu.push(item);
+        this.dashboards.menu.push(item);
         return this.goDashboard(item);
       });
     }).catch((error) => {
       if (this.ModalHelper.isError(error)) {
-        this.$log.error('[HeaderNavbar]', '[add dashboard]', error);
+        this.$log.error('[DashboardsMenu]', '[add dashboard]', error);
       }
     });
   }
@@ -138,4 +133,4 @@ class HeaderNavbar {
   
 }
 
-export default HeaderNavbar;
+export default DashboardsMenu;

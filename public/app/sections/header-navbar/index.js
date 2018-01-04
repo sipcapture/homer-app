@@ -1,5 +1,8 @@
 import angular from 'angular';
-import component from './header-navbar.component';
+import Navbar from './navbar';
+import DashboardsMenu from './dashboards-menu';
 
-export default angular.module('hepicApp.headerNavbar', [])
-  .component('headerNavbar', component);
+export default angular.module('hepicApp.navbar', [
+  Navbar.name,
+  DashboardsMenu.name
+]);

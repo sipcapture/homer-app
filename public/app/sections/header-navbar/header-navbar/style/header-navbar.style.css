@@ -8,9 +8,9 @@ nav.hepic2-navbar a.navbar-brand {
   padding: 0 25px 0 25px;
 }
 
-nav.hepic2-navbar a.hepic2-navbar-icon {
+nav.hepic2-navbar a.hepic2-navbar-button i.fa {
   font-size: 20px;
-  padding: 4px;
+  padding: 0px 4px;
 }
 
 nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo {

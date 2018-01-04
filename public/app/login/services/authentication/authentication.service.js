@@ -1,15 +1,16 @@
 class AuthenticationService {
 
-  constructor($rootScope, $state, $http, $localStorage, ROUTER) {
+  constructor($rootScope, $state, $http, $localStorage, ROUTER, API) {
     this.$rootScope = $rootScope;
     this.$state = $state;
     this.$http = $http;
     this.$localStorage = $localStorage;
     this.ROUTER = ROUTER;
+    this.API = API;
   }
 
   login(username, password) {
-    return this.$http.post('/api/v3/auth', { username, password }).then((response) => {
+    return this.$http.post(this.API.AUTH, { username, password }).then((response) => {
       const data = response.data;
       if (!data.token) {
         throw new Error('something went wrong, no JWT token received');

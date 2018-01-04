@@ -17,7 +17,7 @@ export default [
      * @request
      *  @param {string} boardID - dashboard id
      */
-    path: '/api/v2/dashboard/menu/{boardID}',
+    path: '/api/v3/dashboard/menu/{boardID}',
     method: 'POST',
     config: {
       auth: {
@@ -46,7 +46,7 @@ export default [
      * @request
      *  @param {string} boardID - dashboard id
      */
-    path: '/api/v2/dashboard/store/{boardID}',
+    path: '/api/v3/dashboard/store/{boardID}',
     method: 'DELETE',
     config: {
       auth: {
@@ -74,7 +74,7 @@ export default [
      * @request
      *  @param {string} boardID - dashboard id
      */
-    path: '/api/v2/dashboard/store/{boardID}',
+    path: '/api/v3/dashboard/store/{boardID}',
     method: 'POST',
     config: {
       auth: {
@@ -104,7 +104,7 @@ export default [
      * @request
      *  @param {string} boardID - dashboard id
      */
-    path: '/api/v2/dashboard/store/{boardID}',
+    path: '/api/v3/dashboard/store/{boardID}',
     method: 'PUT',
     config: {
       auth: {
@@ -142,7 +142,7 @@ export default [
      * @request
      *  @param {string} boardID - dashboard id
      */
-    path: '/api/v2/dashboard/store/{boardID}',
+    path: '/api/v3/dashboard/store/{boardID}',
     method: 'GET',
     config: {
       auth: {
@@ -168,7 +168,7 @@ export default [
     /**
      * GET dashboards info
      */
-    path: '/api/v2/dashboard/info',
+    path: '/api/v3/dashboard/info',
     method: 'GET',
     config: { // to-do: authenticate later
       auth: {
@@ -186,7 +186,7 @@ export default [
      * @header
      *  @param {string} JWT token - authentication
      */
-    path: '/api/v2/dashboard/node',
+    path: '/api/v3/dashboard/node',
     method: 'GET',
     config: {
       auth: {
@@ -204,7 +204,7 @@ export default [
      * @header
      *  @param {string} JWT token - authentication
      */
-    path: '/api/v2/admin/profiles',
+    path: '/api/v3/admin/profiles',
     method: 'GET',
     config: {
       auth: {

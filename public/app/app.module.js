@@ -29,6 +29,7 @@ import 'ngstorage';
 import 'angular-filter';
 
 // components
+import Controllers from './controllers';
 import Constants from './constants';
 import Services from './services';
 import Sections from './sections';
@@ -37,10 +38,7 @@ import Dashboards from './dashboards';
 import Widgets from './widgets';
 import Search from './search';
 
-// controllers
-import HepicController from './controllers/hepic.controller';
-
-// register modules
+// register modules and components
 var app = angular.module('hepicApp', [
   'ui.router',
   'ui.bootstrap',
@@ -77,6 +75,7 @@ var app = angular.module('hepicApp', [
   'ngVis',
   'angularFileUpload',
   'ds.clock',
+  Controllers.name,
   Constants.name,
   Services.name,
   Sections.name,
@@ -84,6 +83,6 @@ var app = angular.module('hepicApp', [
   Dashboards.name,
   Search.name,
   Widgets.name
-]).controller('hepicController', HepicController);
+]);
 
 export default app;

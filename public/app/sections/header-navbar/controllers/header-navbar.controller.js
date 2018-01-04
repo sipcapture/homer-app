@@ -2,7 +2,7 @@ import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
 
-  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper, AuthenticationService) {
+  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper, AuthenticationService, ROUTER) {
     'ngInject';
     this.$log = $log;
     this.$location = $location;
@@ -12,19 +12,30 @@ class HeaderNavbar {
     this.DashboardStorage = DashboardStorage;
     this.ModalHelper = ModalHelper;
     this.AuthenticationService = AuthenticationService;
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
-    this.$rootScope.navbar = {
-      activeDashboardTitle: 'Home',
-      dashboards: [],
-      isCollapsed: true
+    this.navbar = {
+      dashboards: {
+        title: 'Home',
+        menu: [],
+        isOpen: false
+      },
+      isCollapsed: true,
     };
 
-    this.navbar = this.$rootScope.navbar;
-
     this.loadDashboardsMenu().then((dashboards) => {
-      this.navbar.dashboards = dashboards;
+      this.navbar.dashboards.menu = dashboards;
+      return null;
+    }).catch((error) => {
+      this.$log.error('[HeaderNavbar]', '[init menu]', error);
+    });
+  }
+
+  openDashboardsMenu() {
+    this.loadDashboardsMenu().then((dashboards) => {
+      this.navbar.dashboards.menu = dashboards;
       return null;
     }).catch((error) => {
       this.$log.error('[HeaderNavbar]', '[init menu]', error);
@@ -38,7 +49,9 @@ class HeaderNavbar {
   }
 
   goDashboard(dashboard) {
-    return this.$state.go('dashboard', {boardID: dashboard.id});
+    return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
+      this.navbar.dashboards.title = dashboard.title;
+    });
   }
 
   loadDashboardsMenu() {
@@ -58,7 +71,7 @@ class HeaderNavbar {
       component: 'addDashboard'
     }).result.then((dashboard) => {
       return this.saveDashboard(dashboard).then((item) => {
-        this.navbar.dashboards.push(item);
+        this.navbar.dashboards.menu.push(item);
         return this.goDashboard(item);
       });
     }).catch((error) => {

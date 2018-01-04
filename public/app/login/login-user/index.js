@@ -6,7 +6,11 @@ export default angular.module('hepicApp.loginUser', [])
     'ngInject';
     $stateProvider.state(ROUTER.LOGIN.NAME, {
       url: ROUTER.LOGIN.PATH,
-      component: 'loginUser'
+      views: {
+        'main': {
+          component: 'loginUser'
+        }
+      }
     });
   })
   .component('loginUser', component);

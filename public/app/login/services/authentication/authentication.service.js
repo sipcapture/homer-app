@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 class AuthenticationService {
 
   constructor($rootScope, $state, $http, $localStorage, ROUTER) {
@@ -28,13 +26,7 @@ class AuthenticationService {
   }
 
   logout() {
-    return new Promise((resolve) => {
-      delete this.$localStorage.user;
-      this.$http.defaults.headers.common.Authorization = '';
-      this.$rootScope.authenticated = false;
-      this.$state.go(this.ROUTER.LOGIN.NAME);
-      resolve(null);
-    });
+    return this.$state.go(this.ROUTER.LOGIN.NAME);
   }
 }
 

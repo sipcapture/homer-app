@@ -1,12 +1,15 @@
 const ROUTER = {
+  ROOT_STATE: {
+    NAME: 'hepic'
+  },
   DASHBOARD: {
-    NAME: 'dashboard',
+    NAME: 'hepic.dashboard',
     PATH: '/dashboard/:boardID',
     DESCRIPTION: 'dashboard',
     SECURE: true
   },
   DASHFRAME: {
-    NAME: 'dashframe',
+    NAME: 'hepic.dashframe',
     PATH: '/dashframe/:boardID',
     DESCRIPTION: 'dashframe',
     SECURE: true
@@ -24,26 +27,26 @@ const ROUTER = {
     SECURE: false
   },
   SEARCH: {
-    NAME: 'search',
+    NAME: 'hepic.search',
     PATH: '/search/:protoID',
     DESCRIPTION: 'search',
     SECURE: true
   },
   SETTINGSMAIN: {
-    NAME: 'settings',
+    NAME: 'hepic.settings',
     PATH: '/settings',
     DESCRIPTION: 'index',
     SECURE: true
   },
   SETTINGSPROFILE: {
-    NAME: 'settings.profile',
+    NAME: 'hepic.settings.profile',
     PATH: '/profile/:paramID',
     DESCRIPTION: 'settings/profile',
     TYPE: 'Profile',
     SECURE: true
   },
   SETTINGSADMIN: {
-    NAME: 'settings.admin',
+    NAME: 'hepic.settings.admin',
     PATH: '/admin/:paramID',
     DESCRIPTION: 'settings/admin',
     TYPE: 'Admin',

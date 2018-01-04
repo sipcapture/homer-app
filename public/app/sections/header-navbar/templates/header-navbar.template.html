@@ -21,13 +21,13 @@
         </ul> <!-- END sign out -->
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <div class="btn-group" uib-dropdown is-open="$ctrl.status.isopen">
-              <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: {{$ctrl.navbar.activeDashboardTitle}}</a>
+            <div class="btn-group" uib-dropdown is-open="$ctrl.navbar.dashboards.isOpen">
+              <a href="#" class="hepic2-navbar-button" ng-click="$ctrl.openDashboardsMenu()" uib-dropdown-toggle>Panels: {{$ctrl.navbar.dashboards.title}}</a>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                 <li role="menuitem" ng-click="$event.stopPropagation()">
                   <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
                 </li>
-                <li role="menuitem" ng-repeat="dash in $ctrl.navbar.dashboards | filter:q">
+                <li role="menuitem" ng-repeat="dash in $ctrl.navbar.dashboards.menu | filter:q">
                   <a ng-click="$ctrl.goDashboard(dash)">{{dash.title}}</a>
                 </li>
                 <li role="menuitem">

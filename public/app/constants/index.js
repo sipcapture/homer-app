@@ -5,10 +5,12 @@ import Events from './events';
 import Metricsdatasource from './metricsdatasource';
 import Resources from './resources';
 import Router from './router';
+import Api from './api';
 
 export default angular.module('hepicApp.constants', [])
   .constant('CONFIGURATION', Configuration)
   .constant('EVENTS', Events)
   .constant('METRICSDATASOURCE', Metricsdatasource)
   .constant('RESOURCES', Resources)
+  .constant('API', Api)
   .constant('ROUTER', Router);

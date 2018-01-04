@@ -1,4 +1,4 @@
-var SearchService = function($q, $http, UserProfile) {
+var SearchService = function($q, $http, UserProfile, API) {
   'ngInject';
 
   UserProfile.getAllServerRemoteProfile();
@@ -56,7 +56,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/call/data', mdata, {
+    $http.post(API.SEARCH.CALL.DATA, mdata, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -82,7 +82,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/method', data, {
+    $http.post(API.SEARCH.METHOD, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -106,7 +106,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/call/message', data, {
+    $http.post(API.SEARCH.CALL.MESSAGE, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -130,7 +130,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/transaction', data, {
+    $http.post(API.CALL.TRANSACTION, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -156,7 +156,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/registration/data', mdata, {
+    $http.post(API.SEARCH.REGISTRATION.DATA, mdata, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -180,7 +180,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/registration/message', data, {
+    $http.post(API.SEARCH.REGISTRATION.MESSAGE, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -204,7 +204,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/registration/transaction', data, {
+    $http.post(API.REGISTRATION.TRANSACTION, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -230,7 +230,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/proto/data', mdata, {
+    $http.post(API.SEARCH.PROTO.DATA, mdata, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -254,7 +254,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/search/proto/message', data, {
+    $http.post(API.SEARCH.PROTO.MESSAGE, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -278,7 +278,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/proto/transaction', data, {
+    $http.post(API.PROTO.TRANSACTION, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -304,7 +304,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/rtcp', data, {
+    $http.post(API.CALL.REPORT.RTCP, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -328,7 +328,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/qos', data, {
+    $http.post(API.CALL.REPORT.QOS, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -352,7 +352,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/log', data, {
+    $http.post(API.CALL.REPORT.LOG, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -376,7 +376,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/recording/data', data, {
+    $http.post(API.CALL.RECORDING.DATA, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -400,7 +400,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/rtc', data, {
+    $http.post(API.CALL.REPORT.RTC, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -424,7 +424,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/remotelog', data, {
+    $http.post(API.CALL.REPORT.REMOTELOG, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -448,7 +448,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/call/report/quality/' + type, data, {
+    $http.post(API.CALL.REPORT.QUALITY+'/'+type, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -473,7 +473,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.get('api/v2/dashboard/node', {
+    $http.get(API.DASHBOARD.NODE, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -497,9 +497,9 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    var url = 'api/v2/export/call/messages/';
-    if (trans == 'registration') url = 'api/v2/export/registration/messages/';
-    else if (trans == 'proto') url = 'api/v2/export/proto/messages/';
+    var url = API.EXPORT.CALL.MESSAGES+'/';
+    if (trans == 'registration') url = API.EXPORT.REGISTRATION.MESSAGES+'/';
+    else if (trans == 'proto') url = API.EXPORT.PROTO.MESSAGES+'/';
 
     var response = {
       responseType: 'arraybuffer',
@@ -537,7 +537,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    var url = 'api/v2/export/call/transaction/html';
+    var url = API.EXPORT.CALL.TRANSACTION.HTML;
 
     var response = {
       responseType: 'arraybuffer',
@@ -569,7 +569,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    var url = 'api/v2/call/recording/download/' + type + '/' + id;
+    var url = API.CALL.RECORDING.DOWNLOAD+'/'+type+'/'+id;
 
     var response = {
       responseType: 'arraybuffer',
@@ -606,7 +606,7 @@ var SearchService = function($q, $http, UserProfile) {
       responseType: 'arraybuffer',
       handleStatus: [403, 503]
     };
-    var url = 'api/v2/search/call/export/data/';
+    var url = API.SEARCH.CALL.EXPORT.DATA+'/';
     if (type == 1) url += 'text';
     else if (type == 2) {
       url += 'cloud';
@@ -643,7 +643,6 @@ var SearchService = function($q, $http, UserProfile) {
     var defer = $q.defer();
 
     var profile = UserProfile.getServerProfile('dashboard');
-    console.log('PP', profile);
     if (profile.blacklist && profile.blacklist_url) {
 
       $http.get(profile.blacklist_url + ip + '/events', {
@@ -748,7 +747,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.post('api/v2/share/link', data, {
+    $http.post(API.SHARE.LINK, data, {
       handleStatus: [403, 503]
     }).then(
       /* good response */
@@ -772,7 +771,7 @@ var SearchService = function($q, $http, UserProfile) {
 
     var defer = $q.defer();
 
-    $http.get('api/v2/call/recording/info/' + id, {
+    $http.get(API.CALL.RECORDING.INFO+'/'+id, {
       handleStatus: [403, 503]
     }).then(
       /* good response */

@@ -1,0 +1,14 @@
+<div class="btn-group" uib-dropdown is-open="$ctrl.dashboards.isOpen">
+  <a href="#" class="hepic2-navbar-button" ng-click="$ctrl.openMenu()" uib-dropdown-toggle>Panels: {{$ctrl.dashboards.title}}</a>
+  <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+    <li role="menuitem" ng-click="$event.stopPropagation()">
+      <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
+    </li>
+    <li role="menuitem" ng-repeat="dash in $ctrl.dashboards.menu | filter:q">
+      <a ng-click="$ctrl.goDashboard(dash)">{{dash.title}}</a>
+    </li>
+    <li role="menuitem">
+      <a ng-click="$ctrl.addDashboard();">+ Add New Dashboard</a>
+    </li>
+  </ul>
+</div>

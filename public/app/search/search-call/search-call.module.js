@@ -3,7 +3,7 @@ import component from './search-call.component';
 
 export default angular.module('searchCall', [])
   .config(function ($stateProvider) {
-    $stateProvider.state('searchCall', {
+    $stateProvider.state('hepic.searchCall', {
       url: '/searchCall/:protoID',
       component: 'searchCall',
       secure: true

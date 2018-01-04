@@ -33,16 +33,19 @@
   
   <script type="application/javascript" src="dist/bundle.js"></script>
   
-  <body ng-app="hepicApp" data-ng-cloak ng-controller="hepicController as hepicCtrl">
-    <header-navbar ng-show="hepicCtrl.authenticated"></header-navbar>
+  <body ng-app="hepicApp" data-ng-cloak ng-controller="HepicController as hepicCtrl">
+    <header>
+      <div ui-view="header"></div>
+    </header>
 
-    <main bathemerun="" class="ng2">
+    <main>
       <div id="main" role="main" auto-height>
-        <ng-include src="ribbon"></ng-include>
-        <div ui-view></div>
+        <div ui-view="main"></div>
       </div>
     </main>
 
-    <footer-bar ng-show="hepicCtrl.authenticated"></footer-bar>
+    <footer>
+      <div ui-view="footer"></div>
+    </footer>
   </body>
 </html>

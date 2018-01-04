@@ -1,9 +1,6 @@
 var SearchService = function($q, $http, UserProfile) {
   'ngInject';
 
-  var GEOAPI = 'http://ip-api.com/json/';
-  var BLACKLISTAPI = 'https://cymon.io/api/nexus/v1/ip/';
-
   UserProfile.getAllServerRemoteProfile();
 
   var searchValue = {};
@@ -64,14 +61,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -90,14 +87,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -114,14 +111,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -138,14 +135,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -164,14 +161,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -188,14 +185,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -212,14 +209,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -238,14 +235,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -262,14 +259,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -286,14 +283,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -312,14 +309,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -336,14 +333,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -360,14 +357,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -384,14 +381,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -408,14 +405,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -432,14 +429,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -456,14 +453,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -481,14 +478,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -501,34 +498,34 @@ var SearchService = function($q, $http, UserProfile) {
     var defer = $q.defer();
 
     var url = 'api/v2/export/call/messages/';
-    if (trans == "registration") url = 'api/v2/export/registration/messages/';
-    else if (trans == "proto") url = 'api/v2/export/proto/messages/';
+    if (trans == 'registration') url = 'api/v2/export/registration/messages/';
+    else if (trans == 'proto') url = 'api/v2/export/proto/messages/';
 
     var response = {
       responseType: 'arraybuffer',
       handleStatus: [403, 503]
     };
-    if (type == 1) url += "text";
+    if (type == 1) url += 'text';
     else if (type == 2) {
-      url += "cloud";
+      url += 'cloud';
       response = {
         handleStatus: [403, 503]
       };
-    } else url += "pcap";
+    } else url += 'pcap';
 
     console.log(response);
 
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -536,7 +533,7 @@ var SearchService = function($q, $http, UserProfile) {
     return defer.promise;
   };
 
-  var makeReportRequest = function(data, trans) {
+  var makeReportRequest = function(data) {
 
     var defer = $q.defer();
 
@@ -552,14 +549,14 @@ var SearchService = function($q, $http, UserProfile) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -582,14 +579,14 @@ var SearchService = function($q, $http, UserProfile) {
     $http.get(url, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -610,68 +607,43 @@ var SearchService = function($q, $http, UserProfile) {
       handleStatus: [403, 503]
     };
     var url = 'api/v2/search/call/export/data/';
-    if (type == 1) url += "text";
+    if (type == 1) url += 'text';
     else if (type == 2) {
-      url += "cloud";
+      url += 'cloud';
       response = {
         handleStatus: [403, 503]
       };
     } else if (type == 3) {
-      url += "count";
+      url += 'count';
       response = {
         handleStatus: [403, 503]
       };
-    } else url += "pcap";
+    } else url += 'pcap';
 
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
 
     return defer.promise;
   };
-
-  var createShareLink = function(data) {
-
-    var defer = $q.defer();
-
-    $http.post('api/v2/search/call/sharelink', data, {
-      handleStatus: [403, 503]
-    }).then(
-      /* good response */
-      function(results) {
-        if (results.data.auth == "false") {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
-      },
-      /* bad response */
-      function(results) {
-        defer.reject('bad response combination');
-      }
-    );
-
-    return defer.promise;
-  };
-
 
   var searchBlacklist = function(ip) {
 
     var defer = $q.defer();
 
-    var profile = UserProfile.getServerProfile("dashboard");
-    console.log("PP", profile);
+    var profile = UserProfile.getServerProfile('dashboard');
+    console.log('PP', profile);
     if (profile.blacklist && profile.blacklist_url) {
 
       $http.get(profile.blacklist_url + ip + '/events', {
@@ -687,7 +659,7 @@ var SearchService = function($q, $http, UserProfile) {
           }
         },
         /* bad response */
-        function(results) {
+        function() {
           defer.reject('bad response combination');
         }
       );
@@ -703,7 +675,7 @@ var SearchService = function($q, $http, UserProfile) {
 
   var searchGeoLoc = function(ip) {
 
-    var profile = UserProfile.getServerProfile("dashboard");
+    var profile = UserProfile.getServerProfile('dashboard');
 
     var defer = $q.defer();
 
@@ -723,7 +695,7 @@ var SearchService = function($q, $http, UserProfile) {
           }
         },
         /* bad response */
-        function(results) {
+        function() {
           defer.reject('bad response combination');
         }
       );
@@ -737,11 +709,11 @@ var SearchService = function($q, $http, UserProfile) {
   /* CUSTOM API, EXPERIMENTAL */
   var searchCustom = function(data, api) {
 
-    var profile = UserProfile.getServerProfile("dashboard");
+    var profile = UserProfile.getServerProfile('dashboard');
     var defer = $q.defer();
     var apiurl = api;
     if (profile.customapi_url) {
-      apiurl = profile.customapi_url
+      apiurl = profile.customapi_url;
     }
     if (!apiurl || 0 === apiurl.length) return;
     if (profile.customapi) {
@@ -760,7 +732,7 @@ var SearchService = function($q, $http, UserProfile) {
           }
         },
         /* bad response */
-        function(results) {
+        function() {
           defer.reject('bad response combination');
         }
       );
@@ -781,14 +753,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -805,14 +777,14 @@ var SearchService = function($q, $http, UserProfile) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == "false") {
+        if (results.data.auth == 'false') {
           defer.reject('user not authorized');
         } else {
           defer.resolve(results.data.data);
         }
       },
       /* bad response */
-      function(results) {
+      function() {
         defer.reject('bad response combination');
       }
     );
@@ -832,7 +804,6 @@ var SearchService = function($q, $http, UserProfile) {
     searchProtoByParam: searchProtoByParam,
     searchProtoMessage: searchProtoMessage,
     searchProtoByTransaction: searchProtoByTransaction,
-    createShareLink: createShareLink,
     makePcapTextforTransaction: makePcapTextforTransaction,
     makeReportRequest: makeReportRequest,
     downloadRecordingPcap: downloadRecordingPcap,

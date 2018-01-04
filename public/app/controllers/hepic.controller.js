@@ -1,15 +1,10 @@
 class HepicController {
 
-  constructor($rootScope, $scope) {
+  constructor() {
     'ngInject';
-    this.$rootScope = $rootScope;
-    this.$scope = $scope;
   }
 
   $onInit() {
-    this.$rootScope.$watch('authenticated', (authenticated) => {
-      this.authenticated = authenticated;
-    });
   }
 }
 

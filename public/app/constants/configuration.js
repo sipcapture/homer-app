@@ -1,4 +1,5 @@
 const CONFIGURATION = {
+  APP_NAME: 'hepic',
   DEBUG: true,
   USER_EXT_CR: false,
   WEBSOCKET: false,

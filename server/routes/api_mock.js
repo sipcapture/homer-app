@@ -20,9 +20,9 @@ export default [
     path: '/api/v2/dashboard/menu/{boardID}',
     method: 'POST',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //},
+      auth: {
+        strategy: 'token'
+      },
       validate: {
         params: {
           boardID: Joi.string().min(3).max(46).required()
@@ -49,9 +49,9 @@ export default [
     path: '/api/v2/dashboard/store/{boardID}',
     method: 'DELETE',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //},
+      auth: {
+        strategy: 'token'
+      },
       validate: {
         params: {
           boardID: Joi.string().min(3).max(46).required()
@@ -77,9 +77,9 @@ export default [
     path: '/api/v2/dashboard/store/{boardID}',
     method: 'POST',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //},
+      auth: {
+        strategy: 'token'
+      },
       validate: {
         params: {
           boardID: Joi.string().min(3).max(46).required()
@@ -107,9 +107,9 @@ export default [
     path: '/api/v2/dashboard/store/{boardID}',
     method: 'PUT',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //},
+      auth: {
+        strategy: 'token'
+      },
       validate: {
         params: {
           boardID: Joi.string().min(3).max(46).required()
@@ -145,9 +145,9 @@ export default [
     path: '/api/v2/dashboard/store/{boardID}',
     method: 'GET',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //},
+      auth: {
+        strategy: 'token'
+      },
       validate: {
         params: {
           boardID: Joi.string().min(3).max(46).required()
@@ -170,11 +170,11 @@ export default [
      */
     path: '/api/v2/dashboard/info',
     method: 'GET',
-    //config: { // to-do: authenticate later
-    //  auth: {
-    //    strategy: 'token'
-    //  }
-    //},
+    config: { // to-do: authenticate later
+      auth: {
+        strategy: 'token'
+      }
+    },
     handler: function (request, reply) {
       return reply(dashboards_info.data);
     }
@@ -189,9 +189,9 @@ export default [
     path: '/api/v2/dashboard/node',
     method: 'GET',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //}
+      auth: {
+        strategy: 'token'
+      }
     },
     handler: function (request, reply) {
       return reply(dashboards_node.data);
@@ -207,9 +207,9 @@ export default [
     path: '/api/v2/admin/profiles',
     method: 'GET',
     config: {
-      //auth: {
-      //  strategy: 'token'
-      //}
+      auth: {
+        strategy: 'token'
+      }
     },
     handler: function (request, reply) {
       return reply(dashboards_profiles.data);

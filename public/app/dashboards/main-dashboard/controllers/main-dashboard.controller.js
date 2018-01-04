@@ -3,7 +3,7 @@ import {findIndex, cloneDeep} from 'lodash';
 
 class MainDashboard {
   
-  constructor($stateParams, $scope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper) {
+  constructor($stateParams, $scope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
     'ngInject';
     this.$stateParams = $stateParams;
     this.$scope = $scope;
@@ -16,6 +16,7 @@ class MainDashboard {
     this.CONFIGURATION = CONFIGURATION;
     this.DashboardWidgetState = DashboardWidgetState;
     this.ModalHelper = ModalHelper;
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
@@ -89,7 +90,7 @@ class MainDashboard {
 
       if (confirm) {
         this.DashboardStorage.delete(this.dashboard.id).then(() => {
-          return this.$state.go('dashboard', {boardID: 'home'});
+          return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: this.ROUTER.HOME.NAME});
         }).catch((error) => {
           this.$log.error('[MainDashboard]', '[delete board]', error);
         });

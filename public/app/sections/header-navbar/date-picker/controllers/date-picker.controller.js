@@ -39,11 +39,11 @@ class DatePicker {
     const to = moment(this.timerange.to).format('MMM, DD, YYYY HH:mm:ss');
     this.timerange.custom = `${from} to ${to}`;
     this.menu.isOpen = false;
-    this.tellDashboardAboutTimeChange();
     this.TimeMachine.setTime({
       timezone: this.timezone,
       timerange: this.timerange
     });
+    this.tellDashboardAboutTimeChange();
   }
 
   setQuick(option, custom = null) {
@@ -53,11 +53,11 @@ class DatePicker {
       this.timerange = assign(this.timerange, this.quick.getRange(option, this.timezone.value));
     }
     this.menu.isOpen = false;
-    this.tellDashboardAboutTimeChange();
     this.TimeMachine.setTime({
       timezone: this.timezone,
       timerange: this.timerange
     });
+    this.tellDashboardAboutTimeChange();
   }
 
   tellDashboardAboutTimeChange() {

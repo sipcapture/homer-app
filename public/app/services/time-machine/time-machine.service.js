@@ -12,6 +12,8 @@ class TimeMachine {
     };
   }
 
+  // to-do: add methods to store timezone and timerange in DB
+
   setTime(data) {
     if (data.timezone) {
       this.timezone = data.timezone;

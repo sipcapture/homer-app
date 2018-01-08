@@ -6,29 +6,29 @@ class UserProfile {
 
   constructor($http) {
     this.$http = $http;
-  }
-
-  $onInit() {
-    this.loadedProfile = false;
-    this.factory = {};
-    this.myServerProfile = {};
-    
     this.profileScope = {
+      timezone: {
+        value: new Date().getTimezoneOffset(),
+        name: 'Default'
+      },
       timerange: {
         from: new Date(new Date().getTime() - 900*1000),
-        to: new Date()
+        to: new Date(),
+        custom: 'Today'
       },
       search: {},
       transaction: {},
       prototype: {},
       result: {},
       node: {},
-      timezone: {
-        value: new Date().getTimezoneOffset(),
-        name: 'Default'
-      },
       limit: 200
     };
+  }
+
+  $onInit() {
+    this.loadedProfile = false;
+    this.factory = {};
+    this.myServerProfile = {};
      
     this.myProfile = pick(this.profileScope, [
       'result',

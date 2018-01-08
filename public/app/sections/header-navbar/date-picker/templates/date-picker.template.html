@@ -1,24 +1,24 @@
-<div class="btn-group hepic2-date-picker-menu" uib-dropdown is-open="$ctrl.datepicker.isOpen">
-  <a href="#" class="hepic2-navbar-button" ng-click="$ctrl.openDatepicker()" uib-dropdown-toggle>
-    <i class="fa fa-clock-o"></i>{{$ctrl.datepicker.title}}
+<div class="btn-group hepic2-date-picker-menu" uib-dropdown auto-close="disabled" is-open="$ctrl.menu.isOpen">
+  <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>
+    <i class="fa fa-clock-o"></i>{{$ctrl.timerange.custom}}
   </a>
   <div class="dropdown-menu dropdown-content" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-    <uib-tabset active="active" ng-click="$event.stopPropagation()">
+    <uib-tabset active="active">
 
       <uib-tab index="0" heading="Quick Range">
         <div id="quickRanges">
           <div class="row">
             <div class="col-md-6">
               <ul class="dropdown__list">
-                <li role="menuitem" ng-repeat="option in $ctrl.datepicker.quickrange.options.left">
-                  <a ng-click="$ctrl.enableOption(option)">{{option.title}}</a>
+                <li role="menuitem" ng-repeat="option in $ctrl.quick.options.left">
+                  <a ng-click="$ctrl.setQuick(option)">{{option.title}}</a>
                 </li>
               </ul>
             </div>
             <div class="col-md-6">
               <ul class="dropdown__list">
-                <li role="menuitem" ng-repeat="option in $ctrl.datepicker.quickrange.options.right">
-                  <a ng-click="$ctrl.enableOption(option)">{{option.title}}</a>
+                <li role="menuitem" ng-repeat="option in $ctrl.quick.options.right">
+                  <a ng-click="$ctrl.setQuick(option)">{{option.title}}</a>
                 </li>
               </ul>
             </div>
@@ -28,9 +28,16 @@
             <span class="form-control">
               <center>
                 <button class="lastRangeButton"
-                  ng-click="last(timerange_last, 'Last '+timerange_last+' Minutes');"> Set To </button>
-                Last <input type="number" ng-model="timerange_last" min="1" max="59" required
-                  style="margin-right:5px;" ng-init="timerange_last=5"> Minutes
+                  ng-click="$ctrl.setQuick({'min':timerange_last, 'text':'Last '+timerange_last+' Minutes'}, true);"> Set To </button>
+                Last 
+                <input
+                  type="number"
+                  ng-model="timerange_last"
+                  min="1"
+                  max="59"
+                  required
+                  style="margin-right:5px;"
+                  ng-init="timerange_last=5"> Minutes
               </center>
             </span>
           </div> <!-- END custom -->
@@ -43,55 +50,86 @@
             <div class="col-md-6 date-picker--from">
               <label class="input-label" for="datetimepickerFrom">From</label>
               <div class="input-group input-group--date-picker">
-                <input id="datetimepickerFrom" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="timerange.customFrom" is-open="modelDateP.openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                <button class="calendar-btn" ng-click="open($event, 'openedFromdate')"  >
-                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <input
+                  id="datetimepickerFrom"
+                  type="text"
+                  class="form-control"
+                  uib-datepicker-popup="{{$ctrl.custom.date.format}}"
+                  ng-model="$ctrl.timerange.from"
+                  datepicker-options="$ctrl.custom.date.options"
+                  ng-required="true"
+                  close-text="Close"
+                  is-open="$ctrl.custom.date.isOpen.from"
+                  min-date="$ctrl.custom.date.min"
+                  max-date="$ctrl.custom.date.max">
+                <button class="calendar-btn" ng-click="$ctrl.custom.openCalendar('from')">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
                 </button>
-              </div>
+              </div> <!-- END from date -->
               <div class="input-group">
                 <span class="input-group-btn input-time">
-                  <uib-timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false" show-meridian="false" show-seconds="true"></uib-timepicker>
+                  <div
+                    uib-timepicker
+                    ng-model="$ctrl.timerange.from"
+                    hour-step="$ctrl.custom.time.hstep"
+                    minute-step="$ctrl.custom.time.mstep"
+                    second-step="$ctrl.custom.time.sstep"
+                    show-spinners="false"
+                    show-meridian="false"
+                    show-seconds="true">
+                  </div>
                 </span>
-              </div>
-              <button class="btn  btn-white" ng-click="setToNow(1);" uib-tooltip="Set Now">
-              Set Now
-              </button>
+              </div> <!-- END from time -->
+              <button class="btn  btn-white" ng-click="$ctrl.setNow('from');" uib-tooltip="Set Now">Set Now</button>
             </div> <!-- END from date/time -->
             <div class="col-md-6 date-picker--to">
               <label class="input-label" for="datetimepickerTo">To</label>
               <div class="input-group  input-group--date-picker">
-                <input id="datetimepickerTo" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.customTo" is-open="modelDateP.openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                <button class="calendar-btn" ng-click="open($event, 'openedTodate')"  >
-                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <input
+                  id="datetimepickerTo"
+                  type="text"
+                  class="form-control"
+                  uib-datepicker-popup="{{$ctrl.custom.date.format}}"
+                  ng-model="$ctrl.timerange.to"
+                  datepicker-options="$ctrl.custom.date.options"
+                  ng-required="true"
+                  close-text="Close"
+                  is-open="$ctrl.custom.date.isOpen.to"
+                  min-date="$ctrl.custom.date.min"
+                  max-date="$ctrl.custom.date.max">
+                <button class="calendar-btn" ng-click="$ctrl.custom.openCalendar('to')">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
                 </button>
               </div>
               <div class="input-group">
                 <span class="input-group-btn input-time">
-                  <uib-timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false"  show-meridian="false" show-seconds="true"></uib-timepicker>
+                  <div
+                    uib-timepicker
+                    ng-model="$ctrl.timerange.to"
+                    hour-step="$ctrl.custom.time.hstep"
+                    minute-step="$ctrl.custom.time.mstep"
+                    second-step="$ctrl.custom.time.sstep"
+                    show-spinners="false"
+                    show-meridian="false"
+                    show-seconds="true">
+                  </div>
                 </span>
               </div>
-              <button class="btn  btn-white" ng-click="setToNow(2);" uib-tooltip="Set Now">
-              Set Now
+              <button class="btn  btn-white" ng-click="$ctrl.setNow('to');" uib-tooltip="Set Now">
+                Set Now
               </button>
             </div> <!-- END to date/time -->
           </div>
           <div class="input-group">
-            <span class="input-label">Custom Quick Range</span>
-            <span class="form-control">
-            Last <input type="number" name="input" ng-model="timerange.customLast"
-              min="1" max="59" required> Minutes
-            </span>
-          </div> <!-- END quick range -->
-          <div class="input-group">
             <span class="input-label">Timezone</span>
             <label class="select-wr" for="tz">
-            <i class="fa  fa-angle-down  select-ico"></i>
-            <select ng-options="opt.value as opt.name for opt in timezones" ng-model="timezone.value"></select>
+              <i class="fa  fa-angle-down  select-ico"></i>
+              <select ng-options="opt.value as opt.name for opt in $ctrl.custom.timezones" ng-model="$ctrl.timezone.value"></select>
             </label>
           </div> <!-- END timezone -->
           <div class="text-right">
             <br>
-            <button class="btn btn-primary" ng-click="selectCustomeTime()">Set</button>
+            <button class="btn btn-primary" ng-click="$ctrl.setCustom()">Set</button>
           </div>
         </div>
       </uib-tab> <!-- END custom range -->

@@ -4,11 +4,11 @@
     <li role="menuitem">
       <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
     </li>
-    <li role="menuitem" ng-repeat="dash in $ctrl.menu.dashboards | filter:q">
-      <a ng-click="$ctrl.goDashboard(dash)">{{dash.title}}</a>
+    <li role="menuitem" ng-repeat="dashboard in $ctrl.menu.dashboards | filter:q">
+      <a ng-click="$ctrl.go(dashboard)">{{dashboard.name}}</a>
     </li>
     <li role="menuitem">
-      <a ng-click="$ctrl.addDashboard();">+ Add New Dashboard</a>
+      <a ng-click="$ctrl.add();">+ Add New Dashboard</a>
     </li>
   </ul>
 </div>

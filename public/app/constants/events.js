@@ -6,6 +6,8 @@ const EVENTS = {
   LOGIN_STATUS_CHANGED: 'loginStatusChanged',
   REDIRECT_TO_LOGIN: 'redirectToLogin',
   DASHBOARD_CHANGED: 'dashboard:item:changed',
+  DASHBOARD_DELETED: 'dashboard:item:deleted',
+  DASHBOARD_UPDATED: 'dashboard:item:updated',
   DASHBOARD_NEW_SETTINGS: 'dashboard:item:new:settings',
   DASHFRAME_NEW_SETTINGS: 'dashframe:item:new:settings',
   DASHFRAME_UPDATE_SETTINGS: 'dashframe:item:update:settings',

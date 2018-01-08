@@ -1,8 +1,10 @@
 import angular from 'angular';
-import Navbar from './navbar';
+import HeaderNavbar from './header-navbar';
 import DashboardsMenu from './dashboards-menu';
+import DatePicker from './date-picker';
 
 export default angular.module('hepicApp.navbar', [
-  Navbar.name,
-  DashboardsMenu.name
+  HeaderNavbar.name,
+  DashboardsMenu.name,
+  DatePicker.name
 ]);

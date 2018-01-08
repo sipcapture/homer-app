@@ -120,10 +120,12 @@ export default [
       const boardID = request.params.boardID;
       const dashboard = request.payload;
 
-      const foundDash = dashboards.data.find(d => d.id === boardID);
-      assign(foundDash, dashboard.param);
-      const foundMenu = dashboards_info.data.find(d => d.id === boardID);
-      assign(foundMenu, dashboard.param);
+      let foundDash = dashboards.data.find(d => d.id === boardID);
+      foundDash = assign(foundDash, dashboard);
+      let foundMenu = dashboards_info.data.find(d => d.id === boardID);
+      foundMenu = assign(foundMenu, dashboard);
+
+      console.log(foundDash);
 
       dashboards.data = dashboards.data.filter(d => d.id !== boardID);
       dashboards.data.push(foundDash);

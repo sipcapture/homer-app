@@ -1,56 +1,79 @@
 class DashboardsMenu {
 
-  constructor($log, $location, $state, $uibModal, $rootScope, DashboardStorage, ModalHelper, AuthenticationService, ROUTER) {
+  constructor($log, $scope, $state, $uibModal, $location, DashboardStorage, ModalHelper, EVENTS) {
     'ngInject';
     this.$log = $log;
-    this.$location = $location;
+    this.$scope = $scope;
     this.$state = $state;
     this.$uibModal = $uibModal;
-    this.$rootScope = $rootScope;
+    this.$location = $location;
     this.DashboardStorage = DashboardStorage;
     this.ModalHelper = ModalHelper;
-    this.AuthenticationService = AuthenticationService;
-    this.ROUTER = ROUTER;
+    this.EVENTS = EVENTS;
   }
 
   $onInit() {
-    this.dashboards = {
+    this.menu = {
       title: 'Home',
-      menu: [],
+      dashboards: [],
       isOpen: false
     };
 
-    this.loadDashboardsMenu().then((dashboards) => {
-      this.dashboards.menu = dashboards;
-      return null;
+    this.loadDashboardsMenu();
+
+    this.$scope.$on(this.EVENTS.DASHBOARD_DELETED, () => {
+      this.loadDashboardsMenu().then(() => {
+        this.updateTitle();
+      });
+    });
+
+    this.$scope.$on(this.EVENTS.DASHBOARD_UPDATE_SETTINGS, () => {
+      this.loadDashboardsMenu().then(() => {
+        this.updateTitle();
+      });
+    });
+  }
+
+  go(dashboard) {
+    this.menu.isOpen = false;
+    return this.$state.go(this.$state.current, {boardID: dashboard.id}).then(() => {
+      this.menu.title = dashboard.name;
+    });
+  }
+
+  add() {
+    this.menu.isOpen = false;
+    this.$uibModal.open({
+      component: 'addDashboard'
+    }).result.then((dashboard) => {
+      return this.storeDashboard(dashboard).then((dashboard) => {
+        this.menu.dashboards.push(dashboard);
+        return this.go(dashboard);
+      });
     }).catch((error) => {
-      this.$log.error('[DashboardsMenu]', '[init menu]', error);
+      if (this.ModalHelper.isError(error)) {
+        this.$log.error('[DashboardsMenu]', '[add dashboard]', error);
+      }
     });
   }
 
-  openDashboardsMenu() {
-    this.loadDashboardsMenu().then((dashboards) => {
-      this.dashboards.menu = dashboards;
-      return null;
-    }).catch((error) => {
-      this.$log.error('[DashboardsMenu]', '[init menu]', error);
-    });
+  updateTitle() {
+    const dashboard = this.menu.dashboards.filter((d) => d.id === this.pathId())[0];
+    if (dashboard) {
+      this.menu.title = dashboard.name;
+    }
   }
 
-  logout() {
-    this.AuthenticationService.logout().catch((error) => {
-      this.$log.error('[DashboardsMenu]', '[init menu]', error);
-    });
-  }
-
-  goDashboard(dashboard) {
-    return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
-      this.dashboards.title = dashboard.title;
-    });
+  pathId() {
+    return this.$location.path().split('/').slice(-1)[0];
   }
 
   loadDashboardsMenu() {
-    return this.DashboardStorage.getAll();
+    return this.DashboardStorage.getAll().then((dashboards) => {
+      this.menu.dashboards = dashboards;
+    }).catch((error) => {
+      this.$log.error('[DashboardsMenu]', '[init menu]', error);
+    });
   }
 
   storeDashboardData(id, data) {
@@ -61,22 +84,7 @@ class DashboardsMenu {
     return this.DashboardStorage.menu(id, menu);
   }
 
-  addDashboard() {
-    this.$uibModal.open({
-      component: 'addDashboard'
-    }).result.then((dashboard) => {
-      return this.saveDashboard(dashboard).then((item) => {
-        this.dashboards.menu.push(item);
-        return this.goDashboard(item);
-      });
-    }).catch((error) => {
-      if (this.ModalHelper.isError(error)) {
-        this.$log.error('[DashboardsMenu]', '[add dashboard]', error);
-      }
-    });
-  }
-
-  saveDashboard(dashboard) {
+  storeDashboard(dashboard) {
     const id = '_' + new Date().getTime();
     //var currentUser = authService.getCurrentLoginUser(); // to-do: introduce user scopes
     let name = dashboard.name;
@@ -109,8 +117,7 @@ class DashboardsMenu {
       shared,
       //uuid: currentUser.uuid, //to-do: introduce user scopes
       //gid: currentUser.gid,
-      title: name,
-      weight: 10,
+      weight,
       widgets: []
     };
 
@@ -118,7 +125,7 @@ class DashboardsMenu {
       id,
       alias,
       protect,
-      title: name,
+      name,
       type: stype,
       param,
       weight,

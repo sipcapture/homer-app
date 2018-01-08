@@ -3,10 +3,10 @@ import {findIndex, cloneDeep} from 'lodash';
 
 class MainDashboard {
   
-  constructor($stateParams, $scope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
+  constructor($stateParams, $rootScope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
     'ngInject';
     this.$stateParams = $stateParams;
-    this.$scope = $scope;
+    this.$rootScope = $rootScope;
     this.$log = $log;
     this.DashboardStorage = DashboardStorage;
     this.EVENTS = EVENTS;
@@ -90,12 +90,17 @@ class MainDashboard {
 
       if (confirm) {
         this.DashboardStorage.delete(this.dashboard.id).then(() => {
-          return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: this.ROUTER.HOME.NAME});
+          this.$rootScope.$broadcast(this.EVENTS.DASHBOARD_DELETED);
+          this.goHomeDashboard();
         }).catch((error) => {
           this.$log.error('[MainDashboard]', '[delete board]', error);
         });
       }
     });
+  }
+
+  goHomeDashboard() {
+    return this.$state.go(this.$state.current, {boardID: this.ROUTER.HOME.NAME, reload: true, inherit: false});
   }
 
   editBoard() {
@@ -109,26 +114,17 @@ class MainDashboard {
     }).result.then((dashboard) => {
       this.gridsterOptions = dashboard.config;
       this.dashboard = dashboard;
-      this.dashboard.title = this.dashboard.name;
       this.dashboard.alias = this.dashboard.type;
 
-      const config = {
-        param: {
-          shared: 0
-        }
+      const update = {
+        name: this.dashboard.name,
+        shared: this.dashboard.shared ? 1 : 0,
+        param: this.dashboard.param || ''
       };
 
-      if (dashboard.name) {
-        config.param.title = dashboard.name;
-      }
-      if (dashboard.shared) {
-        config.param.shared = 1;
-      }
-      if (dashboard.param) {
-        config.param.param = dashboard.param;
-      }
-
-      return this.DashboardStorage.update(dashboard.id, config);
+      return this.DashboardStorage.update(dashboard.id, update).then(() => {
+        this.$rootScope.$broadcast(this.EVENTS.DASHBOARD_UPDATE_SETTINGS);
+      });
     }).catch((error) => {
       if (this.ModalHelper.isError(error)) {
         this.$log.info('[MainDashboard]', '[update dashboard]', error);

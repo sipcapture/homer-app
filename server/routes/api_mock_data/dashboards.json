@@ -5,7 +5,6 @@
       "name": "Home",
       "alias": "home",
       "selectedItem": "",
-      "title": "Home",
       "weight": 10,
       "widgets": [
         {
@@ -62,7 +61,6 @@
       "type": 0,
       "param": "",
       "shared": 0,
-      "title": "bear",
       "weight": 10,
       "widgets": []
     }

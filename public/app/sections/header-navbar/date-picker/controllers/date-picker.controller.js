@@ -61,7 +61,7 @@ class DatePicker {
   }
 
   tellDashboardAboutTimeChange() {
-    this.$rootScope.broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
+    this.$rootScope.$broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
   }
 
 }

@@ -14,14 +14,15 @@ class DashboardsMenu {
   }
 
   $onInit() {
-    this.dashboards = {
+
+    this.menu = {
       title: 'Home',
-      menu: [],
+      dashboards: [],
       isOpen: false
     };
 
     this.loadDashboardsMenu().then((dashboards) => {
-      this.dashboards.menu = dashboards;
+      this.menu.dashboards = dashboards;
       return null;
     }).catch((error) => {
       this.$log.error('[DashboardsMenu]', '[init menu]', error);
@@ -30,7 +31,7 @@ class DashboardsMenu {
 
   openDashboardsMenu() {
     this.loadDashboardsMenu().then((dashboards) => {
-      this.dashboards.menu = dashboards;
+      this.menu.dashboards = dashboards;
       return null;
     }).catch((error) => {
       this.$log.error('[DashboardsMenu]', '[init menu]', error);
@@ -44,8 +45,9 @@ class DashboardsMenu {
   }
 
   goDashboard(dashboard) {
+    this.menu.isOpen = false;
     return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
-      this.dashboards.title = dashboard.title;
+      this.menu.title = dashboard.title;
     });
   }
 
@@ -62,11 +64,12 @@ class DashboardsMenu {
   }
 
   addDashboard() {
+    this.menu.isOpen = false;
     this.$uibModal.open({
       component: 'addDashboard'
     }).result.then((dashboard) => {
       return this.saveDashboard(dashboard).then((item) => {
-        this.dashboards.menu.push(item);
+        this.menu.dashboards.push(item);
         return this.goDashboard(item);
       });
     }).catch((error) => {

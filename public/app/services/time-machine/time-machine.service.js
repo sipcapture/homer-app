@@ -23,11 +23,27 @@ class TimeMachine {
     }
   }
 
+  setTimezone(timezone) {
+    this.timezone = timezone;
+  }
+
+  setTimerange(timerange) {
+    this.timerange = timerange;
+  }
+
   getTime() {
     return {
       timezone: this.timezone,
       timerange: this.timerange
     };
+  }
+
+  getTimezone() {
+    return this.timezone;
+  }
+
+  getTimerange() {
+    return this.timerange;
   }
 }
 

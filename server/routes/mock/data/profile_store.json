@@ -1,0 +1,38 @@
+{
+  "data": {
+    "limit": "200.0",
+    "node": {
+      "node": {
+        "name": "localhost",
+        "id": "localhost"
+      }
+    },
+    "prototype": {
+      "prototype": [
+        {
+          "name": "sip_rest",
+          "id": "SIP Rest"
+        }
+      ]
+    },
+    "result": {
+      "limit": 200.0,
+      "restype": {
+        "name": "table",
+        "value": "TABLE"
+      }
+    },
+    "search": {},
+    "timerange": {
+      "from": "2018-01-08T15:18:46.829Z",
+      "to": "2018-01-09T15:18:46.829Z",
+      "custom": "Now() - 1440"
+    },
+    "timerange_last": "1440.0",
+    "timezone": {
+      "value": -60.0,
+      "name": "GMT+1 CET",
+      "offset":"+0100"
+    }
+  }
+}

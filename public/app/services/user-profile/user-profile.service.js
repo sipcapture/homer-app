@@ -1,35 +1,25 @@
-/*global angular*/
 import {forEach, pick} from 'lodash';
 import Promise from 'bluebird';
 
 class UserProfile {
 
-  constructor($http) {
+  constructor($http, API, TimeMachine) {
     this.$http = $http;
+    this.API = API;
+    this.TimeMachine = TimeMachine;
     this.profileScope = {
-      timezone: {
-        value: new Date().getTimezoneOffset(),
-        name: 'Default'
-      },
-      timerange: {
-        from: new Date(new Date().getTime() - 900*1000),
-        to: new Date(),
-        custom: 'Today'
-      },
       search: {},
+      timerange: this.TimeMachine.getTimerange(),
+      timezone: this.TimeMachine.getTimezone(),
       transaction: {},
       prototype: {},
       result: {},
       node: {},
       limit: 200
     };
-  }
-
-  $onInit() {
     this.loadedProfile = false;
     this.factory = {};
     this.myServerProfile = {};
-     
     this.myProfile = pick(this.profileScope, [
       'result',
       'node',
@@ -47,8 +37,8 @@ class UserProfile {
   }
           
   setProfile(key, data) {
-    this.setLocalProfile(key,data);
-    this.setRemoteProfile(key,data);
+    this.setLocalProfile(key, data);
+    this.setRemoteProfile(key, data);
   }
           
   getProfile(key) {
@@ -77,20 +67,20 @@ class UserProfile {
   }
          
   getAllRemoteProfile() {
-    return this.$http.get('api/v2/profile/store', { handleStatus: [ 403, 503 ] }).then((response) => {
-      forEach(response.data.data, (value, key) => {
-        var jsonObj = JSON.parse(value);
-        /* workaround for bad json date string */
-        if (key == 'timerange') {
-          jsonObj.from = new Date(jsonObj.from);
-          jsonObj.to = new Date(jsonObj.to);
-          this.profileScope.timerange = jsonObj;
-        } else if (key == 'timezone') {
-          this.profileScope.timezone = jsonObj;
+    return this.$http.get(this.API.PROFILE.STORE, { handleStatus: [ 403, 503 ] }).then((response) => {
+      forEach(response.data, (value, key) => {
+        if (key === 'timerange') {
+          value.from = new Date(value.from);
+          value.to = new Date(value.to);
+          this.TimeMachine.setTimerange(value);
+          //this.profileScope.timerange = jsonObj; // to-do: it is reference to the old code, delete it during the final review
+        } else if (key === 'timezone') {
+          this.TimeMachine.setTimezone(value);
+          //this.profileScope.timezone = jsonObj; // to-do: it is reference to the old code, delete it during the final review
         }
-  
-        this.setLocalProfile(key, jsonObj);
-        this.profileScope[key] = jsonObj;
+
+        this.setLocalProfile(key, value);
+        this.profileScope[key] = value;
         this.loadedProfile = true;
         return 'yes';
       });
@@ -98,15 +88,15 @@ class UserProfile {
   }
           
   getRemoteProfile(id) {
-    return this.$http.get('api/v2/profile/store/' + id, {handleStatus:[403,503]}).then(function(response) {
-      return response.data.data;
+    return this.$http.get(this.API.PROFILE.STORE+'/' + id, {handleStatus:[403,503]}).then(function(response) {
+      return response.data;
     });
   }
           
   setRemoteProfile(id, sdata) {
-    var url = 'api/v2/profile/store';
+    var url = this.API.PROFILE.STORE;
     if (id != null) {
-      url = 'api/v2/profile/store/'+id;
+      url = this.API.PROFILE.STORE+'/'+id;
     }
     var data = {
       id,
@@ -120,13 +110,13 @@ class UserProfile {
   }
           
   deleteRemoteProfile(id) {
-    return this.$http.delete('api/v2/profile/store/'+id, {handleStatus:[403,503]}).then(function (results) {
+    return this.$http.delete(this.API.PROFILE.STORE+'/'+id, {handleStatus:[403,503]}).then(function (results) {
       return results.data;
     });
   }
          
   deleteAllRemoteProfile() {
-    return this.$http.delete('api/v2/profile/store/', {handleStatus:[403,503]}).then(function (results) {
+    return this.$http.delete(this.API.PROFILE.STORE+'/', {handleStatus:[403,503]}).then(function (results) {
       return results.data;
     });
   }
@@ -135,28 +125,7 @@ class UserProfile {
     if (this.loadedProfile == true) {
       return Promise.resolve(this.loadedProfile);
     }
-    
-    return this.$http.get('api/v2/profile/store', {handleStatus:[403,503]}).then((response) => {
-      console.log('LOADING');
-      forEach(response.data.data, (value,key) => {
-        var jsonObj = angular.fromJson(value);
-        /* workaround for bad json date string */
-        if (key == 'timerange') {
-          jsonObj.from = new Date(jsonObj.from);
-          jsonObj.to = new Date(jsonObj.to);
-          this.profileScope.timerange = jsonObj;
-        } else if (key == 'timezone') {
-          if (typeof jsonObj !== 'object') {
-            jsonObj = this.profileScope[key];
-          }
-        }
-        
-        this.setLocalProfile(key, jsonObj);
-        this.profileScope[key] = jsonObj;
-        this.loadedProfile = true;
-        return key;
-      });
-    });
+    return this.getAllRemoteProfile();
   }
       
       
@@ -180,8 +149,8 @@ class UserProfile {
   
 
   getAllServerRemoteProfile() {
-    return this.$http.get('api/v2/admin/profiles', {handleStatus:[403,503]}).then((response) => {
-      forEach(response.data.data, (value, key) => {
+    return this.$http.get(this.API.ADMIN.PROFILES, {handleStatus:[403,503]}).then((response) => {
+      forEach(response.data, (value, key) => {
         var jsonObj = JSON.parse(value);
         this.setLocalServerProfile(key, jsonObj);
         return 'yes';
@@ -190,8 +159,8 @@ class UserProfile {
   }
   
   //getRemoteProfile(id) { // to-do: find out why duplicate method is here
-  //  return this.$http.get('api/v2/admin/profile/' + id, {handleStatus:[403,503]}).then((response) => {
-  //    return response.data.data;
+  //  return this.$http.get(this.API.ADMIN.PROFILES+'/' + id, {handleStatus:[403,503]}).then((response) => {
+  //    return response.data;
   //  });
   //}
 }

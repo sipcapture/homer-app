@@ -2,10 +2,9 @@ import Joi from 'joi';
 import Boom from 'boom';
 import {assign} from 'lodash';
 
-import dashboards from './api_mock_data/dashboards';
-import dashboards_node from './api_mock_data/dashboards_node';
-import dashboards_profiles from './api_mock_data/dashboards_profiles';
-import dashboards_info from './api_mock_data/dashboards_info';
+import dashboards from './data/dashboards';
+import dashboards_node from './data/dashboards_node';
+import dashboards_info from './data/dashboards_info';
 
 export default [
   {
@@ -169,6 +168,9 @@ export default [
   {
     /**
      * GET dashboards info
+     *
+     * @header
+     *  @param {string} JWT token - authentication
      */
     path: '/api/v3/dashboard/info',
     method: 'GET',
@@ -197,24 +199,6 @@ export default [
     },
     handler: function (request, reply) {
       return reply(dashboards_node.data);
-    }
-  },
-  {
-    /**
-     * GET profiles info
-     *
-     * @header
-     *  @param {string} JWT token - authentication
-     */
-    path: '/api/v3/admin/profiles',
-    method: 'GET',
-    config: {
-      auth: {
-        strategy: 'token'
-      }
-    },
-    handler: function (request, reply) {
-      return reply(dashboards_profiles.data);
     }
   }
 ];

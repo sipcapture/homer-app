@@ -1,4 +1,10 @@
 const API = {
+  PROFILE: {
+    STORE: 'api/v3/profile/store'
+  },
+  ADMIN: {
+    PROFILES: 'api/v3/admin/profiles'
+  },
   AUTH: '/api/v3/auth',
   DASHBOARD: {
     NODE: 'api/v3/dashboard/node',

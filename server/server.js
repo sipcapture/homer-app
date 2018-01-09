@@ -7,7 +7,10 @@ import authRoutes from './routes/authentication';
 import birdsRoutes from './routes/birds';
 import protocolRoutes from './routes/protocol';
 import uiRoutes from './routes/ui';
-import apiMock from './routes/api_mock'; // to-so: delete it when API is ready
+
+import dashboardMock from './routes/mock/dashboard'; // to-do: delete it when API is ready
+import searchMock from './routes/mock/search'; // to-do: delete it when API is ready
+import profileMock from './routes/mock/profile'; // to-do: delete it when API is ready
 
 const server = new Hapi.Server({
   debug: {
@@ -58,7 +61,7 @@ pem.createCertificate({
     });
   
     // Initialize routes
-    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes, apiMock], function (routes) {
+    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes, dashboardMock, searchMock, profileMock], function (routes) {
       forEach(routes, function (route) {
         server.route(route);
       });

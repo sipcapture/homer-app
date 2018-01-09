@@ -28,6 +28,10 @@ import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
 import 'angular-filter';
 
+// old homer modal. To-do: refactor this modal to component based structure
+import './search/modal/homerCflow';
+import './search/modal/homerModal';
+
 // components
 import Controllers from './controllers';
 import Constants from './constants';
@@ -75,6 +79,8 @@ var app = angular.module('hepicApp', [
   'ngVis',
   'angularFileUpload',
   'ds.clock',
+  'homer.modal', // to-do: delete this modules when the homer modal refactored
+  'homer.cflow',
   Controllers.name,
   Constants.name,
   Services.name,

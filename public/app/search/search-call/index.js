@@ -2,11 +2,11 @@ import angular from 'angular';
 import component from './search-call.component';
 
 export default angular.module('searchCall', [])
-  .config(function ($stateProvider) {
-    $stateProvider.state('hepic.searchCall', {
-      url: '/searchCall/:protoID',
-      component: 'searchCall',
-      secure: true
+  .config(function ($stateProvider, ROUTER) {
+    'ngInject';
+    $stateProvider.state(ROUTER.SEARCH.NAME, {
+      url: ROUTER.SEARCH.PATH,
+      component: 'searchCall'
     });
   })
   .component('searchCall', component);

@@ -1,4 +1,4 @@
-/* global angular, window */
+/* global angular, window, Blob */
 import Promise from 'bluebird';
 import { cloneDeep, has } from 'lodash';
 import fileSaver from 'file-saver';
@@ -15,7 +15,7 @@ import data_db_node from '../data/db_node';
 
 class QuicksearchWidget {
 
-  constructor($scope, $state, UserProfile, $log, SearchService, $uibModal, CONFIGURATION, ModalHelper) {
+  constructor($scope, $state, UserProfile, $log, SearchService, $uibModal, CONFIGURATION, ModalHelper, ROUTER) {
     'ngInject';
     this.$scope = $scope;
     this.$state = $state;
@@ -25,6 +25,7 @@ class QuicksearchWidget {
     this.$uibModal = $uibModal;
     this.CONFIGURATION = CONFIGURATION;
     this.ModalHelper = ModalHelper;
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
@@ -138,9 +139,12 @@ class QuicksearchWidget {
           protoID = 'registration'; //To-do: find out what is it
         }
       }
-      
-      this.$state.go('searchCall', { protoID });
+      this.searchForProtocol(protoID);
     }
+  }
+
+  searchForProtocol(protoID) {
+    this.$state.go(this.ROUTER.SEARCH.NAME, { protoID });
   }
 
   clearSearchForm() {

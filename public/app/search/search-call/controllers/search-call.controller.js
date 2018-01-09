@@ -4,7 +4,7 @@ import { forEach } from 'lodash';
 
 import data_grid_options from '../data/grid_options';
 
-const SearchCallController = function($scope, $rootScope, eventbus, $http, $location, SearchService,
+const SearchCallController = function($scope, $rootScope, EventBus, $http, $location, SearchService,
   $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
   'ngInject';
   const self = this;
@@ -20,11 +20,11 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
   self.dataLoading = false;
 
   $scope.$on('$destroy', function() {
-    eventbus.broadcast(EVENTS.DESTROY_REFESH, '1');
+    EventBus.broadcast(EVENTS.DESTROY_REFESH, '1');
     myListener();
   });
 
-  var myListener = eventbus.subscribe(EVENTS.SEARCH_CALL_SUBMIT, function() {
+  var myListener = EventBus.subscribe(EVENTS.SEARCH_CALL_SUBMIT, function() {
     self.processSearchResult();
   });
 
@@ -184,7 +184,7 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
       timedate.from = new Date(data.timestamp.from - diff);
       timedate.to = new Date(data.timestamp.to - diff);
       UserProfile.setProfile('timerange', timedate);
-      eventbus.broadcast(EVENTS.SET_TIME_RANGE, timedate);
+      EventBus.broadcast(EVENTS.SET_TIME_RANGE, timedate);
     }
 
     self.dataLoading = true;
@@ -912,17 +912,17 @@ const SearchCallController = function($scope, $rootScope, eventbus, $http, $loca
   };
 
 
-  eventbus.subscribe(EVENTS.GRID_STATE_SAVE, function() {
+  EventBus.subscribe(EVENTS.GRID_STATE_SAVE, function() {
     console.log('save');
     self.saveState();
   });
 
-  eventbus.subscribe(EVENTS.GRID_STATE_RESTORE, function() {
+  EventBus.subscribe(EVENTS.GRID_STATE_RESTORE, function() {
     console.log('restore');
     self.restoreState();
   });
 
-  eventbus.subscribe(EVENTS.GRID_STATE_RESET, function() {
+  EventBus.subscribe(EVENTS.GRID_STATE_RESET, function() {
     console.log('reset');
     self.resetState();
   });

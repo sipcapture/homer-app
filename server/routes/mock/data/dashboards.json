@@ -25,6 +25,22 @@
           },
           "row": 0,
           "col": 1
+        },
+        {
+          "title": "Search",
+          "group": "Search",
+          "name": "quicksearch",
+          "description": "Display Search Form component",
+          "refresh": false,
+          "sizeX": 1,
+          "sizeY": 1,
+          "config": {
+            "title": "QuickSearch",
+            "searchbutton": true
+          },
+          "uuid": "2ccc770b-dabf-4c2f-942c-a2307c4f7545",
+          "row": 0,
+          "col": 0
         }
       ],
       "config": {

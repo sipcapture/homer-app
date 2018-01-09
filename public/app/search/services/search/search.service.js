@@ -61,11 +61,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -87,11 +83,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -111,11 +103,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -135,11 +123,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -161,11 +145,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -185,11 +165,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -209,11 +185,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -235,11 +207,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -259,11 +227,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -283,11 +247,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -300,7 +260,7 @@ var SearchService = function($q, $http, UserProfile, API) {
 
 
   /**** REPORT ***/
-  var searchRTCPReport = function(data) {
+  var searchCallRTCPReport = function(data) {
 
     var defer = $q.defer();
 
@@ -309,11 +269,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -333,11 +289,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -357,11 +309,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -381,11 +329,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -405,11 +349,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -429,11 +369,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -453,11 +389,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -478,11 +410,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -518,11 +446,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -549,11 +473,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -579,11 +499,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     $http.get(url, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -623,11 +539,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -705,42 +617,42 @@ var SearchService = function($q, $http, UserProfile, API) {
     return defer.promise;
   };
 
-  /* CUSTOM API, EXPERIMENTAL */
-  var searchCustom = function(data, api) {
+  ///* CUSTOM API, EXPERIMENTAL */
+  //var searchCustom = function(data, api) {
 
-    var profile = UserProfile.getServerProfile('dashboard');
-    var defer = $q.defer();
-    var apiurl = api;
-    if (profile.customapi_url) {
-      apiurl = profile.customapi_url;
-    }
-    if (!apiurl || 0 === apiurl.length) return;
-    if (profile.customapi) {
+  //  var profile = UserProfile.getServerProfile('dashboard');
+  //  var defer = $q.defer();
+  //  var apiurl = api;
+  //  if (profile.customapi_url) {
+  //    apiurl = profile.customapi_url;
+  //  }
+  //  if (!apiurl || 0 === apiurl.length) return;
+  //  if (profile.customapi) {
 
-      $http.get(apiurl + data, {
-        handleStatus: [403, 503],
-        async: true
-      }).then(
-        /* good response */
-        function(results) {
-          if (!results || !results.data) {
-            defer.reject('request failed');
-          } else {
-            // console.log('GEO-LOOKUP',ip,results);
-            defer.resolve(results.data);
-          }
-        },
-        /* bad response */
-        function() {
-          defer.reject('bad response combination');
-        }
-      );
-    } else {
-      defer.reject('bad response combination');
-    }
+  //    $http.get(apiurl + data, {
+  //      handleStatus: [403, 503],
+  //      async: true
+  //    }).then(
+  //      /* good response */
+  //      function(results) {
+  //        if (!results || !results.data) {
+  //          defer.reject('request failed');
+  //        } else {
+  //          // console.log('GEO-LOOKUP',ip,results);
+  //          defer.resolve(results.data);
+  //        }
+  //      },
+  //      /* bad response */
+  //      function() {
+  //        defer.reject('bad response combination');
+  //      }
+  //    );
+  //  } else {
+  //    defer.reject('bad response combination');
+  //  }
 
-    return defer.promise;
-  };
+  //  return defer.promise;
+  //};
 
 
   var createShareLink = function(data) {
@@ -752,11 +664,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -776,11 +684,7 @@ var SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        if (results.data.auth == 'false') {
-          defer.reject('user not authorized');
-        } else {
-          defer.resolve(results.data.data);
-        }
+        defer.resolve(results.data);
       },
       /* bad response */
       function() {
@@ -793,39 +697,39 @@ var SearchService = function($q, $http, UserProfile, API) {
 
 
   return {
-    searchCallByParam: searchCallByParam,
-    searchMethod: searchMethod,
-    searchCallMessage: searchCallMessage,
-    searchCallByTransaction: searchCallByTransaction,
-    searchRegistrationByParam: searchRegistrationByParam,
-    searchRegistrationMessage: searchRegistrationMessage,
-    searchRegistrationByTransaction: searchRegistrationByTransaction,
-    searchProtoByParam: searchProtoByParam,
-    searchProtoMessage: searchProtoMessage,
-    searchProtoByTransaction: searchProtoByTransaction,
-    makePcapTextforTransaction: makePcapTextforTransaction,
-    makeReportRequest: makeReportRequest,
-    downloadRecordingPcap: downloadRecordingPcap,
-    makePcapTextData: makePcapTextData,
-    createShareLink: createShareLink,
-    getTimeRange: getTimeRange,
-    setTimeRange: setTimeRange,
-    getSearchData: getSearchData,
-    setSearchData: setSearchData,
-    getSearchValue: getSearchValue,
-    setSearchValue: setSearchValue,
-    searchValue: searchValue,
-    searchCallRTCPReport: searchRTCPReport,
-    searchQOSReport: searchQOSReport,
-    searchLogReport: searchLogReport,
-    searchRecordingReport: searchRecordingReport,
-    searchRtcReport: searchRtcReport,
-    searchRemoteLog: searchRemoteLog,
-    searchQualityReport: searchQualityReport,
-    searchBlacklist: searchBlacklist,
-    searchGeoLoc: searchGeoLoc,
-    searchMetaDataRecording: searchMetaDataRecording,
-    loadNode: loadNode
+    searchCallByParam,
+    searchMethod,
+    searchCallMessage,
+    searchCallByTransaction,
+    searchRegistrationByParam,
+    searchRegistrationMessage,
+    searchRegistrationByTransaction,
+    searchProtoByParam,
+    searchProtoMessage,
+    searchProtoByTransaction,
+    makePcapTextforTransaction,
+    makeReportRequest,
+    downloadRecordingPcap,
+    makePcapTextData,
+    createShareLink,
+    getTimeRange,
+    setTimeRange,
+    getSearchData,
+    setSearchData,
+    getSearchValue,
+    setSearchValue,
+    searchValue,
+    searchCallRTCPReport,
+    searchQOSReport,
+    searchLogReport,
+    searchRecordingReport,
+    searchRtcReport,
+    searchRemoteLog,
+    searchQualityReport,
+    searchBlacklist,
+    searchGeoLoc,
+    searchMetaDataRecording,
+    loadNode
   };
 };
 

@@ -312,7 +312,7 @@ const SearchCallController = function($scope, $rootScope, EventBus, $http, $loca
 
   self.getCountryFlag = function(value) {
     if (value == '') value = 'UN';
-    return '/resources/app/images/cc/' + value + '.gif';
+    return '/img/cc/' + value + '.gif';
   };
 
   self.getCallStatus = function(value, transaction) {

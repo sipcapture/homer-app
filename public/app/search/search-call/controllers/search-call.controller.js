@@ -2,9 +2,12 @@
 
 import { forEach } from 'lodash';
 
-import data_grid_options from '../data/grid_options';
+import gridOptions from '../data/grid/options';
+import gridRowTemplate from '../data/grid/row_template.html';
+import gridColumnDefinitions from '../data/grid/collumns/definitions';
+import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
-const SearchCallController = function($scope, $rootScope, EventBus, $http, $location, SearchService,
+const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
   $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
   'ngInject';
   const self = this;
@@ -12,12 +15,21 @@ const SearchCallController = function($scope, $rootScope, EventBus, $http, $loca
   self.$onInit = function () {
   };
 
-  self.infosearch = $filter('translate')('hepic.pages.search.RESULTS') || 'Search Results';
-
-  //$rootScope.loggedIn = false;
   self.expandme = true;
   self.showtable = true;
   self.dataLoading = false;
+
+  gridColumnDefinitions.forEach(function(column) {
+    column.displayName = $filter('translate')(column._hepic_translate);
+  });
+
+  if (CONFIGURATION.USER_EXT_CR) {
+    gridColumnDefinitions.push.apply(gridColumnDefinitionsUserExtCr);
+  }
+      
+  self.gridOpts = gridOptions;
+  self.gridOpts.columnDefs = gridColumnDefinitions;
+  self.gridOpts.gridRowTemplate = gridRowTemplate;
 
   $scope.$on('$destroy', function() {
     EventBus.broadcast(EVENTS.DESTROY_REFESH, '1');
@@ -321,52 +333,52 @@ const SearchCallController = function($scope, $rootScope, EventBus, $http, $loca
     if (transaction === 'call') {
       switch (status) {
       case 1:
-        result = $filter('translate')('hepic.pages.status.INIT') || 'Init';
+        result = 'hepic.pages.status.init';
         break;
       case 2:
-        result = $filter('translate')('hepic.pages.status.UNAUTH') || 'Unauthorized';
+        result = 'hepic.pages.status.unauth';
         break;
       case 3:
-        result = $filter('translate')('hepic.pages.status.PROGRESS') || 'Progress';
+        result = 'hepic.pages.status.progress';
         break;
       case 4:
-        result = $filter('translate')('hepic.pages.status.RINGING') || 'Ringing';
+        result = 'hepic.pages.status.ringing';
         break;
       case 5:
-        result = $filter('translate')('hepic.pages.status.CONNECTED') || 'Connected';
+        result = 'hepic.pages.status.connected';
         break;
       case 6:
-        result = $filter('translate')('hepic.pages.status.MOVED') || 'Moved';
+        result = 'hepic.pages.status.moved';
         break;
       case 7:
-        result = $filter('translate')('hepic.pages.status.BUSY') || 'Busy';
+        result = 'hepic.pages.status.busy';
         break;
       case 8:
-        result = $filter('translate')('hepic.pages.status.USERFAIL') || 'User Failure';
+        result = 'hepic.pages.status.userfail';
         break;
       case 9:
-        result = $filter('translate')('hepic.pages.status.HARDFAIL') || 'Hard Failure';
+        result = 'hepic.pages.status.hardfail';
         break;
       case 10:
-        result = $filter('translate')('hepic.pages.status.FINISHED') || 'Finished';
+        result = 'hepic.pages.status.finished';
         break;
       case 11:
-        result = $filter('translate')('hepic.pages.status.CANCELED') || 'Canceled';
+        result = 'hepic.pages.status.canceled';
         break;
       case 12:
-        result = $filter('translate')('hepic.pages.status.TIMEOUT') || 'Timeout';
+        result = 'hepic.pages.status.timeout';
         break;
       case 13:
-        result = $filter('translate')('hepic.pages.status.BADTERM') || 'Bad Term';
+        result = 'hepic.pages.status.badterm';
         break;
       case 14:
-        result = $filter('translate')('hepic.pages.status.DECLINED') || 'Declined';
+        result = 'hepic.pages.status.declined';
         break;
       case 15:
-        result = $filter('translate')('hepic.pages.status.UNKNOWNTERM') || 'Unknown Term';
+        result = 'hepic.pages.status.unknownterm';
         break;
       default:
-        result = $filter('translate')('hepic.pages.status.UNKNOWN') || 'unknown';
+        result = 'hepic.pages.status.unknown';
         break;
       }
     }
@@ -639,260 +651,6 @@ const SearchCallController = function($scope, $rootScope, EventBus, $http, $loca
   self.fileOneUploaded = true;
   self.fileTwoUploaded = false;
 
-       
-  var myColumnDefs = [
-    {
-      field: 'id',
-      displayName: $filter('translate')('hepic.pages.results.ID') ? $filter('translate')('hepic.pages.results.ID') : 'Id',
-      type: 'number',
-      cellTemplate: '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>',
-      width: '*'
-    },
-    {
-      field: 'micro_ts',
-      displayName: $filter('translate')('hepic.pages.results.DATE') ? $filter('translate')('hepic.pages.results.DATE') : 'Date',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateConvert(row.entity.micro_ts)}}</div>',
-      resizable: true,
-      type: 'date',
-      width: '*',
-      minWidth: 180
-    },
-    {
-      field: 'callid',
-      displayName: $filter('translate')('hepic.pages.results.CALLID') ? $filter('translate')('hepic.pages.results.CALLID') : 'CallID',
-      resizable: true,
-      width: '*',
-      minWidth: 180,
-      type: 'string',
-      cellTemplate: '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)"><span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.callid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>'
-    },
-    {
-      field: 'from_user',
-      displayName: $filter('translate')('hepic.pages.results.FROMUSER') ? $filter('translate')('hepic.pages.results.FROMUSER') : 'From User',
-      resizable: true,
-      type: 'string',
-      width: '*'
-    },
-    {
-      field: 'ruri_user',
-      displayName: $filter('translate')('hepic.pages.results.RURIUSER') ? $filter('translate')('hepic.pages.results.RURIUSER') : 'RURI user',
-      type: 'string',
-      resizable: true,
-      width: '*'
-    },
-    {
-      field: 'to_user',
-      displayName: $filter('translate')('hepic.pages.results.TOUSER') ? $filter('translate')('hepic.pages.results.TOUSER') : 'To User',
-      resizable: true,
-      type: 'string',
-      width: '*'
-    },
-    {
-      field: 'geo_cc',
-      displayName: $filter('translate')('hepic.pages.results.GEODST') ? $filter('translate')('hepic.pages.results.GEODST') : 'Geo',
-      resizable: true,
-      type: 'string',
-      width: '*',
-      maxWidth: 50,
-      cellTemplate: '<div ng-show="COL_FIELD" class="ui-grid-cell-contents" title="{{COL_FIELD}}" alt="{{COL_FIELD}}"><span style="font-size:7px;"><img ng-src="{{grid.appScope.$ctrl.getCountryFlag(row.entity.geo_cc)}}" lazy-src border="0"></span></div>'
-    },
-    {
-      field: 'uas',
-      type: 'string',
-      displayName: $filter('translate')('hepic.pages.results.USERAGENT') ? $filter('translate')('hepic.pages.results.USERAGENT') : 'User Agent',
-      width: '*',
-    },
-    {
-      field: 'status',
-      displayName: $filter('translate')('hepic.pages.results.STATUS') ? $filter('translate')('hepic.pages.results.STATUS') : 'Status',
-      minWidth: 100,
-      resizable: true,
-      type: 'string',
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents"><span ng-style="grid.appScope.$ctrl.getCallStatusColor(row.entity.status, row.isSelected, row.entity.transaction)" title="status">{{grid.appScope.$ctrl.getCallStatus(row.entity.status,row.entity.transaction)}}</span></div>'
-    },
-    {
-      name: 'source',
-      field: 'source_ip',
-      minWidth: 120,
-      resizable: true,
-      type: 'string',
-      width: '*',
-      displayName: $filter('translate')('hepic.pages.results.SRCIP') ? $filter('translate')('hepic.pages.results.SRCIP') : 'Source Host',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
-    },
-    {
-      field: 'source_port',
-      displayName: $filter('translate')('hepic.pages.results.SRCPORT') ? $filter('translate')('hepic.pages.results.SRCPORT') : 'SPort',
-      minwidth: 80,
-      type: 'number',
-      width: '*',
-      resizable: true
-    },
-    {
-      field: 'destination_ip',
-      displayName: $filter('translate')('hepic.pages.results.DSTIP') ? $filter('translate')('hepic.pages.results.DSTIP') : 'Destination Host',
-      minWidth: 120,
-      width: '*',
-      type: 'string',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
-    },
-    {
-      field: 'destination_port',
-      minWidth: 50,
-      type: 'number',
-      width: '*',
-      displayName: $filter('translate')('hepic.pages.results.DSTPORT') ? $filter('translate')('hepic.pages.results.DSTPORT') : 'DPort'
-    },
-    {
-      field: 'cdr_duration',
-      displayName: $filter('translate')('hepic.pages.results.DURATION') ? $filter('translate')('hepic.pages.results.DURATION') : 'Duration',
-      type: 'date',
-      minWidth: 80,
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.getCallDuration(row.entity.cdr_start, row.entity.cdr_stop)}}</div>'
-    },
-    {
-      field: 'reserve',
-      displayName: $filter('translate')('hepic.pages.results.RESERVED') ? $filter('translate')('hepic.pages.results.RESERVED') : 'MOS',
-      type: 'string',
-      minWidth: 40,
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents"><span ng-style="grid.appScope.$ctrl.getMosColor(row.entity.reserve)">{{ row.entity.reserve ? (row.entity.reserve / 100) : "" }}</span></div>'
-    },
-    {
-      field: 'cdr_start',
-      visible: false,
-      displayName: $filter('translate')('hepic.pages.results.CDRSTART') ? $filter('translate')('hepic.pages.results.CDRSTART') : 'Start',
-      type: 'date',
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_start)}}</div>'
-    },
-    {
-      field: 'cdr_stop',
-      visible: false,
-      displayName: $filter('translate')('hepic.pages.results.CDRSTOP') ? $filter('translate')('hepic.pages.results.CDRSTOP') : 'Stop',
-      type: 'date',
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_stop)}}</div>'
-    },
-    {
-      field: 'proto',
-      displayName: $filter('translate')('hepic.pages.results.PROTO') ? $filter('translate')('hepic.pages.results.PROTO') : 'Proto',
-      type: 'number',
-      resizable: true,
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="proto">{{grid.appScope.$ctrl.protoCheck(row, col)}}</div>'
-    },
-    {
-      field: 'event',
-      displayName: $filter('translate')('hepic.pages.results.EVENT') ? $filter('translate')('hepic.pages.results.EVENT') : 'Event',
-      type: 'string',
-      resizable: true,
-      width: '*',
-      cellTemplate: '<div class="ui-grid-cell-contents" title="proto">{{grid.appScope.$ctrl.eventCheck(row, col)}}</div>'
-    },
-    {
-      field: 'node',
-      displayName: $filter('translate')('hepic.pages.results.NODE') ? $filter('translate')('hepic.pages.results.NODE') : 'Node',
-      visible: false,
-      width: '*',
-      type: 'string',
-    },
-    {
-      field: 'hep_correlation_id',
-      displayName: $filter('translate')('hepic.pages.results.CORRELATION_ID') ? $filter('translate')('hepic.pages.results.CORRELATION_ID') : 'Correlation ID',
-      visible: false
-    },
-    {
-      field: 'srd',
-      displayName: $filter('translate')('hepic.pages.results.SRD') ? $filter('translate')('hepic.pages.results.SRD') : 'SRD',
-      visible: false
-    },
-    {
-      field: 'sss',
-      displayName: $filter('translate')('hepic.pages.results.SSS') ? $filter('translate')('hepic.pages.results.SSS') : 'SSS',
-      visible: false
-    },
-    {
-      field: 'geo_lat',
-      displayName: $filter('translate')('hepic.pages.results.GEOLAT') ? $filter('translate')('hepic.pages.results.GEOLAT') : 'GEO Lat',
-      visible: false
-    },
-    {
-      field: 'geo_lan',
-      displayName: $filter('translate')('hepic.pages.results.GEOLAN') ? $filter('translate')('hepic.pages.results.GEOLAN') : 'GEO Lan',
-      visible: false
-    },
-    {
-      field: 'sdp_ap',
-      displayName: $filter('translate')('hepic.pages.results.SDPAUDIO') ? $filter('translate')('hepic.pages.results.SDPAUDIO') : 'SDP Audio',
-      visible: false
-    },
-    {
-      field: 'codec_in_audio',
-      displayName: $filter('translate')('hepic.pages.results.SDPCODEC') ? $filter('translate')('hepic.pages.results.SDPCODEC') : 'Codec Audio',
-      visible: false
-    },
-    {
-      field: 'sdmedia_ip',
-      displayName: $filter('translate')('hepic.pages.results.SDPMEDIA') ? $filter('translate')('hepic.pages.results.SDPMEDIA') : 'SDP Media IP',
-      visible: false
-    },
-    {
-      field: 'xgroup',
-      displayName: $filter('translate')('hepic.pages.results.XGROUP') ? $filter('translate')('hepic.pages.results.XGROUP') : 'X-Group',
-      visible: false
-    },
-    {
-      field: 'mos',
-      displayName: $filter('translate')('hepic.pages.results.MOS') ? $filter('translate')('hepic.pages.results.MOS') : 'MOS 2',
-      visible: false
-    }
-  ];
-
-  if (CONFIGURATION.USER_EXT_CR) {
-    myColumnDefs = myColumnDefs.concat([
-      {
-        field: 'tradeid',
-        displayName: $filter('translate')('hepic.pages.extended.TRADE_ID') || 'H.TradeID',
-        visible: false
-      },
-      {
-        field: 'origtrunkid',
-        displayName: $filter('translate')('hepic.pages.extended.ORIG_ID') || 'H. Orig.TrID',
-        visible: false
-      },
-      {
-        field: 'termtrunkid',
-        displayName: $filter('translate')('hepic.pages.extended.TERM_ID') || 'H. Term.TrID',
-        visible: false
-      },
-      {
-        field: 'hashrateid',
-        displayName: $filter('translate')('hepic.pages.extended.RATE_ID') || 'H. RateID',
-        visible: false
-      },
-      {
-        field: 'hashrouteid',
-        displayName: $filter('translate')('hepic.pages.extended.ROUTE_ID') || 'H. RouteID',
-        visible: false
-      },
-      {
-        field: 'mos',
-        displayName: 'MOS 2',
-        visible: false
-      }
-    ]);
-  }
-        
-      
-  self.gridOpts = data_grid_options;
-  self.gridOpts.columnDefs = myColumnDefs;
-  self.gridOpts.rowTemplate = '<div ng-style="row.isSelected && {} || grid.appScope.$ctrl.getBkgColorTable(row.entity.callid)">' +
-        '<div ng-dblclick="grid.appScope.$ctrl.showTransaction(row, $event)"  ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>' +
-        '</div>';
-
   self.state = localStorageService.get('localStorageGrid');
 
   self.saveState = function() {
@@ -944,4 +702,4 @@ const SearchCallController = function($scope, $rootScope, EventBus, $http, $loca
   };
 };
 
-export default SearchCallController;
+export default SearchCall;

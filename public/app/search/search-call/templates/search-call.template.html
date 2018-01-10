@@ -1,6 +1,7 @@
 <div class="search-results  Refresh Results  " access="users" access-permission-type="AtLeastOne">
   <div id="resultheader" class="header-action-area">
-    <h1 class="lath"><small class="text-header-sip">{{$ctrl.infosearch}}</small>
+    <h1 class="lath">
+      <small class="text-header-sip" translate="hepic.pages.search.results"></small>
       <input ng-class="searchClass"
         class="searchForm"
         type="text"
@@ -14,7 +15,7 @@
         type="submit"
         ng-click="$ctrl.processSearchResult();"
         ng-disabled="false" > 
-        <span translate="hepic.buttons.REFRESH">&nbsp; Refresh Results &nbsp;</span>
+        <span translate="hepic.buttons.refresh">&nbsp; Refresh Results &nbsp;</span>
         <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
       </button> <!--END button mainSipSearch -->
       

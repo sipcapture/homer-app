@@ -7,6 +7,9 @@ import gridRowTemplate from '../data/grid/row_template.html';
 import gridColumnDefinitions from '../data/grid/collumns/definitions';
 import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
+import callTemplate from '../../modal/templates/call.html';
+import messageTemplate from '../../modal/templates/message.html';
+
 const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
   $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
   'ngInject';
@@ -276,8 +279,8 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     var messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
 
     $homerModal.open({
-      url: 'templates/dialogs/message.html',
-      //template: homer_message_template,
+      //url: 'templates/dialogs/message.html',
+      template: messageTemplate,
       cls: 'homer-modal-message',
       id: 'message' + self.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
@@ -286,7 +289,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       onOpen: function() {
         $log.debug('modal1 message opened from url ' + this.id);
       },
-      controller: 'messageCtrl'
+      controller: 'TransactionMessage'
     });
   };
 
@@ -630,8 +633,8 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     }
 
     $homerModal.open({
-      url: 'templates/dialogs/transaction/call.html',
-      //template: homer_call_template,
+      //url: 'templates/dialogs/transaction/call.html',
+      template: callTemplate,
       cls: 'homer-modal-content',
       id: 'trans' + self.hashCode(trwindowId),
       params: search_data,
@@ -640,7 +643,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       onOpen: function() {
         $log.debug('modal1 transaction opened from url', this.id);
       },
-      controller: 'transactionCallCtrl'
+      controller: 'TransactionDetail'
     });
   }; // END showTransaction
 

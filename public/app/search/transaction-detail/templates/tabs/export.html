@@ -1,0 +1,89 @@
+<!-- INCLUDE: EXPORT TAB -->
+								
+   	      <div class="export-title">Export Session Data</div>
+
+                <div style="margin-left:auto;margin-right:auto;width:60%;" id="export_tab">
+
+		<!-- FLEXBOX -->
+		<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+		<!--
+		    <div style="width: 22%;padding: 10px;" ng-show="uniqueIps">
+			<div style="margin:8px;margin-top:18px;">
+				<multiselect ng-model="exportBlacklist" options="uniqueHosts" id-prop="value" display-prop="name" placeholder="Export Exclusion"  style="margin:8px;"></multiselect>
+		    	</div>			
+
+		    </div>
+		-->
+
+		    <!-- COLUMN 1 -->
+		    <div style="width: 32%;padding: 10px;">
+                        <button class="btn btn-normal btn-export btn-info btn-export_blue" ng-click="exportPCAP(exportBlacklist)" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-code-o" aria-hidden="true"></i>
+                                <span> Export PCAP</span>
+                        </button>
+
+			<!-- Export PCAP Text -->
+                        <button class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportTEXT(exportBlacklist)" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                <span>Export TEXT</span>
+                        </button>
+
+			<!-- Export Exclusion -->
+			<div style="margin-top:18px;">
+				<multiselect ng-model="exportBlacklist" options="uniqueHosts" id-prop="value" display-prop="name" placeholder="Export Exclusion" classes-btn="'btn-normal btn-export btn-info btn-export_blue'" style="margin:8px;"></multiselect>
+		    	</div>			
+
+
+		    </div>
+		    <!-- COLUMN 2 -->
+		    <div style="width: 32%;padding: 10px;">
+
+                        <button ng-disabled="exporting" class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportDiv('');resizeNull();" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;">
+				<i ng-hide="exporting" class="fa fa-file-image-o" aria-hidden="true"></i>
+				<i ng-show="exporting" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                        	<span>Export PNG</span>
+			</button>
+
+			<!-- report -->
+                        <button class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="makeREPORT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                <span>Export REPORT</span>
+                        </button>
+
+
+		    </div>
+
+		    <!-- COLUMN 3 -->
+		    <div style="width: 32%;padding: 10px;">
+
+			<!-- Cloudshark -->
+                        <button ng-hide="sharecloud" class="btn btn-normal btn-export btn-info btn-export_green" ng-click="exportCloud()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-cloud-download" aria-hidden="true"></i>
+                                <span>Share Cloud</span>
+                        </button>
+
+                        <!-- share link -->
+                        <button ng-if="!shareLinkDisabled" class="btn btn-normal btn-export btn-info btn-export_green" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;">
+                                <i class="fa fa-share-alt"></i>
+                                <span>Share Link</span>
+                        </button>
+
+		    </div>
+
+		</div>
+
+
+
+
+			<!--
+                        <button ng-disabled="exporting" class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportDiv('timeline_');resizeNull();" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;">
+				<i ng-hide="exporting" class="fa fa-file-image-o" aria-hidden="true"></i>
+				<i ng-show="exporting" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                        	<span>Export Timeline</span></button>
+			-->
+
+
+
+              </div>
+
+
+
+                        
+             

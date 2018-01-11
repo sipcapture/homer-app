@@ -3,8 +3,8 @@
 
 	var homerCflow = angular.module('homer.cflow', []);
 
-	homerCflow.factory('$homerCflow', ['$rootScope', '$controller', '$location', '$timeout', '$compile', '$sniffer', '$q', '$filter', 'userProfile', '$homerModal',
-	        function($rootScope, $controller, $location, $timeout, $compile, $sniffer, $q, $filter, userProfile, $homerModal) {
+	homerCflow.factory('$homerCflow', ['$rootScope', '$controller', '$location', '$timeout', '$compile', '$sniffer', '$q', '$filter', 'UserProfile', '$homerModal',
+	        function($rootScope, $controller, $location, $timeout, $compile, $sniffer, $q, $filter, UserProfile, $homerModal) {
 		
 		var cflows = {};
 		var data, strToCol;
@@ -114,7 +114,7 @@
 				data['calldata'] = this.sipMessages;				
 				data['hosts'] = Object.keys(hostData).sort(function(a,b){return hostData[a]-hostData[b]})
 			
-			        var timezone = userProfile.getProfile("timezone");                       			                        
+			        var timezone = UserProfile.getProfile("timezone");                       			                        
 			        var clickArea = [];
 				var myEl = angular.element(document.querySelectorAll("#"+id));				
 								

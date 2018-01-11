@@ -13,6 +13,8 @@ import 'ui-select';
 import 'angular-dialog-service';
 import 'angular-local-storage';
 import 'angular-smart-table';
+import 'd3';
+import 'nvd3';
 import 'angular-nvd3';
 import 'ui-leaflet';
 import 'angular-simple-logger';

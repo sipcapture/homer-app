@@ -151,8 +151,8 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       tabjson.push();
       $scope.sipDetails = '<div id="' + sdata[0].id + '_details"><table class="table table-striped">' + tabjson.join('') + '</table></div>';
       $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionMessage]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });

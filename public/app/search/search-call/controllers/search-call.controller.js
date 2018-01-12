@@ -215,7 +215,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         }, 200);
       }
     }).catch(function (error) {
-      $log.error('search-call', error);
+      $log.error('[SearchCall]', error);
     }).finally(function() {
       self.dataLoading = false;
     });
@@ -227,7 +227,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   UserProfile.getAll().then(function() {
     self.processSearchResult();
   }).catch(function(error) {
-    $log.error('search-call', error);
+    $log.error('[SearchCall]', error);
   });
 
   self.hashCode = function(str) { // java String#hashCode

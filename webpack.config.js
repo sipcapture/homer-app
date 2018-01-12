@@ -38,7 +38,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test   : /\.(ttf|eot|svg|gif|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        test   : /\.(ttf|eot|svg|gif|png|woff(2)?)(\?[a-z0-9=&.]+)?$/,
         loader : 'file-loader'
       },
       {

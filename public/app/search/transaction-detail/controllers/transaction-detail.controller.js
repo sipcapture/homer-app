@@ -2,10 +2,14 @@
 
 import html2canvas from 'html2canvas';
 import fileSaver from 'file-saver';
-import vis from 'vis';
 import * as d3 from 'd3';
+import {DataSet} from 'vis';
 
 import treeData from '../data/tree_data';
+
+// style
+import 'vis/dist/vis.css';
+import 'nvd3/build/nv.d3.css';
 
 var TransactionDetail = function($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
   'ngInject';
@@ -101,8 +105,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
   //$scope.getColor = d3.scaleOrdinal(d3.schemeCategory20);
   $scope.LiveGraph = [];
   $scope.LiveGraph.data = {
-    'nodes': [],
-    'links': []
+    nodes: [],
+    links: []
   };
   $scope.LiveGraph.options = {
     chart: {
@@ -399,6 +403,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       var myImage = canvas.toDataURL();
       window.open(myImage);
       cb();
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     });
   };
 
@@ -430,6 +436,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       background: '#FFFFFF'
     }).then(function() {
       console.log('html2canvas completed');
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     });
   };
 
@@ -478,8 +486,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
           html: true
         });
       }
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     });
   };
 
@@ -651,8 +659,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         type: content_type
       });
       fileSaver.saveAs(blob, filename);
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     });
   };
 
@@ -732,7 +740,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
             (Math.floor((256 - 229) * Math.random()) + 230) + ')';
         };
 
-        var dataGroups = new vis.DataSet();
+        var dataGroups = new DataSet();
         angular.forEach($scope.uniqueIps, function(v, k) {
           $scope.tlGroups.push({
             content: v,
@@ -742,7 +750,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         });
         dataGroups.add($scope.tlGroups);
 
-        var dataItems = new vis.DataSet();
+        var dataItems = new DataSet();
 
         /* Scrape Data */
 
@@ -834,6 +842,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.$watch('ldGroups', function() {
           $scope.tlUpdate();
           try {
+            dataGroups.clear(); // to-do: clear because of error 'Cannot add item: item with id 0 already exists'
             dataGroups.add($scope.tlGroups);
           } catch (e) {
             $log.error(e);
@@ -858,8 +867,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.showLogReport(data);
       $scope.showRecordingReport(data);
     }
-  }, function() {
-    return;
+  }).catch(function(error) {
+    $log.error('[TransactionDetail]', error);
   }).finally(function() {
     $scope.dataLoading = false;
   });
@@ -982,21 +991,23 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
           entry.duration = '00:00:00';
         }
 
-        /* check blacklist */
-        SearchService.searchBlacklist(entry.source_ip).then(function(msg) {
-          console.log('Blacklist check ' + entry.source_ip, msg);
-          $scope.blacklistreport = msg;
-          $scope.enableBlacklist = true;
+        ///* check blacklist */ // to-do: this check throws the following error 'bad response combination'
+        //SearchService.searchBlacklist(entry.source_ip).then(function(msg) {
+        //  console.log('Blacklist check ' + entry.source_ip, msg);
+        //  $scope.blacklistreport = msg;
+        //  $scope.enableBlacklist = true;
 
-          $scope.enableLogReport = true;
-          $scope.LiveLogs.push({
-            data: {
-              type: 'BlackList',
-              data: msg
-            }
-          });
-
-        });
+        //  $scope.enableLogReport = true;
+        //  $scope.LiveLogs.push({
+        //    data: {
+        //      type: 'BlackList',
+        //      data: msg
+        //    }
+        //  });
+        //}).catch(function(error) {
+        //  debugger;
+        //  $log.error('[TransactionDetail]', error);
+        //});
 
         /* prepare geostuff */
         try {
@@ -1027,7 +1038,6 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
             if (entry.destination_ip && (!entry.dest_lat || entry.dest_lat == 0) && SearchService.searchGeoLoc) {
               SearchService.searchGeoLoc(entry.destination_ip).then(function(results) {
                 if (!results.lat && !results.lon) return;
-
                 console.log('API GEO-LOOKUP', results);
                 $scope.enableLogReport = true;
                 $scope.LiveLogs.push({
@@ -1044,7 +1054,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
                   focus: false,
                   draggable: false
                 };
-
+              }).catch(function(error) {
+                $log.error('[TransactionDetail]', error);
               });
             }
           }
@@ -1143,16 +1154,12 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
 
         var fullrep = msg.reports.rtpagent.chart;
         $scope.list_legend = [];
+
         angular.forEach(fullrep, function(count, key) {
           angular.forEach(fullrep[key], function(count, callid) {
-            // console.log('CALLID: ',callid);
             angular.forEach(fullrep[key][callid], function(count, leg) {
-              // var xleg = leg.split('->')[0] ? leg.split('->')[0] : leg;
               var xleg = leg;
-              /// console.log('LEG: ',leg,xleg);
               angular.forEach(fullrep[key][callid][leg], function(count, rep) {
-                // console.log('REP: ',rep);
-                // console.log('LEG LOOKUP: '+callid);
 
                 var d3newchart = {
                   key: xleg,
@@ -1178,14 +1185,14 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
 
 
                 // NEW CHART
-                if (!$scope.d3chart.data[rep]) {
-                  $scope.d3chart.data[rep] = {
+                if (!$scope.d3chart.data[0][rep]) {
+                  $scope.d3chart.data[0][rep] = {
                     series: []
                   };
                 }
 
                 var d3merged = false;
-                $scope.d3chart.data[rep].series.forEach(function(entry) {
+                $scope.d3chart.data[0][rep].series.forEach(function(entry) {
                   // console.log('SEEK '+xleg, entry);
                   if (xleg == entry.name) {
                     entry.data.concat(entry.data);
@@ -1195,7 +1202,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
 
                 // Create new group if non-mergeable
                 if (!d3merged) {
-                  $scope.d3chart.data[rep].series.push(d3newchart);
+                  $scope.d3chart.data[0][rep].series.push(d3newchart);
 
                 }
 
@@ -1206,32 +1213,6 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
             });
           });
         });
-
-        // console.log('FINAL-CHART:',$scope.d3chart);
-
-
-        /*
-        // TIMELINE Converter (testing-only)
-        if (!profile.timeline_disable){
-          // chart here
-          Object.keys($scope.d3chart.data).forEach(function(k,v){
-            var group = 50+v, key = k;
-            $scope.tlGroups.push({content:key, id: group} );
-            $scope.d3chart.data[key].series.forEach(function(k,v){
-              console.log(k,v,key,group);
-              k.values.forEach(function(x,y){
-                $scope.tlData.push({
-                                                                                start: new Date(x),
-                                                                                content: key+': '+y,
-                                                                                group: group
-                                                                            });
-              });
-            });
-          })
-                                                  }
-      */
-
-
       }
 
 
@@ -1379,8 +1360,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.calc_report = chartDataExtended;
         $scope.enableRTCPReport = true;
       }
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1558,8 +1539,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         });
         $scope.logreport = msg;
       }
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1573,8 +1554,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.rowRecordingCollection = msg;
         $scope.displayedRecordingCollection = [].concat($scope.rowRecordingCollection);
       }
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1584,8 +1565,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     SearchService.searchRemoteLog(rdata).then(function(msg) {
       $scope.enableRemoteLogReport = true;
       if (msg && msg.hits && msg.hits.hits) $scope.remotelogreport = msg.hits.hits;
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1597,8 +1578,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.enableRtcReport = true;
         $scope.rtcreport = msg;
       }
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1657,9 +1638,9 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         type: content_type
       });
       fileSaver.saveAs(blob, filename);
-    }, function() {
-      return;
-    }).finally(function() {});
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
+    });
   };
 
   var makeReportRequest = function(fdata) {
@@ -1671,8 +1652,8 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         type: content_type
       });
       fileSaver.saveAs(blob, filename);
-    }, function() {
-      return;
+    }).catch(function(error) {
+      $log.error('[TransactionDetail]', error);
     });
   };
 

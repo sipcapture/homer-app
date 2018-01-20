@@ -29,7 +29,7 @@
     "angular-local-storage": "0.6.0",
     "angular-messages": "1.6.7",
     "angular-mocks": "1.6.6",
-    "angular-nvd3": "1.0.9",
+    "angular-nvd3": "1.0.3",
     "angular-sanitize": "1.6.6",
     "angular-simple-logger": "0.1.7",
     "angular-smart-table": "2.1.8",

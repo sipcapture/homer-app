@@ -22,7 +22,7 @@
     <uib-tabset>
       <uib-tab ng-repeat="tab in tabs" select="refreshChart();resizeNull();"  ng-show="{{ tab.ngshow }}">
         <uib-tab-heading><i class="{{ tab.icon }}"></i> {{ tab.heading }} </uib-tab-heading>	     	     
-        <div ng-include src = "tab.template"></div>
+        <ng-include src="tab.template"></ng-include>
       </uib-tab>
     </uib-tabset>
   </div>

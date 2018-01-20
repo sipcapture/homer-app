@@ -7,9 +7,6 @@ import gridRowTemplate from '../data/grid/row_template.html';
 import gridColumnDefinitions from '../data/grid/collumns/definitions';
 import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
-import callTemplate from '../../modal/templates/call.html';
-import messageTemplate from '../../modal/templates/message.html';
-
 const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
   $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
   'ngInject';
@@ -279,8 +276,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     var messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
 
     $homerModal.open({
-      //url: 'templates/dialogs/message.html',
-      template: messageTemplate,
+      url: 'app/search/hepic-modal/templates/message.html',
       cls: 'homer-modal-message',
       id: 'message' + self.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
@@ -633,8 +629,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     }
 
     $homerModal.open({
-      //url: 'templates/dialogs/transaction/call.html',
-      template: callTemplate,
+      url: 'app/search/hepic-modal/templates/call.html',
       cls: 'homer-modal-content',
       id: 'trans' + self.hashCode(trwindowId),
       params: search_data,

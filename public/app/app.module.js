@@ -1,5 +1,6 @@
 // npm modules
 import 'jquery';
+import 'jquery-ui';
 import angular from 'angular';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap';
@@ -33,8 +34,8 @@ import 'ngstorage';
 import 'angular-filter';
 
 // old homer modal. To-do: refactor this modal to component based structure
-import './search/modal/homerCflow';
-import './search/modal/homerModal';
+import './search/hepic-modal/homerCflow';
+import './search/hepic-modal/homerModal';
 
 // components
 import Controllers from './controllers';

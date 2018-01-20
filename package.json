@@ -63,6 +63,7 @@
     "javascript-detect-element-resize": "0.5.3",
     "joi": "11.4.0",
     "jquery": "1.11.1",
+    "jquery-ui": "1.12.1",
     "jquery-ui-dist": "1.12.0",
     "jsonwebtoken": "8.1.0",
     "knex": "0.13.0",

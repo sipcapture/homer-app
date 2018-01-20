@@ -1,3 +1,4 @@
+/* global $, document, window*/
 /**
  * homerModal - An angularJS modal directive / service with multiple window, resizing and draggable
  * @version v0.0.1
@@ -13,6 +14,79 @@
 
   var homerModal = angular.module('homer.modal', []);
 
+  //const draggableDirective = function() {
+  //  'ngInject';
+  //  return {
+  //    restrict: 'EA',
+  //    link: function(scope, element) {
+
+  //      $(element).bind('mouseup', function(ui) {
+  //        var elements = document.getElementsByClassName('opened');
+  //        for (let i = 0; i < elements.length; i++) {
+  //          if (!elements[i].style.zIndex) {
+  //            elements[i].style.zIndex = 10001;
+  //          }
+  //        }
+  //        if (window.topZ) {
+  //          window.topZ++;
+  //          ui.currentTarget.style.zIndex = window.topZ;
+  //        } else {
+  //          ui.currentTarget.style.zIndex++;
+  //          window.topZ = ui.currentTarget.style.zIndex;
+  //        }
+  //        ui.currentTarget.style.opacity = 1;
+  //      });
+
+  //      $(element).draggable({
+  //        cancel: '.homer-modal-body, .close',
+  //        handle: '.homer-modal-header',
+  //        start: function(event, ui) {
+  //          ui.helper[0].style.opacity = 0.7;
+  //          var elements = document.getElementsByClassName('opened');
+  //          for (let i = 0; i < elements.length; i++) {
+  //            if (!elements[i].style.zIndex) {
+  //              elements[i].style.zIndex = 10001;
+  //            }
+  //          }
+  //          if (window.topZ) {
+  //            window.topZ++;
+  //            ui.helper[0].style.zIndex = window.topZ;
+  //          } else {
+  //            ui.helper[0].style.zIndex++;
+  //            window.topZ = ui.helper[0].style.zIndex;
+  //          }
+  //        },
+  //        stop: function(event, ui) {
+  //          if (ui.helper[0]) {
+  //            ui.helper[0].style.opacity = 1;
+  //            if (ui.offset.top < 0) ui.helper[0].style.top = '0px';
+  //            if (ui.offset.left < 0) {
+  //              if ((ui.helper[0].offsetWidth + ui.offset.left) < 100) ui.helper[0].style.left = '-' + (ui.helper[0].offsetWidth - 100) + 'px';
+  //            }
+  //            if ((ui.offset.left + 100) > window.innerWidth) {
+  //              ui.helper[0].style.left = (window.innerWidth - 100) + 'px';
+  //              window.scrollTo(0, 0);
+  //            }
+  //            if ((ui.offset.top + 50) > window.innerHeight) {
+  //              ui.helper[0].style.top = (window.innerHeight - 50) + 'px';
+  //              window.scrollTo(0, 0);
+  //            }
+
+  //          }
+  //        }
+  //      }).resizable({
+  //        resize: function(evt, ui) {
+  //          var messagebody = $(element).find('.homer-modal-body');
+  //          $(messagebody).width(ui.size.width - 10); /* 10 */
+  //          $(messagebody).height(ui.size.height - 80); /* 50 */
+  //        }
+  //      });
+  //    }
+  //  };
+  //};
+
+  //homerModal.directive('draggable', [draggableDirective]);
+
   homerModal.factory('$homerModal', [
     '$rootScope',
     '$controller',
@@ -24,7 +98,6 @@
     function($rootScope, $controller, $location, $timeout, $compile, $sniffer, $q) {
       var $body = angular.element(document.body),
         $dialogsWrapper = angular.element('<div role="dialog" tabindex="-1" class="modal2"></div>'),
-        //$dialogsWrapper = angular.element('<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" draggable="" id="myModal" role="dialog" tabindex="-1">'),
         $modalWrapper = angular.element('<div class="modal-wrapper"></div>'),
         modals = {},
         openedModals = [],
@@ -50,7 +123,7 @@
           total = Math.max(parseFloat(value) || 0, total);
         });
         return total;
-      }
+      };
 
       var getAnimDuration = function getDuration($element) {
         var duration = 0;
@@ -97,7 +170,7 @@
 
         // REMOVE??
         return duration * 1000;
-      }
+      };
 
       angular.element(document).on('keyup', function(e) {
         if (e.keyCode == 27 && openedModals.length > 0) {
@@ -123,16 +196,16 @@
           delete modals[id || '_default'];
         },
 
-        open: function(opt) {
+        open: function(opt, callback) {
           if (typeof opt === 'string') {
             if (opt.match('<')) { // if html code
               opt = {
                 template: opt
-              }
+              };
             } else {
               opt = {
                 url: opt
-              }
+              };
             }
           }
           var modal = modals[opt.id || '_default'];
@@ -149,7 +222,7 @@
             self.waitingForOpen = true;
             self.close(opt.id).then(function() {
               self.open(opt);
-            })
+            });
             return;
           }
           // ok let's open the modal
@@ -205,8 +278,7 @@
           } else if (modal.params.url) {
             modal.$scope.modalUrl = modal.params.url; // load the view
           } else {
-            throw "You need to define a template or an url";
-            return;
+            throw 'You need to define a template or an url';
           }
 
           if (typeof callback === 'function') {
@@ -216,7 +288,6 @@
           if (typeof modal.params.onOpen === 'function') {
             modal.params.onOpen();
           }
-
         },
 
         closeOnEsc: function(id) {
@@ -276,14 +347,11 @@
     }
   ]);
 
-  homerModal.directive('homerModal', ['$homerModal', '$compile', '$timeout', function($homerModal, $compile, $timeout) {
+  homerModal.directive('homerModal', ['$homerModal', '$compile', '$timeout', function($homerModal, $compile) {
     return {
       restrict: 'AE',
       replace: true,
       scope: true,
-      //template: '<div draggable class="modal-content white_content {{customClass}}" ng-class="{opened: modalShow}" ng-if="modalTemplate"></div>' +
-      //	'<div draggable class="modal-content white_content {{customClass}}" ng-class="{opened: modalShow}" ng-include="modalUrl"></div>',
-
       template: '<div>' +
         '<div draggable class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ng-if="modalTemplate"></div>' +
         '<div draggable id="{{customId}}" class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ng-include="modalUrl" style="top: {{divTop}}; left: {{divLeft}}"></div>' +
@@ -310,7 +378,7 @@
           $homerModal.remove(id);
         });
 
-        $scope.$watch('modalTemplate', function(newVal, oldVal) {
+        $scope.$watch('modalTemplate', function(newVal) {
           if (typeof newVal !== 'undefined') {
             if (!$templateWrapper) {
               $templateWrapper = angular.element($element.children()[1]);
@@ -320,7 +388,7 @@
           }
         });
       }
-    }
+    };
   }]);
 
   homerModal.directive('homerModalOpen', ['$homerModal', function($homerModal) {
@@ -334,17 +402,17 @@
           var newScope = $scope.$new();
           var params = newScope.$eval($attrs.homerModalOpen);
           if (params) {
-            if (typeof params === "number") {
+            if (typeof params === 'number') {
               params = {
                 url: $attrs.homerModalOpen
               };
-            } else if (typeof params === "string") {
+            } else if (typeof params === 'string') {
               params = {
                 url: params
               };
             }
             if (!params.url) {
-              throw "You need to set the modal url";
+              throw 'You need to set the modal url';
             }
             $scope.$apply(function() {
               $homerModal.open(params);

@@ -24,7 +24,7 @@ class Draggable {
       ui.currentTarget.style.opacity = 1;
     });
 
-    $(element).draggable({
+    element.draggable({
       cancel: '.homer-modal-body, .close',
       handle: '.homer-modal-header',
       start: function(event, ui) {

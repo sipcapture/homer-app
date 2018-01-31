@@ -1,6 +1,6 @@
 // npm modules
 import 'jquery';
-import 'jquery-ui';
+import 'jquery-ui-dist/jquery-ui';
 import angular from 'angular';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap';

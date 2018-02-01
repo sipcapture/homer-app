@@ -11,7 +11,7 @@ import treeData from '../data/tree_data';
 import 'vis/dist/vis.css';
 import 'nvd3/build/nv.d3.css';
 
-var TransactionDetail = function($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
+var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
   'ngInject';
   const self = this;
   var data = $homerModalParams.params;
@@ -165,7 +165,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'tab',
     'icon': 'zmdi zmdi-grid',
-    'template': '/app/search/transaction-detail/templates/tabs/sip_msg.html'
+    'template': '/app/search/call-detail/templates/tabs/sip_msg.html'
   }, {
     'heading': 'Flow',
     'active': true,
@@ -174,7 +174,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'tab',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/transaction-detail/templates/tabs/cflow.html'
+    'template': '/app/search/call-detail/templates/tabs/cflow.html'
   }, {
     'heading': 'IP Graph',
     'active': true,
@@ -183,7 +183,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableGraph',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/transaction-detail/templates/tabs/graph.html'
+    'template': '/app/search/call-detail/templates/tabs/graph.html'
   }, {
     'heading': 'Timeline',
     'active': true,
@@ -195,7 +195,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableTimeline',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/transaction-detail/templates/tabs/timeline.html'
+    'template': '/app/search/call-detail/templates/tabs/timeline.html'
   }, {
     'heading': 'Call Info',
     'active': true,
@@ -204,7 +204,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableTransaction',
     'icon': 'glyphicon glyphicon-info-sign',
-    'template': '/app/search/transaction-detail/templates/tabs/call_info.html'
+    'template': '/app/search/call-detail/templates/tabs/call_info.html'
   }, {
     'heading': 'Media Reports',
     'active': true,
@@ -213,7 +213,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableQualityReport || enableXRTPReport || enableRTCPReport',
     'icon': 'glyphicon glyphicon-signal',
-    'template': '/app/search/transaction-detail/templates/tabs/media_reports.html'
+    'template': '/app/search/call-detail/templates/tabs/media_reports.html'
   }, {
     'heading': 'DTMF',
     'active': true,
@@ -222,7 +222,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/transaction-detail/templates/tabs/dtmf.html'
+    'template': '/app/search/call-detail/templates/tabs/dtmf.html'
   }, {
     'heading': 'Logs',
     'active': true,
@@ -231,7 +231,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/transaction-detail/templates/tabs/logs.html'
+    'template': '/app/search/call-detail/templates/tabs/logs.html'
   }, {
     'heading': 'Recording',
     'active': true,
@@ -240,7 +240,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.resizeNull();
     },
     'icon': 'fa fa-play-circle-o',
-    'template': '/app/search/transaction-detail/templates/tabs/recording.html'
+    'template': '/app/search/call-detail/templates/tabs/recording.html'
   }, {
     'heading': 'Remote Logs',
     'active': true,
@@ -249,7 +249,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableRemoteLogReport',
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/transaction-detail/templates/tabs/logs_remote.html'
+    'template': '/app/search/call-detail/templates/tabs/logs_remote.html'
   }, {
     'heading': 'WSS',
     'active': true,
@@ -258,7 +258,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableRtcReport',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/transaction-detail/templates/tabs/wss.html'
+    'template': '/app/search/call-detail/templates/tabs/wss.html'
   }, {
     'heading': 'Blacklist',
     'active': true,
@@ -267,7 +267,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'enableBlacklist',
     'icon': 'fa fa-ban',
-    'template': '/app/search/transaction-detail/templates/tabs/blacklist.html'
+    'template': '/app/search/call-detail/templates/tabs/blacklist.html'
   }, {
     'heading': 'Export',
     'active': true,
@@ -276,7 +276,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     },
     'ngshow': 'tab',
     'icon': 'glyphicon glyphicon-download-alt',
-    'template': '/app/search/transaction-detail/templates/tabs/export.html'
+    'template': '/app/search/call-detail/templates/tabs/export.html'
   } ];
 
   $scope.getCallIDColor = function(str) {
@@ -405,7 +405,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       window.open(myImage);
       cb();
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -438,7 +438,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     }).then(function() {
       console.log('html2canvas completed');
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -488,7 +488,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         });
       }
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -671,7 +671,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       });
       fileSaver.saveAs(blob, filename);
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -879,7 +879,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.showRecordingReport(data);
     }
   }).catch(function(error) {
-    $log.error('[TransactionDetail]', error);
+    $log.error('[CallDetail]', error);
   }).finally(function() {
     $scope.dataLoading = false;
   });
@@ -1016,7 +1016,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         //    }
         //  });
         //}).catch(function(error) {
-        //  $log.error('[TransactionDetail]', error);
+        //  $log.error('[CallDetail]', error);
         //});
 
         /* prepare geostuff */
@@ -1065,7 +1065,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
                   draggable: false
                 };
               }).catch(function(error) {
-                $log.error('[TransactionDetail]', error);
+                $log.error('[CallDetail]', error);
               });
             }
           }
@@ -1371,7 +1371,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.enableRTCPReport = true;
       }
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1550,7 +1550,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.logreport = msg;
       }
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1565,7 +1565,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.displayedRecordingCollection = [].concat($scope.rowRecordingCollection);
       }
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1576,7 +1576,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       $scope.enableRemoteLogReport = true;
       if (msg && msg.hits && msg.hits.hits) $scope.remotelogreport = msg.hits.hits;
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1589,7 +1589,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         $scope.rtcreport = msg;
       }
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     }).finally(function() {
       $scope.dataLoading = false;
     });
@@ -1649,7 +1649,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       });
       fileSaver.saveAs(blob, filename);
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -1663,7 +1663,7 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       });
       fileSaver.saveAs(blob, filename);
     }).catch(function(error) {
-      $log.error('[TransactionDetail]', error);
+      $log.error('[CallDetail]', error);
     });
   };
 
@@ -1677,4 +1677,4 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
 
 };
 
-export default TransactionDetail;
+export default CallDetail;

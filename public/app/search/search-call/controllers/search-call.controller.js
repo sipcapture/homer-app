@@ -276,7 +276,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     var messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
 
     $homerModal.open({
-      url: 'app/search/hepic-modal/templates/message.html',
+      template: '<call-message-detail></call-message-detail>',
       cls: 'homer-modal-message',
       id: 'message' + self.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
@@ -285,7 +285,6 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       onOpen: function() {
         $log.debug('modal1 message opened from url ' + this.id);
       },
-      controller: 'TransactionMessage'
     });
   };
 
@@ -638,7 +637,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       onOpen: function() {
         $log.debug('modal1 transaction opened from url', this.id);
       },
-      controller: 'TransactionDetail'
+      controller: 'CallDetail'
     });
   }; // END showTransaction
 

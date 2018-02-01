@@ -1,14 +1,11 @@
-const TransactionMessage = function($scope, $log, SearchService, $homerModal, $timeout, $homerModalParams, $sce, UserProfile) {
+const TransactionMessage = function($scope, $log, SearchService, $homerModal, $timeout, $sce, UserProfile) {
   'ngInject';
 
-  var data = $homerModalParams.params;
+  const bindings = $scope.$parent.bindings;
+  var data = bindings.params;
 
-  var internal = $homerModalParams.internal;
-  var custom = $homerModalParams.custom;
-
-  if ($homerModalParams.getMessage) $scope.getMessage = $homerModalParams.getMessage;
-  if ($homerModalParams.getNext) $scope.getNext = $homerModalParams.getNext;
-  if ($homerModalParams.getPrev) $scope.getPrev = $homerModalParams.getPrev;
+  var internal = bindings.internal;
+  var custom = bindings.custom;
 
   var timezone = UserProfile.getProfile('timezone');
   $scope.dataLoading = true;
@@ -16,6 +13,9 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
   $scope.showSipDetails = false;
   $scope.msgOffset = timezone.offset;
 
+  this.closeModal = function () {
+    $scope.$parent.closeModal();
+  };
 
   $scope.protoCheck = function(proto) {
     if (parseInt(proto) == 17) return 'udp';
@@ -30,7 +30,7 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
   };
 
   if (internal) {
-    var sdata = $homerModalParams.sdata;
+    var sdata = bindings.sdata;
     $scope.dataLoading = false;
 
     var swapText = function(text) {
@@ -74,7 +74,7 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);
 
   } else if (custom) {
-    let sdata = $homerModalParams.sdata;
+    let sdata = bindings.sdata;
     $scope.dataLoading = false;
     let swapText = function(text) {
       try {

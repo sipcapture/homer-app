@@ -13,6 +13,7 @@ import 'nvd3/build/nv.d3.css';
 
 var TransactionDetail = function($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
   'ngInject';
+  const self = this;
   var data = $homerModalParams.params;
   $scope.data = data;
 
@@ -581,11 +582,22 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
     if (diff > 0) {
       posx -= diff;
     }
+  
+    self.hashCode = function(str) { // java String#hashCode
+      var hash = 0;
+      if (str) {
+        for (let i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+      }
+      return hash;
+    };
 
     $homerModal.open({
-      url: 'templates/dialogs/message.html',
+      template: '<call-message-detail></call-message-detail>',
+      component: true,
       cls: 'homer-modal-message',
-      id: 'message' + messagewindowId.hashCode(),
+      id: 'message' + self.hashCode(messagewindowId),
       divLeft: posx.toString() + 'px',
       divTop: posy.toString() + 'px',
       params: search_data,
@@ -594,7 +606,6 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
       onOpen: function() {
         console.log('modal1 message opened from url ' + this.id);
       },
-      controller: 'messageCtrl'
     });
   };
 
@@ -1005,7 +1016,6 @@ var TransactionDetail = function($scope, $log, SearchService, $homerModal, $home
         //    }
         //  });
         //}).catch(function(error) {
-        //  debugger;
         //  $log.error('[TransactionDetail]', error);
         //});
 

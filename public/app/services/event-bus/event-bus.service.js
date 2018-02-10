@@ -18,6 +18,12 @@ class EventBus {
       window.dispatchEvent(new Event('resize'));
     }, 200);
   }
+
+  refreshChart() {
+    setTimeout(function() {
+      this.$rootScope.$broadcast('highchartsng.reflow');
+    }, 30);
+  }
 }
 
 export default EventBus;

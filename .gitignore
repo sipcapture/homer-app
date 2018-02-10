@@ -7,3 +7,4 @@ public/dist
 knexfile.js
 server/config/db/knex.js
 experiments
+*.swp

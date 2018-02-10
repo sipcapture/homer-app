@@ -6,11 +6,11 @@ import {DataSet} from 'vis';
 
 import treeData from '../data/tree_data';
 
-// style
-import 'vis/dist/vis.css';
-import 'nvd3/build/nv.d3.css';
+//// style
+//import 'vis/dist/vis.css';
+//import 'nvd3/build/nv.d3.css';
 
-var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
+var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile, EventBus) {
   'ngInject';
   const self = this;
   var data = $homerModalParams.params;
@@ -83,15 +83,15 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   $scope.msgCallId = $homerModalParams.params.param.search.callid[0];
   $scope.collapsed = [];
   $scope.enableTransaction = false;
-  $scope.enableQualityReport = false;
-  $scope.enableRTCPReport = false;
+  //$scope.enableQualityReport = false;
+  //$scope.enableRTCPReport = false;
   $scope.enableLogReport = false;
   $scope.enableRecordingReport = false;
   $scope.enableDTMFReport = false;
   $scope.enableBlacklist = false;
   $scope.enableRemoteLogReport = false;
   $scope.enableRtcReport = false;
-  $scope.enableXRTPReport = false;
+  //$scope.enableXRTPReport = false;
   $scope.enableRTPAgentReport = false;
   $scope.enableQOSChart = false;
   $scope.LiveLogs = [];
@@ -151,8 +151,8 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
 
   $scope.tabExec = function() {
-    $scope.refreshChart();
-    $scope.resizeNull();
+    EventBus.refreshChart();
+    EventBus.resizeNull();
   };
 
   $scope.tabs = [{
@@ -168,7 +168,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Flow',
     'active': true,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'tab',
     'icon': 'fa fa-exchange',
@@ -177,7 +177,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'IP Graph',
     'active': true,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'enableGraph',
     'icon': 'fa fa-exchange',
@@ -189,7 +189,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       $scope.timelineReadyGo();
     },
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'enableTimeline',
     'icon': 'fa fa-exchange',
@@ -198,7 +198,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Call Info',
     'active': true,
     'select': function() {
-      $scope.refreshChart();
+      EventBus.refreshChart();
     },
     'ngshow': 'enableTransaction',
     'icon': 'glyphicon glyphicon-info-sign',
@@ -207,17 +207,17 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Media Reports',
     'active': true,
     'select': function() {
-      $scope.refreshChart();
+      EventBus.refreshChart();
     },
     'ngshow': 'enableQualityReport || enableXRTPReport || enableRTCPReport',
     'icon': 'glyphicon glyphicon-signal',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/media_reports.html'
+    // 'template': '/app/search/call-detail/call-detail/templates/tabs/media_reports.html'
   }, {
     'heading': 'DTMF',
     'active': true,
     'ngshow': 'enableDTMFReport',
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
     'template': '/app/search/call-detail/call-detail/templates/tabs/dtmf.html'
@@ -226,7 +226,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'active': true,
     'ngshow': 'enableLogReport',
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
     'template': '/app/search/call-detail/call-detail/templates/tabs/logs.html'
@@ -235,7 +235,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'active': true,
     'ngshow': 'enableRecordingReport',
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'icon': 'fa fa-play-circle-o',
     'template': '/app/search/call-detail/call-detail/templates/tabs/recording.html'
@@ -243,7 +243,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Remote Logs',
     'active': true,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'enableRemoteLogReport',
     'icon': 'fa fa-file-text-o',
@@ -252,7 +252,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'WSS',
     'active': true,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'enableRtcReport',
     'icon': 'fa fa-exchange',
@@ -261,7 +261,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Blacklist',
     'active': true,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'enableBlacklist',
     'icon': 'fa fa-ban',
@@ -270,7 +270,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     'heading': 'Export',
     'active': false,
     'select': function() {
-      $scope.resizeNull();
+      EventBus.resizeNull();
     },
     'ngshow': 'tab',
     'icon': 'glyphicon glyphicon-download-alt',
@@ -1228,36 +1228,36 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
     var apiD3 = {};
 
-    $scope.options = {
-      chart: {
-        type: 'lineChart',
-        height: 250,
-        margin: {
-          top: 40,
-          right: 20,
-          bottom: 40,
-          left: 55
-        },
-        useInteractiveGuideline: false,
-        xAxis: {
-          tickFormat: function(d) {
-            return d3.time.format('%H:%M')(new Date(d * 1000));
-          },
-        },
-        yAxis: {
-          tickFormat: function(d) {
-            return d3.format('.02f')(d);
-          },
-          axisLabelDistance: -10
-        },
-        showLegend: true
-      }
-    };
+    //$scope.options = {
+    //  chart: {
+    //    type: 'lineChart',
+    //    height: 250,
+    //    margin: {
+    //      top: 40,
+    //      right: 20,
+    //      bottom: 40,
+    //      left: 55
+    //    },
+    //    useInteractiveGuideline: false,
+    //    xAxis: {
+    //      tickFormat: function(d) {
+    //        return d3.time.format('%H:%M')(new Date(d * 1000));
+    //      },
+    //    },
+    //    yAxis: {
+    //      tickFormat: function(d) {
+    //        return d3.format('.02f')(d);
+    //      },
+    //      axisLabelDistance: -10
+    //    },
+    //    showLegend: true
+    //  }
+    //};
 
-    /* API OF D3 */
-    $scope.callbackD3 = function(scope) {
-      apiD3[scope.$id] = scope.api;
-    };
+    ///* API OF D3 */
+    //$scope.callbackD3 = function(scope) {
+    //  apiD3[scope.$id] = scope.api;
+    //};
 
     angular.element(window).on('resize', function() {
       angular.forEach(apiD3, function(v) {
@@ -1349,12 +1349,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     $scope.chartConfig.chart['zoomType'] = 'x';
     $scope.chartConfig.tooltip['crosshairs'] = false; // BETA CHANGE
     $scope.chartConfig.tooltip['shared'] = false; // BETA CHANGE
-  };
-
-  $scope.refreshChart = function() {
-    $timeout(function() {
-      $scope.$broadcast('highchartsng.reflow');
-    }, 30);
   };
 
   $scope.refreshGrid = function() {

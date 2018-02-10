@@ -1,6 +1,5 @@
-/*global $, angular, document, window, Blob, Event*/
+/*global angular, document, window, Blob*/
 
-import html2canvas from 'html2canvas';
 import fileSaver from 'file-saver';
 import * as d3 from 'd3';
 import {DataSet} from 'vis';
@@ -11,7 +10,7 @@ import treeData from '../data/tree_data';
 import 'vis/dist/vis.css';
 import 'nvd3/build/nv.d3.css';
 
-var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
+var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile) {
   'ngInject';
   const self = this;
   var data = $homerModalParams.params;
@@ -20,7 +19,6 @@ var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow,
   $scope.dataLoading = true;
   $scope.showSipMessage = true;
   $scope.showSipDetails = false;
-  $scope.exporting = false;
 
   $scope.clickSipDetails = function() {
     console.log('details');
@@ -270,14 +268,13 @@ var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow,
     'template': '/app/search/call-detail/call-detail/templates/tabs/blacklist.html'
   }, {
     'heading': 'Export',
-    'active': true,
+    'active': false,
     'select': function() {
       $scope.resizeNull();
     },
     'ngshow': 'tab',
     'icon': 'glyphicon glyphicon-download-alt',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/export.html'
-  } ];
+  }];
 
   $scope.getCallIDColor = function(str) {
     var hash = 0;
@@ -348,149 +345,6 @@ var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow,
   $scope.jittersFilterAll = true;
   $scope.packetsLostFilterAll = true;
   /* jitter */
-
-  function defineExportTemplate() {
-    return 'HEPIC-#{destination_ip}-#{ruri_user}-#{date}';
-  }
-
-  var getCallFileName = function() {
-    var fileNameTemplete = defineExportTemplate();
-    var callFileName = fileNameTemplete;
-    var ts_hms = new Date($scope.transaction.calldata[0].milli_ts);
-    var fileNameTime = (ts_hms.getMonth() + 1) + '/' + ts_hms.getDate() + '/' + ts_hms.getFullYear() + ' ' +
-      ts_hms.getHours() + ':' + ts_hms.getMinutes() + ':' + ts_hms.getSeconds();
-
-    callFileName = callFileName.replace('#{date}', fileNameTime);
-    callFileName = $.tmpl(callFileName, $scope.transaction.calldata[0]);
-    return callFileName;
-  };
-
-  $scope.exportDiv = function(prefix) {
-    $scope.target = $scope.cflowid;
-    if (prefix) {
-      $scope.target = prefix + $scope.cflowid;
-    }
-
-    console.log('EXPORTING CFLOWID', $scope.target);
-    $scope.exporting = true;
-    var cb = function() {
-      console.log('Export completed!');
-      $scope.exporting = false;
-      clearTimeout(cb_t);
-      $scope.resizeNull();
-    };
-    var cb_t = setTimeout(function() {
-      cb();
-    }, 8000);
-
-
-    var myEl = document.getElementById($scope.target);
-    var clone = myEl.cloneNode(true);
-    clone.id = $scope.target + '_clone';
-    clone.style.position = 'relative';
-    clone.style.top = '0';
-    clone.style.width = '100%';
-    clone.style.height = 'auto';
-    clone.style.overflow = 'visible';
-    clone.style.background = '#FFF';
-    document.body.appendChild(clone);
-
-    html2canvas(clone, {
-      logging: false
-    }).then(function(canvas) {
-      var used = document.getElementById($scope.target + '_clone');
-      if (used) used.parentNode.removeChild(used);
-      console.log('Converting to image...', canvas);
-      var myImage = canvas.toDataURL();
-      window.open(myImage);
-      cb();
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
-  };
-
-  $scope.exportCanvas = function() {
-    $scope.exporting = true;
-    var tempImage = document.getElementById($scope.cflowid);
-    html2canvas([tempImage], {
-      imageTimeout: 1000,
-      timeout: 1000,
-      allowJavascript: true,
-      onrendered: function(canvas) {
-        console.log('html2canvas: done rendering');
-        window.open(canvas.toDataURL());
-      },
-      onclone: function(doc) {
-        var intImage = doc.getElementById('rendercanvas');
-        var inject = doc.getElementById($scope.cflowid).parentElement.parentElement;
-        intImage.append(inject);
-        intImage.style.display = 'block';
-        intImage.style.visibility = 'collapse';
-        intImage.style.width = '1024px';
-        console.log(intImage.style);
-        console.log('MID', intImage);
-        setTimeout(function() {
-          return intImage;
-        }, 2000);
-      },
-      allowTaint: true,
-      background: '#FFFFFF'
-    }).then(function() {
-      console.log('html2canvas completed');
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
-  };
-
-  $scope.exportPCAP = function() {
-    $scope.isPcapBusy = true;
-    makePcapText(this.data, 0, $scope.msgCallId);
-  };
-
-  $scope.exportTEXT = function() {
-    console.log('Export TEXT');
-    $scope.isTextBusy = true;
-    makePcapText(this.data, 1, $scope.msgCallId);
-  };
-
-  $scope.exportCloud = function() {
-    $scope.isCloudBusy = true;
-    makePcapText(this.data, 2, $scope.msgCallId);
-  };
-
-  $scope.makeREPORT = function() {
-    $scope.isTextBusy = true;
-    makeReportRequest(this.data, $scope.msgCallId);
-  };
-
-  $scope.exportShare = function() {
-    $scope.sharelink = '';
-    SearchService.createShareLink(data).then(function(msg) {
-      if (msg) {
-        if (msg['url'] && msg['url'].match(/^http/)) {
-          $scope.sharelink = msg['url'];
-        } else {
-          $scope.sharelink = '/share/' + msg['url'];
-        }
-
-        window.sweetAlert({
-          title: 'Ready to Share!',
-          text: 'Your session can be accessed <a target="_blank" href="' + $scope.sharelink + '">here</a>',
-          html: true
-        });
-
-      } else {
-        window.sweetAlert({
-          title: 'Oops!',
-          type: 'error',
-          text: 'Your session could not be shared!<br>If this persists, contact your Administrator',
-          html: true
-        });
-      }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
-  };
 
   $scope.toggleTree = function(id) {
     $scope.collapsed[id] = !$scope.collapsed[id];
@@ -905,12 +759,6 @@ var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow,
       mos: [],
       averageMos: 0,
       worstMos: 5
-    };
-
-    $scope.resizeNull = function() {
-      setTimeout(function() {
-        window.dispatchEvent(new Event('resize'));
-      }, 200);
     };
 
     /* doctor */
@@ -1611,60 +1459,6 @@ var CallDetail = function($scope, $log, SearchService, $homerModal, $homerCflow,
       }
     });
     console.log('$scope.rtcpMembers: ', $scope.rtcpMembers);
-  };
-
-  var makePcapText = function(fdata, type) {
-    SearchService.makePcapTextforTransaction(fdata, type, 'call').then(function(msg) {
-      $scope.isPcapBusy = false;
-      $scope.isTextBusy = false;
-      $scope.isCloudBusy = false;
-
-      var filename = getCallFileName() + '.pcap';
-      var content_type = 'application/pcap';
-
-      if (type == 1) {
-        filename = getCallFileName() + '.txt';
-        content_type = 'attacment/text;charset=utf-8';
-      } else if (type == 2) {
-        if (msg.data && msg.data.hasOwnProperty('url')) {
-          window.sweetAlert({
-            title: 'Export Done!',
-            text: 'Your PCAP can be accessed <a target="_blank" href="' + msg.data.url + '">here</a>',
-            html: true
-          });
-        } else {
-          var error = 'Please check your settings';
-          if (msg.data && msg.data.hasOwnProperty('exceptions')) error = msg.data.exceptions;
-          window.sweetAlert({
-            title: 'Error',
-            type: 'error',
-            text: 'Your PCAP could not be uploaded!<BR>' + error,
-            html: true
-          });
-        }
-        return;
-      }
-      var blob = new Blob([msg], {
-        type: content_type
-      });
-      fileSaver.saveAs(blob, filename);
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
-  };
-
-  var makeReportRequest = function(fdata) {
-    SearchService.makeReportRequest(fdata, 'call').then(function(msg) {
-      $scope.isReportBusy = false;
-      var filename = getCallFileName() + '.zip';
-      var content_type = 'application/zip';
-      var blob = new Blob([msg], {
-        type: content_type
-      });
-      fileSaver.saveAs(blob, filename);
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
   };
 
   $timeout(function() {

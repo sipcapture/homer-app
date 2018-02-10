@@ -22,7 +22,10 @@
     <uib-tabset>
       <uib-tab ng-repeat="tab in tabs" select="refreshChart();resizeNull();"  ng-show="{{ tab.ngshow }}">
         <uib-tab-heading><i class="{{ tab.icon }}"></i> {{ tab.heading }} </uib-tab-heading>	     	     
-        <ng-include src="tab.template"></ng-include>
+<!--
+        <ng-include ng-if="tab.heading !== 'Export'" src="tab.template"></ng-include>
+-->
+        <call-detail-export ng-if="tab.heading === 'Export'"></call-detail-export>
       </uib-tab>
     </uib-tabset>
   </div>

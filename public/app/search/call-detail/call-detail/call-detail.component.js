@@ -3,7 +3,7 @@ import controller from './controllers/call-detail.controller';
 
 const callDetail = {
   controller,
-  template
+  template,
 };
 
 export default callDetail;

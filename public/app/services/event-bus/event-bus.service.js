@@ -20,7 +20,7 @@ class EventBus {
   }
 
   refreshChart() {
-    setTimeout(function() {
+    setTimeout(() => {
       this.$rootScope.$broadcast('highchartsng.reflow');
     }, 30);
   }

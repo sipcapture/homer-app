@@ -174,6 +174,7 @@
           modal.$scope.divTop = opt.divTop ? opt.divTop : '100px';
           if (opt.component) {
             modal.$scope.bindings = {
+              id: modal.$scope.customId,
               internal: opt.internal,
               params: opt.params,
               sdata: opt.sdata,

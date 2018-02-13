@@ -1,4 +1,4 @@
 import angular from 'angular';
-import CallDetail from './controllers/call-detail.controller';
+import component from './call-detail.component';
 
-export default angular.module('hepicApp.call-detail', []).controller(CallDetail.name, CallDetail);
+export default angular.module('hepicApp.call-detail', []).component('callDetail', component);

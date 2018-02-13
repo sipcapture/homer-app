@@ -1,8 +1,7 @@
 <div class="modal-header homer-modal-header nd-modal-header"
-  style="border-bottom:0;background:{{ getCallIDColor(msgCallId).color }};" ng-dblclick="expandModal(this.id);resizeNull();return;">
-
-  <button type="button" class="close nd-close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" ><img src="/img/Close.svg" alt=""></button>
-  <button type="button" class="close nd-close nd-resize-full" data-dismiss="modal" aria-hidden="true" ng-click="expandModal(this.id);resizeNull();" \>
+  style="border-bottom:0;background:{{ getCallIDColor(msgCallId).color }};" ng-dblclick="$ctrl.expandModal(this.id);EventBus.resizeNull();return;">
+  <button type="button" class="close nd-close" data-dismiss="modal" aria-hidden="true" ng-click="$ctrl.closeModal()" ><img src="/img/Close.svg" alt=""></button>
+  <button type="button" class="close nd-close nd-resize-full" data-dismiss="modal" aria-hidden="true" ng-click="$ctrl.expandModal(this.id);EventBus.resizeNull();" \>
     <span style="font-size: 16px; vertical-align: middle;"  class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>
   </button>
   
@@ -20,12 +19,11 @@
 <div class="modal-body homer-modal-body nd-homer-modal-body" style="height:90%;width:99%;">
   <div class="modal-body-buttons" ng-hide="dataLoading">
     <uib-tabset>
-      <uib-tab ng-repeat="tab in tabs" select="refreshChart();resizeNull();"  ng-show="{{ tab.ngshow }}">
+      <uib-tab ng-repeat="tab in tabs" select="tabExec()"  ng-show="{{ tab.ngshow }}">
         <uib-tab-heading><i class="{{ tab.icon }}"></i> {{ tab.heading }} </uib-tab-heading>	     	     
-<!--
-        <ng-include ng-if="tab.heading !== 'Export'" src="tab.template"></ng-include>
--->
-        <call-detail-export ng-if="tab.heading === 'Export'"></call-detail-export>
+        <ng-include ng-if="tab.heading !== 'Export' && tab.heading !== 'Media Reports'" src="tab.template"></ng-include>
+        <call-detail-export ng-if="tab.heading === 'Export'" data="data" msgcallid="msgCallId" transaction="transaction" cflowid="cflowid"></call-detail-export>
+        <call-detail-media ng-if="tab.heading === 'Media Reports'"></call-detail-media>
       </uib-tab>
     </uib-tabset>
   </div>

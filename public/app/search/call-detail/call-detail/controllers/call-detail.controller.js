@@ -10,11 +10,53 @@ import treeData from '../data/tree_data';
 //import 'vis/dist/vis.css';
 //import 'nvd3/build/nv.d3.css';
 
-var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $homerModalParams, $sce, localStorageService, $filter, UserProfile, EventBus) {
+var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce, localStorageService, $filter, UserProfile, EventBus) {
   'ngInject';
   const self = this;
-  var data = $homerModalParams.params;
+
+  const bindings = $scope.$parent.bindings;
+  let data = bindings.params;
+  $scope.id = data.customId;
   $scope.data = data;
+
+  this.expandModal = function (id) {
+    const modal = document.getElementById(id);
+    const content = modal.getElementsByClassName('modal-body')[0];
+
+    if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) && (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
+      console.log('rogue/dupe resize!');
+      return;
+    }
+
+    if (!modal.style.extop && modal.style.width != '100%') {
+      modal.style.fullscreen = true;
+      modal.style.extop = modal.style.top;
+      modal.style.exleft = modal.style.left;
+      modal.style.exheight = modal.style.height;
+      modal.style.exwidth = modal.style.width ? modal.style.width : '';
+      modal.style.top = '0px';
+      modal.style.left = '0px';
+      modal.style.height = '100%';
+      modal.style.width = '100%';
+      content.style.height = '95%';
+      content.style.width = '100%';
+    } else {
+      modal.style.fullscreen = false;
+      modal.style.top = modal.style.extop;
+      modal.style.left = modal.style.exleft ? modal.style.exleft : (window.innerWidth - modal.style.width) / 2 + 'px';
+      modal.style.height = modal.style.exheight;
+      modal.style.width = modal.style.exwidth;
+      modal.style.extop = false;
+      content.style.height = '95%';
+      content.style.width = '100%';
+    }
+    modal.classList.toggle('full-screen-modal');
+    $scope.drawCanvas($scope.id, $scope.transaction);
+  };
+
+  this.closeModal = function () {
+    $scope.$parent.closeModal();
+  };
 
   $scope.dataLoading = true;
   $scope.showSipMessage = true;
@@ -36,51 +78,9 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     $scope.timelineReady = true;
   };
 
-  $scope.expandModal = function(id) {
-    var modal = document.getElementById(id);
-    var content = modal.getElementsByClassName('modal-body')[0];
-
-    if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) && (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
-      console.log('rogue/dupe resize!');
-      return;
-    }
-
-    if (!modal.style.extop && modal.style.width != '100%') {
-      console.log('expanding', id, modal.style.fullscreen);
-      modal.style.fullscreen = true;
-      modal.style.extop = modal.style.top;
-      modal.style.exleft = modal.style.left;
-      modal.style.exheight = modal.style.height;
-      modal.style.exwidth = modal.style.width ? modal.style.width : '';
-      modal.style.top = '0px';
-      modal.style.left = '0px';
-      modal.style.height = '100%';
-      modal.style.width = '100%';
-
-      content.style.height = '95%';
-      content.style.width = '100%';
-    } else {
-      console.log('shrinking', id, modal.style.fullscreen);
-      modal.style.fullscreen = false;
-      modal.style.top = modal.style.extop;
-      modal.style.left = modal.style.exleft ? modal.style.exleft : (window.innerWidth - modal.style.width) / 2 + 'px';
-      modal.style.height = modal.style.exheight;
-      modal.style.width = modal.style.exwidth;
-      modal.style.extop = false;
-
-      content.style.height = '95%';
-      content.style.width = '100%';
-    }
-
-    modal.classList.toggle('full-screen-modal');
-    $scope.drawCanvas($scope.id, $scope.transaction);
-
-  };
-
-  $scope.id = $homerModalParams.id;
   $scope.transaction = [];
   $scope.clickArea = [];
-  $scope.msgCallId = $homerModalParams.params.param.search.callid[0];
+  $scope.msgCallId = data.param.search.callid[0];
   $scope.collapsed = [];
   $scope.enableTransaction = false;
   //$scope.enableQualityReport = false;
@@ -148,7 +148,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       }
     }
   };
-
 
   $scope.tabExec = function() {
     EventBus.refreshChart();
@@ -568,8 +567,8 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
   SearchService.searchCallByTransaction(data).then(function(msg) {
     if (msg) {
-      $scope.feelGrid($homerModalParams.id, msg);
-      $scope.drawCanvas($homerModalParams.id, msg);
+      $scope.feelGrid($scope.id, msg);
+      $scope.drawCanvas($scope.id, msg);
       $scope.setSDPInfo(msg);
       /* and now we should do search for LOG and QOS*/
       angular.forEach(msg.callid, function(v, k) {

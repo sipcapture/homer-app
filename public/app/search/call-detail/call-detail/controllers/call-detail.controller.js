@@ -18,8 +18,187 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   let data = bindings.params;
   $scope.id = data.customId;
   $scope.data = data;
+  $scope.call = {};
+
+  this.$onInit = function () {
+    SearchService.searchCallByTransaction(data).then(function(msg) {
+      if (msg) {
+        if (msg.transaction) {
+          $scope.enableTransaction = true;
+        }
+        $scope.call = msg;
+        $scope.feelGrid($scope.id, msg);
+        $scope.drawCanvas($scope.id, msg);
+        $scope.setSDPInfo(msg);
+        /* and now we should do search for LOG and QOS*/
+        angular.forEach(msg.callid, function(v, k) {
+          console.log('K', k);
+          if (data.param.search.callid.indexOf(k) == -1) {
+            data.param.search.callid.push(k);
+          }
+        });
+
+        // Unique IP Array for Export
+        try {
+          console.log('scanning for IPs...');
+          var cached = [];
+          angular.forEach(msg.hosts, function(v) {
+            cached.push(v.hosts[0]);
+          });
+          if (cached.length > 0) {
+            $scope.uniqueIps = cached;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+
+        /* IP GRAPH DISPLAY (experimental) */
+
+        /* TIMELINE TEST START*/
+
+        if (!profile.timeline_disable) {
+
+          var randie = function() {
+            return 'rgb(' + (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
+              (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
+              (Math.floor((256 - 229) * Math.random()) + 230) + ')';
+          };
+
+          var dataGroups = new DataSet();
+          angular.forEach($scope.uniqueIps, function(v, k) {
+            $scope.tlGroups.push({
+              content: v,
+              id: k,
+              style: 'background-color:' + randie()
+            });
+          });
+          dataGroups.add($scope.tlGroups);
+
+          var dataItems = new DataSet();
+
+          /* Scrape Data */
+
+          try {
+            angular.forEach(msg.messages, function(v) {
+              var group = $scope.tlGroups.findIndex(function(obj) {
+                return obj.content == (v.source_ip + ':' + v.source_port);
+              });
+              if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
+                return obj.content == (v.source_ip);
+              });
+
+              $scope.tlData.push({
+                start: new Date(v.micro_ts / 1000),
+                group: group,
+                content: v.method ? v.method : v.event
+              });
+            });
+          } catch (e) {
+            console.log('TLINE: Error Parsing Message Details!');
+          }
+
+
+          try {
+            angular.forEach(msg.transaction, function(v) {
+              var group = $scope.tlGroups.findIndex(function(obj) {
+                return obj.content == (v.source_ip + ':' + v.source_port);
+              });
+              if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
+                return obj.content == (v.source_ip);
+              });
+
+              if (v.cdr_start != 0) {
+                $scope.tlData.push({
+                  start: new Date(v.cdr_start * 1000),
+                  style: 'background-color:green;',
+                  group: group,
+                  content: 'CDR Start'
+                });
+
+              }
+              if (v.cdr_ringing != 0) {
+                $scope.tlData.push({
+                  start: new Date(v.cdr_ringing * 1000),
+                  style: 'background-color:yellow;',
+                  group: group,
+                  content: 'CDR Ringing'
+                });
+              }
+              if (v.cdr_progress != 0) {
+                $scope.tlData.push({
+                  start: new Date(v.cdr_progress * 1000),
+                  style: 'background-color:blue;',
+                  group: group,
+                  content: 'CDR Progress'
+                });
+              }
+              if (v.cdr_stop != 0) {
+                $scope.tlData.push({
+                  start: new Date(v.cdr_stop * 1000),
+                  style: 'background-color:red;',
+                  group: group,
+                  content: 'CDR Stop'
+                });
+              }
+            });
+          } catch (e) {
+            console.log('TLINE: Error Parsing Transaction Details!');
+          }
+
+
+          $scope.tlUpdate = function() {
+            $scope.enableTimeline = true;
+            $scope.timeline_data = {
+              groups: dataGroups,
+              items: dataItems
+            };
+          };
+          $scope.tlUpdate();
+
+          $scope.$watch('ldData', function() {
+            $scope.tlUpdate();
+            try {
+              dataItems.add($scope.tlData);
+            } catch (e) {
+              $log.error(e);
+            }
+          });
+          $scope.$watch('ldGroups', function() {
+            $scope.tlUpdate();
+            try {
+              dataGroups.clear(); // to-do: clear because of error 'Cannot add item: item with id 0 already exists'
+              dataGroups.add($scope.tlGroups);
+            } catch (e) {
+              $log.error(e);
+            }
+          });
+
+          $scope.timeline_options = {
+            orientation: 'top',
+            align: 'center',
+            autoResize: true,
+            editable: false,
+            selectable: true,
+            margin: 25,
+            minHeight: '300px',
+            showCurrentTime: false
+          };
+        }
+
+        /*  TIMELINE TEST END */
+        $scope.showQOSReport(data);
+        $scope.showLogReport(data);
+        $scope.showRecordingReport(data);
+      }
+    }).catch(function(error) {
+      $log.error('[CallDetail]', error);
+    }).finally(function() {
+      $scope.dataLoading = false;
+    });
+  };
 
   this.expandModal = function (id) {
+    // to-do: this currently doesn't work because id is undefined
     const modal = document.getElementById(id);
     const content = modal.getElementsByClassName('modal-body')[0];
 
@@ -201,7 +380,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableTransaction',
     'icon': 'glyphicon glyphicon-info-sign',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/call_info.html'
   }, {
     'heading': 'Media Reports',
     'active': true,
@@ -210,7 +388,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableQualityReport || enableXRTPReport || enableRTCPReport',
     'icon': 'glyphicon glyphicon-signal',
-    // 'template': '/app/search/call-detail/call-detail/templates/tabs/media_reports.html'
   }, {
     'heading': 'DTMF',
     'active': true,
@@ -565,180 +742,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     //$scope.gridHeight = 250;
   };
 
-  SearchService.searchCallByTransaction(data).then(function(msg) {
-    if (msg) {
-      $scope.feelGrid($scope.id, msg);
-      $scope.drawCanvas($scope.id, msg);
-      $scope.setSDPInfo(msg);
-      /* and now we should do search for LOG and QOS*/
-      angular.forEach(msg.callid, function(v, k) {
-        console.log('K', k);
-        if (data.param.search.callid.indexOf(k) == -1) {
-          data.param.search.callid.push(k);
-        }
-      });
-
-      // Unique IP Array for Export
-      try {
-        console.log('scanning for IPs...');
-        var cached = [];
-        angular.forEach(msg.hosts, function(v) {
-          cached.push(v.hosts[0]);
-        });
-        if (cached.length > 0) {
-          $scope.uniqueIps = cached;
-        }
-      } catch (e) {
-        console.log(e);
-      }
-
-      /* IP GRAPH DISPLAY (experimental) */
-
-      /* TIMELINE TEST START*/
-
-      if (!profile.timeline_disable) {
-
-        var randie = function() {
-          return 'rgb(' + (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
-            (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
-            (Math.floor((256 - 229) * Math.random()) + 230) + ')';
-        };
-
-        var dataGroups = new DataSet();
-        angular.forEach($scope.uniqueIps, function(v, k) {
-          $scope.tlGroups.push({
-            content: v,
-            id: k,
-            style: 'background-color:' + randie()
-          });
-        });
-        dataGroups.add($scope.tlGroups);
-
-        var dataItems = new DataSet();
-
-        /* Scrape Data */
-
-        try {
-          angular.forEach(msg.messages, function(v) {
-            var group = $scope.tlGroups.findIndex(function(obj) {
-              return obj.content == (v.source_ip + ':' + v.source_port);
-            });
-            if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
-              return obj.content == (v.source_ip);
-            });
-
-            $scope.tlData.push({
-              start: new Date(v.micro_ts / 1000),
-              group: group,
-              content: v.method ? v.method : v.event
-            });
-          });
-        } catch (e) {
-          console.log('TLINE: Error Parsing Message Details!');
-        }
-
-
-        try {
-          angular.forEach(msg.transaction, function(v) {
-            var group = $scope.tlGroups.findIndex(function(obj) {
-              return obj.content == (v.source_ip + ':' + v.source_port);
-            });
-            if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
-              return obj.content == (v.source_ip);
-            });
-
-            if (v.cdr_start != 0) {
-              $scope.tlData.push({
-                start: new Date(v.cdr_start * 1000),
-                style: 'background-color:green;',
-                group: group,
-                content: 'CDR Start'
-              });
-
-            }
-            if (v.cdr_ringing != 0) {
-              $scope.tlData.push({
-                start: new Date(v.cdr_ringing * 1000),
-                style: 'background-color:yellow;',
-                group: group,
-                content: 'CDR Ringing'
-              });
-            }
-            if (v.cdr_progress != 0) {
-              $scope.tlData.push({
-                start: new Date(v.cdr_progress * 1000),
-                style: 'background-color:blue;',
-                group: group,
-                content: 'CDR Progress'
-              });
-            }
-            if (v.cdr_stop != 0) {
-              $scope.tlData.push({
-                start: new Date(v.cdr_stop * 1000),
-                style: 'background-color:red;',
-                group: group,
-                content: 'CDR Stop'
-              });
-            }
-          });
-        } catch (e) {
-          console.log('TLINE: Error Parsing Transaction Details!');
-        }
-
-
-        $scope.tlUpdate = function() {
-          $scope.enableTimeline = true;
-          $scope.timeline_data = {
-            groups: dataGroups,
-            items: dataItems
-          };
-        };
-        $scope.tlUpdate();
-
-        $scope.$watch('ldData', function() {
-          $scope.tlUpdate();
-          try {
-            dataItems.add($scope.tlData);
-          } catch (e) {
-            $log.error(e);
-          }
-        });
-        $scope.$watch('ldGroups', function() {
-          $scope.tlUpdate();
-          try {
-            dataGroups.clear(); // to-do: clear because of error 'Cannot add item: item with id 0 already exists'
-            dataGroups.add($scope.tlGroups);
-          } catch (e) {
-            $log.error(e);
-          }
-        });
-
-        $scope.timeline_options = {
-          orientation: 'top',
-          align: 'center',
-          autoResize: true,
-          editable: false,
-          selectable: true,
-          margin: 25,
-          minHeight: '300px',
-          showCurrentTime: false
-        };
-      }
-
-      /*  TIMELINE TEST END */
-      $scope.transaction = msg;
-      $scope.showQOSReport(data);
-      $scope.showLogReport(data);
-      $scope.showRecordingReport(data);
-    }
-  }).catch(function(error) {
-    $log.error('[CallDetail]', error);
-  }).finally(function() {
-    $scope.dataLoading = false;
-  });
-
-
-  $scope.geomarkers = {};
   $scope.setSDPInfo = function(rdata) {
     var msg;
     console.log(rdata);
@@ -760,35 +763,8 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       worstMos: 5
     };
 
-    /* doctor */
-    if (rdata.messages) {
-      $scope.doctor = {
-        one: 0,
-        two: 0,
-        three: 0,
-        four: 0,
-        five: 0,
-        auth: 0,
-        ring: 0
-      };
-      rdata.messages.forEach(function(msg) {
-        if (msg.reply_reason >= 500) $scope.doctor.five++;
-        else if (msg.reply_reason == 401 || msg.reply_reason == 407) $scope.doctor.auth++;
-        else if (msg.reply_reason >= 400) $scope.doctor.four++;
-        else if (msg.reply_reason >= 300) $scope.doctor.three++;
-        else if (msg.reply_reason >= 200) $scope.doctor.two++;
-        else if (msg.reply_reason >= 180) $scope.doctor.ring++;
-        else if (msg.reply_reason >= 100) $scope.doctor.one++;
-      });
-      console.log('DOC:', $scope.doctor);
-
-    }
-
     /* transaction & sdp analyzer */
     if (rdata.transaction) {
-      $scope.enableTransaction = true;
-      $scope.call_transaction = rdata.transaction;
-
       rdata.transaction.forEach(function(entry) {
         if (rdata.sdp[entry.callid] && rdata.sdp[entry.callid][0]) {
           entry.sdp = rdata.sdp[entry.callid][0];
@@ -865,85 +841,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         //}).catch(function(error) {
         //  $log.error('[CallDetail]', error);
         //});
-
-        /* prepare geostuff */
-        try {
-          console.log('MAP:', entry.geo_lat, entry.geo_lan, entry.dest_lat, entry.dest_lan);
-          if (entry.geo_lat && entry.geo_lan) {
-            $scope.geocenter = {
-              lat: entry.geo_lat,
-              lan: entry.geo_lan
-            };
-            $scope.geomarkers[entry.source_ip.split('.').join('')] = {
-              lat: entry.geo_lat,
-              lng: entry.geo_lan,
-              message: 'A-Party<br>' + entry.source_ip + ':' + entry.source_port,
-              focus: true,
-              draggable: false
-            };
-
-            if (entry.dest_lat && entry.dest_lan) {
-              $scope.geomarkers[entry.destination_ip.split('.').join('')] = {
-                lat: entry.dest_lat,
-                lng: entry.dest_lan,
-                message: 'B-Party<br>' + entry.destination_ip + ':' + entry.destination_port,
-                focus: false,
-                draggable: false
-              };
-            }
-
-            if (entry.destination_ip && (!entry.dest_lat || entry.dest_lat == 0) && SearchService.searchGeoLoc) {
-              SearchService.searchGeoLoc(entry.destination_ip).then(function(results) {
-                if (!results.lat && !results.lon) return;
-                console.log('API GEO-LOOKUP', results);
-                $scope.enableLogReport = true;
-                $scope.LiveLogs.push({
-                  data: {
-                    type: 'Geo Lookup',
-                    data: results
-                  }
-                });
-
-                $scope.geomarkers[entry.destination_ip.split('.').join('')] = {
-                  lat: results.lat,
-                  lng: results.lon,
-                  message: 'B-Party IP<br>' + entry.destination_ip + ':' + entry.destination_port,
-                  focus: false,
-                  draggable: false
-                };
-              }).catch(function(error) {
-                $log.error('[CallDetail]', error);
-              });
-            }
-          }
-        } catch (e) {
-          $log.error(e);
-        }
-
       });
-
-      // Inject Maps
-      if ($scope.geomarkers) {
-        try {
-          console.log('GEO-MARKERS', $scope.geomarkers);
-          if ($scope.geocenter) {
-            angular.extend($scope, {
-              leaflet: {
-                lat: $scope.geocenter.lat,
-                lng: $scope.geocenter.lan,
-                zoom: 4
-              },
-              markers: $scope.geomarkers,
-              defaults: {
-                scrollWheelZoom: false
-              }
-            });
-          }
-
-        } catch (e) {
-          $log.error(e);
-        }
-      }
     }
 
     if (rdata.sdp) {

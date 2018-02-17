@@ -341,7 +341,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'tab',
     'icon': 'zmdi zmdi-grid',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/sip_msg.html'
   }, {
     'heading': 'Flow',
     'active': true,
@@ -350,7 +349,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'tab',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/cflow.html'
   }, {
     'heading': 'IP Graph',
     'active': true,
@@ -359,7 +357,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableGraph',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/graph.html'
   }, {
     'heading': 'Timeline',
     'active': true,
@@ -371,7 +368,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableTimeline',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/timeline.html'
   }, {
     'heading': 'Call Info',
     'active': true,
@@ -396,7 +392,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       EventBus.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/dtmf.html'
   }, {
     'heading': 'Logs',
     'active': true,
@@ -405,7 +400,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       EventBus.resizeNull();
     },
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/logs.html'
   }, {
     'heading': 'Recording',
     'active': true,
@@ -414,7 +408,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       EventBus.resizeNull();
     },
     'icon': 'fa fa-play-circle-o',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/recording.html'
   }, {
     'heading': 'Remote Logs',
     'active': true,
@@ -423,7 +416,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableRemoteLogReport',
     'icon': 'fa fa-file-text-o',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/logs_remote.html'
   }, {
     'heading': 'WSS',
     'active': true,
@@ -432,7 +424,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableRtcReport',
     'icon': 'fa fa-exchange',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/wss.html'
   }, {
     'heading': 'Blacklist',
     'active': true,
@@ -441,7 +432,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     },
     'ngshow': 'enableBlacklist',
     'icon': 'fa fa-ban',
-    'template': '/app/search/call-detail/call-detail/templates/tabs/blacklist.html'
   }, {
     'heading': 'Export',
     'active': false,

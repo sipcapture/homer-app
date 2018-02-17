@@ -21,10 +21,19 @@
     <uib-tabset>
       <uib-tab ng-repeat="tab in tabs" select="tabExec()"  ng-show="{{ tab.ngshow }}">
         <uib-tab-heading><i class="{{ tab.icon }}"></i> {{ tab.heading }} </uib-tab-heading>	     	     
-        <ng-include ng-if="tab.heading !== 'Export' && tab.heading !== 'Media Reports' && tab.heading !== 'Call Info'" src="tab.template"></ng-include>
+        <call-detail-messages ng-if="tab.heading === 'Messages'"></call-detail-messages>
+        <call-detail-flow ng-if="tab.heading === 'Flow'"></call-detail-flow>
         <call-detail-export ng-if="tab.heading === 'Export'" data="data" msgcallid="msgCallId" transaction="call.transaction" cflowid="cflowid"></call-detail-export>
         <call-detail-media ng-if="tab.heading === 'Media Reports'"></call-detail-media>
         <call-detail-info ng-if="tab.heading === 'Call Info'" messages="call.messages" transaction="call.transaction"></call-detail-info>
+        <call-detail-graph ng-if="tab.heading === 'IP Graph'"></call-detail-graph>
+        <call-detail-timeline ng-if="tab.heading === 'Timeline'"></call-detail-timeline>
+        <call-detail-dtmf ng-if="tab.heading === 'DTMF'"></call-detail-dtmf>
+        <call-detail-logs ng-if="tab.heading === 'Logs'"></call-detail-logs>
+        <call-detail-logs-remote ng-if="tab.heading === 'Remote Logs'"></call-detail-logs-remote>
+        <call-detail-recording ng-if="tab.heading === 'Recording'"></call-detail-recording>
+        <call-detail-wss ng-if="tab.heading === 'WSS'"></call-detail-wss>
+        <call-detail-blacklist ng-if="tab.heading === 'Blacklist'"></call-detail-blacklist>
       </uib-tab>
     </uib-tabset>
   </div>

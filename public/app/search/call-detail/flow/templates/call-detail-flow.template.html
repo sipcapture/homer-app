@@ -1,44 +1,9 @@
 <!-- INCLUDE: CFLOW TAB -->
 <div class="wr-wr-cflowsvg" id="{{cflowid}}">
-
-<!--
-<button class="btn btn-normal btn-export btn-danger btn-export_blue" ng-click="exportDiv()" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;">
-<i class="fa fa-file-image-o" aria-hidden="true"></i><span>Export PNG</span>
-</button>
--->
-
     <table class="wr-table-call wr-table-call_icons">
         <tr>
             <td style='width: {{100/hostsflow.length}}%' ng-repeat="item in hostsflow track by $index">
                 <div class="wr-last-rec">
-
-<!--
-                    <div class="info {{item.type}}">
-                        <div ng-if="$first" class="wr-info__rectangle">
-                            <img src="img/caller.svg" alt="">
-                        </div>
-                        <div ng-if="!$first" class="wr-info__rectangle">
-                            <img src="img/host1.svg" alt="">
-                        </div>
-                        <div class="wr-info-text wr-info-text_left">
-                            <div class="info-text">{{item.description}}</div>
-                            <div class="info-text-port">{{item.name}}</div>
-                        </div>
-
-                    </div>
-
-                    <div ng-if="$last == true" class="info {{lasthosts.type}}">
-
-                        <div class="wr-info__rectangle">
-                            <img src="img/host2.svg" alt="">
-                        </div>
-                        <div class="wr-info-text">
-                            <div class="info-text">{{lasthosts.description}}</div>
-                            <div class="info-text-port">{{lasthosts.name}}</div>
-                        </div>
-                    </div>
--->
-
 <!-- TEST NEW STYLE -->
                     <div class="info {{item.type}}">
                         <div ng-if="$first" class="wr-info-text wr-info-text_left cflow-bubble" style="margin-left:-2px;">
@@ -73,34 +38,19 @@
                     <td style='width: {{100/hostsflow.length}}%' ng-repeat="item in hostsflow track by $index">
                         <div class="wr-last-rec">
                             <div class="info {{item.type}}">
-                                <!--
-									 	<div ng-if="$index==maxhosts" class="wr-info-text wr-info-text_left">
-					                                        	<div class="info-text">{{item.description}}</div>
-			                        			                <div class="info-text-port">{{item.name}}</div>
-										</div>									 										 										
-										-->
-
                                 <div ng-if="$first" class="wr-info__rectangle">
-                                    <!-- <img src="img/caller.svg" alt=""> -->
                                 </div>
                                 <div ng-if="!$first" class="wr-info__rectangle">
-                                    <!-- <img src="img/host1.svg" alt=""> -->
                                 </div>
-                                <!-- <div ng-if="$index!=maxhosts" class="wr-info-text wr-info-text_left"> -->
                                 <div class="wr-info-text wr-info-text_left">
-                                    <!--     	<div class="info-text">{{item.description}}</div>
-			                        			                <div class="info-text-port">{{item.name}}</div> -->
                                 </div>
 
                             </div>
 
                             <div ng-if="$last == true" class="info {{lasthosts.type}}">
                                 <div class="wr-info-text">
-                                    <!--                          	<div class="info-text">{{lasthosts.description}}</div>
-				                        			        <div class="info-text-port">{{lasthosts.name}}</div> -->
                                 </div>
                                 <div class="wr-info__rectangle">
-                                    <!-- <img src="img/host2.svg" alt=""> -->
                                 </div>
                             </div>
                         </div>
@@ -116,7 +66,6 @@
                                 <div class="call_text" ng-hide="{{ item.method == 'undefined' }}"> {{ item.method == 'undefined' ? protoCheck(item.proto) : item.method }}</div>
                                 <div class="call_text" ng-show="{{ item.method == 'undefined' }}"> {{ protoCheck(item.proto) }}</div>
                                 <div class="call_text-mini"> {{ item.method_ext | limitTo: 30 }}{{item.method_ext.length > 30 ? '...' : ''}}</div>
-                                <!--   <div class="call_text"> {{item.method}} {{item.x_pos}} = {{item.y_pos}}</div> -->
                                 <div class="call_text-date">[{{item.pid}}][{{ protoCheck(item.proto) | uppercase }}] {{item.date}}</div>
                             </div>
                         </div>

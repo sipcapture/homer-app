@@ -5,6 +5,8 @@ const callDetailFlow = {
   controller,
   template,
   bindings: {
+    call: '<',
+    callid: '<',
   },
 };
 

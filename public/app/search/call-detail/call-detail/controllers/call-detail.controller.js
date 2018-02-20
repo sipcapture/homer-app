@@ -2,21 +2,16 @@
 
 import fileSaver from 'file-saver';
 import * as d3 from 'd3';
-//import {DataSet} from 'vis';
 
 import treeData from '../data/tree_data';
 
-//// style
-//import 'vis/dist/vis.css';
-//import 'nvd3/build/nv.d3.css';
-
 var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce, localStorageService, $filter, UserProfile, EventBus) {
   'ngInject';
-  const self = this;
+  //const self = this;
 
   const bindings = $scope.$parent.bindings;
   let data = bindings.params;
-  $scope.id = data.customId;
+  $scope.id = bindings.id;
   $scope.data = data;
   $scope.call = {};
 
@@ -28,7 +23,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         }
         $scope.call = msg;
         $scope.feelGrid($scope.id, msg);
-        $scope.drawCanvas($scope.id, msg);
+        //$scope.drawCanvas($scope.id, msg);
         $scope.setSDPInfo(msg);
         /* and now we should do search for LOG and QOS*/
         angular.forEach(msg.callid, function(v, k) {
@@ -420,14 +415,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     else return 'SIP';
   };
 
-  $scope.protoCheck = function(proto) {
-    if (parseInt(proto) == 17) return 'udp';
-    else if (parseInt(proto) == 8) return 'tcp';
-    else if (parseInt(proto) == 3) return 'wss';
-    else if (parseInt(proto) == 4) return 'sctp';
-    else return 'udp';
-  };
-
   $scope.showtable = true;
   $scope.activeMainTab = true;
 
@@ -436,66 +423,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     $scope.headerType = 'SIP Method';
     $scope.rowCollection = messages;
     $scope.displayedCollection = [].concat($scope.rowCollection);
-  };
-
-  $scope.showMessage = function(data, event) {
-    var search_data = {
-      timestamp: {
-        from: parseInt(data.micro_ts / 1000),
-        to: parseInt(data.micro_ts / 1000)
-      },
-      param: {
-        search: {
-          id: parseInt(data.id),
-          callid: data.callid
-        },
-        location: {
-          node: data.dbnode
-        },
-        transaction: {
-          call: false,
-          registration: false,
-          rest: false
-        }
-      }
-    };
-
-    search_data['param']['transaction'][data.trans] = true;
-    var messagewindowId = '' + data.id + '_' + data.trans;
-
-    var posx = event.clientX;
-    var posy = event.clientY;
-    var winx = window.screen.availWidth;
-    var diff = parseInt((posx + (winx / 3) + 20) - (winx));
-    // Reposition popup in visible area
-    if (diff > 0) {
-      posx -= diff;
-    }
-  
-    self.hashCode = function(str) { // java String#hashCode
-      var hash = 0;
-      if (str) {
-        for (let i = 0; i < str.length; i++) {
-          hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-      }
-      return hash;
-    };
-
-    $homerModal.open({
-      template: '<call-message-detail></call-message-detail>',
-      component: true,
-      cls: 'homer-modal-message',
-      id: 'message' + self.hashCode(messagewindowId),
-      divLeft: posx.toString() + 'px',
-      divTop: posy.toString() + 'px',
-      params: search_data,
-      sdata: data,
-      internal: true,
-      onOpen: function() {
-        console.log('modal1 message opened from url ' + this.id);
-      },
-    });
   };
 
   $scope.playStream = function(data, event) {
@@ -562,12 +489,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     }).catch(function(error) {
       $log.error('[CallDetail]', error);
     });
-  };
-
-  $scope.showMessageById = function(id, event) {
-
-    var data = $scope.messages[--id];
-    $scope.showMessage(data, event);
   };
 
   $scope.clickMousePosition = function(event) {

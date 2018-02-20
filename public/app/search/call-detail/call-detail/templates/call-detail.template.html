@@ -22,7 +22,7 @@
       <uib-tab ng-repeat="tab in tabs" select="tabExec()"  ng-show="{{ tab.ngshow }}">
         <uib-tab-heading><i class="{{ tab.icon }}"></i> {{ tab.heading }} </uib-tab-heading>	     	     
         <call-detail-messages ng-if="tab.heading === 'Messages'"></call-detail-messages>
-        <call-detail-flow ng-if="tab.heading === 'Flow'"></call-detail-flow>
+        <call-detail-flow ng-if="tab.heading === 'Flow'" call="call" callid="id"></call-detail-flow>
         <call-detail-export ng-if="tab.heading === 'Export'" data="data" msgcallid="msgCallId" transaction="call.transaction" cflowid="cflowid"></call-detail-export>
         <call-detail-media ng-if="tab.heading === 'Media Reports'"></call-detail-media>
         <call-detail-info ng-if="tab.heading === 'Call Info'" messages="call.messages" transaction="call.transaction"></call-detail-info>

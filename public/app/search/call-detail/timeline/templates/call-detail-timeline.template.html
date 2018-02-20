@@ -1,4 +1,4 @@
 <!-- INCLUDE: GRAPH IP TAB -->
-<div id="timeline_{{::$id}}" ng-hide="!enableTimeline" style="min-height:400px;max-height:90%;min-width:400px;margin-top:0px;background:#fff;">
-	<time-line id="timeline-{{::$id}}" data="timeline_data" options="timeline_options" events="timeline_events"></time-line>
+<div id="timeline_{{::$id}}" ng-hide="!$ctrl.enable" style="min-height:400px;max-height:90%;min-width:400px;margin-top:0px;background:#fff;">
+	<time-line id="timeline-{{::$id}}" data="$ctrl.timeline.data" options="$ctrl.timeline.options" events="$ctrl.timeline.events"></time-line>
 </div> 

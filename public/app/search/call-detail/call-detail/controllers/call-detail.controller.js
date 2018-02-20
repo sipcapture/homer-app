@@ -2,7 +2,7 @@
 
 import fileSaver from 'file-saver';
 import * as d3 from 'd3';
-import {DataSet} from 'vis';
+//import {DataSet} from 'vis';
 
 import treeData from '../data/tree_data';
 
@@ -53,137 +53,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         }
 
         /* IP GRAPH DISPLAY (experimental) */
-
-        /* TIMELINE TEST START*/
-
-        if (!profile.timeline_disable) {
-
-          var randie = function() {
-            return 'rgb(' + (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
-              (Math.floor((256 - 229) * Math.random()) + 230) + ',' +
-              (Math.floor((256 - 229) * Math.random()) + 230) + ')';
-          };
-
-          var dataGroups = new DataSet();
-          angular.forEach($scope.uniqueIps, function(v, k) {
-            $scope.tlGroups.push({
-              content: v,
-              id: k,
-              style: 'background-color:' + randie()
-            });
-          });
-          dataGroups.add($scope.tlGroups);
-
-          var dataItems = new DataSet();
-
-          /* Scrape Data */
-
-          try {
-            angular.forEach(msg.messages, function(v) {
-              var group = $scope.tlGroups.findIndex(function(obj) {
-                return obj.content == (v.source_ip + ':' + v.source_port);
-              });
-              if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
-                return obj.content == (v.source_ip);
-              });
-
-              $scope.tlData.push({
-                start: new Date(v.micro_ts / 1000),
-                group: group,
-                content: v.method ? v.method : v.event
-              });
-            });
-          } catch (e) {
-            console.log('TLINE: Error Parsing Message Details!');
-          }
-
-
-          try {
-            angular.forEach(msg.transaction, function(v) {
-              var group = $scope.tlGroups.findIndex(function(obj) {
-                return obj.content == (v.source_ip + ':' + v.source_port);
-              });
-              if (group == -1) group = $scope.tlGroups.findIndex(function(obj) {
-                return obj.content == (v.source_ip);
-              });
-
-              if (v.cdr_start != 0) {
-                $scope.tlData.push({
-                  start: new Date(v.cdr_start * 1000),
-                  style: 'background-color:green;',
-                  group: group,
-                  content: 'CDR Start'
-                });
-
-              }
-              if (v.cdr_ringing != 0) {
-                $scope.tlData.push({
-                  start: new Date(v.cdr_ringing * 1000),
-                  style: 'background-color:yellow;',
-                  group: group,
-                  content: 'CDR Ringing'
-                });
-              }
-              if (v.cdr_progress != 0) {
-                $scope.tlData.push({
-                  start: new Date(v.cdr_progress * 1000),
-                  style: 'background-color:blue;',
-                  group: group,
-                  content: 'CDR Progress'
-                });
-              }
-              if (v.cdr_stop != 0) {
-                $scope.tlData.push({
-                  start: new Date(v.cdr_stop * 1000),
-                  style: 'background-color:red;',
-                  group: group,
-                  content: 'CDR Stop'
-                });
-              }
-            });
-          } catch (e) {
-            console.log('TLINE: Error Parsing Transaction Details!');
-          }
-
-
-          $scope.tlUpdate = function() {
-            $scope.enableTimeline = true;
-            $scope.timeline_data = {
-              groups: dataGroups,
-              items: dataItems
-            };
-          };
-          $scope.tlUpdate();
-
-          $scope.$watch('ldData', function() {
-            $scope.tlUpdate();
-            try {
-              dataItems.add($scope.tlData);
-            } catch (e) {
-              $log.error(e);
-            }
-          });
-          $scope.$watch('ldGroups', function() {
-            $scope.tlUpdate();
-            try {
-              dataGroups.clear(); // to-do: clear because of error 'Cannot add item: item with id 0 already exists'
-              dataGroups.add($scope.tlGroups);
-            } catch (e) {
-              $log.error(e);
-            }
-          });
-
-          $scope.timeline_options = {
-            orientation: 'top',
-            align: 'center',
-            autoResize: true,
-            editable: false,
-            selectable: true,
-            margin: 25,
-            minHeight: '300px',
-            showCurrentTime: false
-          };
-        }
 
         /*  TIMELINE TEST END */
         $scope.showQOSReport(data);

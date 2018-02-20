@@ -5,6 +5,9 @@ const callDetailTimeline = {
   controller,
   template,
   bindings: {
+    uniqueips: '<',
+    messages: '<',
+    transaction: '<',
   },
 };
 

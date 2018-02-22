@@ -22,8 +22,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
           $scope.enableTransaction = true;
         }
         $scope.call = msg;
-        $scope.feelGrid($scope.id, msg);
-        //$scope.drawCanvas($scope.id, msg);
         $scope.setSDPInfo(msg);
         /* and now we should do search for LOG and QOS*/
         angular.forEach(msg.callid, function(v, k) {
@@ -415,15 +413,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     else return 'SIP';
   };
 
-  $scope.showtable = true;
   $scope.activeMainTab = true;
-
-  $scope.feelGrid = function(id, mydata) {
-    var messages = mydata['messages'];
-    $scope.headerType = 'SIP Method';
-    $scope.rowCollection = messages;
-    $scope.displayedCollection = [].concat($scope.rowCollection);
-  };
 
   $scope.playStream = function(data, event) {
     var search_data = {

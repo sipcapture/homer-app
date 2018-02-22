@@ -5,6 +5,8 @@ const callDetailMessages = {
   controller,
   template,
   bindings: {
+    callid: '<',
+    call: '<',
   },
 };
 

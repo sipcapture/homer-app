@@ -8,7 +8,7 @@ import gridColumnDefinitions from '../data/grid/collumns/definitions';
 import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
 const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
-  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION) {
+  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION, SearchHelper) {
   'ngInject';
   const self = this;
 
@@ -227,16 +227,6 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     $log.error('[SearchCall]', error);
   });
 
-  self.hashCode = function(str) { // java String#hashCode
-    var hash = 0;
-    if (str) {
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-      }
-    }
-    return hash;
-  };
-
   self.intToARGB = function(i) {
     return ((i >> 24) & 0xFF);
   };
@@ -279,7 +269,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       template: '<call-message-detail></call-message-detail>',
       component: true,
       cls: 'homer-modal-message',
-      id: 'message' + self.hashCode(messagewindowId),
+      id: 'message' + SearchHelper.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
       divTop: event.clientY.toString() + 'px',
       params: search_data,
@@ -632,7 +622,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       template: '<call-detail></call-detail>',
       component: true,
       cls: 'homer-modal-content',
-      id: 'trans' + self.hashCode(trwindowId),
+      id: 'trans' + SearchHelper.hashCode(trwindowId),
       params: search_data,
       divLeft: event.clientX.toString() / 2 + 'px',
       divTop,

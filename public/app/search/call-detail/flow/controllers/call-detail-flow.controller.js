@@ -1,11 +1,12 @@
 /* global window */
 class CallDetailFlow {
 
-  constructor($log, $homerCflow, $homerModal) {
+  constructor($log, $homerCflow, $homerModal, SearchHelper) {
     'ngInject';
     this.$log = $log;
     this.$homerCflow = $homerCflow;
     this.$homerModal = $homerModal;
+    this.SearchHelper = SearchHelper;
   }
 
   $onInit() {}
@@ -77,23 +78,13 @@ class CallDetailFlow {
       template: '<call-message-detail></call-message-detail>',
       component: true,
       cls: 'homer-modal-message',
-      id: 'message' + this.hashCode(messagewindowId),
+      id: 'message' + this.SearchHelper.hashCode(messagewindowId),
       divLeft: posx.toString() + 'px',
       divTop: posy.toString() + 'px',
       params: search_data,
       sdata: data,
       internal: true,
     });
-  }
-
-  hashCode(str) { // java String#hashCode
-    let hash = 0;
-    if (str) {
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-      }
-    }
-    return hash;
   }
 
   protoCheck(proto) {

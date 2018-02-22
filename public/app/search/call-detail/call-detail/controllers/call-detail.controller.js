@@ -5,9 +5,9 @@ import * as d3 from 'd3';
 
 import treeData from '../data/tree_data';
 
-var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce, localStorageService, $filter, UserProfile, EventBus) {
+var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce,
+  localStorageService, $filter, UserProfile, EventBus, SearchHelper) {
   'ngInject';
-  //const self = this;
 
   const bindings = $scope.$parent.bindings;
   let data = bindings.params;
@@ -464,7 +464,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     $homerModal.open({
       url: 'templates/dialogs/playstream.html',
       cls: 'homer-modal-message',
-      id: 'playstream' + messagewindowId.hashCode(),
+      id: 'playstream' + SearchHelper.hashCode(messagewindowId),
       divLeft: posx.toString() + 'px',
       divTop: posy.toString() + 'px',
       params: search_data,

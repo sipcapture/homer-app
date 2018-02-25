@@ -28,7 +28,7 @@
         <call-detail-info ng-if="tab.heading === 'Call Info'" messages="call.messages" transaction="call.transaction"></call-detail-info>
         <call-detail-graph ng-if="tab.heading === 'IP Graph'"></call-detail-graph>
         <call-detail-timeline ng-if="tab.heading === 'Timeline'" uniqueips="uniqueIps" messages="call.messages" transaction="call.transaction"></call-detail-timeline>
-        <call-detail-dtmf ng-if="tab.heading === 'DTMF'"></call-detail-dtmf>
+        <call-detail-dtmf ng-if="tab.heading === 'DTMF'" enable="enableDTMFReport" logreport="logreport"></call-detail-dtmf>
         <call-detail-logs ng-if="tab.heading === 'Logs'"></call-detail-logs>
         <call-detail-logs-remote ng-if="tab.heading === 'Remote Logs'"></call-detail-logs-remote>
         <call-detail-recording ng-if="tab.heading === 'Recording'"></call-detail-recording>

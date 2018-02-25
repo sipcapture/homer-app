@@ -5,6 +5,8 @@ const callDetailDtmf = {
   controller,
   template,
   bindings: {
+    enable: '<',
+    logreport: '<',
   },
 };
 

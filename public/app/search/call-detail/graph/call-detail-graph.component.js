@@ -5,6 +5,10 @@ const callDetailGraph = {
   controller,
   template,
   bindings: {
+    enable: '<',
+    logreport: '<',
+    livelogs: '<',
+    ipalias: '<',
   },
 };
 

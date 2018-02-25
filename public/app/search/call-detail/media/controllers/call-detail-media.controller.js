@@ -16,13 +16,6 @@ class CallDetailMedia {
       stats: {},
     };
     this.apiD3 = {};
-    this.enable = {
-      report: {
-        quality: false,
-        rtcp: false,
-        xrtp: false,
-      },
-    };
     this.options = {
       chart: {
         type: 'lineChart',

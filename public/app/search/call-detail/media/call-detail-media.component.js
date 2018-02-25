@@ -5,6 +5,9 @@ const callDetailMedia = {
   controller,
   template,
   bindings: {
+    enableQuality: '<',
+    enableRtcp: '<',
+    enableXrtp: '<',
   },
 };
 

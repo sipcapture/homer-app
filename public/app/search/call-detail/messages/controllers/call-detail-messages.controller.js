@@ -26,6 +26,10 @@ class CallDetailMessages {
     else if (parseInt(type) == 4) return 'WebRTC';
     else return 'SIP';
   }
+
+  showMessage(row, event) {
+    this.onMessage({data: row, event});
+  }
 }
 
 export default CallDetailMessages;

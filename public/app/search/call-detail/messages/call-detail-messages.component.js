@@ -7,6 +7,7 @@ const callDetailMessages = {
   bindings: {
     callid: '<',
     call: '<',
+    onMessage: '&',
   },
 };
 

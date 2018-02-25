@@ -7,6 +7,7 @@ const callDetailFlow = {
   bindings: {
     call: '<',
     callid: '<',
+    onMessage: '&',
   },
 };
 

@@ -59,6 +59,53 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     });
   };
 
+  $scope.showMessage = function(data, event) {
+    const search_data = {
+      timestamp: {
+        from: parseInt(data.micro_ts / 1000),
+        to: parseInt(data.micro_ts / 1000)
+      },
+      param: {
+        search: {
+          id: parseInt(data.id),
+          callid: data.callid
+        },
+        location: {
+          node: data.dbnode
+        },
+        transaction: {
+          call: false,
+          registration: false,
+          rest: false
+        }
+      }
+    };
+
+    search_data.param.transaction[data.trans] = true;
+    const messagewindowId = '' + data.id + '_' + data.trans;
+    debugger;
+    let posx = event.clientX;
+    const posy = event.clientY;
+    const winx = window.screen.availWidth;
+    const diff = parseInt((posx + (winx / 3) + 20) - (winx));
+    // Reposition popup in visible area
+    if (diff > 0) {
+      posx -= diff;
+    }
+
+    $homerModal.open({
+      template: '<call-message-detail></call-message-detail>',
+      component: true,
+      cls: 'homer-modal-message',
+      id: 'message' + SearchHelper.hashCode(messagewindowId),
+      divLeft: posx.toString() + 'px',
+      divTop: posy.toString() + 'px',
+      params: search_data,
+      sdata: data,
+      internal: true,
+    });
+  };
+
   this.expandModal = function (id) {
     // to-do: this currently doesn't work because id is undefined
     const modal = document.getElementById(id);

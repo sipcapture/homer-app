@@ -33,7 +33,7 @@
         <call-detail-logs-remote ng-if="tab.heading === 'Remote Logs'"></call-detail-logs-remote>
         <call-detail-recording ng-if="tab.heading === 'Recording'"></call-detail-recording>
         <call-detail-wss ng-if="tab.heading === 'WSS'"></call-detail-wss>
-        <call-detail-blacklist ng-if="tab.heading === 'Blacklist'"></call-detail-blacklist>
+        <call-detail-blacklist ng-if="tab.heading === 'Blacklist'" enable="enableBlacklist" blacklistreport="blacklistreport"></call-detail-blacklist>
       </uib-tab>
     </uib-tabset>
   </div>

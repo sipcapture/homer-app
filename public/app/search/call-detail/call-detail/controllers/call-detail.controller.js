@@ -15,6 +15,95 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   $scope.data = data;
   $scope.call = {};
 
+  $scope.dataLoading = true;
+  $scope.showSipMessage = true;
+  $scope.showSipDetails = false;
+
+  $scope.clickSipDetails = function() {
+    console.log('details');
+  };
+
+  var profile = UserProfile.getServerProfile('dashboard');
+  console.log('SETTINGS:', profile);
+
+  /* Timeline Datasets */
+  $scope.tlGroups = [];
+  $scope.tlData = [];
+
+  $scope.timelineReady = false;
+  $scope.timelineReadyGo = function() {
+    $scope.timelineReady = true;
+  };
+
+  $scope.transaction = [];
+  $scope.clickArea = [];
+  $scope.msgCallId = data.param.search.callid[0];
+  $scope.collapsed = [];
+  $scope.enableTransaction = false;
+  //$scope.enableQualityReport = false;
+  //$scope.enableRTCPReport = false;
+  $scope.enableLogReport = false;
+  $scope.enableRecordingReport = false;
+  $scope.enableDTMFReport = false;
+  $scope.enableBlacklist = false;
+  $scope.enableRemoteLogReport = false;
+  $scope.enableRtcReport = false;
+  //$scope.enableXRTPReport = false;
+  $scope.enableRTPAgentReport = false;
+  $scope.enableQOSChart = false;
+  $scope.enableGraph = false;
+  $scope.enableTimeline = false;
+  $scope.LiveLogs = [];
+
+  $scope.getColor = d3.scale.category20(); // d3 v3 scale, for reference only. To-do: delete during the final review
+  //$scope.getColor = d3.scaleOrdinal(d3.schemeCategory20);
+  $scope.LiveGraph = [];
+  $scope.LiveGraph.data = {
+    nodes: [],
+    links: []
+  };
+  $scope.LiveGraph.options = {
+    chart: {
+      type: 'forceDirectedGraph',
+      margin: {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+      },
+      height: 400,
+      width: 400,
+
+      linkStrength: 0.1,
+      friction: 0.3,
+      linkDist: 250,
+      gravity: 0.2,
+      charge: -300,
+      radius: 20,
+
+      background: '#fff',
+      color: function(d) {
+        return $scope.getColor(d.name);
+      },
+      tooltip: {
+        contentGenerator: function() {
+          return '<div></div>';
+        }
+      },
+      nodeExtras: function(node) {
+        node && node
+          .append('text')
+          .attr('dx', 24)
+          .attr('dy', '.38em')
+          .attr('text-anchor', 'top')
+          .text(function(d) {
+            return (d.type ? d.type + ' ' : '') + d.name;
+          })
+          .style('font-size', '12px');
+      }
+    }
+  };
+
   this.$onInit = function () {
     SearchService.searchCallByTransaction(data).then(function(msg) {
       if (msg) {
@@ -144,97 +233,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
   this.closeModal = function () {
     $scope.$parent.closeModal();
-  };
-
-  $scope.dataLoading = true;
-  $scope.showSipMessage = true;
-  $scope.showSipDetails = false;
-
-  $scope.clickSipDetails = function() {
-    console.log('details');
-  };
-
-  var profile = UserProfile.getServerProfile('dashboard');
-  console.log('SETTINGS:', profile);
-
-  /* Timeline Datasets */
-  $scope.tlGroups = [];
-  $scope.tlData = [];
-
-  $scope.timelineReady = false;
-  $scope.timelineReadyGo = function() {
-    $scope.timelineReady = true;
-  };
-
-  $scope.transaction = [];
-  $scope.clickArea = [];
-  $scope.msgCallId = data.param.search.callid[0];
-  $scope.collapsed = [];
-  $scope.enableTransaction = false;
-  //$scope.enableQualityReport = false;
-  //$scope.enableRTCPReport = false;
-  $scope.enableLogReport = false;
-  $scope.enableRecordingReport = false;
-  $scope.enableDTMFReport = false;
-  $scope.enableBlacklist = false;
-  $scope.enableRemoteLogReport = false;
-  $scope.enableRtcReport = false;
-  //$scope.enableXRTPReport = false;
-  $scope.enableRTPAgentReport = false;
-  $scope.enableQOSChart = false;
-  $scope.LiveLogs = [];
-
-
-  $scope.enableGraph = false;
-  $scope.enableTimeline = false;
-
-  $scope.getColor = d3.scale.category20(); // d3 v3 scale, for reference only. To-do: delete during the final review
-  //$scope.getColor = d3.scaleOrdinal(d3.schemeCategory20);
-  $scope.LiveGraph = [];
-  $scope.LiveGraph.data = {
-    nodes: [],
-    links: []
-  };
-  $scope.LiveGraph.options = {
-    chart: {
-      type: 'forceDirectedGraph',
-      margin: {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 20
-      },
-      height: 400,
-      width: 400,
-
-      linkStrength: 0.1,
-      friction: 0.3,
-      linkDist: 250,
-      gravity: 0.2,
-      charge: -300,
-      radius: 20,
-
-      background: '#fff',
-      color: function(d) {
-        return $scope.getColor(d.name);
-      },
-      tooltip: {
-        contentGenerator: function() {
-          return '<div></div>';
-        }
-      },
-      nodeExtras: function(node) {
-        node && node
-          .append('text')
-          .attr('dx', 24)
-          .attr('dy', '.38em')
-          .attr('text-anchor', 'top')
-          .text(function(d) {
-            return (d.type ? d.type + ' ' : '') + d.name;
-          })
-          .style('font-size', '12px');
-      }
-    }
   };
 
   $scope.tabExec = function() {

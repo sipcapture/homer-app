@@ -5,6 +5,8 @@ const callDetailBlacklist = {
   controller,
   template,
   bindings: {
+    enable: '<',
+    blacklistreport: '<',
   },
 };
 

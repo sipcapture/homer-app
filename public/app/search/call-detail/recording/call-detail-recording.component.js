@@ -5,6 +5,10 @@ const callDetailRecording = {
   controller,
   template,
   bindings: {
+    enbale: '<',
+    displayedCollection: '<',
+    rowRecordingCollection: '<',
+    displayedRecordingCollection: '<',
   },
 };
 

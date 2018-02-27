@@ -6,9 +6,6 @@ const callDetailGraph = {
   template,
   bindings: {
     enable: '<',
-    logreport: '<',
-    livelogs: '<',
-    ipalias: '<',
   },
 };
 

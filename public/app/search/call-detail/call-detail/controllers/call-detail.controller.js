@@ -55,55 +55,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   $scope.enableTimeline = false;
   $scope.LiveLogs = [];
 
-  $scope.getColor = d3.scale.category20(); // d3 v3 scale, for reference only. To-do: delete during the final review
-  //$scope.getColor = d3.scaleOrdinal(d3.schemeCategory20);
-  $scope.LiveGraph = [];
-  $scope.LiveGraph.data = {
-    nodes: [],
-    links: []
-  };
-  $scope.LiveGraph.options = {
-    chart: {
-      type: 'forceDirectedGraph',
-      margin: {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 20
-      },
-      height: 400,
-      width: 400,
-
-      linkStrength: 0.1,
-      friction: 0.3,
-      linkDist: 250,
-      gravity: 0.2,
-      charge: -300,
-      radius: 20,
-
-      background: '#fff',
-      color: function(d) {
-        return $scope.getColor(d.name);
-      },
-      tooltip: {
-        contentGenerator: function() {
-          return '<div></div>';
-        }
-      },
-      nodeExtras: function(node) {
-        node && node
-          .append('text')
-          .attr('dx', 24)
-          .attr('dy', '.38em')
-          .attr('text-anchor', 'top')
-          .text(function(d) {
-            return (d.type ? d.type + ' ' : '') + d.name;
-          })
-          .style('font-size', '12px');
-      }
-    }
-  };
-
   this.$onInit = function () {
     SearchService.searchCallByTransaction(data).then(function(msg) {
       if (msg) {
@@ -172,7 +123,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
     search_data.param.transaction[data.trans] = true;
     const messagewindowId = '' + data.id + '_' + data.trans;
-    debugger;
     let posx = event.clientX;
     const posy = event.clientY;
     const winx = window.screen.availWidth;
@@ -940,36 +890,36 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
     var apiD3 = {};
 
-    //$scope.options = {
-    //  chart: {
-    //    type: 'lineChart',
-    //    height: 250,
-    //    margin: {
-    //      top: 40,
-    //      right: 20,
-    //      bottom: 40,
-    //      left: 55
-    //    },
-    //    useInteractiveGuideline: false,
-    //    xAxis: {
-    //      tickFormat: function(d) {
-    //        return d3.time.format('%H:%M')(new Date(d * 1000));
-    //      },
-    //    },
-    //    yAxis: {
-    //      tickFormat: function(d) {
-    //        return d3.format('.02f')(d);
-    //      },
-    //      axisLabelDistance: -10
-    //    },
-    //    showLegend: true
-    //  }
-    //};
+    $scope.options = {
+      chart: {
+        type: 'lineChart',
+        height: 250,
+        margin: {
+          top: 40,
+          right: 20,
+          bottom: 40,
+          left: 55
+        },
+        useInteractiveGuideline: false,
+        xAxis: {
+          tickFormat: function(d) {
+            return d3.time.format('%H:%M')(new Date(d * 1000));
+          },
+        },
+        yAxis: {
+          tickFormat: function(d) {
+            return d3.format('.02f')(d);
+          },
+          axisLabelDistance: -10
+        },
+        showLegend: true
+      }
+    };
 
-    ///* API OF D3 */
-    //$scope.callbackD3 = function(scope) {
-    //  apiD3[scope.$id] = scope.api;
-    //};
+    /* API OF D3 */
+    $scope.callbackD3 = function(scope) {
+      apiD3[scope.$id] = scope.api;
+    };
 
     angular.element(window).on('resize', function() {
       angular.forEach(apiD3, function(v) {

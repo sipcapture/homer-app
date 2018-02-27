@@ -6,6 +6,7 @@ const callDetailGraph = {
   template,
   bindings: {
     enable: '<',
+    apiD3: '<',
   },
 };
 

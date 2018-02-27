@@ -5,6 +5,6 @@
       "plugins": ["istanbul"]
     }
   },
-  "plugins": ["angularjs-annotate"]
+  "plugins": ["angularjs-annotate", "transform-async-to-generator"]
 }
 

@@ -11,7 +11,7 @@ module.exports = {
     //new webpack.optimize.UglifyJsPlugin()
   ],
   entry: {
-    app: ['./public/app/app.js']
+    app: ['babel-polyfill', './public/app/app.js']
   },
   output: {
     path: __dirname + '/public/dist/',

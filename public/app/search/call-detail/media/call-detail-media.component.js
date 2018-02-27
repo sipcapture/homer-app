@@ -8,6 +8,7 @@ const callDetailMedia = {
     enableQuality: '<',
     enableRtcp: '<',
     enableXrtp: '<',
+    apiD3: '<',
   },
 };
 

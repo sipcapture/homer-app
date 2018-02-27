@@ -1,19 +1,20 @@
 /*global angular, document, window, Blob*/
 
 import fileSaver from 'file-saver';
-import * as d3 from 'd3';
-
 import treeData from '../data/tree_data';
+import {forEach} from 'lodash';
 
 var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce,
   localStorageService, $filter, UserProfile, EventBus, SearchHelper) {
   'ngInject';
+  const self = this;
 
   const bindings = $scope.$parent.bindings;
   let data = bindings.params;
   $scope.id = bindings.id;
   $scope.data = data;
   $scope.call = {};
+  $scope.apiD3 = {};
 
   $scope.dataLoading = true;
   $scope.showSipMessage = true;
@@ -55,8 +56,19 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   $scope.enableTimeline = false;
   $scope.LiveLogs = [];
 
-  this.$onInit = function () {
-    SearchService.searchCallByTransaction(data).then(function(msg) {
+  self.$onInit = async function () {
+    await self.getCall();
+  };
+
+  angular.element(window).on('resize', () => {
+    forEach(this.apiD3, (v) => {
+      v.updateWithTimeout(500);
+    });
+  });
+
+  self.getCall = async function() {
+    try {
+      const msg = await SearchService.searchCallByTransaction(data);
       if (msg) {
         if (msg.transaction) {
           $scope.enableTransaction = true;
@@ -88,15 +100,55 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         /* IP GRAPH DISPLAY (experimental) */
 
         /*  TIMELINE TEST END */
-        $scope.showQOSReport(data);
-        $scope.showLogReport(data);
-        $scope.showRecordingReport(data);
+        await self.showQOSReport(data);
+        await self.showLogReport(data);
+        await self.showRecordingReport(data);
       }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
-    });
+    } catch (err) {
+      $log.error('[CallDetail]', err);
+    }
+
+    //return SearchService.searchCallByTransaction(data).then(function(msg) {
+    //  if (msg) {
+    //    if (msg.transaction) {
+    //      $scope.enableTransaction = true;
+    //    }
+    //    $scope.call = msg;
+    //    $scope.setSDPInfo(msg);
+    //    /* and now we should do search for LOG and QOS*/
+    //    angular.forEach(msg.callid, function(v, k) {
+    //      console.log('K', k);
+    //      if (data.param.search.callid.indexOf(k) == -1) {
+    //        data.param.search.callid.push(k);
+    //      }
+    //    });
+
+    //    // Unique IP Array for Export
+    //    try {
+    //      console.log('scanning for IPs...');
+    //      var cached = [];
+    //      angular.forEach(msg.hosts, function(v) {
+    //        cached.push(v.hosts[0]);
+    //      });
+    //      if (cached.length > 0) {
+    //        $scope.uniqueIps = cached;
+    //      }
+    //    } catch (e) {
+    //      console.log(e);
+    //    }
+
+    //    /* IP GRAPH DISPLAY (experimental) */
+
+    //    /*  TIMELINE TEST END */
+    //    self.showQOSReport(data);
+    //    self.showLogReport(data);
+    //    self.showRecordingReport(data);
+    //  }
+    //}).catch(function(error) {
+    //  $log.error('[CallDetail]', error);
+    //}).finally(function() {
+    //  $scope.dataLoading = false;
+    //});
   };
 
   $scope.showMessage = function(data, event) {
@@ -659,8 +711,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     }
   };
 
-
-  $scope.showQOSReport = function(rdata) {
+  self.showQOSReport = function(rdata) {
     /* new charts test */
     $scope.d3chart = {};
     $scope.d3chart.data = {};
@@ -885,47 +936,6 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     }).finally(function() {
       $scope.dataLoading = false;
     });
-
-    /*D3 */
-
-    var apiD3 = {};
-
-    $scope.options = {
-      chart: {
-        type: 'lineChart',
-        height: 250,
-        margin: {
-          top: 40,
-          right: 20,
-          bottom: 40,
-          left: 55
-        },
-        useInteractiveGuideline: false,
-        xAxis: {
-          tickFormat: function(d) {
-            return d3.time.format('%H:%M')(new Date(d * 1000));
-          },
-        },
-        yAxis: {
-          tickFormat: function(d) {
-            return d3.format('.02f')(d);
-          },
-          axisLabelDistance: -10
-        },
-        showLegend: true
-      }
-    };
-
-    /* API OF D3 */
-    $scope.callbackD3 = function(scope) {
-      apiD3[scope.$id] = scope.api;
-    };
-
-    angular.element(window).on('resize', function() {
-      angular.forEach(apiD3, function(v) {
-        v.updateWithTimeout(500);
-      });
-    });
   };
 
   $scope.addRemoveStreamSerie = function() {
@@ -1018,7 +1028,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
   };
 
 
-  $scope.showLogReport = function(rdata) {
+  self.showLogReport = function(rdata) {
     SearchService.searchLogReport(rdata).then(function(msg) {
       if (msg.length > 0) {
         $scope.enableLogReport = true;
@@ -1060,7 +1070,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     });
   };
 
-  $scope.showRecordingReport = function(rdata) {
+  self.showRecordingReport = function(rdata) {
     SearchService.searchRecordingReport(rdata).then(function(msg) {
       if (msg.length > 0) {
         $scope.enableRecordingReport = true;

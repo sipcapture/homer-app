@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-//import {DataSet} from 'vis';
 
 // style
 import 'vis/dist/vis.css';
@@ -15,7 +14,6 @@ class CallDetailMedia {
       data: {},
       stats: {},
     };
-    this.apiD3 = {};
     this.options = {
       chart: {
         type: 'lineChart',
@@ -41,6 +39,9 @@ class CallDetailMedia {
         showLegend: true
       }
     };
+  }
+
+  $onInit() {
   }
 
   refresh() {

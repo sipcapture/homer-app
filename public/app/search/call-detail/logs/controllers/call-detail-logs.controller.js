@@ -1,5 +1,4 @@
 class CallDetailLogs {
-
   constructor($log) {
     'ngInject';
     this.$log = $log;

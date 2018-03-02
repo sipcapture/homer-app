@@ -1,5 +1,4 @@
 class SearchHelper {
-
   constructor() {}
 
   hashCode(str) {

@@ -2,18 +2,18 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
   'ngInject';
 
   const bindings = $scope.$parent.bindings;
-  var data = bindings.params;
+  const data = bindings.params;
 
-  var internal = bindings.internal;
-  var custom = bindings.custom;
+  const internal = bindings.internal;
+  const custom = bindings.custom;
 
-  var timezone = UserProfile.getProfile('timezone');
+  const timezone = UserProfile.getProfile('timezone');
   $scope.dataLoading = true;
   $scope.showSipMessage = true;
   $scope.showSipDetails = false;
   $scope.msgOffset = timezone.offset;
 
-  this.closeModal = function () {
+  this.closeModal = function() {
     $scope.$parent.closeModal();
   };
 
@@ -30,11 +30,12 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
   };
 
   if (internal) {
-    var sdata = bindings.sdata;
+    const sdata = bindings.sdata;
     $scope.dataLoading = false;
 
-    var swapText = function(text) {
-      var swpA, swpB;
+    const swapText = function(text) {
+      let swpA;
+      let swpB;
       text = text.split('<').join('&lt;');
 
       if (sdata.method != '') {
@@ -54,10 +55,10 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.msgCallId = sdata.callid;
     $scope.msgDate = sdata.micro_ts / 1000;
     $scope.sipPath = sdata.source_ip + ':' + sdata.source_port + ' -> ' + sdata.destination_ip + ':' + sdata.destination_port;
-    $scope.sipMessage = swapText(sdata.message); //.replace(/</g, "&lt;");
+    $scope.sipMessage = swapText(sdata.message); // .replace(/</g, "&lt;");
 
-    var tabjson = [];
-    for (var p in sdata) {
+    const tabjson = [];
+    for (let p in sdata) {
       if (p == 'message') continue;
       if (sdata.hasOwnProperty(p) && sdata[p] != '') {
         if (typeof sdata[p] === 'string' || sdata[p] instanceof String) {
@@ -72,7 +73,6 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     tabjson.push();
     $scope.sipDetails = '<div id="' + sdata.id + '_details"><table class="table table-striped">' + tabjson.join('') + '</table></div>';
     $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);
-
   } else if (custom) {
     let sdata = bindings.sdata;
     $scope.dataLoading = false;
@@ -108,10 +108,10 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.sipDetails = '<div id="' + sdata.id + '_details"><table class="table table-striped">' + tabjson.join('') + '</table></div>';
     $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);
   } else {
-
     SearchService.searchCallMessage(data).then(function(sdata) {
-      var swapText = function(text) {
-        var swpA, swpB;
+      const swapText = function(text) {
+        let swpA;
+        let swpB;
         text = text.split('<').join('&lt;');
         swpA = sdata[0].method;
         swpB = '<font color=\'red\'><b>' + swpA + '</b></font>';
@@ -139,10 +139,10 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       $scope.msgCallId = sdata[0].callid;
       $scope.msgDate = sdata[0].micro_ts / 1000;
       $scope.sipPath = sdata[0].source_ip + ':' + sdata[0].source_port + ' -> ' + sdata[0].destination_ip + ':' + sdata[0].destination_port;
-      $scope.sipMessage = swapText(sdata[0].msg); //.replace(/</g, "&lt;");
+      $scope.sipMessage = swapText(sdata[0].msg); // .replace(/</g, "&lt;");
 
-      var tabjson = [];
-      for (var p in sdata[0]) {
+      const tabjson = [];
+      for (let p in sdata[0]) {
         if (p == 'msg') continue;
         if (sdata[0].hasOwnProperty(p) && sdata[0][p] != '') {
           tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[0][p].split('<').join('&lt;') + '</td></tr>');

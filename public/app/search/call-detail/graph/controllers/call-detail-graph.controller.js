@@ -1,14 +1,13 @@
 import * as d3 from 'd3';
 
 class CallDetailGraph {
-
   constructor($log) {
     'ngInject';
     this.$log = $log;
     this.LiveGraph = [];
     this.LiveGraph.data = {
       nodes: [],
-      links: []
+      links: [],
     };
     this.getColor = d3.scale.category20();
     this.LiveGraph.options = {
@@ -18,7 +17,7 @@ class CallDetailGraph {
           top: 20,
           right: 20,
           bottom: 20,
-          left: 20
+          left: 20,
         },
         height: 400,
         width: 400,
@@ -37,7 +36,7 @@ class CallDetailGraph {
         tooltip: {
           contentGenerator: function() {
             return '<div></div>';
-          }
+          },
         },
         nodeExtras: function(node) {
           node && node
@@ -49,8 +48,8 @@ class CallDetailGraph {
               return (d.type ? d.type + ' ' : '') + d.name;
             })
             .style('font-size', '12px');
-        }
-      }
+        },
+      },
     };
   }
 

@@ -1,4 +1,4 @@
-/*global document, window*/
+/* global document, window */
 
 import treeData from '../data/tree_data';
 import {forEach} from 'lodash';
@@ -39,7 +39,10 @@ class CallDetail {
       graph: false,
       timeline: false,
     };
-    this.colorsChart = ['aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'orange', 'purple', 'red', 'silver', 'teal', 'white', 'yellow'];
+    this.colorsChart = ['aqua', 'black', 'blue', 'fuchsia',
+      'gray', 'green', 'lime', 'maroon',
+      'navy', 'olive', 'orange', 'purple',
+      'red', 'silver', 'teal', 'white', 'yellow'];
     /* new param */
     this.beginRTCPDataDisplay = new Date();
     this.endRTCPDataDisplay = new Date();
@@ -55,7 +58,7 @@ class CallDetail {
       maxPacketLost: 0,
       totalPackets: 0,
       averageJitterMsec: 0,
-      maxJitterMsec: 0
+      maxJitterMsec: 0,
     };
     this.jittersFilterAll = true;
     this.packetsLostFilterAll = true;
@@ -200,7 +203,7 @@ class CallDetail {
         },
         'ngshow': 'tab',
         'icon': 'glyphicon glyphicon-download-alt',
-      }
+      },
     ];
   }
 
@@ -222,7 +225,7 @@ class CallDetail {
         // Unique IP Array for Export
         try {
           console.log('scanning for IPs...');
-          var cached = [];
+          let cached = [];
           forEach(this.call.hosts, function(v) {
             cached.push(v.hosts[0]);
           });
@@ -245,28 +248,28 @@ class CallDetail {
   }
 
   showMessage(data, event) {
-    const search_data = {
+    const searchData = {
       timestamp: {
         from: parseInt(data.micro_ts / 1000),
-        to: parseInt(data.micro_ts / 1000)
+        to: parseInt(data.micro_ts / 1000),
       },
       param: {
         search: {
           id: parseInt(data.id),
-          callid: data.callid
+          callid: data.callid,
         },
         location: {
-          node: data.dbnode
+          node: data.dbnode,
         },
         transaction: {
           call: false,
           registration: false,
-          rest: false
-        }
-      }
+          rest: false,
+        },
+      },
     };
 
-    search_data.param.transaction[data.trans] = true;
+    searchData.param.transaction[data.trans] = true;
     const messagewindowId = '' + data.id + '_' + data.trans;
     let posx = event.clientX;
     const posy = event.clientY;
@@ -284,7 +287,7 @@ class CallDetail {
       id: 'message' + this.SearchHelper.hashCode(messagewindowId),
       divLeft: posx.toString() + 'px',
       divTop: posy.toString() + 'px',
-      params: search_data,
+      params: searchData,
       sdata: data,
       internal: true,
     });
@@ -295,7 +298,8 @@ class CallDetail {
     const modal = document.getElementById(id);
     const content = modal.getElementsByClassName('modal-body')[0];
 
-    if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) && (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
+    if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) &&
+      (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
       console.log('rogue/dupe resize!');
       return;
     }
@@ -336,23 +340,23 @@ class CallDetail {
   }
 
   getCallIDColor(str) {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     i = hash;
-    var col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
+    let col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
       ((i >> 8) & 0xAF).toString(16) + (i & 0xAF).toString(16);
     if (col.length < 6) col = col.substring(0, 3) + '' + col.substring(0, 3);
     if (col.length > 6) col = col.substring(0, 6);
     return {
-      color: '#' + col
+      color: '#' + col,
     };
   }
 
   /* convertor */
   XRTP2value(prop) {
-    var res = prop;
+    let res = prop;
     switch (prop) {
     case 'CD':
       res = 'SEC';
@@ -391,10 +395,10 @@ class CallDetail {
   }
 
   clickMousePosition(event) {
-    var ret = false;
-    var obj = {};
-    var x = event.offsetX == null ? event.originalEvent.layerX - event.target.offsetLeft : event.offsetX;
-    var y = event.offsetY == null ? event.originalEvent.layerY - event.target.offsetTop : event.offsetY;
+    let ret = false;
+    let obj = {};
+    let x = event.offsetX == null ? event.originalEvent.layerX - event.target.offsetLeft : event.offsetX;
+    let y = event.offsetY == null ? event.originalEvent.layerY - event.target.offsetTop : event.offsetY;
 
     forEach(this.clickArea, function(ca) {
       if (ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
@@ -415,9 +419,9 @@ class CallDetail {
   }
 
   async setSDPInfo(rdata) {
-    var msg;
+    let msg;
     console.log(rdata);
-    var chartDataExtended = {
+    let chartDataExtended = {
       list: [],
       from: 0,
       to: 0,
@@ -432,7 +436,7 @@ class CallDetail {
       msg: [],
       mos: [],
       averageMos: 0,
-      worstMos: 5
+      worstMos: 5,
     };
 
     /* transaction & sdp analyzer */
@@ -492,28 +496,25 @@ class CallDetail {
           } else {
             entry.duration = new Date((entry.cdr_stop - entry.cdr_start - 3600) * 1000).toString().split(' ')[4];
           }
-
         } else {
           entry.duration = '00:00:00';
         }
-
         /* check blacklist */ // to-do: this check throws the following error 'bad response combination'
-        //try {
-        //  const msg = await this.SearchService.searchBlacklist(entry.source_ip);
-        //  console.log('Blacklist check ' + entry.source_ip, msg);
-        //  this.blacklistreport = msg;
-        //  this.enableBlacklist = true;
-
-        //  this.enableLogReport = true;
-        //  this.LiveLogs.push({
-        //    data: {
-        //      type: 'BlackList',
-        //      data: msg
-        //    }
-        //  });
-        //} catch (err) {
-        //  this.$log.error(['CallDetail'], 'blacklist', error);
-        //}
+        // try {
+        //   const msg = await this.SearchService.searchBlacklist(entry.source_ip);
+        //   console.log('Blacklist check ' + entry.source_ip, msg);
+        //   this.blacklistreport = msg;
+        //   this.enableBlacklist = true;
+        //   this.enableLogReport = true;
+        //   this.LiveLogs.push({
+        //     data: {
+        //       type: 'BlackList',
+        //       data: msg
+        //     }
+        //   });
+        // } catch (err) {
+        //   this.$log.error(['CallDetail'], 'blacklist', error);
+        // }
       });
     }
 
@@ -532,7 +533,7 @@ class CallDetail {
       try {
         if (msg.global.main) {
           // Call Duration
-          var adur = new Date(null);
+          let adur = new Date(null);
           adur.setSeconds(msg.global.main.duration / 1000); // seconds
           this.call_duration = adur.toISOString().substr(11, 8);
           // Map averages
@@ -576,44 +577,42 @@ class CallDetail {
         if (Object.keys(msg.reports.rtpagent.chart).length == 0) return;
         this.enableQualityReport = true;
 
-        var fullrep = msg.reports.rtpagent.chart;
+        let fullrep = msg.reports.rtpagent.chart;
         this.list_legend = [];
 
         forEach(fullrep, (count, key) => {
           forEach(fullrep[key], (count, callid) => {
             forEach(fullrep[key][callid], (count, leg) => {
-              var xleg = leg;
+              let xleg = leg;
               forEach(fullrep[key][callid][leg], (count, rep) => {
-
-                var d3newchart = {
+                let d3newchart = {
                   key: xleg,
                   values: [],
-                  color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+                  color: '#' + Math.floor(Math.random() * 16777215).toString(16),
                 };
 
                 this.list_legend.push(rep);
                 forEach(fullrep[key][callid][leg][rep], (count, data) => {
-
                   // NEW chart
                   d3newchart.values.push({
                     x: fullrep[key][callid][leg][rep][data][0], // VALUE
-                    y: fullrep[key][callid][leg][rep][data][1] // TS
+                    y: fullrep[key][callid][leg][rep][data][1], // TS
                   });
 
-                  if (!this.d3chart.stats[rep]) this.d3chart.stats[rep] = {
-                    raw: []
-                  };
+                  if (!this.d3chart.stats[rep]) {
+                    this.d3chart.stats[rep] = {raw: []};
+                  }
                   this.d3chart.stats[rep].raw.push(fullrep[key][callid][leg][rep][data][1]);
                 });
 
                 // NEW CHART
                 if (!this.d3chart.data[0][rep]) {
                   this.d3chart.data[0][rep] = {
-                    series: []
+                    series: [],
                   };
                 }
 
-                var d3merged = false;
+                let d3merged = false;
                 this.d3chart.data[0][rep].series.forEach(function(entry) {
                   // console.log('SEEK '+xleg, entry);
                   if (xleg == entry.name) {
@@ -625,7 +624,6 @@ class CallDetail {
                 // Create new group if non-mergeable
                 if (!d3merged) {
                   this.d3chart.data[0][rep].series.push(d3newchart);
-
                 }
                 this.d3chart.stats[rep].min = Math.min.apply(null, this.d3chart.stats[rep].raw);
                 this.d3chart.stats[rep].max = Math.max.apply(null, this.d3chart.stats[rep].raw);
@@ -636,7 +634,7 @@ class CallDetail {
       }
 
       /* CLASSIC version below */
-      var chartDataExtended = {
+      let chartDataExtended = {
         list: [],
         from: 0,
         to: 0,
@@ -651,15 +649,14 @@ class CallDetail {
         msg: [],
         mos: [],
         averageMos: 0,
-        worstMos: 5
+        worstMos: 5,
       };
 
       if (msg.global) {
-
         try {
           if (msg.global.main) {
             // Call Duration
-            var adur = new Date(null);
+            let adur = new Date(null);
             adur.setSeconds(msg.global.main.duration / 1000); // seconds
             this.call_duration = adur.toISOString().substr(11, 8);
             // Map averages
@@ -715,9 +712,8 @@ class CallDetail {
         // RTCP
         try {
           if (msg.reports.length != 0) {
-            var charts = {};
+            let charts = {};
             if (msg.reports.rtcp && msg.reports.rtcp.chart) {
-              //$scope.showQOSChart();
               console.log('processing rtcp charts');
               charts = msg.reports.rtcp.chart;
             }
@@ -725,8 +721,7 @@ class CallDetail {
             // RTCP-XR
             if (msg.reports.rtcpxr && msg.reports.rtcpxr.chart) {
               console.log('processing rtcpxr charts');
-              //$scope.chartData.concat(msg.reports.rtcpxr.chart);
-              var xrcharts = msg.reports.rtcpxr.chart;
+              let xrcharts = msg.reports.rtcpxr.chart;
               forEach(xrcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
               });
@@ -735,8 +730,7 @@ class CallDetail {
             // RTPAGENT
             if (msg.reports.rtpagent && msg.reports.rtpagent.chart) {
               console.log('processing rtpagent charts');
-              //$scope.chartData.concat(msg.reports.rtcpxr.chart);
-              var agcharts = msg.reports.rtpagent.chart;
+              let agcharts = msg.reports.rtpagent.chart;
               forEach(agcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
               });
@@ -744,7 +738,7 @@ class CallDetail {
 
             this.chartData = charts;
             this.streamsChart = {};
-            var i = 0;
+            let i = 0;
             forEach(charts, (count, key) => {
               this.streamsChart[key] = {};
               this.streamsChart[key]['enable'] = true;
@@ -762,7 +756,7 @@ class CallDetail {
               });
             });
 
-            var selData = this.presetQOSChartData();
+            let selData = this.presetQOSChartData();
             this.showQOSChart(selData);
           }
         } catch (err) {
@@ -783,24 +777,25 @@ class CallDetail {
   }
 
   presetQOSChartData() {
-    var seriesData = [];
-    var chartData = this.chartData;
+    let seriesData = [];
+    let chartData = this.chartData;
     this.selectedColorsChart = [];
     forEach(chartData, (count, key) => {
-      if (this.streamsChart && this.streamsChart[key] && this.streamsChart[key]['enable'] == false)
+      if (this.streamsChart && this.streamsChart[key] && this.streamsChart[key]['enable'] == false) {
         return;
+      }
 
-      var localData = chartData[key];
+      let localData = chartData[key];
       forEach(localData, (das, kes) => {
         /* skip it */
         if (this.streamsChart[key]['sub'][kes]['enable'] == false) return;
 
-        var sar = {};
+        let sar = {};
         sar['name'] = kes;
         sar['type'] = 'line';
         sar['color'] = this.streamsChart[key]['sub'][kes]['color'];
 
-        var lDas = [];
+        let lDas = [];
         forEach(das, function(v) {
           lDas.push([v[0], v[1]]);
         });
@@ -815,45 +810,44 @@ class CallDetail {
     return seriesData;
   }
 
-
   showQOSChart(seriesData) {
     this.enableQOSChart = true;
     this.chartConfig = {
       chart: {
-        type: 'line'
+        type: 'line',
       },
       title: {
         text: 'TEST',
         style: {
-          display: 'none'
-        }
+          display: 'none',
+        },
       },
       xAxis: {
         title: {
-          text: null
+          text: null,
         },
-        type: 'datetime'
+        type: 'datetime',
       },
       yAxis: {
         title: {
-          text: null
+          text: null,
         },
-        min: 0
+        min: 0,
       },
       plotOptions: {
-        column: {}
+        column: {},
       },
       tooltip: {},
       legend: {
         enabled: false,
-        borderWidth: 0
+        borderWidth: 0,
       },
       series: seriesData,
       func: (chart) => {
         this.$evalAsync(function() {
           chart.reflow();
         });
-      }
+      },
     };
 
     this.chartConfig.chart['zoomType'] = 'x';
@@ -881,7 +875,7 @@ class CallDetail {
                   if (!item || item == '') return;
                   entry.dtmf[i] = {};
                   item.split(',').forEach(function(pair) {
-                    var kv = pair.split(':');
+                    let kv = pair.split(':');
                     if (!kv[0] || !kv[1]) return;
                     entry.dtmf[i][kv[0]] = kv[1];
                   });
@@ -935,15 +929,15 @@ class CallDetail {
 
   setRtcpMembers() {
     this.rtcpMembers = [];
-    var tmp = {};
+    let tmp = {};
     this.rtcpreport.forEach((rtcpData) => {
-      var currentName = rtcpData.source_ip + ' -> ' + rtcpData.destination_ip;
+      let currentName = rtcpData.source_ip + ' -> ' + rtcpData.destination_ip;
       if (tmp[currentName] == undefined) {
         this.rtcpMembers.push({
           name: currentName,
           isShowJitter: true,
           isShowPacketLost: true,
-          isShowStream: true
+          isShowStream: true,
         });
         tmp[currentName] = currentName;
       }

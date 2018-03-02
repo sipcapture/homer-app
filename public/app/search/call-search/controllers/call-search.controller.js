@@ -1,6 +1,6 @@
 /* global angular, window */
 
-import { forEach } from 'lodash';
+import {forEach} from 'lodash';
 
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
@@ -8,12 +8,13 @@ import gridColumnDefinitions from '../data/grid/collumns/definitions';
 import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
 const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
-  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert, $state, EVENTS, $log, CONFIGURATION, SearchHelper) {
+  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
+  $state, EVENTS, $log, CONFIGURATION, SearchHelper) {
   'ngInject';
   const self = this;
+  let diff;
 
-  self.$onInit = function () {
-  };
+  self.$onInit = function() {};
 
   self.expandme = true;
   self.showtable = true;
@@ -36,7 +37,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     myListener();
   });
 
-  var myListener = EventBus.subscribe(EVENTS.SEARCH_CALL_SUBMIT, function() {
+  const myListener = EventBus.subscribe(EVENTS.SEARCH_CALL_SUBMIT, function() {
     self.processSearchResult();
   });
 
@@ -47,27 +48,27 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   self.processSearchResult = function() {
     self.bump = false;
     /* save data for next search */
-    var data = {
+    const data = {
       param: {},
-      timestamp: {}
+      timestamp: {},
     };
 
-    var transaction = UserProfile.getProfile('transaction');
-    var limit = UserProfile.getProfile('limit');
-    var timezone = UserProfile.getProfile('timezone');
-    var value = UserProfile.getProfile('search');
+    const transaction = UserProfile.getProfile('transaction');
+    let limit = UserProfile.getProfile('limit');
+    const timezone = UserProfile.getProfile('timezone');
+    const value = UserProfile.getProfile('search');
     let timedate;
 
     /* force time update for "last x minutes" ranges */
-    var timeNow = UserProfile.getProfile('timerange_last');
+    const timeNow = UserProfile.getProfile('timerange_last');
     if (timeNow > 0) {
       console.log('fast-forward to last ' + timeNow + ' minutes...');
-      var diff = (new Date().getTimezoneOffset() - timezone.value);
-      var dt = new Date(new Date().setMinutes(new Date().getMinutes() - timeNow + diff));
+      diff = (new Date().getTimezoneOffset() - timezone.value);
+      const dt = new Date(new Date().setMinutes(new Date().getMinutes() - timeNow + diff));
       timedate = {
         from: dt,
         to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
-        custom: 'Now() - ' + timeNow
+        custom: 'Now() - ' + timeNow,
       };
       UserProfile.setProfile('timerange', timedate);
     } else {
@@ -84,7 +85,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Yes, delete it!',
         closeOnConfirm: true,
-        closeOnCancel: true
+        closeOnCancel: true,
       },
       function(isConfirm) {
         if (isConfirm) {
@@ -102,7 +103,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         confirmButtonText: 'Update',
         closeOnConfirm: true,
         closeOnCancel: true,
-        inputPlaceholder: self.searchParams[param]
+        inputPlaceholder: self.searchParams[param],
       },
       function(input) {
         if (input) {
@@ -124,14 +125,14 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     };
 
     /* preference processing */
-    var sObj = {};
-    var searchQueryObject = $location.search();
+    const sObj = {};
+    const searchQueryObject = $location.search();
     if (searchQueryObject.hasOwnProperty('query')) {
-      var rison = searchQueryObject.query;
+      let rison = searchQueryObject.query;
       rison = rison.substring(1, rison.length - 2);
-      var ar = rison.split('\',');
+      const ar = rison.split('\',');
       for (let i = 0; i < ar.length; i++) {
-        var va = ar[i].split(':\'');
+        const va = ar[i].split(':\'');
         sObj[va[0]] = va[1];
       }
     }
@@ -146,7 +147,6 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       data.param.limit = limit;
       data.param.search = value;
       data.param.location = {};
-      //data.param.location.node = node;
       data.param.timezone = timezone;
       data.timestamp.from = timedate.from.getTime() - diff;
       data.timestamp.to = timedate.to.getTime() - diff;
@@ -154,13 +154,11 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         data.param.transaction[v.name] = true;
       });
     } else {
-
       data.timestamp.from = timedate.from.getTime() + diff;
       data.timestamp.to = timedate.to.getTime() + diff;
       data.param.transaction = {};
 
-      var searchValue = {};
-
+      const searchValue = {};
       if (sObj.hasOwnProperty('limit')) limit = sObj['limit'];
       if (sObj.hasOwnProperty('startts')) {
         data.timestamp.from = sObj['startts'] * 1000;
@@ -211,7 +209,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
           angular.element($window).resize();
         }, 200);
       }
-    }).catch(function (error) {
+    }).catch(function(error) {
       $log.error('[SearchCall]', error);
     }).finally(function() {
       self.dataLoading = false;
@@ -232,38 +230,36 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   };
 
   self.getBkgColorTable = function() {
-    var color = 'hsla(0, 0%, 84%, 1)';
+    const color = 'hsla(0, 0%, 84%, 1)';
     return {
-      'background-color': color
+      'background-color': color,
     };
   };
 
   self.showMessage = function(localrow, event) {
-    var search_data = {
+    const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.micro_ts / 1000) - 100,
-        to: parseInt(localrow.entity.micro_ts / 1000) + 100
+        to: parseInt(localrow.entity.micro_ts / 1000) + 100,
       },
       param: {
         search: {
           id: parseInt(localrow.entity.id),
-          callid: localrow.entity.callid
+          callid: localrow.entity.callid,
         },
         location: {
-          //node: localrow.entity.dbnode
         },
         transaction: {
           call: false,
           registration: false,
-          rest: false
-        }
-      }
+          rest: false,
+        },
+      },
     };
 
-
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
-    search_data['param']['transaction'][localrow.entity.trans] = true;
-    var messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
+    searchData['param']['transaction'][localrow.entity.trans] = true;
+    const messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
 
     $homerModal.open({
       template: '<call-message-detail></call-message-detail>',
@@ -272,7 +268,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       id: 'message' + SearchHelper.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
       divTop: event.clientY.toString() + 'px',
-      params: search_data,
+      params: searchData,
       onOpen: function() {
         $log.debug('modal1 message opened from url ' + this.id);
       },
@@ -302,12 +298,12 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   };
 
   self.dateConvert = function(value) {
-    var dt = new Date(parseInt(value / 1000));
+    const dt = new Date(parseInt(value / 1000));
     return $filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', self.offset);
   };
 
   self.dateSecondsConvert = function(value) {
-    var dt = new Date(parseInt(value * 1000));
+    const dt = new Date(parseInt(value * 1000));
     return $filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', self.offset);
   };
 
@@ -317,8 +313,8 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   };
 
   self.getCallStatus = function(value, transaction) {
-    var status = parseInt(value);
-    var result = 'unknown';
+    const status = parseInt(value);
+    let result = 'unknown';
     if (transaction === 'call') {
       switch (status) {
       case 1:
@@ -376,8 +372,8 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   };
 
   self.getCallStatusColor = function(value, rowIsSelected, transaction) {
-    var status = parseInt(value);
-    var color = 'white';
+    const status = parseInt(value);
+    let color = 'white';
 
     if (transaction === 'call') {
       if (rowIsSelected) {
@@ -484,24 +480,24 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     }
 
     return {
-      'color': color
+      'color': color,
     };
   };
 
 
   self.getMosColor = function(rowmos) {
-    var mos = parseInt(rowmos / 100);
+    const mos = parseInt(rowmos / 100);
     if (mos <= 2) {
       return {
-        'color': 'red'
+        'color': 'red',
       };
     } else if (mos <= 3) {
       return {
-        'color': 'orange'
+        'color': 'orange',
       };
     } else {
       return {
-        'color': 'green'
+        'color': 'green',
       };
     }
   };
@@ -510,37 +506,37 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   self.getCallIDColor = function(str) {
     if (str === undefined || str === null) return str;
 
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     i = hash;
-    var col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
+    let col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
     ((i >> 8) & 0xAF).toString(16) + (i & 0xAF).toString(16);
     if (col.length < 6) col = col.substring(0, 3) + '' + col.substring(0, 3);
     if (col.length > 6) col = col.substring(0, 6);
     return {
-      'color': '#' + col
+      'color': '#' + col,
     };
   };
 
 
   self.getCallDuration = function(start, stop) {
     if (stop < start || !stop) return '';
-    var diff = new Date((stop - start)).getTime();
-    var hours = Math.floor(diff / 3600) % 24;
-    var minutes = Math.floor(diff / 60) % 60;
-    var seconds = diff % 60;
+    const diff = new Date((stop - start)).getTime();
+    const hours = Math.floor(diff / 3600) % 24;
+    const minutes = Math.floor(diff / 60) % 60;
+    const seconds = diff % 60;
     return ('0' + hours).slice(-2) + ':' +
         ('0' + minutes).slice(-2) + ':' +
         ('0' + seconds).slice(-2);
   };
 
   self.showTransaction = function(localrow, event) {
-    var rows = self.gridApi.selection.getSelectedRows();
-    var callids = [];
-    var uuids = [];
-    var nodes = [];
+    const rows = self.gridApi.selection.getSelectedRows();
+    const callids = [];
+    const uuids = [];
+    let nodes = [];
 
     callids.push(localrow.entity.callid);
     if (localrow.entity.uuid && localrow.entity.uuid.length > 1) uuids.push(localrow.entity.uuid);
@@ -563,53 +559,52 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       }
     });
 
-    var stop;
+    let stop;
     if (localrow.entity.cdr_stop > (localrow.entity.micro_ts / 1000000)) {
       stop = (localrow.entity.cdr_stop * 1000);
     } else {
       stop = parseInt(localrow.entity.micro_ts / 1000);
     }
       
-    var search_data = {
+    const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.micro_ts / 1000 - (5 * 1000)),
-        to: parseInt(stop + (300 * 1000))
+        to: parseInt(stop + (300 * 1000)),
       },
       param: {
         search: {
           id: parseInt(localrow.entity.id),
           callid: callids,
           uuid: uuids,
-          uniq: false
+          uniq: false,
         },
         location: {
-          //node: nodes
         },
         transaction: {
           call: false,
           registration: false,
-          rest: false
+          rest: false,
         },
         id: {
-          uuid: localrow.entity.uuid
-        }
-      }
+          uuid: localrow.entity.uuid,
+        },
+      },
     };
 
     /* set to to our last search time */
-    var timezone = UserProfile.getProfile('timezone');
+    const timezone = UserProfile.getProfile('timezone');
     localrow.entity.trans = 'call';
-    search_data['param']['transaction'][localrow.entity.trans] = true;
-    var trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
+    searchData['param']['transaction'][localrow.entity.trans] = true;
+    const trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
 
     nodes = UserProfile.getProfile('node');
 
-    var search_profile = UserProfile.getProfile('search');
-    if (search_profile.hasOwnProperty('uniq')) {
-      search_data['param']['search']['uniq'] = search_profile.uniq;
+    let searchProfile = UserProfile.getProfile('search');
+    if (searchProfile.hasOwnProperty('uniq')) {
+      searchData['param']['search']['uniq'] = searchProfile.uniq;
     }
 
-    search_data['param']['timezone'] = timezone;
+    searchData['param']['timezone'] = timezone;
 
     let divTop;
     if ((event.clientY + window.innerHeight / 2) < window.innerHeight) {
@@ -623,7 +618,7 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       component: true,
       cls: 'homer-modal-content',
       id: 'trans' + SearchHelper.hashCode(trwindowId),
-      params: search_data,
+      params: searchData,
       divLeft: event.clientX.toString() / 2 + 'px',
       divTop,
       onOpen: function() {
@@ -680,7 +675,6 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
   self.gridOpts.onRegisterApi = function(gridApi) {
     self.gridApi = gridApi;
     gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-      //$state.go('contact.details.view', {contactId: row.entity.contactId});
       $log.debug(row);
     });
   };

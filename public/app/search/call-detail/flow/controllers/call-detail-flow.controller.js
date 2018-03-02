@@ -1,5 +1,4 @@
 class CallDetailFlow {
-
   constructor($log, $homerCflow) {
     'ngInject';
     this.$log = $log;
@@ -34,7 +33,7 @@ class CallDetailFlow {
   }
 
   showMessageById(id, event) {
-    var data = this.messages[--id];
+    const data = this.messages[--id];
     this.showMessage(data, event);
   }
   

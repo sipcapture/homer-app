@@ -2,7 +2,6 @@ import {DataSet} from 'vis';
 import {forEach} from 'lodash';
 
 class CallDetailTimeline {
-
   constructor($log, $scope) {
     'ngInject';
     this.$log = $log;
@@ -101,14 +100,14 @@ class CallDetailTimeline {
 
   getTransactionDetails(transaction, groups) {
     const data = [];
-    forEach(transaction, function(trans) {
+    forEach(transaction, (trans) => {
       const group = this.getGroup(groups, trans);
       if (trans.cdr_start != 0) {
         data.push({
           start: new Date(trans.cdr_start * 1000),
           style: 'background-color:green;',
           group,
-          content: 'CDR Start'
+          content: 'CDR Start',
         });
       }
       if (trans.cdr_ringing != 0) {
@@ -116,7 +115,7 @@ class CallDetailTimeline {
           start: new Date(trans.cdr_ringing * 1000),
           style: 'background-color:yellow;',
           group,
-          content: 'CDR Ringing'
+          content: 'CDR Ringing',
         });
       }
       if (trans.cdr_progress != 0) {
@@ -124,7 +123,7 @@ class CallDetailTimeline {
           start: new Date(trans.cdr_progress * 1000),
           style: 'background-color:blue;',
           group,
-          content: 'CDR Progress'
+          content: 'CDR Progress',
         });
       }
       if (trans.cdr_stop != 0) {
@@ -132,7 +131,7 @@ class CallDetailTimeline {
           start: new Date(trans.cdr_stop * 1000),
           style: 'background-color:red;',
           group,
-          content: 'CDR Stop'
+          content: 'CDR Stop',
         });
       }
     });
@@ -142,7 +141,7 @@ class CallDetailTimeline {
   update() {
     this.timeline.data = {
       groups: this.data.groups,
-      items: this.data.items
+      items: this.data.items,
     };
   }
 

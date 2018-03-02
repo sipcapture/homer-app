@@ -4,7 +4,6 @@ import fileSaver from 'file-saver';
 import html2canvas from 'html2canvas';
 
 class CallDetailExport {
-
   constructor($log, SearchService, SweetAlert, EventBus) {
     'ngInject';
     this.SearchService = SearchService;
@@ -42,18 +41,18 @@ class CallDetailExport {
     this.sharelink = '';
     this.SearchService.createShareLink(this.data).then((msg) => {
       if (msg) {
-        this.sarelink = msg.url && msg.url.match(/^http/) ? msg.url : '/share/' + msg.url ;
+        this.sarelink = msg.url && msg.url.match(/^http/) ? msg.url : '/share/' + msg.url;
         this.SweetAlert({
           title: 'Ready to Share!',
           text: 'Your session can be accessed <a target="_blank" href="' + this.sharelink + '">here</a>',
-          html: true
+          html: true,
         });
       } else {
         this.SweetAlert({
           title: 'Oops!',
           type: 'error',
           text: 'Your session could not be shared!<br>If this persists, contact your Administrator',
-          html: true
+          html: true,
         });
       }
     }).catch((error) => {
@@ -65,9 +64,9 @@ class CallDetailExport {
     this.SearchService.makeReportRequest(fdata, 'call').then((msg) => {
       this.isReportBusy = false;
       const filename = this.getCallFileName() + '.zip';
-      const content_type = 'application/zip';
+      const contentType = 'application/zip';
       const blob = new Blob([msg], {
-        type: content_type
+        type: contentType,
       });
       fileSaver.saveAs(blob, filename);
     }).catch((error) => {
@@ -80,15 +79,15 @@ class CallDetailExport {
     const target = !prefix ? this.cflowid : prefix + this.cflowid;
     const cb = () => {
       this.exporting = false;
-      clearTimeout(cb_t);
+      clearTimeout(cdT);
       this.EventBus.resizeNull();
     };
-    const cb_t = setTimeout(function() {
+    const cdT = setTimeout(function() {
       cb();
     }, 8000);
 
-    var myEl = document.getElementById(target);
-    var clone = myEl.cloneNode(true);
+    let myEl = document.getElementById(target);
+    let clone = myEl.cloneNode(true);
     clone.id = target + '_clone';
     clone.style.position = 'relative';
     clone.style.top = '0';
@@ -99,7 +98,7 @@ class CallDetailExport {
     document.body.appendChild(clone);
 
     html2canvas(clone, {
-      logging: false
+      logging: false,
     }).then(function(canvas) {
       const used = document.getElementById(target + '_clone');
       if (used) {
@@ -115,9 +114,9 @@ class CallDetailExport {
 
   getCallFileName() {
     const transaction = this.transaction.calldata[0];
-    const ts_hms = new Date(transaction.milli_ts);
-    const date = (ts_hms.getMonth() + 1) + '/' + ts_hms.getDate() + '/' + ts_hms.getFullYear();
-    const time = ts_hms.getHours() + ':' + ts_hms.getMinutes() + ':' + ts_hms.getSeconds();
+    const tsHms = new Date(transaction.milli_ts);
+    const date = (tsHms.getMonth() + 1) + '/' + tsHms.getDate() + '/' + tsHms.getFullYear();
+    const time = tsHms.getHours() + ':' + tsHms.getMinutes() + ':' + tsHms.getSeconds();
     return `HEPIC-${transaction.destination_ip}-${transaction.ruri_user}-${date} ${time}`;
   }
 
@@ -127,33 +126,33 @@ class CallDetailExport {
       this.isTextBusy = false;
       this.isCloudBusy = false;
 
-      var filename = this.getCallFileName() + '.pcap';
-      let content_type = 'application/pcap';
+      let filename = this.getCallFileName() + '.pcap';
+      let contentType = 'application/pcap';
 
       if (type == 1) {
         filename = this.getCallFileName() + '.txt';
-        content_type = 'attacment/text;charset=utf-8';
+        contentType = 'attacment/text;charset=utf-8';
       } else if (type == 2) {
         if (msg.data && msg.data.hasOwnProperty('url')) {
           this.SweetAlert({
             title: 'Export Done!',
             text: 'Your PCAP can be accessed <a target="_blank" href="' + msg.data.url + '">here</a>',
-            html: true
+            html: true,
           });
         } else {
-          var error = 'Please check your settings';
+          let error = 'Please check your settings';
           if (msg.data && msg.data.hasOwnProperty('exceptions')) error = msg.data.exceptions;
           this.SweetAlert({
             title: 'Error',
             type: 'error',
             text: 'Your PCAP could not be uploaded!<BR>' + error,
-            html: true
+            html: true,
           });
         }
         return;
       }
       const blob = new Blob([msg], {
-        type: content_type
+        type: contentType,
       });
       fileSaver.saveAs(blob, filename);
     }).catch((error) => {

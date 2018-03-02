@@ -5,7 +5,6 @@ import 'vis/dist/vis.css';
 import 'nvd3/build/nv.d3.css';
 
 class CallDetailMedia {
-
   constructor($log, EventBus) {
     'ngInject';
     this.$log = $log;
@@ -22,7 +21,7 @@ class CallDetailMedia {
           top: 40,
           right: 20,
           bottom: 40,
-          left: 55
+          left: 55,
         },
         useInteractiveGuideline: false,
         xAxis: {
@@ -34,10 +33,10 @@ class CallDetailMedia {
           tickFormat: function(d) {
             return d3.format('.02f')(d);
           },
-          axisLabelDistance: -10
+          axisLabelDistance: -10,
         },
-        showLegend: true
-      }
+        showLegend: true,
+      },
     };
   }
 

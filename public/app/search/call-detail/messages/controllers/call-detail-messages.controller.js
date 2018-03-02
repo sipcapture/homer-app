@@ -1,5 +1,4 @@
 class CallDetailMessages {
-
   constructor($log) {
     'ngInject';
     this.$log = $log;

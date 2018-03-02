@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 
 class CallDetailInfo {
-
   constructor($log, SearchService) {
     'ngInject';
     this.$log = $log;
@@ -59,7 +58,7 @@ class CallDetailInfo {
         if (transaction[key].geo_lat && transaction[key].geo_lan) {
           this.geocenter = {
             lat: transaction[key].geo_lat,
-            lan: transaction[key].geo_lan
+            lan: transaction[key].geo_lan,
           };
 
           this.geomarkers[transaction[key].source_ip.split('.').join('')] = {
@@ -67,7 +66,7 @@ class CallDetailInfo {
             lng: transaction[key].geo_lan,
             message: 'A-Party<br>' + transaction[key].source_ip + ':' + transaction[key].source_port,
             focus: true,
-            draggable: false
+            draggable: false,
           };
       
           if (transaction[key].dest_lat && transaction[key].dest_lan) {
@@ -76,11 +75,12 @@ class CallDetailInfo {
               lng: transaction[key].dest_lan,
               message: 'B-Party<br>' + transaction[key].destination_ip + ':' + transaction[key].destination_port,
               focus: false,
-              draggable: false
+              draggable: false,
             };
           }
 
-          if (transaction[key].destination_ip && (!transaction[key].dest_lat || transaction[key].dest_lat == 0) && this.SearchService.searchGeoLoc) {
+          if (transaction[key].destination_ip && (!transaction[key].dest_lat || transaction[key].dest_lat == 0)
+            && this.SearchService.searchGeoLoc) {
             return this.search(transaction[key].destination_ip, transaction[key].destination.port);
           }
         }
@@ -100,8 +100,8 @@ class CallDetailInfo {
       this.LiveLogs.push({
         data: {
           type: 'Geo Lookup',
-          data: results
-        }
+          data: results,
+        },
       });
     
       this.geomarkers[ip.split('.').join('')] = {
@@ -109,9 +109,8 @@ class CallDetailInfo {
         lng: results.lon,
         message: 'B-Party IP<br>' + ip + ':' + port,
         focus: false,
-        draggable: false
+        draggable: false,
       };
-
     }).catch((err) => {
       throw new Error(`fail to search geo location, ${err}`);
     });

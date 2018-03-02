@@ -1,82 +1,218 @@
-/*global angular, document, window, Blob*/
+/*global document, window*/
 
-import fileSaver from 'file-saver';
 import treeData from '../data/tree_data';
 import {forEach} from 'lodash';
 
-var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $homerCflow, $timeout, $sce,
-  localStorageService, $filter, UserProfile, EventBus, SearchHelper) {
-  'ngInject';
-  const self = this;
+class CallDetail {
+  constructor($scope, $log, SearchService, $homerModal, $timeout, UserProfile, EventBus, SearchHelper) {
+    'ngInject';
+    this.$scope = $scope;
+    this.$log = $log;
+    this.$timeout = $timeout;
+    this.$homerModal = $homerModal;
+    this.SearchService = SearchService;
+    this.UserProfile = UserProfile;
+    this.EventBus = EventBus;
+    this.SearchHelper = SearchHelper;
+    this.dataLoading = true;
+    this.call = {};
+    this.apiD3 = {};
+    this.transaction = [];
+    this.clickArea = [];
+    this.collapsed = [];
+    this.LiveLogs = [];
+    this.enable = {
+      report: {
+        quality: false,
+        rtcp: false,
+        xrtp: false,
+        log: false,
+        recording: false,
+        dtmf: false,
+        remotelog: false,
+        rtc: false,
+        rtpagent: false,
+      },
+      transaction: false,
+      blacklist: false,
+      qoschart: false,
+      graph: false,
+      timeline: false,
+    };
+    this.colorsChart = ['aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'orange', 'purple', 'red', 'silver', 'teal', 'white', 'yellow'];
+    /* new param */
+    this.beginRTCPDataDisplay = new Date();
+    this.endRTCPDataDisplay = new Date();
+    this.beginRTCPDataIsSet = false;
+    this.TimeOffSetMs = (new Date(this.beginRTCPDataDisplay)).getTimezoneOffset() * 60 * 1000;
+    this.calc_report = {
+      list: [],
+      from: 0,
+      to: 0,
+      totalRtcpMessages: 0,
+      totalPacketLost: 0,
+      averagePacketLost: 0,
+      maxPacketLost: 0,
+      totalPackets: 0,
+      averageJitterMsec: 0,
+      maxJitterMsec: 0
+    };
+    this.jittersFilterAll = true;
+    this.packetsLostFilterAll = true;
+    this.activeMainTab = true;
+    this.treedata2 = treeData;
+  }
 
-  const bindings = $scope.$parent.bindings;
-  let data = bindings.params;
-  $scope.id = bindings.id;
-  $scope.data = data;
-  $scope.call = {};
-  $scope.apiD3 = {};
+  async $onInit() {
+    const bindings = this.$scope.$parent.bindings;
+    this.data = bindings.params;
+    this.id = bindings.id;
+    this.msgCallId = this.data.param.search.callid[0];
 
-  $scope.dataLoading = true;
-  $scope.showSipMessage = true;
-  $scope.showSipDetails = false;
+    this.$timeout(() => {
+      if (this.$homerModal.getOpenedModals().indexOf('tempModal') !== -1) {
+        this.$homerModal.close('tempModal', 'var a', 'var b');
+      }
+    }, 5000);
 
-  $scope.clickSipDetails = function() {
-    console.log('details');
-  };
+    await this.getCall(this.data);
+    this.initTabs();
+  }
 
-  var profile = UserProfile.getServerProfile('dashboard');
-  console.log('SETTINGS:', profile);
+  initTabs() {
+    this.tabs = [
+      {
+        'heading': 'Messages',
+        'active': true,
+        'select': () => {
+          this.refreshGrid();
+        },
+        'ngshow': 'tab',
+        'icon': 'zmdi zmdi-grid',
+      },
+      {
+        'heading': 'Flow',
+        'active': true,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': 'tab',
+        'icon': 'fa fa-exchange',
+      },
+      {
+        'heading': 'IP Graph',
+        'active': true,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': 'enableGraph',
+        'icon': 'fa fa-exchange',
+      },
+      {
+        'heading': 'Timeline',
+        'active': true,
+        'ngclick': () => {
+          this.timelineReadyGo();
+        },
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': '$ctrl.enable.timeline',
+        'icon': 'fa fa-exchange',
+      },
+      {
+        'heading': 'Call Info',
+        'active': true,
+        'select': () => {
+          this.EventBus.refreshChart();
+        },
+        'ngshow': '$ctrl.enable.transaction',
+        'icon': 'glyphicon glyphicon-info-sign',
+      },
+      {
+        'heading': 'Media Reports',
+        'active': true,
+        'select': () => {
+          this.EventBus.refreshChart();
+        },
+        'ngshow': '$ctrl.enable.report.quality || $ctrl.enable.report.xrtp || $ctrl.enable.report.rtcp',
+        'icon': 'glyphicon glyphicon-signal',
+      },
+      {
+        'heading': 'DTMF',
+        'active': true,
+        'ngshow': '$ctrl.enable.report.dtmf',
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'icon': 'fa fa-file-text-o',
+      },
+      {
+        'heading': 'Logs',
+        'active': true,
+        'ngshow': '$ctrl.enable.report.log',
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'icon': 'fa fa-file-text-o',
+      },
+      {
+        'heading': 'Recording',
+        'active': true,
+        'ngshow': '$ctrl.enable.report.recording',
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'icon': 'fa fa-play-circle-o',
+      },
+      {
+        'heading': 'Remote Logs',
+        'active': true,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': '$ctrl.enable.report.remotelog',
+        'icon': 'fa fa-file-text-o',
+      },
+      {
+        'heading': 'WSS',
+        'active': true,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': '$ctrl.enable.report.rtc',
+        'icon': 'fa fa-exchange',
+      },
+      {
+        'heading': 'Blacklist',
+        'active': true,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': '$ctrl.enable.blacklist',
+        'icon': 'fa fa-ban',
+      },
+      {
+        'heading': 'Export',
+        'active': false,
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'ngshow': 'tab',
+        'icon': 'glyphicon glyphicon-download-alt',
+      }
+    ];
+  }
 
-  /* Timeline Datasets */
-  $scope.tlGroups = [];
-  $scope.tlData = [];
-
-  $scope.timelineReady = false;
-  $scope.timelineReadyGo = function() {
-    $scope.timelineReady = true;
-  };
-
-  $scope.transaction = [];
-  $scope.clickArea = [];
-  $scope.msgCallId = data.param.search.callid[0];
-  $scope.collapsed = [];
-  $scope.enableQualityReport = false;
-  $scope.enableRTCPReport = false;
-  $scope.enableXRTPReport = false;
-  $scope.enableTransaction = false;
-  $scope.enableLogReport = false;
-  $scope.enableRecordingReport = false;
-  $scope.enableDTMFReport = false;
-  $scope.enableBlacklist = false;
-  $scope.enableRemoteLogReport = false;
-  $scope.enableRtcReport = false;
-  $scope.enableRTPAgentReport = false;
-  $scope.enableQOSChart = false;
-  $scope.enableGraph = false;
-  $scope.enableTimeline = false;
-  $scope.LiveLogs = [];
-
-  self.$onInit = async function () {
-    await self.getCall();
-  };
-
-  angular.element(window).on('resize', () => {
-    forEach(this.apiD3, (v) => {
-      v.updateWithTimeout(500);
-    });
-  });
-
-  self.getCall = async function() {
+  async getCall(data) {
     try {
-      const msg = await SearchService.searchCallByTransaction(data);
-      if (msg) {
-        if (msg.transaction) {
-          $scope.enableTransaction = true;
-        }
-        $scope.call = msg;
-        $scope.setSDPInfo(msg);
+      this.call = await this.SearchService.searchCallByTransaction(data);
+      if (this.call) {
+        this.enable.transaction = this.call.transaction ? true : false;
+
+        this.setSDPInfo(this.call);
         /* and now we should do search for LOG and QOS*/
-        angular.forEach(msg.callid, function(v, k) {
+        forEach(this.call.callid, function(v, k) {
           console.log('K', k);
           if (data.param.search.callid.indexOf(k) == -1) {
             data.param.search.callid.push(k);
@@ -87,71 +223,28 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         try {
           console.log('scanning for IPs...');
           var cached = [];
-          angular.forEach(msg.hosts, function(v) {
+          forEach(this.call.hosts, function(v) {
             cached.push(v.hosts[0]);
           });
           if (cached.length > 0) {
-            $scope.uniqueIps = cached;
+            this.uniqueIps = cached; // to-do: what is uniqueIps?
           }
-        } catch (e) {
-          console.log(e);
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'unique ip array for export', err);
         }
 
-        /* IP GRAPH DISPLAY (experimental) */
-
         /*  TIMELINE TEST END */
-        await self.showQOSReport(data);
-        await self.showLogReport(data);
-        await self.showRecordingReport(data);
+        await this.showQOSReport(data);
+        await this.showLogReport(data);
+        await this.showRecordingReport(data);
+        this.dataLoading = false;
       }
     } catch (err) {
-      $log.error('[CallDetail]', err);
+      this.$log.error(['CallDetail'], 'get call', err);
     }
+  }
 
-    //return SearchService.searchCallByTransaction(data).then(function(msg) {
-    //  if (msg) {
-    //    if (msg.transaction) {
-    //      $scope.enableTransaction = true;
-    //    }
-    //    $scope.call = msg;
-    //    $scope.setSDPInfo(msg);
-    //    /* and now we should do search for LOG and QOS*/
-    //    angular.forEach(msg.callid, function(v, k) {
-    //      console.log('K', k);
-    //      if (data.param.search.callid.indexOf(k) == -1) {
-    //        data.param.search.callid.push(k);
-    //      }
-    //    });
-
-    //    // Unique IP Array for Export
-    //    try {
-    //      console.log('scanning for IPs...');
-    //      var cached = [];
-    //      angular.forEach(msg.hosts, function(v) {
-    //        cached.push(v.hosts[0]);
-    //      });
-    //      if (cached.length > 0) {
-    //        $scope.uniqueIps = cached;
-    //      }
-    //    } catch (e) {
-    //      console.log(e);
-    //    }
-
-    //    /* IP GRAPH DISPLAY (experimental) */
-
-    //    /*  TIMELINE TEST END */
-    //    self.showQOSReport(data);
-    //    self.showLogReport(data);
-    //    self.showRecordingReport(data);
-    //  }
-    //}).catch(function(error) {
-    //  $log.error('[CallDetail]', error);
-    //}).finally(function() {
-    //  $scope.dataLoading = false;
-    //});
-  };
-
-  $scope.showMessage = function(data, event) {
+  showMessage(data, event) {
     const search_data = {
       timestamp: {
         from: parseInt(data.micro_ts / 1000),
@@ -184,20 +277,20 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       posx -= diff;
     }
 
-    $homerModal.open({
+    this.$homerModal.open({
       template: '<call-message-detail></call-message-detail>',
       component: true,
       cls: 'homer-modal-message',
-      id: 'message' + SearchHelper.hashCode(messagewindowId),
+      id: 'message' + this.SearchHelper.hashCode(messagewindowId),
       divLeft: posx.toString() + 'px',
       divTop: posy.toString() + 'px',
       params: search_data,
       sdata: data,
       internal: true,
     });
-  };
+  }
 
-  this.expandModal = function (id) {
+  expandModal(id) {
     // to-do: this currently doesn't work because id is undefined
     const modal = document.getElementById(id);
     const content = modal.getElementsByClassName('modal-body')[0];
@@ -230,128 +323,19 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       content.style.width = '100%';
     }
     modal.classList.toggle('full-screen-modal');
-    $scope.drawCanvas($scope.id, $scope.transaction);
-  };
+    this.drawCanvas(this.id, this.transaction);
+  }
 
-  this.closeModal = function () {
-    $scope.$parent.closeModal();
-  };
+  closeModal() {
+    this.$scope.$parent.closeModal();
+  }
 
-  $scope.tabExec = function() {
-    EventBus.refreshChart();
-    EventBus.resizeNull();
-  };
+  tabExec() {
+    this.EventBus.refreshChart();
+    this.EventBus.resizeNull();
+  }
 
-  $scope.tabs = [{
-    'heading': 'Messages',
-    'active': true,
-    'select': function() {
-      $scope.refreshGrid();
-    },
-    'ngshow': 'tab',
-    'icon': 'zmdi zmdi-grid',
-  }, {
-    'heading': 'Flow',
-    'active': true,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'tab',
-    'icon': 'fa fa-exchange',
-  }, {
-    'heading': 'IP Graph',
-    'active': true,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'enableGraph',
-    'icon': 'fa fa-exchange',
-  }, {
-    'heading': 'Timeline',
-    'active': true,
-    'ngclick': function($scope) {
-      $scope.timelineReadyGo();
-    },
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'enableTimeline',
-    'icon': 'fa fa-exchange',
-  }, {
-    'heading': 'Call Info',
-    'active': true,
-    'select': function() {
-      EventBus.refreshChart();
-    },
-    'ngshow': 'enableTransaction',
-    'icon': 'glyphicon glyphicon-info-sign',
-  }, {
-    'heading': 'Media Reports',
-    'active': true,
-    'select': function() {
-      EventBus.refreshChart();
-    },
-    'ngshow': 'enableQualityReport || enableXRTPReport || enableRTCPReport',
-    'icon': 'glyphicon glyphicon-signal',
-  }, {
-    'heading': 'DTMF',
-    'active': true,
-    'ngshow': 'enableDTMFReport',
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'icon': 'fa fa-file-text-o',
-  }, {
-    'heading': 'Logs',
-    'active': true,
-    'ngshow': 'enableLogReport',
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'icon': 'fa fa-file-text-o',
-  }, {
-    'heading': 'Recording',
-    'active': true,
-    'ngshow': 'enableRecordingReport',
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'icon': 'fa fa-play-circle-o',
-  }, {
-    'heading': 'Remote Logs',
-    'active': true,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'enableRemoteLogReport',
-    'icon': 'fa fa-file-text-o',
-  }, {
-    'heading': 'WSS',
-    'active': true,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'enableRtcReport',
-    'icon': 'fa fa-exchange',
-  }, {
-    'heading': 'Blacklist',
-    'active': true,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'enableBlacklist',
-    'icon': 'fa fa-ban',
-  }, {
-    'heading': 'Export',
-    'active': false,
-    'select': function() {
-      EventBus.resizeNull();
-    },
-    'ngshow': 'tab',
-    'icon': 'glyphicon glyphicon-download-alt',
-  }];
-
-  $scope.getCallIDColor = function(str) {
+  getCallIDColor(str) {
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -364,12 +348,10 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
     return {
       color: '#' + col
     };
-  };
-
-  $scope.colorsChart = ['aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'orange', 'purple', 'red', 'silver', 'teal', 'white', 'yellow'];
+  }
 
   /* convertor */
-  $scope.XRTP2value = function(prop) {
+  XRTP2value(prop) {
     var res = prop;
     switch (prop) {
     case 'CD':
@@ -397,145 +379,24 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       break;
     }
     return res;
-  };
+  }
 
-  /* new param */
-  $scope.beginRTCPDataDisplay = new Date();
-  $scope.endRTCPDataDisplay = new Date();
-  $scope.beginRTCPDataIsSet = false;
-  $scope.TimeOffSetMs = (new Date($scope.beginRTCPDataDisplay)).getTimezoneOffset() * 60 * 1000;
-  $scope.calc_report = {
-    list: [],
-    from: 0,
-    to: 0,
-    totalRtcpMessages: 0,
-    totalPacketLost: 0,
-    averagePacketLost: 0,
-    maxPacketLost: 0,
-    totalPackets: 0,
-    averageJitterMsec: 0,
-    maxJitterMsec: 0
-  };
-
-  $scope.jittersFilterAll = true;
-  $scope.packetsLostFilterAll = true;
   /* jitter */
+  toggleTree(id) {
+    this.collapsed[id] = !this.collapsed[id];
+  }
 
-  $scope.toggleTree = function(id) {
-    $scope.collapsed[id] = !$scope.collapsed[id];
-  };
-
-  $scope.getNumber = function(num) {
+  getNumber(num) {
     return new Array(num);
-  };
+  }
 
-  $scope.drawCanvas = function(id, mydata) {
-
-    var data = $homerCflow.setContext(id, mydata);
-    $scope.cflowid = 'cflow-' + id;
-    console.log('canvas id:', id);
-    console.log('canvas data:', data);
-    if (!data) return;
-    $scope.messages = mydata.messages;
-    $scope.callid = data.callid;
-
-    data.hostsA = data.hosts[data.hosts.length - 1];
-    data.hosts.splice(-1, 1);
-
-    $scope.hostsflow = data.hosts;
-    $scope.lasthosts = data.hostsA;
-
-    $scope.messagesflow = data.messages;
-    $scope.maxhosts = data.hosts.length - 1;
-    console.log($scope.maxhosts);
-    $scope.maxArrayHost = new Array($scope.maxhosts);
-  };
-
-  $scope.transactionCheck = function(type) {
-    if (parseInt(type) == 86) return 'XLOG';
-    else if (parseInt(type) == 87) return 'MI';
-    else if (parseInt(type) == 88) return 'REST';
-    else if (parseInt(type) == 89) return 'NET';
-    else if (parseInt(type) == 4) return 'WebRTC';
-    else return 'SIP';
-  };
-
-  $scope.activeMainTab = true;
-
-  $scope.playStream = function(data, event) {
-    var search_data = {
-      timestamp: {
-        from: parseInt(data.micro_ts / 1000),
-        to: parseInt(data.micro_ts / 1000)
-      },
-      param: {
-        search: {
-          id: parseInt(data.id),
-          callid: data.callid
-        },
-        location: {
-          node: data.dbnode
-        },
-        transaction: {
-          call: false,
-          registration: false,
-          rest: false
-        }
-      }
-    };
-
-    console.log(data);
-
-    search_data['param']['transaction'][data.trans] = true;
-    var messagewindowId = '' + data.id + '_' + data.trans;
-
-    var posx = event.clientX;
-    var posy = event.clientY;
-    var winx = window.screen.availWidth;
-    var diff = parseInt((posx + (winx / 3) + 20) - (winx));
-    // Reposition popup in visible area
-    if (diff > 0) {
-      posx -= diff;
-    }
-
-    $homerModal.open({
-      url: 'templates/dialogs/playstream.html',
-      cls: 'homer-modal-message',
-      id: 'playstream' + SearchHelper.hashCode(messagewindowId),
-      divLeft: posx.toString() + 'px',
-      divTop: posy.toString() + 'px',
-      params: search_data,
-      sdata: data,
-      internal: true,
-      onOpen: function() {
-        console.log('modal1 message opened from url ' + this.id);
-      },
-      controller: 'playStreamCtrl'
-    });
-  };
-
-
-  $scope.downloadRecordingPcap = function(data) {
-    SearchService.downloadRecordingPcap(data.id, 'rtp').then(function(msg) {
-      var filename = data.filename;
-      var content_type = 'application/pcap';
-      var blob = new Blob([msg], {
-        type: content_type
-      });
-      fileSaver.saveAs(blob, filename);
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    });
-  };
-
-  $scope.clickMousePosition = function(event) {
-
+  clickMousePosition(event) {
     var ret = false;
     var obj = {};
     var x = event.offsetX == null ? event.originalEvent.layerX - event.target.offsetLeft : event.offsetX;
     var y = event.offsetY == null ? event.originalEvent.layerY - event.target.offsetTop : event.offsetY;
 
-    angular.forEach($scope.clickArea, function(ca) {
+    forEach(this.clickArea, function(ca) {
       if (ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
         ret = true;
         obj = ca;
@@ -547,19 +408,13 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       if (obj.type == 'host') {
         console.log('clicked on host');
       } else if (obj.type == 'message') {
-        $scope.showMessage(obj.data, event);
+        this.showMessage(obj.data, event);
       }
     }
-
     return ret;
-  };
+  }
 
-  $scope.reApplyResize = function() {
-    //$scope.drawCanvas2($scope.id, $scope.transaction);
-    //$scope.gridHeight = 250;
-  };
-
-  $scope.setSDPInfo = function(rdata) {
+  async setSDPInfo(rdata) {
     var msg;
     console.log(rdata);
     var chartDataExtended = {
@@ -582,7 +437,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
     /* transaction & sdp analyzer */
     if (rdata.transaction) {
-      rdata.transaction.forEach(function(entry) {
+      rdata.transaction.forEach((entry) => {
         if (rdata.sdp[entry.callid] && rdata.sdp[entry.callid][0]) {
           entry.sdp = rdata.sdp[entry.callid][0];
         }
@@ -642,44 +497,44 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
           entry.duration = '00:00:00';
         }
 
-        ///* check blacklist */ // to-do: this check throws the following error 'bad response combination'
-        //SearchService.searchBlacklist(entry.source_ip).then(function(msg) {
+        /* check blacklist */ // to-do: this check throws the following error 'bad response combination'
+        //try {
+        //  const msg = await this.SearchService.searchBlacklist(entry.source_ip);
         //  console.log('Blacklist check ' + entry.source_ip, msg);
-        //  $scope.blacklistreport = msg;
-        //  $scope.enableBlacklist = true;
+        //  this.blacklistreport = msg;
+        //  this.enableBlacklist = true;
 
-        //  $scope.enableLogReport = true;
-        //  $scope.LiveLogs.push({
+        //  this.enableLogReport = true;
+        //  this.LiveLogs.push({
         //    data: {
         //      type: 'BlackList',
         //      data: msg
         //    }
         //  });
-        //}).catch(function(error) {
-        //  $log.error('[CallDetail]', error);
-        //});
+        //} catch (err) {
+        //  this.$log.error(['CallDetail'], 'blacklist', error);
+        //}
       });
     }
 
     if (rdata.sdp) {
       try {
         if (rdata.sdp) {
-          $scope.call_sdp = rdata.sdp;
+          this.call_sdp = rdata.sdp;
         }
-      } catch (e) {
-        console.log('no call stats');
+      } catch (err) {
+        this.$log.error(['CallDetail'], 'no call stats', err);
       }
     }
 
 
     if (msg && msg.global) {
-
       try {
         if (msg.global.main) {
           // Call Duration
           var adur = new Date(null);
           adur.setSeconds(msg.global.main.duration / 1000); // seconds
-          $scope.call_duration = adur.toISOString().substr(11, 8);
+          this.call_duration = adur.toISOString().substr(11, 8);
           // Map averages
           chartDataExtended.averageMos = (msg.global.main.mos_average).toFixed(2);
           chartDataExtended.worstMos = (msg.global.main.mos_worst).toFixed(2);
@@ -690,47 +545,45 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
           chartDataExtended.averageJitterMsec = msg.global.main.jitter_avg.toFixed(2);
           chartDataExtended.maxJitterMsec = msg.global.main.jitter_max.toFixed(2);
         }
-      } catch (e) {
-        console.log('no rtcp stats');
+      } catch (err) {
+        this.$log.error(['CallDetail'], 'no rtcp stats', err);
       }
-
 
       try {
         if (msg.global.calls) {
-          $scope.calc_calls = msg.global.calls;
-          if (!$scope.call_duration) {
+          this.calc_calls = msg.global.calls;
+          if (!this.call_duration) {
             let adur = new Date(null);
-            adur.setSeconds($scope.calc_calls[Object.keys($scope.calc_calls)[0]].aparty.metric.duration / 1000); // seconds
-            $scope.call_duration = adur.toISOString().substr(11, 8);
+            adur.setSeconds(this.calc_calls[Object.keys(this.calc_calls)[0]].aparty.metric.duration / 1000); // seconds
+            this.call_duration = adur.toISOString().substr(11, 8);
           }
         }
-      } catch (e) {
-        console.log('no call stats');
+      } catch (err) {
+        this.$log.error(['CallDetail'], 'no call stats', err);
       }
-
     }
-  };
+  }
 
-  self.showQOSReport = function(rdata) {
+  showQOSReport(rdata) {
     /* new charts test */
-    $scope.d3chart = {};
-    $scope.d3chart.data = {};
-    $scope.d3chart.stats = {};
+    this.d3chart = {};
+    this.d3chart.data = {};
+    this.d3chart.stats = {};
 
-    SearchService.searchQOSReport(rdata).then(function(msg) {
+    this.SearchService.searchQOSReport(rdata).then((msg) => {
       /* HEPIC Types */
       if (msg.reports.rtpagent && msg.reports.rtpagent.chart) {
         if (Object.keys(msg.reports.rtpagent.chart).length == 0) return;
-        $scope.enableQualityReport = true;
+        this.enableQualityReport = true;
 
         var fullrep = msg.reports.rtpagent.chart;
-        $scope.list_legend = [];
+        this.list_legend = [];
 
-        angular.forEach(fullrep, function(count, key) {
-          angular.forEach(fullrep[key], function(count, callid) {
-            angular.forEach(fullrep[key][callid], function(count, leg) {
+        forEach(fullrep, (count, key) => {
+          forEach(fullrep[key], (count, callid) => {
+            forEach(fullrep[key][callid], (count, leg) => {
               var xleg = leg;
-              angular.forEach(fullrep[key][callid][leg], function(count, rep) {
+              forEach(fullrep[key][callid][leg], (count, rep) => {
 
                 var d3newchart = {
                   key: xleg,
@@ -738,8 +591,8 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
                   color: '#' + Math.floor(Math.random() * 16777215).toString(16)
                 };
 
-                $scope.list_legend.push(rep);
-                angular.forEach(fullrep[key][callid][leg][rep], function(count, data) {
+                this.list_legend.push(rep);
+                forEach(fullrep[key][callid][leg][rep], (count, data) => {
 
                   // NEW chart
                   d3newchart.values.push({
@@ -747,23 +600,21 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
                     y: fullrep[key][callid][leg][rep][data][1] // TS
                   });
 
-                  if (!$scope.d3chart.stats[rep]) $scope.d3chart.stats[rep] = {
+                  if (!this.d3chart.stats[rep]) this.d3chart.stats[rep] = {
                     raw: []
                   };
-                  $scope.d3chart.stats[rep].raw.push(fullrep[key][callid][leg][rep][data][1]);
-
+                  this.d3chart.stats[rep].raw.push(fullrep[key][callid][leg][rep][data][1]);
                 });
 
-
                 // NEW CHART
-                if (!$scope.d3chart.data[0][rep]) {
-                  $scope.d3chart.data[0][rep] = {
+                if (!this.d3chart.data[0][rep]) {
+                  this.d3chart.data[0][rep] = {
                     series: []
                   };
                 }
 
                 var d3merged = false;
-                $scope.d3chart.data[0][rep].series.forEach(function(entry) {
+                this.d3chart.data[0][rep].series.forEach(function(entry) {
                   // console.log('SEEK '+xleg, entry);
                   if (xleg == entry.name) {
                     entry.data.concat(entry.data);
@@ -773,22 +624,18 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
 
                 // Create new group if non-mergeable
                 if (!d3merged) {
-                  $scope.d3chart.data[0][rep].series.push(d3newchart);
+                  this.d3chart.data[0][rep].series.push(d3newchart);
 
                 }
-
-                $scope.d3chart.stats[rep].min = Math.min.apply(null, $scope.d3chart.stats[rep].raw);
-                $scope.d3chart.stats[rep].max = Math.max.apply(null, $scope.d3chart.stats[rep].raw);
-
+                this.d3chart.stats[rep].min = Math.min.apply(null, this.d3chart.stats[rep].raw);
+                this.d3chart.stats[rep].max = Math.max.apply(null, this.d3chart.stats[rep].raw);
               });
             });
           });
         });
       }
 
-
       /* CLASSIC version below */
-
       var chartDataExtended = {
         list: [],
         from: 0,
@@ -814,7 +661,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
             // Call Duration
             var adur = new Date(null);
             adur.setSeconds(msg.global.main.duration / 1000); // seconds
-            $scope.call_duration = adur.toISOString().substr(11, 8);
+            this.call_duration = adur.toISOString().substr(11, 8);
             // Map averages
             chartDataExtended.averageMos = (msg.global.main.mos_average).toFixed(2);
             chartDataExtended.worstMos = (msg.global.main.mos_worst).toFixed(2);
@@ -825,53 +672,49 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
             chartDataExtended.averageJitterMsec = msg.global.main.jitter_avg.toFixed(2);
             chartDataExtended.maxJitterMsec = msg.global.main.jitter_max.toFixed(2);
           }
-        } catch (e) {
-          console.log('no rtcp stats');
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'no rtcp stats', err);
         }
-
 
         try {
           if (msg.global.calls) {
-            $scope.calc_calls = msg.global.calls;
-            if (!$scope.call_duration) {
+            this.calc_calls = msg.global.calls;
+            if (!this.call_duration) {
               let adur = new Date(null);
-              adur.setSeconds($scope.calc_calls[Object.keys($scope.calc_calls)[0]].aparty.metric.duration / 1000); // seconds
-              $scope.call_duration = adur.toISOString().substr(11, 8);
+              adur.setSeconds(this.calc_calls[Object.keys(this.calc_calls)[0]].aparty.metric.duration / 1000); // seconds
+              this.call_duration = adur.toISOString().substr(11, 8);
             }
           }
-        } catch (e) {
-          console.log('no call stats');
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'no call stats', err);
         }
 
         try {
           if (msg.reports.xrtpstats && msg.reports.xrtpstats.main) {
-            $scope.calc_xrtp = msg.reports.xrtpstats.main;
-            $scope.calc_xrtp.mos_avg = $scope.calc_xrtp.mos_avg.toFixed(2);
-            $scope.calc_xrtp.mos_worst = $scope.calc_xrtp.mos_worst.toFixed(2);
-            $scope.calc_xrtp.packets_all = parseInt($scope.calc_xrtp.packets_sent) + parseInt($scope.calc_xrtp.packets_recv);
-            $scope.calc_xrtp.lost_avg = ($scope.calc_xrtp.packets_lost * 100 / $scope.calc_xrtp.packets_all).toFixed(2);
+            this.calc_xrtp = msg.reports.xrtpstats.main;
+            this.calc_xrtp.mos_avg = this.calc_xrtp.mos_avg.toFixed(2);
+            this.calc_xrtp.mos_worst = this.calc_xrtp.mos_worst.toFixed(2);
+            this.calc_xrtp.packets_all = parseInt(this.calc_xrtp.packets_sent) + parseInt(this.calc_xrtp.packets_recv);
+            this.calc_xrtp.lost_avg = (this.calc_xrtp.packets_lost * 100 / this.calc_xrtp.packets_all).toFixed(2);
           }
-        } catch (e) {
-          console.log('no x-rtp stats');
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'no x-rtp stats', err);
         }
-
 
         try {
           if (msg.reports.rtpagent && msg.reports.rtpagent.main) {
-            $scope.calc_rtpagent = msg.reports.rtpagent.main;
-            $scope.calc_rtpagent.mos_average = $scope.calc_rtpagent.mos_average.toFixed(2);
-            $scope.calc_rtpagent.mos_worst = $scope.calc_rtpagent.mos_worst.toFixed(2);
-            $scope.calc_rtpagent.lost_avg = ($scope.calc_rtpagent.packets_lost * 100 / $scope.calc_rtpagent.total_pk).toFixed(2);
+            this.calc_rtpagent = msg.reports.rtpagent.main;
+            this.calc_rtpagent.mos_average = this.calc_rtpagent.mos_average.toFixed(2);
+            this.calc_rtpagent.mos_worst = this.calc_rtpagent.mos_worst.toFixed(2);
+            this.calc_rtpagent.lost_avg = (this.calc_rtpagent.packets_lost * 100 / this.calc_rtpagent.total_pk).toFixed(2);
           }
-        } catch (e) {
-          console.log('no rtpagent stats');
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'no rtpagent stats', err);
         }
-
 
         // RTCP
         try {
           if (msg.reports.length != 0) {
-
             var charts = {};
             if (msg.reports.rtcp && msg.reports.rtcp.chart) {
               //$scope.showQOSChart();
@@ -884,7 +727,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
               console.log('processing rtcpxr charts');
               //$scope.chartData.concat(msg.reports.rtcpxr.chart);
               var xrcharts = msg.reports.rtcpxr.chart;
-              angular.forEach(xrcharts, function(count, key) {
+              forEach(xrcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
               });
             }
@@ -894,76 +737,71 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
               console.log('processing rtpagent charts');
               //$scope.chartData.concat(msg.reports.rtcpxr.chart);
               var agcharts = msg.reports.rtpagent.chart;
-              angular.forEach(agcharts, function(count, key) {
+              forEach(agcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
               });
             }
 
-            $scope.chartData = charts;
-            $scope.streamsChart = {};
+            this.chartData = charts;
+            this.streamsChart = {};
             var i = 0;
-            angular.forEach(charts, function(count, key) {
-              $scope.streamsChart[key] = {};
-              $scope.streamsChart[key]['enable'] = true;
-              $scope.streamsChart[key]['name'] = key;
-              $scope.streamsChart[key]['short_name'] = key.substr(key.indexOf(' ') + 1);
-              $scope.streamsChart[key]['type'] = key.substr(0, key.indexOf(' '));
-              $scope.streamsChart[key]['sub'] = {};
-              angular.forEach(count, function(v, k) {
-                $scope.streamsChart[key]['sub'][k] = {};
-                $scope.streamsChart[key]['sub'][k]['enable'] = false;
-                $scope.streamsChart[key]['sub'][k]['parent'] = key;
-                $scope.streamsChart[key]['sub'][k]['name'] = k;
-                $scope.streamsChart[key]['sub'][k]['color'] = $scope.colorsChart[i++];
-                if (k == 'mos') $scope.streamsChart[key]['sub'][k]['enable'] = true;
+            forEach(charts, (count, key) => {
+              this.streamsChart[key] = {};
+              this.streamsChart[key]['enable'] = true;
+              this.streamsChart[key]['name'] = key;
+              this.streamsChart[key]['short_name'] = key.substr(key.indexOf(' ') + 1);
+              this.streamsChart[key]['type'] = key.substr(0, key.indexOf(' '));
+              this.streamsChart[key]['sub'] = {};
+              forEach(count, (v, k) => {
+                this.streamsChart[key]['sub'][k] = {};
+                this.streamsChart[key]['sub'][k]['enable'] = false;
+                this.streamsChart[key]['sub'][k]['parent'] = key;
+                this.streamsChart[key]['sub'][k]['name'] = k;
+                this.streamsChart[key]['sub'][k]['color'] = this.colorsChart[i++];
+                if (k == 'mos') this.streamsChart[key]['sub'][k]['enable'] = true;
               });
             });
 
-            var selData = $scope.presetQOSChartData();
-            $scope.showQOSChart(selData);
-
+            var selData = this.presetQOSChartData();
+            this.showQOSChart(selData);
           }
-        } catch (e) {
-          console.log('no chart data', e);
+        } catch (err) {
+          this.$log.error(['CallDetail'], 'no chart data', err);
         }
-
         console.log('Enable RTCP Report');
-        $scope.calc_report = chartDataExtended;
-        $scope.enableRTCPReport = true;
+        this.calc_report = chartDataExtended;
+        this.enableRTCPReport = true;
       }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show qos report', err);
     });
-  };
+  }
 
-  $scope.addRemoveStreamSerie = function() {
-    var selData = $scope.presetQOSChartData();
-    $scope.showQOSChart(selData);
-  };
+  addRemoveStreamSerie() {
+    const selData = this.presetQOSChartData();
+    this.showQOSChart(selData);
+  }
 
-  $scope.presetQOSChartData = function() {
+  presetQOSChartData() {
     var seriesData = [];
-    var chartData = $scope.chartData;
-    $scope.selectedColorsChart = [];
-    angular.forEach(chartData, function(count, key) {
-
-      if ($scope.streamsChart && $scope.streamsChart[key] && $scope.streamsChart[key]['enable'] == false)
+    var chartData = this.chartData;
+    this.selectedColorsChart = [];
+    forEach(chartData, (count, key) => {
+      if (this.streamsChart && this.streamsChart[key] && this.streamsChart[key]['enable'] == false)
         return;
 
       var localData = chartData[key];
-      angular.forEach(localData, function(das, kes) {
+      forEach(localData, (das, kes) => {
         /* skip it */
-        if ($scope.streamsChart[key]['sub'][kes]['enable'] == false) return;
+        if (this.streamsChart[key]['sub'][kes]['enable'] == false) return;
 
         var sar = {};
         sar['name'] = kes;
         sar['type'] = 'line';
-        sar['color'] = $scope.streamsChart[key]['sub'][kes]['color'];
+        sar['color'] = this.streamsChart[key]['sub'][kes]['color'];
 
         var lDas = [];
-        angular.forEach(das, function(v) {
+        forEach(das, function(v) {
           lDas.push([v[0], v[1]]);
         });
 
@@ -975,12 +813,12 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
       });
     });
     return seriesData;
-  };
+  }
 
 
-  $scope.showQOSChart = function(seriesData) {
-    $scope.enableQOSChart = true;
-    $scope.chartConfig = {
+  showQOSChart(seriesData) {
+    this.enableQOSChart = true;
+    this.chartConfig = {
       chart: {
         type: 'line'
       },
@@ -1011,38 +849,33 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         borderWidth: 0
       },
       series: seriesData,
-      func: function(chart) {
-        $scope.$evalAsync(function() {
+      func: (chart) => {
+        this.$evalAsync(function() {
           chart.reflow();
         });
       }
     };
 
-    $scope.chartConfig.chart['zoomType'] = 'x';
-    $scope.chartConfig.tooltip['crosshairs'] = false; // BETA CHANGE
-    $scope.chartConfig.tooltip['shared'] = false; // BETA CHANGE
-  };
+    this.chartConfig.chart['zoomType'] = 'x';
+    this.chartConfig.tooltip['crosshairs'] = false; // BETA CHANGE
+    this.chartConfig.tooltip['shared'] = false; // BETA CHANGE
+  }
 
-  $scope.refreshGrid = function() {
-    console.log('refresh grid');
-  };
-
-
-  self.showLogReport = function(rdata) {
-    SearchService.searchLogReport(rdata).then(function(msg) {
+  showLogReport(rdata) {
+    this.SearchService.searchLogReport(rdata).then((msg) => {
       if (msg.length > 0) {
-        $scope.enableLogReport = true;
-        msg.forEach(function(entry) {
+        this.enableLogReport = true;
+        msg.forEach((entry) => {
           if (entry.data) {
             try {
               entry.data = JSON.parse(entry.data);
             } catch (err) {
-              $log.error(err);
+              this.$log.error(['CallDetail'], err);
             }
             /* DTMF Parser */
             if (entry.data.DTMF) {
               entry.dtmf = {};
-              $scope.enableDTMFReport = true;
+              this.enableDTMFReport = true;
               try {
                 entry.data.DTMF.split(';').forEach(function(item, i) {
                   if (!item || item == '') return;
@@ -1054,68 +887,59 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
                   });
                 });
               } catch (err) {
-                $log.error(err);
-                $scope.enableDTMFReport = false;
+                this.$log.error(['CallDetail'], err);
+                this.enableDTMFReport = false;
               }
             }
           }
           console.log('PARSED LOG!', entry);
         });
-        $scope.logreport = msg;
+        this.logreport = msg;
       }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show log report', err);
     });
-  };
+  }
 
-  self.showRecordingReport = function(rdata) {
-    SearchService.searchRecordingReport(rdata).then(function(msg) {
+  showRecordingReport(rdata) {
+    this.SearchService.searchRecordingReport(rdata).then((msg) => {
       if (msg.length > 0) {
-        $scope.enableRecordingReport = true;
-
-        $scope.rowRecordingCollection = msg;
-        $scope.displayedRecordingCollection = [].concat($scope.rowRecordingCollection);
+        this.enableRecordingReport = true;
+        this.rowRecordingCollection = msg;
+        this.displayedRecordingCollection = [].concat(this.rowRecordingCollection);
       }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show recording report', err);
     });
-  };
+  }
 
-  $scope.showRemoteLogReport = function(rdata) {
-    SearchService.searchRemoteLog(rdata).then(function(msg) {
-      $scope.enableRemoteLogReport = true;
-      if (msg && msg.hits && msg.hits.hits) $scope.remotelogreport = msg.hits.hits;
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
+  showRemoteLogReport(rdata) {
+    this.SearchService.searchRemoteLog(rdata).then((msg) => {
+      this.enableRemoteLogReport = true;
+      if (msg && msg.hits && msg.hits.hits) this.remotelogreport = msg.hits.hits;
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show remote log report', err);
     });
-  };
+  }
 
-  $scope.showRtcReport = function(rdata) {
-    SearchService.searchRtcReport(rdata).then(function(msg) {
+  showRtcReport(rdata) {
+    this.SearchService.searchRtcReport(rdata).then((msg) => {
       if (msg && msg.length > 0) {
-        $scope.enableRtcReport = true;
-        $scope.rtcreport = msg;
+        this.enableRtcReport = true;
+        this.rtcreport = msg;
       }
-    }).catch(function(error) {
-      $log.error('[CallDetail]', error);
-    }).finally(function() {
-      $scope.dataLoading = false;
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show rtc report', err);
     });
-  };
+  }
 
-  $scope.setRtcpMembers = function() {
-    $scope.rtcpMembers = [];
+  setRtcpMembers() {
+    this.rtcpMembers = [];
     var tmp = {};
-    $scope.rtcpreport.forEach(function(rtcpData) {
+    this.rtcpreport.forEach((rtcpData) => {
       var currentName = rtcpData.source_ip + ' -> ' + rtcpData.destination_ip;
       if (tmp[currentName] == undefined) {
-        $scope.rtcpMembers.push({
+        this.rtcpMembers.push({
           name: currentName,
           isShowJitter: true,
           isShowPacketLost: true,
@@ -1124,17 +948,7 @@ var CallDetail = function($scope, $compile, $log, SearchService, $homerModal, $h
         tmp[currentName] = currentName;
       }
     });
-    console.log('$scope.rtcpMembers: ', $scope.rtcpMembers);
-  };
-
-  $timeout(function() {
-    if ($homerModal.getOpenedModals().indexOf('tempModal') !== -1) {
-      $homerModal.close('tempModal', 'var a', 'var b');
-    }
-  }, 5000);
-
-  $scope.treedata2 = treeData;
-
-};
+  }
+}
 
 export default CallDetail;

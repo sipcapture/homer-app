@@ -13,13 +13,18 @@ module.exports = {
       'eslint:recommended',
       'google',
     ],
+    'new-cap': [
+      'error', {
+        'capIsNew': false,
+      }
+    ],
     'require-jsdoc': ['error', {
       'require': {
         'FunctionDeclaration': false,
         'MethodDefinition': false,
         'ClassDeclaration': false,
         'ArrowFunctionExpression': false,
-        'FunctionExpression': false
+        'FunctionExpression': false,
       }
     }],
     'keyword-spacing': ['error'],

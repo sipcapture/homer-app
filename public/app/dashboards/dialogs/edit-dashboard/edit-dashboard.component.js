@@ -6,8 +6,8 @@ const editDashboard = {
   template,
   bindings: {
     modalInstance: '<',
-    resolve: '<'
-  }
+    resolve: '<',
+  },
 };
 
 export default editDashboard;

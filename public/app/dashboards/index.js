@@ -8,5 +8,5 @@ export default angular.module('hepicApp.dashboards', [
   Providers.name,
   Services.name,
   Dialogs.name,
-  MainDashboard.name
+  MainDashboard.name,
 ]);

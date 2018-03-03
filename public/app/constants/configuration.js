@@ -11,12 +11,12 @@ const CONFIGURATION = {
     columns: 5,
     pushing: true,
     draggable: {
-      handle: '.box-header'
-    }
+      handle: '.box-header',
+    },
   },
   FOOTER: {
-    URL: 'https://www.sipcapture.org'
-  }
+    URL: 'https://www.sipcapture.org',
+  },
 };
 
 CONFIGURATION.TITLE = 'HEPIC ' + CONFIGURATION.HEPIC_VERSION;

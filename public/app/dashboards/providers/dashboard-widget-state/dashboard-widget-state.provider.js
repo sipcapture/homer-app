@@ -12,7 +12,7 @@ const DashboardWidgetState = function() {
      */
     $get: function() {
       return {
-        widgets
+        widgets,
       };
     },
 
@@ -28,7 +28,7 @@ const DashboardWidgetState = function() {
         widgets[category] = {};
       }
       widgets[category][name] = data;
-    }
+    },
   };
 };
 

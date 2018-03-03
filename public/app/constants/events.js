@@ -30,7 +30,7 @@ const EVENTS = {
   SHOW_USER_MESSAGES: 'showUserMessages',
   SHOW_NEW_MESSAGE: 'showNewMessage',
   WEBSOCKET_OPEN: 'websocketOpen',
-  WEBSOCKET_COMMAND: 'websocket:command'
+  WEBSOCKET_COMMAND: 'websocket:command',
 };
 
 export default EVENTS;

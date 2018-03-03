@@ -1,7 +1,6 @@
 import angular from 'angular';
 
 class AddDashboard {
-
   constructor($log, $scope, FileUploader) {
     'ngInject';
     this.FileUploader = FileUploader;
@@ -12,35 +11,35 @@ class AddDashboard {
   $onInit() {
     this.dashboard = {
       name: '',
-      type: 'custom'
+      type: 'custom',
     };
 
     this.type_result = [{
       value: 'custom',
-      name: 'Custom'
+      name: 'Custom',
     }, {
       value: 'frame',
-      name: 'Frame'
+      name: 'Frame',
     }, {
       value: 'home',
-      name: 'HOME'
+      name: 'HOME',
     }, {
       value: 'search',
-      name: 'SEARCH'
+      name: 'SEARCH',
     }, {
       value: 'alarm',
-      name: 'ALARM'
+      name: 'ALARM',
     }];
 
     this.uploader = new this.FileUploader({
-      url: 'api/v1/dashboard/upload'
+      url: 'api/v1/dashboard/upload',
     });
 
     this.uploader.filters.push({
       name: 'customFilter',
       fn: function() {
         return this.queue.length < 1;
-      }
+      },
     });
 
     this.uploader.onCompleteAll = function() {
@@ -71,7 +70,6 @@ class AddDashboard {
       }
     }
   }
-
 }
 
 export default AddDashboard;

@@ -2,8 +2,8 @@ import angular from 'angular';
 import {findIndex, cloneDeep} from 'lodash';
 
 class MainDashboard {
-  
-  constructor($stateParams, $rootScope, $log, EVENTS, SweetAlert, $state, $uibModal, CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
+  constructor($stateParams, $rootScope, $log, EVENTS, SweetAlert, $state, $uibModal,
+    CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
     'ngInject';
     this.$stateParams = $stateParams;
     this.$rootScope = $rootScope;
@@ -44,12 +44,12 @@ class MainDashboard {
   }
 
   deleteWidget(uuid) {
-    const index = findIndex(this.dashboard.widgets, w => w.uuid === uuid);
+    const index = findIndex(this.dashboard.widgets, (w) => w.uuid === uuid);
     this.dashboard.widgets.splice(index, 1);
   }
 
   updateWidget(uuid, widget) {
-    const index = findIndex(this.dashboard.widgets, w => w.uuid === uuid);
+    const index = findIndex(this.dashboard.widgets, (w) => w.uuid === uuid);
     this.dashboard.widgets[index] = widget;
   }
 
@@ -59,8 +59,8 @@ class MainDashboard {
       resolve: {
         widgets: () => {
           return cloneDeep(this.registeredWidgets);
-        }
-      }
+        },
+      },
     }).result.then((widget) => {
       this.dashboard.widgets.push(widget);
     }).catch((reason) => {
@@ -81,7 +81,7 @@ class MainDashboard {
       confirmButtonColor: '#DD6B55',
       confirmButtonText: 'Yes, delete it!',
       closeOnConfirm: true,
-      closeOnCancel: true
+      closeOnCancel: true,
     }, (confirm) => {
       if (this.dashboard.alias === 'home') {
         this.$log.warn('Dashboard "Home" cannot be deleted.');
@@ -109,8 +109,8 @@ class MainDashboard {
       resolve: {
         dashboard: () => {
           return cloneDeep(this.dashboard);
-        }
-      }
+        },
+      },
     }).result.then((dashboard) => {
       this.gridsterOptions = dashboard.config;
       this.dashboard = dashboard;
@@ -119,7 +119,7 @@ class MainDashboard {
       const update = {
         name: this.dashboard.name,
         shared: this.dashboard.shared ? 1 : 0,
-        param: this.dashboard.param || ''
+        param: this.dashboard.param || '',
       };
 
       return this.DashboardStorage.update(dashboard.id, update).then(() => {
@@ -131,7 +131,6 @@ class MainDashboard {
       }
     });
   }
-
 }
 
 export default MainDashboard;

@@ -48,7 +48,7 @@ import Widgets from './widgets';
 import Search from './search';
 
 // register modules and components
-var app = angular.module('hepicApp', [
+const app = angular.module('hepicApp', [
   'ui.router',
   'ui.bootstrap',
   'gridster',
@@ -93,7 +93,7 @@ var app = angular.module('hepicApp', [
   Login.name,
   Dashboards.name,
   Search.name,
-  Widgets.name
+  Widgets.name,
 ]);
 
 export default app;

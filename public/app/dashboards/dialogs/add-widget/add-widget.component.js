@@ -6,8 +6,8 @@ const addWidget = {
   template,
   bindings: {
     modalInstance: '<',
-    resolve: '<'
-  }
+    resolve: '<',
+  },
 };
 
 export default addWidget;

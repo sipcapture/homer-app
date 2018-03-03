@@ -1,59 +1,59 @@
 const ROUTER = {
   ROOT_STATE: {
-    NAME: 'hepic'
+    NAME: 'hepic',
   },
   DASHBOARD: {
     NAME: 'hepic.dashboard',
     PATH: '/dashboard/:boardID',
     DESCRIPTION: 'dashboard',
-    SECURE: true
+    SECURE: true,
   },
   DASHFRAME: {
     NAME: 'hepic.dashframe',
     PATH: '/dashframe/:boardID',
     DESCRIPTION: 'dashframe',
-    SECURE: true
+    SECURE: true,
   },
   HOME: {
     NAME: 'home',
     PATH: '/dashboard/home',
     DESCRIPTION: 'home',
-    SECURE: true
+    SECURE: true,
   },
   LOGIN: {
     NAME: 'login',
     PATH: '/login',
     DESCRIPTION: 'login',
-    SECURE: false
+    SECURE: false,
   },
   SEARCH: {
     NAME: 'hepic.search',
     PATH: '/search/:protoID',
     DESCRIPTION: 'search',
-    SECURE: true
+    SECURE: true,
   },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',
     DESCRIPTION: 'index',
-    SECURE: true
+    SECURE: true,
   },
   SETTINGSPROFILE: {
     NAME: 'hepic.settings.profile',
     PATH: '/profile/:paramID',
     DESCRIPTION: 'settings/profile',
     TYPE: 'Profile',
-    SECURE: true
+    SECURE: true,
   },
   SETTINGSADMIN: {
     NAME: 'hepic.settings.admin',
     PATH: '/admin/:paramID',
     DESCRIPTION: 'settings/admin',
     TYPE: 'Admin',
-    SECURE: true
+    SECURE: true,
   },
 
-  USER_LOGGED_OUT: 'auth:user:loggedOut'
+  USER_LOGGED_OUT: 'auth:user:loggedOut',
 };
 
 export default ROUTER;

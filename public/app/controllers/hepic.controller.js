@@ -1,5 +1,4 @@
 class HepicController {
-
   constructor() {
     'ngInject';
   }

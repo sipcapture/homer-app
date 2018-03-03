@@ -5,10 +5,10 @@ const quicksearchWidget = {
   bindings: {
     widget: '<',
     onDelete: '&',
-    onUpdate: '&'
+    onUpdate: '&',
   },
   controller,
-  template
+  template,
 };
 
 export default quicksearchWidget;

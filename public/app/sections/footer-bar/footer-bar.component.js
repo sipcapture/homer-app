@@ -3,7 +3,7 @@ import controller from './controllers/footer-bar.controller';
 
 const footerBar = {
   controller,
-  template
+  template,
 };
 
 export default footerBar;

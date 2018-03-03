@@ -1,20 +1,19 @@
 /* global angular, window, Blob */
 import Promise from 'bluebird';
-import { cloneDeep, has } from 'lodash';
+import {cloneDeep, has} from 'lodash';
 import fileSaver from 'file-saver';
 
-import data_fields from '../data/fields';
-import data_indexes from '../data/indexes';
-import data_type_transaction from '../data/type_transaction';
-import data_type_mono_status from '../data/type_mono_status';
-import data_type_result from '../data/type_result';
-import data_method_list from '../data/method_list';
-import data_type_method from '../data/type_method';
-import data_type_call_status from '../data/type_call_status';
-import data_db_node from '../data/db_node';
+import dataFields from '../data/fields';
+import dataIndexes from '../data/indexes';
+import dataTypeTransaction from '../data/type_transaction';
+import dataTypeMonoStatus from '../data/type_mono_status';
+import dataTypeResult from '../data/type_result';
+import dataMethodList from '../data/method_list';
+import dataTypeMethod from '../data/type_method';
+import dataTypeCallStatus from '../data/type_call_status';
+import dataDbNode from '../data/db_node';
 
 class QuicksearchWidget {
-
   constructor($scope, $state, UserProfile, $log, SearchService, $uibModal, CONFIGURATION, ModalHelper, ROUTER) {
     'ngInject';
     this.$scope = $scope;
@@ -32,27 +31,27 @@ class QuicksearchWidget {
     this._widget = cloneDeep(this.widget);
     this._widget.config = this._widget.config || {};
     this._widget.config.title = this._widget.config.title || 'QuickSearch';
-    this._widget.fields = this._widget.fields || data_fields;
+    this._widget.fields = this._widget.fields || dataFields;
 
     // To-do: check if all the vars below are needed
-    this.indexes = data_indexes.indexes;
+    this.indexes = dataIndexes.indexes;
 
     if (this.CONFIGURATION.USER_EXT_CR) {
-      this.indexes = angular.extend(this.indexes, data_indexes.user_ext_cr_indexes);
+      this.indexes = angular.extend(this.indexes, dataIndexes.user_ext_cr_indexes);
     }
             
-    this.type_transaction = data_type_transaction;
-    this.type_mono_status = data_type_mono_status;
-    this.type_result = data_type_result;
-    this.method_list = data_method_list;
+    this.type_transaction = dataTypeTransaction;
+    this.type_mono_status = dataTypeMonoStatus;
+    this.type_result = dataTypeResult;
+    this.method_list = dataMethodList;
     this.db_node_selected = [];
 
     this.SearchService.loadNode().then((data) => {
-      this.db_node = data.length ? data : data_db_node;
+      this.db_node = data.length ? data : dataDbNode;
     }).then(() => {
       this.type_method_selected = [];
-      this.type_method = data_type_method;
-      this.type_call_status = data_type_call_status;
+      this.type_method = dataTypeMethod;
+      this.type_call_status = dataTypeCallStatus;
 
       if (this.UserProfile.profileScope.search && this.UserProfile.profileScope.search instanceof Array) {
         this.UserProfile.profileScope.search={};
@@ -60,9 +59,9 @@ class QuicksearchWidget {
       this.newObject = this.UserProfile.profileScope.search;
       this.newResult = this.UserProfile.profileScope.result;
       this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
-      this.newResult.restype =  this.type_result[0];
+      this.newResult.restype = this.type_result[0];
       this.newNode = this.UserProfile.profileScope.node;
-      this.newNode.node =  this.db_node[0];
+      this.newNode.node = this.db_node[0];
       this.timerange = this.UserProfile.profileScope.timerange;
       // END To-do
     }).catch((error) => {
@@ -71,11 +70,11 @@ class QuicksearchWidget {
   }
 
   delete() {
-    this.onDelete({ uuid: this._widget.uuid });
+    this.onDelete({uuid: this._widget.uuid});
   }
 
   update(widget) {
-    this.onUpdate({ uuid: widget.uuid, widget });
+    this.onUpdate({uuid: widget.uuid, widget});
   }
 
   openSettings() {
@@ -84,8 +83,8 @@ class QuicksearchWidget {
       resolve: {
         widget: () => {
           return this._widget;
-        }
-      }
+        },
+      },
     }).result.then((widget) => {
       this.update(widget);
     }).catch((error) => {
@@ -94,17 +93,6 @@ class QuicksearchWidget {
       }
     });
   }
-
-  ///* update if timerange will be changed */
-  //(function () {
-  //  $scope.$watch(function () {
-  //    return UserProfile.profileScope.search; // to-do: refactor this according to new user scope mechanism
-  //  }, function (newVal, oldVal) {
-  //    if ( newVal !== oldVal ) {
-  //      self.newObject = newVal;
-  //    }
-  //  });
-  //}());
 
   // process the form
   processSearchForm() {
@@ -136,7 +124,7 @@ class QuicksearchWidget {
       let protoID = 'call';
       if (has(this.newResult, 'transaction.name')) {
         if (this.newResult.transaction.name === 'registration') {
-          protoID = 'registration'; //To-do: find out what is it
+          protoID = 'registration'; // to-do: find out what is it
         }
       }
       this.searchForProtocol(protoID);
@@ -144,7 +132,7 @@ class QuicksearchWidget {
   }
 
   searchForProtocol(protoID) {
-    this.$state.go(this.ROUTER.SEARCH.NAME, { protoID });
+    this.$state.go(this.ROUTER.SEARCH.NAME, {protoID});
   }
 
   clearSearchForm() {
@@ -154,8 +142,7 @@ class QuicksearchWidget {
 
   processSearchResult(type) {
     /* save data for next search */
-    let data = {param:{}, timestamp:{}};
-
+    let data = {param: {}, timestamp: {}};
     let transaction = this.UserProfile.getProfile('transaction');
     let limit = this.UserProfile.getProfile('limit');
     let timedate = this.UserProfile.getProfile('timerange');
@@ -181,22 +168,22 @@ class QuicksearchWidget {
       this.isBusy = false;
 
       let filename;
-      let content_type;
+      let contentType;
       let error;
 
       // To-do: refactor the condition logic below, current one is confusing
       if (type == 0) {
         filename = 'HEPIC_'+ts+'.pcap';
-        content_type = 'application/pcap';
+        contentType = 'application/pcap';
       } else if (type == 1) {
         filename = 'HEPIC_'+ts+'.txt';
-        content_type = 'attachment/text;charset=utf-8';
+        contentType = 'attachment/text;charset=utf-8';
       } else if (type == 2) {
         if (msg.data && msg.data.hasOwnProperty('url')) {
           window.sweetAlert({
             title: 'Export Done!',
             text: `Your PCAP can be accessed <a target='_blank' href='${msg.data.url}'>here</a>`,
-            html: true
+            html: true,
           });
         } else {
           error = 'Please check your settings';
@@ -207,7 +194,7 @@ class QuicksearchWidget {
             title: 'Error',
             type: 'error',
             text: `Your PCAP couldn't be uploaded!<BR>${error}`,
-            html: true
+            html: true,
           });
         }
         return;
@@ -216,7 +203,7 @@ class QuicksearchWidget {
           window.sweetAlert({
             title: 'Count done!',
             text: `We found: [${msg.data.cnt}] records`,
-            html: true
+            html: true,
           });
         } else {
           error = 'Please check your settings';
@@ -224,13 +211,13 @@ class QuicksearchWidget {
             title: 'Error',
             type: 'error',
             text: 'Count could not be provided!<BR>',
-            html: true
+            html: true,
           });
         }
         return;
       }
       // END To-do
-      var blob = new Blob([msg], {type: content_type}); // to-do: define Blob lib
+      const blob = new Blob([msg], {type: contentType}); // to-do: define Blob lib
       fileSaver.saveAs(blob, filename);
     }).catch((error) => {
       this.$log.error('[QuicksearchWidget]', '[make pcap text data]', error);
@@ -261,7 +248,7 @@ class QuicksearchWidget {
 
   filterStringList(userInput) {
     return new Promise((resolve) => {
-      const filtered = this.method_list.filter(method => !method.toLowerCase().indexOf(userInput.toLowerCase()));
+      const filtered = this.method_list.filter((method) => !method.toLowerCase().indexOf(userInput.toLowerCase()));
       this.newObject.method = userInput;
       resolve(filtered);
     });
@@ -270,7 +257,6 @@ class QuicksearchWidget {
   itemMethodSelected(item) {
     this.$log.debug('Handle item string selected in controller:', item);
   }
-
 }
 
 export default QuicksearchWidget;

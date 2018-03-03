@@ -7,7 +7,6 @@ import '../style/clock-widget.css';
 import timezones from '../data/timezones';
 
 class ClockWidget {
-
   constructor($log, $uibModal, ModalHelper) {
     'ngInject';
     this.$log = $log;
@@ -43,8 +42,8 @@ class ClockWidget {
         },
         timezones: () => {
           return cloneDeep(this.timezones);
-        }
-      }
+        },
+      },
     }).result.then((widget) => {
       this.update(widget);
     }).catch((error) => {
@@ -53,7 +52,6 @@ class ClockWidget {
       }
     });
   }
-
 }
 
 export default ClockWidget;

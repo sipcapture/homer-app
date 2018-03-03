@@ -1,6 +1,5 @@
 /* global window, Event */
 class EventBus {
-
   constructor($rootScope) {
     this.$rootScope = $rootScope;
   }

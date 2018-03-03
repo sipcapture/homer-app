@@ -1,7 +1,6 @@
 import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
-
   constructor($log, AuthenticationService) {
     'ngInject';
     this.$log = $log;
@@ -19,7 +18,6 @@ class HeaderNavbar {
       this.$log.error('[HeaderNavbar]', '[init menu]', error);
     });
   }
-  
 }
 
 export default HeaderNavbar;

@@ -4,10 +4,10 @@ import controller from './controllers/clock-widget-settings.controller';
 const clockWidgetSettings = {
   bindings: {
     modalInstance: '<',
-    resolve: '<'
+    resolve: '<',
   },
   controller,
-  template
+  template,
 };
 
 export default clockWidgetSettings;

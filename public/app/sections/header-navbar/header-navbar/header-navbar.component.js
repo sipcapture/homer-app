@@ -3,7 +3,7 @@ import controller from './controllers/header-navbar.controller';
 
 const headerNavbar = {
   controller,
-  template
+  template,
 };
 
 export default headerNavbar;

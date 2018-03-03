@@ -6,5 +6,5 @@ import MainContent from './main-content';
 export default angular.module('hepicApp.sections', [
   FooterBar.name,
   HeaderNavbar.name,
-  MainContent.name
+  MainContent.name,
 ]);

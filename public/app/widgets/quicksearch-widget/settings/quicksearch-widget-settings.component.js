@@ -4,10 +4,10 @@ import controller from './controllers/quicksearch-widget-settings.controller';
 const quicksearchWidgetSettings = {
   bindings: {
     resolve: '<',
-    modalInstance: '<'
+    modalInstance: '<',
   },
   controller,
-  template
+  template,
 };
 
 export default quicksearchWidgetSettings;

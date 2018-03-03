@@ -2,7 +2,6 @@ import {forEach, pick} from 'lodash';
 import Promise from 'bluebird';
 
 class UserProfile {
-
   constructor($http, API, TimeMachine) {
     this.$http = $http;
     this.API = API;
@@ -15,7 +14,7 @@ class UserProfile {
       prototype: {},
       result: {},
       node: {},
-      limit: 200
+      limit: 200,
     };
     this.loadedProfile = false;
     this.factory = {};
@@ -28,7 +27,7 @@ class UserProfile {
       'limit',
       'timerange',
       'timezone',
-      'search'
+      'search',
     ]);
   }
 
@@ -67,16 +66,16 @@ class UserProfile {
   }
          
   getAllRemoteProfile() {
-    return this.$http.get(this.API.PROFILE.STORE, { handleStatus: [ 403, 503 ] }).then((response) => {
+    return this.$http.get(this.API.PROFILE.STORE, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data, (value, key) => {
         if (key === 'timerange') {
           value.from = new Date(value.from);
           value.to = new Date(value.to);
           this.TimeMachine.setTimerange(value);
-          //this.profileScope.timerange = jsonObj; // to-do: it is reference to the old code, delete it during the final review
+          // this.profileScope.timerange = jsonObj; // to-do: it is reference to the old code, delete it during the final review
         } else if (key === 'timezone') {
           this.TimeMachine.setTimezone(value);
-          //this.profileScope.timezone = jsonObj; // to-do: it is reference to the old code, delete it during the final review
+          // this.profileScope.timezone = jsonObj; // to-do: it is reference to the old code, delete it during the final review
         }
 
         this.setLocalProfile(key, value);
@@ -88,35 +87,35 @@ class UserProfile {
   }
           
   getRemoteProfile(id) {
-    return this.$http.get(this.API.PROFILE.STORE+'/' + id, {handleStatus:[403,503]}).then(function(response) {
+    return this.$http.get(this.API.PROFILE.STORE+'/' + id, {handleStatus: [403, 503]}).then(function(response) {
       return response.data;
     });
   }
           
   setRemoteProfile(id, sdata) {
-    var url = this.API.PROFILE.STORE;
+    let url = this.API.PROFILE.STORE;
     if (id != null) {
       url = this.API.PROFILE.STORE+'/'+id;
     }
-    var data = {
+    const data = {
       id,
-      param: sdata
+      param: sdata,
     };
     console.log('data', data);
     
-    return this.$http.post(url, data, {handleStatus:[403,503]}).then(function (results) {
+    return this.$http.post(url, data, {handleStatus: [403, 503]}).then(function(results) {
       return results.data;
     });
   }
           
   deleteRemoteProfile(id) {
-    return this.$http.delete(this.API.PROFILE.STORE+'/'+id, {handleStatus:[403,503]}).then(function (results) {
+    return this.$http.delete(this.API.PROFILE.STORE+'/'+id, {handleStatus: [403, 503]}).then(function(results) {
       return results.data;
     });
   }
          
   deleteAllRemoteProfile() {
-    return this.$http.delete(this.API.PROFILE.STORE+'/', {handleStatus:[403,503]}).then(function (results) {
+    return this.$http.delete(this.API.PROFILE.STORE+'/', {handleStatus: [403, 503]}).then(function(results) {
       return results.data;
     });
   }
@@ -128,13 +127,11 @@ class UserProfile {
     return this.getAllRemoteProfile();
   }
       
-      
   resetDashboards() {
     console.log('do reset dashboard');
   }
                   
-  /********************** SERVER PROFILE *****************/
-                  
+  // SERVER PROFILE *****************/
   getServerProfile(key) {
     return this.getLocalServerProfile(key);
   }
@@ -149,20 +146,14 @@ class UserProfile {
   
 
   getAllServerRemoteProfile() {
-    return this.$http.get(this.API.ADMIN.PROFILES, {handleStatus:[403,503]}).then((response) => {
+    return this.$http.get(this.API.ADMIN.PROFILES, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data, (value, key) => {
-        var jsonObj = JSON.parse(value);
+        const jsonObj = JSON.parse(value);
         this.setLocalServerProfile(key, jsonObj);
         return 'yes';
       });
     });
   }
-  
-  //getRemoteProfile(id) { // to-do: find out why duplicate method is here
-  //  return this.$http.get(this.API.ADMIN.PROFILES+'/' + id, {handleStatus:[403,503]}).then((response) => {
-  //    return response.data;
-  //  });
-  //}
 }
 
 export default UserProfile;

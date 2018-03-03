@@ -5,10 +5,10 @@ const clockWidget = {
   bindings: {
     widget: '<',
     onDelete: '&',
-    onUpdate: '&'
+    onUpdate: '&',
   },
   controller,
-  template
+  template,
 };
 
 export default clockWidget;

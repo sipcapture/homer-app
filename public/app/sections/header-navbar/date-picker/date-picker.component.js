@@ -3,7 +3,7 @@ import controller from './controllers/date-picker.controller';
 
 const datePicker = {
   controller,
-  template
+  template,
 };
 
 export default datePicker;

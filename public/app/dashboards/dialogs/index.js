@@ -7,5 +7,5 @@ import AddWidget from './add-widget';
 export default angular.module('hepicApp.dashboard.dialogs', [
   AddDashboard.name,
   EditDashboard.name,
-  AddWidget.name
+  AddWidget.name,
 ]);

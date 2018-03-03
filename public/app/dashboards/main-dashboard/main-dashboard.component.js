@@ -3,7 +3,7 @@ import controller from './controllers/main-dashboard.controller';
 
 const mainDashboard = {
   controller,
-  template
+  template,
 };
 
 export default mainDashboard;

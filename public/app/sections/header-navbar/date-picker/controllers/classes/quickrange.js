@@ -1,11 +1,10 @@
-import data_quickrange_options from '../../data/quickrange_options';
+import dataQuickrangeOptions from '../../data/quickrange_options';
 
 class QuickRange {
-
   constructor() {
     this.options = {
-      left: data_quickrange_options.slice(0, data_quickrange_options.length/2),
-      right: data_quickrange_options.slice(data_quickrange_options.length/2, data_quickrange_options.length)
+      left: dataQuickrangeOptions.slice(0, dataQuickrangeOptions.length/2),
+      right: dataQuickrangeOptions.slice(dataQuickrangeOptions.length/2, dataQuickrangeOptions.length),
     };
   }
 
@@ -29,7 +28,7 @@ class QuickRange {
     return {
       from: bdt,
       to: sdt,
-      custom: text
+      custom: text,
     };
   }
 
@@ -39,7 +38,7 @@ class QuickRange {
     return {
       from: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
       to: dt,
-      custom: text
+      custom: text,
     };
   }
 
@@ -49,7 +48,7 @@ class QuickRange {
     return {
       from: dt,
       to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
-      custom: text
+      custom: text,
     };
   }
 }

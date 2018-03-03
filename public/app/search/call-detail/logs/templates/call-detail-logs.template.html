@@ -1,0 +1,16 @@
+<!-- INCLUDE: LOGS TAB -->
+		<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert"> <!--to-do: Why is it identical to graph? -->
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="/img/Close.svg" alt=""></button>
+				  <strong>Oops!</strong> No Logs available for this session
+		</div>
+		<div id="log-root" ng-if="enableLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+					<section class="json-tree-out" ng-repeat="log in logreport | filter: matchJSON">
+						<span style="font-size:12px;">{{ log.type || ( ip_alias[log.source_ip] || log.source_ip ) }}</span>
+						<json-tree object="log.data" start-expanded="true"></json-tree>
+					</section>
+					<section class="json-tree-out" ng-repeat="log in LiveLogs | filter: matchJSON">
+						<span style="font-size:12px;">{{ log.type || ( ip_alias[log.source_ip] || log.source_ip ) }}</span>
+						<json-tree object="log.data" start-expanded="true"></json-tree>
+					</section>
+
+		</div>				

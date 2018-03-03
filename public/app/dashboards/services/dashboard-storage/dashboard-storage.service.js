@@ -1,5 +1,4 @@
 class DashboardStorage {
-
   constructor($http, $rootScope, API) {
     this.$http = $http;
     this.$rootScope = $rootScope;
@@ -7,7 +6,7 @@ class DashboardStorage {
   }
 
   get(id) {
-    return this.$http.get(this.API.DASHBOARD.STORE+'/'+id).then(function(response){
+    return this.$http.get(this.API.DASHBOARD.STORE+'/'+id).then(function(response) {
       return response ? response.data || [] : [];
     });
   }
@@ -19,7 +18,7 @@ class DashboardStorage {
   }
 
   delete(id) {
-    return this.$http.delete(this.API.DASHBOARD.STORE+'/'+id).then(function(response){
+    return this.$http.delete(this.API.DASHBOARD.STORE+'/'+id).then(function(response) {
       return response;
     });
   }

@@ -1,0 +1,3 @@
+<div ng-style="row.isSelected && {} || grid.appScope.$ctrl.getBkgColorTable(row.entity.callid)">
+  <div ng-dblclick="grid.appScope.$ctrl.showTransaction(row, $event)"  ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>
+</div>

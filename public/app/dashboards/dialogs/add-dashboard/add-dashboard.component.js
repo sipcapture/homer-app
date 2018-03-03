@@ -5,8 +5,8 @@ const addDashboard = {
   controller,
   template,
   bindings: {
-    modalInstance: '<'
-  }
+    modalInstance: '<',
+  },
 };
 
 export default addDashboard;

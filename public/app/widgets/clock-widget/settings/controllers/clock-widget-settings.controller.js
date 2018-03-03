@@ -2,7 +2,6 @@ import {assign} from 'lodash';
 import '../style/clock-widget.settings.css';
 
 class ClockWidgetSettings {
-
   constructor() {
     'ngInject';
   }
@@ -15,8 +14,8 @@ class ClockWidgetSettings {
     this.form = {
       title: this.widget.title,
       config: {
-        location: this.widget.config.location
-      }
+        location: this.widget.config.location,
+      },
     };
   }
 

@@ -1,0 +1,38 @@
+<!-- INCLUDE: DTMF TAB -->
+<div id="no-reports" ng-hide="$ctrl.enable" class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="/img/Close.svg" alt=""></button>
+  <strong>Oops!</strong> No DTMF available for this session
+</div>
+<div id="log-root" ng-if="$ctrl.enable" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">
+  <div ng-repeat="log in $ctrl.logreport" style="margin-left:15px;width: 98%;">
+    <div ng-hide="!log.dtmf" style="margin-bottom:10px;padding: 10px;" class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-body header-action-area" 
+          style="width:100%;padding-bottom:18px !important;padding-top:18px !important;border-top:0px;">
+          <div class="row" style="font-size:9px;">
+            <div class="col-xs-1"><span class="align-left" style="font-size:9px">call party</span></div>
+            <div class="col-xs-1"><span class="align-left" style="font-size:9px">report</span></div>
+            <div class="col-xs-2"><span class="align-left" style="font-size:9px">codec</span></div>
+            <div class="col-xs-2"><span class="align-left" style="font-size:9px">payload</span></div>
+            <div class="col-xs-5"><span class="align-left" style="font-size:9px">source ip:port</span></div>
+          </div>
+          <div class="row" style="font-size:15px;">
+            <div class="col-xs-1">{{ log.data.PARTY }}</div>
+            <div class="col-xs-1">{{ log.data.TYPE }} </div>
+            <div class="col-xs-2">{{ log.data.CODEC_NAME }}</div>
+            <div class="col-xs-2">{{ log.data.CODEC_PT }}</div>
+            <div class="col-xs-5">{{ log.data.SRC_IP }}:{{ log.data.SRC_PORT }} </div>
+          </div>
+        </div>
+      </div>
+      <span ng-hide="!log.dtmf" ng-repeat="set in log.dtmf" style="margin:5px;">
+      <button ng-if="set.e < 10" class="btn btn-success ng-binding" style="width: {{set.d/20}}px;" title="{{ set.d}}/{{set.v}}" data-toggle="tooltip">
+      {{ set.e }}</button>
+      <button ng-if="set.e == 11" class="btn btn-success ng-binding" style="width: {{set.d/20}}px;" title="{{ set.d}}/{{set.v}}" data-toggle="tooltip">
+      *</button>
+      <button ng-if="set.e == 10" class="btn btn-success ng-binding" style="width: {{set.d/20}}px;" title="{{ set.d}}/{{set.v}}" data-toggle="tooltip">
+      #</button>
+      </span>
+    </div>
+  </div>
+</div>

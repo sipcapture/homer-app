@@ -4,5 +4,5 @@ import Quicksearch from './quicksearch-widget';
 
 export default angular.module('hepicApp.widgets', [
   Clock.name,
-  Quicksearch.name
+  Quicksearch.name,
 ]);

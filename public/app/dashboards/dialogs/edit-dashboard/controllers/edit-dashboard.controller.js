@@ -1,7 +1,6 @@
 import {includes} from 'lodash';
 
 class EditDashboard {
-
   constructor() {}
 
   $onInit() {
@@ -15,11 +14,11 @@ class EditDashboard {
     this.sharedDisabled = false;
 
     this.types = [
-      { value:'custom', name:'Custom'},
-      { value:'frame', name:'Frame'},
-      { value:'home', name:'HOME'},
-      { value:'search', name:'SEARCH'},
-      { value:'alarm', name:'ALARM'}
+      {value: 'custom', name: 'Custom'},
+      {value: 'frame', name: 'Frame'},
+      {value: 'home', name: 'HOME'},
+      {value: 'search', name: 'SEARCH'},
+      {value: 'alarm', name: 'ALARM'},
     ];
 
     if (includes(['home', 'search', 'alarm'], this.dashboard.alias)) {
@@ -47,8 +46,6 @@ class EditDashboard {
       this.modalInstance.close(this.dashboard);
     }
   }
-  
-  
 }
 
 export default EditDashboard;

@@ -3,7 +3,7 @@ import controller from './controllers/dashboards-menu.controller';
 
 const dashboardsMenu = {
   controller,
-  template
+  template,
 };
 
 export default dashboardsMenu;

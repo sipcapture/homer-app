@@ -1,5 +1,4 @@
 class ModalHelper {
-
   constructor() {}
 
   isError(error) {

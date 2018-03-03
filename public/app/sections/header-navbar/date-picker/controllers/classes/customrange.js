@@ -1,18 +1,17 @@
-import data_timezones from '../../data/timezones';
+import dataTimezones from '../../data/timezones';
 
 class CustomRange {
-
   constructor() {
-    this.timezones = data_timezones;
+    this.timezones = dataTimezones;
     this.time = {
       hstep: 1,
       mstep: 1,
-      sstep: 1
+      sstep: 1,
     };
     this.date = {
       isOpen: {
         from: false,
-        to: false
+        to: false,
       },
       format: 'yyyy/MM/dd',
       min: new Date().setFullYear(2013, 0, 1),
@@ -20,8 +19,8 @@ class CustomRange {
       options: {
         formatYear: 'yy',
         startingDay: 1,
-        showWeeks: false
-      }
+        showWeeks: false,
+      },
     };
   }
 
@@ -29,18 +28,17 @@ class CustomRange {
     const diff = (new Date().getTimezoneOffset() - timezone);
     if (field === 'to') {
       return {
-        to: new Date().setMinutes(new Date().getMinutes() + diff)
+        to: new Date().setMinutes(new Date().getMinutes() + diff),
       };
     }
     return {
-      from: new Date().setMinutes(new Date().getMinutes() + diff)
+      from: new Date().setMinutes(new Date().getMinutes() + diff),
     };
   }
 
   openCalendar(field) {
     this.date.isOpen[field] = !this.date.isOpen[field];
   }
-
 }
 
 export default CustomRange;

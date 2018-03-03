@@ -1,0 +1,41 @@
+<!-- INCLUDE: SIP MESSAGES TAB -->
+<div class="row nd-row-bord" ng-show="$ctrl.enable">
+  <div class="box-homer-results">
+    <table st-table="$ctrl.displayedCollection" st-safe-src="$ctrl.rowRecordingCollection" class="table table-striped ng-isolate-scope" style="table-layout: fixed;">
+      <thead style="overflow: hidden;">
+        <tr>
+          <th style="width:5%">Play</th>
+          <th style="width:5%" st-sort-default="true" st-sort="locationId">Id</th>
+          <th style="width:10%">Date</th>
+          <th style="width:10%">Time</th>
+          <th style="width:10%">Correlation ID</th>
+          <th style="width:10%">Captid</th>
+          <th style="width:15%">Filename</th>
+          <th style="width:5%">Direction</th>
+          <th style="width:10%">Node</th>
+          <th style="width:10%">Liid</th>
+          <th style="width:10%">sid</th>
+        </tr>
+      </thead>
+      <tbody ng-show="!$ctrl.dataLoading">
+        <tr ng-repeat="row in $ctrl.displayedRecordingCollection" ng-class-odd="'shark0'" ng-class-even="'shark1'" style="overflow:hidden;">
+          <td style="width:5%">
+            <button class="naviaBtn naviaBlue" ng-click="$ctrl.playStream(row,$event)"><i class="fa fa-play-circle"></i></button>
+            <button class="naviaBtn naviaBlue" ng-click="$ctrl.downloadRecordingPcap(row,$event)"><i class="fa fa-download"></i></button>
+          </td>
+          <td style="width:5%"><a ng-click="$ctrl.showMessage(row,$event)">{{row.id}}</a></td>
+          <td style="width:10%">{{row.micro_ts | date:'dd-MM-yyyy'}}</td>
+          <td style="width:10%">{{row.micro_ts | date:'hh:mm:ss.sss'}}</td>
+          <td style="width:10%">{{row.correlation_id}}</td>
+          <td style="width:10%">{{ row.captid }}</td>
+          <td style="width:15%">{{row.filename}}</td>
+          <td style="width:5%">{{row.direction}}</td>
+          <td style="width:10%">{{row.node}}</td>
+          <td style="width:10%">{{row.liid}}</td>
+          <td style="width:10%">{{row.sid}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /.box-body external-scopes="gridHandlers" -->
+</div>

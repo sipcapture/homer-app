@@ -8,5 +8,5 @@ export default angular.module('hepicApp.services', [
   ModalHelper.name,
   UserProfile.name,
   TimeMachine.name,
-  EventBus.name
+  EventBus.name,
 ]);

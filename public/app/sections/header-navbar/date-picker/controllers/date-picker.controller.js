@@ -7,7 +7,6 @@ import QuickRange from './classes/quickrange';
 import CustomRange from './classes/customrange';
 
 class DatePicker {
-
   constructor($log, $rootScope, UserProfile, TimeMachine, EVENTS) {
     'ngInject';
     this.$log = $log;
@@ -19,7 +18,7 @@ class DatePicker {
 
   $onInit() {
     this.menu = {
-      isOpen: false
+      isOpen: false,
     };
 
     const timedata = this.TimeMachine.getTime();
@@ -41,7 +40,7 @@ class DatePicker {
     this.menu.isOpen = false;
     this.TimeMachine.setTime({
       timezone: this.timezone,
-      timerange: this.timerange
+      timerange: this.timerange,
     });
     this.tellDashboardAboutTimeChange();
   }
@@ -55,7 +54,7 @@ class DatePicker {
     this.menu.isOpen = false;
     this.TimeMachine.setTime({
       timezone: this.timezone,
-      timerange: this.timerange
+      timerange: this.timerange,
     });
     this.tellDashboardAboutTimeChange();
   }
@@ -63,7 +62,6 @@ class DatePicker {
   tellDashboardAboutTimeChange() {
     this.$rootScope.$broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
   }
-
 }
 
 export default DatePicker;

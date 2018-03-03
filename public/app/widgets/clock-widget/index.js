@@ -19,8 +19,8 @@ export default angular.module('hepicApp.clockWidget', [])
         timePattern: 'HH:mm:ss',
         datePattern: 'YYYY-MM-DD',
         location: 'Europe/Amsterdam',
-        showseconds: false
-      }
+        showseconds: false,
+      },
     });
   }])
   .component('clockWidgetSettings', settings)

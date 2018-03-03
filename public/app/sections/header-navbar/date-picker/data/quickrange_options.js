@@ -12,5 +12,5 @@ export default [
   {value: 180, type: 'last', title: 'Last 3 Hours'},
   {value: 360, type: 'last', title: 'Last 6 Hours'},
   {value: 720, type: 'last', title: 'Last 12 Hours'},
-  {value: 1440, type: 'last', title: 'Last 24 Hours'}
+  {value: 1440, type: 'last', title: 'Last 24 Hours'},
 ];

@@ -1,0 +1,58 @@
+<div class="search-results  Refresh Results  " access="users" access-permission-type="AtLeastOne">
+  <div id="resultheader" class="header-action-area">
+    <h1 class="lath">
+      <small class="text-header-sip" translate="hepic.pages.search.results"></small>
+      <input ng-class="searchClass"
+        class="searchForm"
+        type="text"
+        ng-model="$ctrl.searchText"
+        ng-change="$ctrl.searchData()"
+        placeholder="Regex Results Filter" /> 
+
+      <button id="mainSipSearch"
+        class="btn btn-white"
+        ng-class="searchClass"
+        type="submit"
+        ng-click="$ctrl.processSearchResult();"
+        ng-disabled="false" > 
+        <span translate="hepic.buttons.refresh">&nbsp; Refresh Results &nbsp;</span>
+        <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
+      </button> <!--END button mainSipSearch -->
+      
+      <small ng-repeat="(key, value) in $ctrl.searchParams" ng-dblClick="$ctrl.editParam(key);">
+        <button class="wait-label search-refine" ng-class="searchClass">
+          <i class="fa fa-edit" style="color:#1DC27C;margin-right:3px;" ng-click="$ctrl.editParam(key);"></i> 
+          {{key}}: {{value}} 
+          <i class="fa fa-times-circle" style="color:red;margin-left:3px;" ng-click="$ctrl.killParam(key);"></i> 
+        </button>
+      </small> <!-- END repeat value in searchParams-->
+      &nbsp;	
+    </h1> <!-- END text-header-sip -->
+  </div> <!-- END resultheader -->
+
+  <div ng-show="$ctrl.dataLoading">
+    <div id="loadingWidget" class="row-fluid ui-corner-all" style="text-align: center;">
+      <i class="fa fa-circle-o-notch fa-spin fa-4x" style="color:#1DC27C; font-size: 172px;"></i>
+    </div>
+  </div> <!-- END dataLoading -->
+
+  <div class="row nd-row" ng-if="$ctrl.showtable">
+    <div class="box-homer-results" >
+      <div id="grid1"
+        ui-grid="$ctrl.gridOpts"
+        class="gridStyle"
+        ui-grid-auto-fit-columns
+        ui-grid-auto-resize
+        ui-grid-selection
+        ui-grid-pagination
+        ui-grid-resize-columns
+        ui-grid-save-state
+        ui-grid-move-columns
+        ui-grid-pinning
+        ui-grid-grouping
+        ui-grid-exporter
+        resize>
+      </div> <!-- END grid1 -->
+    </div><!-- /.box-body external-scopes="gridHandlers" --> <!-- END box-homer-results-->
+  </div> <!-- END row-->
+</div> <!-- END search-results-->

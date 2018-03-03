@@ -3,7 +3,7 @@ import controller from './controllers/main-content.controller';
 
 const mainContent = {
   controller,
-  template
+  template,
 };
 
 export default mainContent;

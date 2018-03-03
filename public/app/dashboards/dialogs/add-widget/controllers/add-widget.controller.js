@@ -1,7 +1,6 @@
 import uuid from 'uuid/v4';
 
 class AddWidget {
-
   constructor() {}
 
   $onInit() {
@@ -16,7 +15,6 @@ class AddWidget {
     widget.uuid = uuid();
     this.modalInstance.close(widget);
   }
-  
 }
 
 export default AddWidget;

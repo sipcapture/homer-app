@@ -1,0 +1,58 @@
+<!-- INCLUDE: SIP MESSAGES TAB -->
+<div class="row nd-row-bord" ng-show="$ctrl.showtable">
+  <div class="box-homer-results">
+    <table st-table="$ctrl.displayedCollection" st-safe-src="$ctrl.rowCollection" class="table table-striped ng-isolate-scope">
+      <thead>
+        <tr>
+          <th width="6%">Id</th>
+          <th width="8%">Date</th>
+          <th width="10%" st-sort-default="true" st-sort="micro_ts">Time</th>
+          <th width="8%">Diff</th>
+          <th width="10%">{{$ctrl.headerType}}</th>
+          <th width="8%">Msg Size</th>
+          <th width="12%">Src IP/Host</th>
+          <th width="8%">Sport</th>
+          <th width="12%">Dst IP/Host</th>
+          <th width="8%">Dport</th>
+          <th width="5%">Proto</th>
+          <th width="5%">Type</th>
+        </tr>
+      </thead>
+      <tbody ng-show="!$ctrl.dataLoading">
+        <tr ng-repeat="row in $ctrl.displayedCollection" ng-click="$ctrl.showMessage(row,$event)" ng-class-odd="'shark0'" ng-class-even="'shark1'">
+          <td width="6%"><a ng-click="$ctrl.showMessage(row,$event)">{{row.id}}</a></td>
+          <td width="8%">{{row.micro_ts/1000 | date:'dd-MM-yyyy'}}</td>
+          <td width="10%">{{row.micro_ts/1000 | date:'hh:mm:ss.sss'}}</td>
+          <td width="8%">{{ ddd = $index > 0 ? (row.micro_ts/1000 - $ctrl.displayedCollection[$index-1].micro_ts/1000) : 0 | date:( ddd>60000 ?'m:':'')+'s.sss' }}s</td>
+          <td width="10%" ng-if="row.event && ( !row.method || !row.reply_reason) ">
+            <span ng-style="
+              (row.event == 'CRITICAL') && {'color':'red'} || 
+              (row.event == 'ERROR') && {'color':'orange'} || 
+              (row.event == 'INVITE') && {'font-weight':'bolder'} || 
+              (row.event >= 100 && row.event <= 189) && {'color':'grey'} || 
+              (row.event >= 400) && {'color':'red'} || 
+              (row.event == 200) && {'color':'green'}">
+            {{row.event ? row.event : "-" }}
+            </span>
+          </td>
+          <td width="10%" ng-if="(row.method || row.reply_reason) && !row.event">
+            <span ng-style="
+              (row.reply_reason > 399) && {'color':'red'} || 
+              (row.reply_reason > 100 && row.reply_reason < 299) && {'color':'green'} ||
+              (row.reply_reason > 99 && row.reply_reason < 199) && {'color':'#2077a0'}" >
+            {{row.method ? row.method : row.reply_reason}}
+            </span>
+          </td>
+          <td width="8%">{{ (row.message).length }}</td>
+          <td width="12%">{{ $ctrl.ip_alias[row.source_ip+":"+row.source_port] || $ctrl.ip_alias[row.source_ip] || row.source_ip}}</td> <!--to-do: not found ip_alias in controller-->
+          <td width="8%">{{row.source_port}}</td>
+          <td width="12%">{{ $ctrl.ip_alias[row.destination_ip+":"+row.destination_port]  || $ctrl.ip_alias[row.destination_ip] || row.destination_ip}}</td>
+          <td width="8%">{{row.destination_port}}</td>
+          <td width="5%">{{$ctrl.protoCheck(row.proto)}}</td> <!--to-do: not found in controller-->
+          <td width="5%">{{$ctrl.transactionCheck(row.type)}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /.box-body external-scopes="gridHandlers" -->
+</div>

@@ -1,0 +1,84 @@
+<!-- INCLUDE: EXPORT TAB -->
+<div class="export-title">Export Session Data</div>
+  <div style="margin-left:auto;margin-right:auto;width:60%;" id="export_tab">
+    <!-- FLEXBOX -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+      <!-- COLUMN 1 -->
+      <div style="width: 32%;padding: 10px;">
+        <button
+          class="btn btn-normal btn-export btn-info btn-export_blue"
+          ng-click="$ctrl.exportPCAP()"
+          data-placement="top-right"
+          style="margin-top:18px;;margin-left:8px;width:18%;">
+          <i class="fa fa-file-code-o" aria-hidden="true"></i>
+          <span> Export PCAP</span>
+        </button>
+        <!-- Export PCAP Text -->
+        <button
+          class="btn btn-normal btn-export btn-danger btn-export_blue"
+          ng-click="$ctrl.exportTEXT()"
+          data-placement="top-right"
+          style="margin-top:18px;;margin-left:8px;width:18%;">
+          <i class="fa fa-file-text-o" aria-hidden="true"></i>
+          <span>Export TEXT</span>
+        </button>
+        <!-- Export Exclusion -->
+        <div style="margin-top:18px;"> <!-- to-do: I didn't find options of the multiselect in the controller -->
+          <multiselect
+            ng-model="$ctrl.exportBlacklist"
+            options="$ctrl.uniqueHosts"
+            id-prop="$ctrl.value"
+            display-prop="$ctrl.name"
+            placeholder="Export Exclusion"
+            classes-btn="'btn-normal btn-export btn-info btn-export_blue'"
+            style="margin:8px;">
+          </multiselect>
+        </div>			
+    </div>
+    <!-- COLUMN 2 -->
+    <div style="width: 32%;padding: 10px;">
+      <button
+        ng-disabled="$ctrl.exporting"
+        class="btn btn-normal btn-export btn-danger btn-export_blue"
+        ng-click="$ctrl.exportDiv('');"
+        data-placement="top-right"
+        style="margin-top:18px;margin-left:8px;width:18%;">
+        <i ng-hide="$ctrl.exporting" class="fa fa-file-image-o" aria-hidden="true"></i>
+        <i ng-show="$ctrl.exporting" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+        <span>Export PNG</span>
+      </button>
+      <!-- report -->
+      <button
+        class="btn btn-normal btn-export btn-danger btn-export_blue"
+        ng-click="$ctrl.makeREPORT()"
+        data-placement="top-right"
+        style="margin-top:18px;;margin-left:8px;width:18%;">
+        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+        <span>Export REPORT</span>
+      </button>
+    </div>
+    <!-- COLUMN 3 -->
+    <div style="width: 32%;padding: 10px;">
+      <!-- Cloudshark -->
+      <button
+        ng-hide="$ctrl.sharecloud"
+        class="btn btn-normal btn-export btn-info btn-export_green"
+        ng-click="$ctrl.exportCloud()"
+        data-placement="top-right"
+        style="margin-top:18px;;margin-left:8px;width:18%;">
+        <i class="fa fa-cloud-download" aria-hidden="true"></i>
+        <span>Share Cloud</span>
+      </button>
+      <!-- share link -->
+      <button
+        ng-if="!$ctrl.shareLinkDisabled"
+        class="btn btn-normal btn-export btn-info btn-export_green"
+        ng-click="$ctrl.exportShare()"
+        data-placement="top-right"
+        style="margin-top:18px;;margin-left:8px;width:18%;">
+        <i class="fa fa-share-alt"></i>
+        <span>Share Link</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 // npm modules
 import 'jquery';
+import 'jquery-ui-dist/jquery-ui';
 import angular from 'angular';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap';
@@ -9,11 +10,16 @@ import 'angular-gridster';
 import 'angular-ui-grid';
 import 'angular-cookies';
 import 'angular-sanitize';
+import 'd3';
+import 'nvd3';
+import 'angular-nvd3';
+import 'vis';
+import 'angular-visjs';
 import 'ui-select';
 import 'angular-dialog-service';
 import 'angular-local-storage';
 import 'angular-smart-table';
-import 'angular-nvd3';
+import 'leaflet';
 import 'ui-leaflet';
 import 'angular-simple-logger';
 import 'angular-ui-ace';
@@ -21,7 +27,6 @@ import 'angular-websocket';
 import 'ng-fittext';
 import 'angular-translate';
 import 'angular-translate-loader-url';
-import 'angular-visjs';
 import 'angular-file-upload/angular-file-upload';
 import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
@@ -29,8 +34,8 @@ import 'ngstorage';
 import 'angular-filter';
 
 // old homer modal. To-do: refactor this modal to component based structure
-import './search/modal/homerCflow';
-import './search/modal/homerModal';
+import './search/hepic-modal/homerCflow';
+import './search/hepic-modal/homerModal';
 
 // components
 import Controllers from './controllers';
@@ -43,7 +48,7 @@ import Widgets from './widgets';
 import Search from './search';
 
 // register modules and components
-var app = angular.module('hepicApp', [
+const app = angular.module('hepicApp', [
   'ui.router',
   'ui.bootstrap',
   'gridster',
@@ -88,7 +93,7 @@ var app = angular.module('hepicApp', [
   Login.name,
   Dashboards.name,
   Search.name,
-  Widgets.name
+  Widgets.name,
 ]);
 
 export default app;

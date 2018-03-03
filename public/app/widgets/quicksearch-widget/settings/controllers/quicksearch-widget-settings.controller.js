@@ -1,8 +1,7 @@
-import data_headers from '../data/headers';
-import data_headers_user_ext_cr from '../data/headers_user_ext_cr';
+import dataHeaders from '../data/headers';
+import dataHeadersUserExtCr from '../data/headers_user_ext_cr';
 
 class QuicksearchWidgetSettings {
-  
   constructor(CONFIGURATION) {
     'ngInject';
     this.CONFIGURATION = CONFIGURATION;
@@ -11,10 +10,10 @@ class QuicksearchWidgetSettings {
   $onInit() {
     this.counter = 0;
     this.widget = this.resolve.widget;
-    this.headers = data_headers;
+    this.headers = dataHeaders;
 
     if (this.CONFIGURATION.USER_EXT_CR) {
-      this.headers = this.headers.concat(data_headers_user_ext_cr);
+      this.headers = this.headers.concat(dataHeadersUserExtCr);
     }
   }
 
@@ -27,10 +26,10 @@ class QuicksearchWidgetSettings {
   }
 
   addField() {
-    this.widget.fields.push({ name: 'default' + this.counter });
+    this.widget.fields.push({name: 'default' + this.counter});
   }
   
-  removeField(index){
+  removeField(index) {
     this.widget.fields.splice(index, 1);
   }
 }

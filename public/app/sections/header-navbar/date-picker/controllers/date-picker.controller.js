@@ -7,12 +7,12 @@ import QuickRange from './classes/quickrange';
 import CustomRange from './classes/customrange';
 
 class DatePicker {
-  constructor($log, $rootScope, UserProfile, TimeMachine, EVENTS) {
+  constructor($log, UserProfile, TimeMachine, EventBus, EVENTS) {
     'ngInject';
     this.$log = $log;
-    this.$rootScope = $rootScope;
     this.UserProfile = UserProfile;
     this.TimeMachine = TimeMachine;
+    this.EventBus = EventBus;
     this.EVENTS = EVENTS;
   }
 
@@ -60,7 +60,7 @@ class DatePicker {
   }
 
   tellDashboardAboutTimeChange() {
-    this.$rootScope.$broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
+    this.EventBus.broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
   }
 }
 

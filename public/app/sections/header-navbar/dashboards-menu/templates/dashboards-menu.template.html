@@ -1,6 +1,6 @@
 <div class="btn-group" uib-dropdown auto-close="outsideClick" is-open="$ctrl.menu.isOpen">
   <a href="#" class="hepic2-navbar-button" uib-dropdown-toggle>Panels: {{$ctrl.menu.title}}</a>
-  <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+  <ul class="dropdown-menu dropdown-content" uib-dropdown-menu role="menu" aria-labelledby="single-button">
     <li role="menuitem">
       <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
     </li>
@@ -8,7 +8,7 @@
       <a ng-click="$ctrl.go(dashboard)">{{dashboard.name}}</a>
     </li>
     <li role="menuitem">
-      <a ng-click="$ctrl.add();">+ Add New Dashboard</a>
+      <a ng-click="$ctrl.add()">+ Add New Dashboard</a>
     </li>
   </ul>
 </div>

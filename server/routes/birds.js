@@ -3,8 +3,8 @@ import Joi from 'joi';
 import Boom from 'boom';
 import Bird from '../classes/bird';
 
-export default [
-  {
+export default function birds(server) {
+  server.route({
     /**
      * GET all public birds
      *
@@ -12,27 +12,25 @@ export default [
      */
     path: '/api/v3/birds',
     method: 'GET',
-    handler: function (request, reply) {
+    handler: function(request, reply) {
       const bird = new Bird();
 
-      bird.getAll(['name', 'species', 'picture_url'])
-        .then(function (data) {
-          if (!data || !data.length) {
-            return reply(Boom.notFound('no public bird found'));
-          }
+      bird.getAll(['name', 'species', 'picture_url']).then(function(data) {
+        if (!data || !data.length) {
+          return reply(Boom.notFound('no public bird found'));
+        }
   
-          return reply({
-            count: data.length,
-            data
-          });
-  
-        })
-        .catch(function (error) {
-          return reply(Boom.serverUnavailable(error));
+        return reply({
+          count: data.length,
+          data,
         });
-    }
-  },
-  {
+      }).catch(function(error) {
+        return reply(Boom.serverUnavailable(error));
+      });
+    },
+  });
+
+  server.route({
     /**
      * Create (POST) a new bird
      *
@@ -48,18 +46,18 @@ export default [
     method: 'POST',
     config: {
       auth: {
-        strategy: 'token'
+        strategy: 'token',
       },
       validate: {
         payload: {
           name: Joi.string().min(2).max(250).required(),
           species: Joi.string().min(2).max(250).required(),
-          picture_url: Joi.string().min(10).max(250).required()
-        }
-      }
+          picture_url: Joi.string().min(10).max(250).required(),
+        },
+      },
     },
-    handler: function (request, reply) {
-      const { name, species, picture_url } = request.payload;
+    handler: function(request, reply) {
+      const {name, species, picture_url} = request.payload;
       const guid = uuid();
       const bird = new Bird();
 
@@ -69,19 +67,18 @@ export default [
         species,
         picture_url,
         guid,
-      })
-        .then(function () {
-          return reply({
-            data: guid,
-            message: 'successfully created bird'
-          }).code(201);
-        })
-        .catch(function (error) {
-          return reply(Boom.serverUnavailable(error));
-        });
-    }
-  },
-  {
+      }).then(function() {
+        return reply({
+          data: guid,
+          message: 'successfully created bird',
+        }).code(201);
+      }).catch(function(error) {
+        return reply(Boom.serverUnavailable(error));
+      });
+    },
+  });
+
+  server.route({
     /**
      * Update (PUT) a bird
      *
@@ -99,48 +96,46 @@ export default [
     method: 'PUT',
     config: {
       auth: {
-        strategy: 'token'
+        strategy: 'token',
       },
       validate: {
         params: {
-          birdGuid: Joi.string().min(12).max(46).required()
+          birdGuid: Joi.string().min(12).max(46).required(),
         },
         payload: {
           name: Joi.string().min(2).max(250).required(),
           species: Joi.string().min(2).max(250).required(),
           picture_url: Joi.string().min(10).max(250).required(),
-          isPublic: Joi.number().integer().min(0).max(1).required()
-        }
+          isPublic: Joi.number().integer().min(0).max(1).required(),
+        },
       },
       pre: [
         {
-          method: function (request, reply) {
-            const { birdGuid } = request.params;
-            const { scope } = request.auth.credentials;
+          method: function(request, reply) {
+            const {birdGuid} = request.params;
+            const {scope} = request.auth.credentials;
             const bird = new Bird(birdGuid);
 
-            bird.get(['owner'])
-              .then(function (result) {
-                if (!result) {
-                  return reply(Boom.notFound(`the bird with id ${birdGuid} was not found`));
-                }
+            bird.get(['owner']).then(function(result) {
+              if (!result) {
+                return reply(Boom.notFound(`the bird with id ${birdGuid} was not found`));
+              }
 
-                if (result.owner !== scope) {
-                  return reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`));
-                }
+              if (result.owner !== scope) {
+                return reply(Boom.unauthorized(`the bird with id ${birdGuid} is not in the user scope`));
+              }
 
-                return reply.continue();
-              })
-              .catch(function (error) {
-                return reply(Boom.serverUnavailable(error));
-              });
-          }
-        }
-      ]
+              return reply.continue();
+            }).catch(function(error) {
+              return reply(Boom.serverUnavailable(error));
+            });
+          },
+        },
+      ],
     },
-    handler: function (request, reply) {
-      const { name, species, picture_url, isPublic } = request.payload;
-      const { birdGuid } = request.params;
+    handler: function(request, reply) {
+      const {name, species, picture_url, isPublic} = request.payload;
+      const {birdGuid} = request.params;
       const bird = new Bird(birdGuid);
 
       bird.update({
@@ -148,15 +143,13 @@ export default [
         species,
         picture_url,
         isPublic,
-      })
-        .then(function () {
-          return reply({
-            message: 'successfully updated bird'
-          });
-        })
-        .catch(function (error) {
-          return reply(Boom.serverUnavailable(error));
+      }).then(function() {
+        return reply({
+          message: 'successfully updated bird',
         });
-    }
-  }
-];
+      }).catch(function(error) {
+        return reply(Boom.serverUnavailable(error));
+      });
+    },
+  });
+};

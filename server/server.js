@@ -1,44 +1,44 @@
 import Hapi from 'hapi';
-import { forEach } from 'lodash';
+import {forEach} from 'lodash';
 import pem from 'pem';
 import jwtSettings from './private/jwt_settings';
 import config from './config/server_config';
-import authRoutes from './routes/authentication';
-import birdsRoutes from './routes/birds';
-import protocolRoutes from './routes/protocol';
-import uiRoutes from './routes/ui';
+import proxyConfig from './config/proxy'; // temporary, to be deleted when the new API is ready
 
-import dashboardMock from './routes/mock/dashboard'; // to-do: delete it when API is ready
-import searchMock from './routes/mock/search'; // to-do: delete it when API is ready
-import profileMock from './routes/mock/profile'; // to-do: delete it when API is ready
+const routes = {
+  auth: require('./routes/authentication'),
+  birds: require('./routes/birds'),
+  ui: require('./routes/ui'),
+  proxy: require('./routes/proxy'),
+};
 
 const server = new Hapi.Server({
   debug: {
     log: ['error', 'implementation', 'internal'],
-    request: ['error', 'implementation', 'internal']
-  }
+    request: ['error', 'implementation', 'internal'],
+  },
 });
 
 pem.createCertificate({
   days: config.certificate.days,
-  selfSigned: config.certificate.self_signed
-}, function (error, keys) {
+  selfSigned: config.certificate.self_signed,
+}, function(error, keys) {
   if (error) {
     throw error;
   }
   
   const tls = {
     key: keys.serviceKey,
-    cert: keys.certificate
+    cert: keys.certificate,
   };
   
   server.connection({
-    port: config.http_port
+    port: config.http_port,
   });
   
   server.connection({
     port: config.https_port,
-    tls
+    tls,
   });
   
   // JWT authentication and encryption
@@ -46,8 +46,8 @@ pem.createCertificate({
     require('h2o2'),
     require('hapi-auth-jwt'),
     require('inject-then'),
-    require('inert')
-  ], function (error) {
+    require('inert'),
+  ], function(error) {
     if (error) {
       console.log('Error was handled!');
       console.log(error);
@@ -56,20 +56,22 @@ pem.createCertificate({
     server.auth.strategy('token', 'jwt', {
       key: jwtSettings.key, // the JWT private key
       verifyOptions: {
-        algorithms: [ jwtSettings.algorithm ],
-      }
+        algorithms: [jwtSettings.algorithm],
+      },
     });
   
     // Initialize routes
-    forEach([authRoutes, birdsRoutes, protocolRoutes, uiRoutes, dashboardMock, searchMock, profileMock], function (routes) {
-      forEach(routes, function (route) {
-        server.route(route);
-      });
+    forEach(routes, function(routeSet) {
+      if (routeSet.default.name === 'proxy') { // temporary, to be deleted when the new API is ready
+        routeSet.default(server, proxyConfig);
+      } else {
+        routeSet.default(server);
+      }
     });
   });
   
   // Server start
-  server.start(function (error) {
+  server.start(function(error) {
     if (error) {
       console.log('Error was handled!');
       console.log(error);
@@ -81,7 +83,6 @@ pem.createCertificate({
       console.log('Server started');
     }
   });
-
 });
 
 export default server;

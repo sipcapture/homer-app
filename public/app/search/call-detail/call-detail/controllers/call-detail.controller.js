@@ -4,7 +4,7 @@ import treeData from '../data/tree_data';
 import {forEach} from 'lodash';
 
 class CallDetail {
-  constructor($scope, $log, SearchService, $homerModal, $timeout, UserProfile, EventBus, SearchHelper) {
+  constructor($scope, $log, SearchService, $homerModal, $timeout, UserProfile, EventBus, SearchHelper, StyleHelper) {
     'ngInject';
     this.$scope = $scope;
     this.$log = $log;
@@ -14,6 +14,7 @@ class CallDetail {
     this.UserProfile = UserProfile;
     this.EventBus = EventBus;
     this.SearchHelper = SearchHelper;
+    this.StyleHelper = StyleHelper;
     this.dataLoading = true;
     this.call = {};
     this.apiD3 = {};
@@ -216,7 +217,6 @@ class CallDetail {
         this.setSDPInfo(this.call);
         /* and now we should do search for LOG and QOS*/
         forEach(this.call.callid, function(v, k) {
-          console.log('K', k);
           if (data.param.search.callid.indexOf(k) == -1) {
             data.param.search.callid.push(k);
           }
@@ -224,7 +224,6 @@ class CallDetail {
 
         // Unique IP Array for Export
         try {
-          console.log('scanning for IPs...');
           let cached = [];
           forEach(this.call.hosts, function(v) {
             cached.push(v.hosts[0]);
@@ -300,7 +299,6 @@ class CallDetail {
 
     if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) &&
       (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
-      console.log('rogue/dupe resize!');
       return;
     }
 
@@ -340,18 +338,7 @@ class CallDetail {
   }
 
   getCallIDColor(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    i = hash;
-    let col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
-      ((i >> 8) & 0xAF).toString(16) + (i & 0xAF).toString(16);
-    if (col.length < 6) col = col.substring(0, 3) + '' + col.substring(0, 3);
-    if (col.length > 6) col = col.substring(0, 6);
-    return {
-      color: '#' + col,
-    };
+    return this.StyleHelper.getCallIDColor(str);
   }
 
   /* convertor */
@@ -410,7 +397,6 @@ class CallDetail {
 
     if (ret) {
       if (obj.type == 'host') {
-        console.log('clicked on host');
       } else if (obj.type == 'message') {
         this.showMessage(obj.data, event);
       }
@@ -420,7 +406,6 @@ class CallDetail {
 
   async setSDPInfo(rdata) {
     let msg;
-    console.log(rdata);
     let chartDataExtended = {
       list: [],
       from: 0,
@@ -465,7 +450,6 @@ class CallDetail {
             entry.vqr_a.col = '#3cba54';
             break;
           }
-          console.log(entry.vqr_a);
         }
         if (entry.vqr_b) {
           entry.vqr_b = JSON.parse(entry.vqr_b);
@@ -486,7 +470,6 @@ class CallDetail {
             entry.vqr_b.col = '#3cba54';
             break;
           }
-          console.log(entry.vqr_b);
         }
 
         /* calculate call duration */
@@ -502,7 +485,7 @@ class CallDetail {
         /* check blacklist */ // to-do: this check throws the following error 'bad response combination'
         // try {
         //   const msg = await this.SearchService.searchBlacklist(entry.source_ip);
-        //   console.log('Blacklist check ' + entry.source_ip, msg);
+        //   this.$log.debug('Blacklist check ' + entry.source_ip, msg);
         //   this.blacklistreport = msg;
         //   this.enableBlacklist = true;
         //   this.enableLogReport = true;
@@ -614,7 +597,6 @@ class CallDetail {
 
                 let d3merged = false;
                 this.d3chart.data[0][rep].series.forEach(function(entry) {
-                  // console.log('SEEK '+xleg, entry);
                   if (xleg == entry.name) {
                     entry.data.concat(entry.data);
                     d3merged = true;
@@ -714,13 +696,13 @@ class CallDetail {
           if (msg.reports.length != 0) {
             let charts = {};
             if (msg.reports.rtcp && msg.reports.rtcp.chart) {
-              console.log('processing rtcp charts');
+              this.$log.debug('processing rtcp charts');
               charts = msg.reports.rtcp.chart;
             }
 
             // RTCP-XR
             if (msg.reports.rtcpxr && msg.reports.rtcpxr.chart) {
-              console.log('processing rtcpxr charts');
+              this.$log.debug('processing rtcpxr charts');
               let xrcharts = msg.reports.rtcpxr.chart;
               forEach(xrcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
@@ -729,7 +711,7 @@ class CallDetail {
 
             // RTPAGENT
             if (msg.reports.rtpagent && msg.reports.rtpagent.chart) {
-              console.log('processing rtpagent charts');
+              this.$log.debug('processing rtpagent charts');
               let agcharts = msg.reports.rtpagent.chart;
               forEach(agcharts, function(count, key) {
                 if (!charts[key]) charts[key] = count;
@@ -762,7 +744,7 @@ class CallDetail {
         } catch (err) {
           this.$log.error(['CallDetail'], 'no chart data', err);
         }
-        console.log('Enable RTCP Report');
+        this.$log.debug('Enable RTCP Report');
         this.calc_report = chartDataExtended;
         this.enableRTCPReport = true;
       }
@@ -886,7 +868,7 @@ class CallDetail {
               }
             }
           }
-          console.log('PARSED LOG!', entry);
+          this.$log.debug('PARSED LOG!', entry);
         });
         this.logreport = msg;
       }

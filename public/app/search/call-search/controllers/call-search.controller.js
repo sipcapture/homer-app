@@ -7,78 +7,123 @@ import gridRowTemplate from '../data/grid/row_template.html';
 import gridColumnDefinitions from '../data/grid/collumns/definitions';
 import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
-const SearchCall = function($scope, $rootScope, EventBus, $http, $location, SearchService,
-  $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
-  $state, EVENTS, $log, CONFIGURATION, SearchHelper) {
-  'ngInject';
-  const self = this;
-  let diff;
-
-  self.$onInit = function() {};
-
-  self.expandme = true;
-  self.showtable = true;
-  self.dataLoading = false;
-
-  gridColumnDefinitions.forEach(function(column) {
-    column.displayName = $filter('translate')(column._hepic_translate);
-  });
-
-  if (CONFIGURATION.USER_EXT_CR) {
-    gridColumnDefinitions.push.apply(gridColumnDefinitionsUserExtCr);
+class SearchCall {
+  constructor($scope, EventBus, $location, SearchService,
+    $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
+    $state, EVENTS, $log, CONFIGURATION, SearchHelper, StyleHelper) {
+    'ngInject';
+    this.$scope = $scope;
+    this.EventBus = EventBus;
+    this.$location = $location;
+    this.SearchService = SearchService;
+    this.$timeout = $timeout;
+    this.$window = $window;
+    this.$homerModal = $homerModal;
+    this.UserProfile = UserProfile;
+    this.localStorageService = localStorageService;
+    this.$filter = $filter;
+    this.SweetAlet = SweetAlert;
+    this.$state = $state;
+    this.EVENTS = EVENTS;
+    this.$log = $log;
+    this.CONFIGURATION = CONFIGURATION;
+    this.SearchHelper = SearchHelper;
+    this.StyleHelper = StyleHelper;
+    this.expandme = true;
+    this.showtable = true;
+    this.dataLoading = false;
+    this.gridOpts = gridOptions;
+    this.gridOpts.gridRowTemplate = gridRowTemplate;
+    this.autorefresh = false;
+    this.searchParamsBackup = {};
+    this.UserProfile.getAllServerRemoteProfile();
+    this.fileOneUploaded = true;
+    this.fileTwoUploaded = false;
+    this.state = localStorageService.get('localStorageGrid');
   }
-      
-  self.gridOpts = gridOptions;
-  self.gridOpts.columnDefs = gridColumnDefinitions;
-  self.gridOpts.gridRowTemplate = gridRowTemplate;
 
-  $scope.$on('$destroy', function() {
-    EventBus.broadcast(EVENTS.DESTROY_REFESH, '1');
-    myListener();
-  });
+  $onInit() {
+    this.UserProfile.getAll().then(() => {
+      this.processSearchResult();
+    }).catch((error) => {
+      this.$log.error(['SearchCall'], error);
+    });
 
-  const myListener = EventBus.subscribe(EVENTS.SEARCH_CALL_SUBMIT, function() {
-    self.processSearchResult();
-  });
+    gridColumnDefinitions.forEach((column) => {
+      column.displayName = this.$filter('translate')(column._hepic_translate);
+    });
 
-  /* Autorefresh Event Handler - fires ON/OFF */
-  self.autorefresh = false;
+    if (this.CONFIGURATION.USER_EXT_CR) {
+      gridColumnDefinitions.push.apply(gridColumnDefinitionsUserExtCr);
+    }
 
-  // process the form
-  self.processSearchResult = function() {
-    self.bump = false;
+    this.gridOpts.columnDefs = gridColumnDefinitions;
+    this.gridOpts.rowIdentity = function(row) {
+      return row.id;
+    };
+    this.gridOpts.onRegisterApi = (gridApi) => {
+      this.gridApi = gridApi;
+      this.gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => {
+        this.$log.debug(row);
+      });
+    };
+
+    const myListener = this.EventBus.subscribe(this.EVENTS.SEARCH_CALL_SUBMIT, () => {
+      this.processSearchResult();
+    });
+
+    this.$scope.$on('$destroy', () => {
+      this.EventBus.broadcast(this.EVENTS.DESTROY_REFESH, '1');
+      myListener();
+    });
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_SAVE, () => {
+      this.saveState();
+    });
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESTORE, () => {
+      this.restoreState();
+    });
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
+      this.resetState();
+    });
+  }
+
+  processSearchResult() {
+    this.bump = false;
     /* save data for next search */
     const data = {
       param: {},
       timestamp: {},
     };
 
-    const transaction = UserProfile.getProfile('transaction');
-    let limit = UserProfile.getProfile('limit');
-    const timezone = UserProfile.getProfile('timezone');
-    const value = UserProfile.getProfile('search');
+    const transaction = this.UserProfile.getProfile('transaction');
+    let limit = this.UserProfile.getProfile('limit');
+    const timezone = this.UserProfile.getProfile('timezone');
+    const value = this.UserProfile.getProfile('search');
     let timedate;
 
     /* force time update for "last x minutes" ranges */
-    const timeNow = UserProfile.getProfile('timerange_last');
+    const timeNow = this.UserProfile.getProfile('timerange_last');
     if (timeNow > 0) {
       console.log('fast-forward to last ' + timeNow + ' minutes...');
-      diff = (new Date().getTimezoneOffset() - timezone.value);
-      const dt = new Date(new Date().setMinutes(new Date().getMinutes() - timeNow + diff));
+      this.diff = (new Date().getTimezoneOffset() - timezone.value);
+      const dt = new Date(new Date().setMinutes(new Date().getMinutes() - timeNow + this.diff));
       timedate = {
         from: dt,
-        to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
+        to: new Date(new Date().setMinutes(new Date().getMinutes() + this.diff)),
         custom: 'Now() - ' + timeNow,
       };
-      UserProfile.setProfile('timerange', timedate);
+      this.UserProfile.setProfile('timerange', timedate);
     } else {
-      timedate = UserProfile.getProfile('timerange');
+      timedate = this.UserProfile.getProfile('timerange');
     }
 
     /* query manipulation functions & store */
-    self.searchParams = value;
-    self.killParam = function(param) {
-      SweetAlert.swal({
+    this.searchParams = value;
+    this.killParam = (param) => {
+      this.SweetAlert.swal({
         title: 'Remove Filter?',
         type: 'warning',
         showCancelButton: true,
@@ -87,46 +132,45 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         closeOnConfirm: true,
         closeOnCancel: true,
       },
-      function(isConfirm) {
+      (isConfirm) => {
         if (isConfirm) {
-          delete self.searchParams[param];
-          self.processSearchResult();
+          delete this.searchParams[param];
+          this.processSearchResult();
         }
       });
     };
 
-    self.editParam = function(param) {
-      SweetAlert.swal({
+    this.editParam = (param) => {
+      this.SweetAlert.swal({
         title: `Edit Filter: [${param}]`,
         type: 'input',
         showCancelButton: true,
         confirmButtonText: 'Update',
         closeOnConfirm: true,
         closeOnCancel: true,
-        inputPlaceholder: self.searchParams[param],
+        inputPlaceholder: this.searchParams[param],
       },
-      function(input) {
+      (input) => {
         if (input) {
-          self.searchParams[param] = input;
-          self.processSearchResult();
+          this.searchParams[param] = input;
+          this.processSearchResult();
         }
       });
     };
 
-    self.searchParamsBackup = {};
-    self.swapParam = function(param) {
-      if (!self.searchParamsBackup[param]) {
-        self.searchParamsBackup[param] = self.searchParams[param];
-        delete self.searchParams[param];
+    this.swapParam = (param) => {
+      if (!this.searchParamsBackup[param]) {
+        this.searchParamsBackup[param] = this.searchParams[param];
+        delete this.searchParams[param];
       } else {
-        self.searchParams[param] = self.searchParamsBackup[param];
-        delete self.searchParamsBackup[param];
+        this.searchParams[param] = this.searchParamsBackup[param];
+        delete this.searchParamsBackup[param];
       }
     };
 
     /* preference processing */
     const sObj = {};
-    const searchQueryObject = $location.search();
+    const searchQueryObject = this.$location.search();
     if (searchQueryObject.hasOwnProperty('query')) {
       let rison = searchQueryObject.query;
       rison = rison.substring(1, rison.length - 2);
@@ -137,9 +181,9 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       }
     }
 
-    self.diff = (new Date().getTimezoneOffset() - timezone.value);
-    diff = self.diff * 60 * 1000;
-    self.offset = timezone.offset;
+    this.diff = (new Date().getTimezoneOffset() - timezone.value);
+    this.diff = this.diff * 60 * 1000;
+    this.offset = timezone.offset;
 
     if (Object.keys(sObj).length == 0) {
       /* make construct of query */
@@ -148,14 +192,14 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       data.param.search = value;
       data.param.location = {};
       data.param.timezone = timezone;
-      data.timestamp.from = timedate.from.getTime() - diff;
-      data.timestamp.to = timedate.to.getTime() - diff;
+      data.timestamp.from = timedate.from.getTime() - this.diff;
+      data.timestamp.to = timedate.to.getTime() - this.diff;
       forEach(transaction.transaction, function(v) {
         data.param.transaction[v.name] = true;
       });
     } else {
-      data.timestamp.from = timedate.from.getTime() + diff;
-      data.timestamp.to = timedate.to.getTime() + diff;
+      data.timestamp.from = timedate.from.getTime() + this.diff;
+      data.timestamp.to = timedate.to.getTime() + this.diff;
       data.param.transaction = {};
 
       const searchValue = {};
@@ -191,52 +235,43 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       data.param.location = {};
 
       /* set back timerange */
-      timedate.from = new Date(data.timestamp.from - diff);
-      timedate.to = new Date(data.timestamp.to - diff);
-      UserProfile.setProfile('timerange', timedate);
-      EventBus.broadcast(EVENTS.SET_TIME_RANGE, timedate);
+      timedate.from = new Date(data.timestamp.from - this.diff);
+      timedate.to = new Date(data.timestamp.to - this.diff);
+      this.UserProfile.setProfile('timerange', timedate);
+      this.EventBus.broadcast(this.EVENTS.SET_TIME_RANGE, timedate);
     }
 
-    self.dataLoading = true;
+    this.dataLoading = true;
 
-    SearchService.searchCallByParam(data).then(function(sdata) {
+    this.SearchService.searchCallByParam(data).then((sdata) => {
       if (sdata) {
-        self.restoreState();
-        self.count = sdata.length;
-        self.gridOpts.data = sdata;
-        self.Data = sdata;
-        $timeout(function() {
-          angular.element($window).resize();
+        this.restoreState();
+        this.count = sdata.length;
+        this.gridOpts.data = sdata;
+        this.Data = sdata;
+        this.$timeout(() => {
+          angular.element(this.$window).resize();
         }, 200);
       }
-    }).catch(function(error) {
-      $log.error('[SearchCall]', error);
-    }).finally(function() {
-      self.dataLoading = false;
+    }).catch((error) => {
+      this.$log.error(['SearchCall'], error);
+    }).finally(() => {
+      this.dataLoading = false;
     });
-  };
+  }
 
-  UserProfile.getAllServerRemoteProfile();
-
-  /* first get profile */
-  UserProfile.getAll().then(function() {
-    self.processSearchResult();
-  }).catch(function(error) {
-    $log.error('[SearchCall]', error);
-  });
-
-  self.intToARGB = function(i) {
+  intToARGB(i) {
     return ((i >> 24) & 0xFF);
-  };
+  }
 
-  self.getBkgColorTable = function() {
+  getBkgColorTable() {
     const color = 'hsla(0, 0%, 84%, 1)';
     return {
       'background-color': color,
     };
-  };
+  }
 
-  self.showMessage = function(localrow, event) {
+  showMessage(localrow, event) {
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.micro_ts / 1000) - 100,
@@ -261,58 +296,59 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     searchData['param']['transaction'][localrow.entity.trans] = true;
     const messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
 
-    $homerModal.open({
+    this.$homerModal.open({
       template: '<call-message-detail></call-message-detail>',
       component: true,
       cls: 'homer-modal-message',
-      id: 'message' + SearchHelper.hashCode(messagewindowId),
+      id: 'message' + this.SearchHelper.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
       divTop: event.clientY.toString() + 'px',
       params: searchData,
-      onOpen: function() {
-        $log.debug('modal1 message opened from url ' + this.id);
+      onOpen: () => {
+        this.$log.debug('modal1 message opened from url ' + this.id);
       },
     });
-  };
+  }
 
-  self.getColumnValue = function(row, col) {
+  getColumnValue(row, col) {
     return row.entity[col.field + '_alias'] == undefined ? row.entity[col.field + '_ip'] : row.entity[col.field + '_alias'];
-  };
-  self.getColumnTooltip = function(row, col) {
-    return row.entity[col.field + '_ip'];
-  };
+  }
 
-  self.protoCheck = function(row) {
+  getColumnTooltip(row, col) {
+    return row.entity[col.field + '_ip'];
+  }
+
+  protoCheck(row) {
     if (parseInt(row.entity.proto) == 1) return 'udp';
     else if (parseInt(row.entity.proto) == 2) return 'tcp';
     else if (parseInt(row.entity.proto) == 3) return 'wss';
     else if (parseInt(row.entity.proto) == 4) return 'sctp';
     else return 'udp';
-  };
+  }
     
-  self.eventCheck = function(row) {
+  eventCheck(row) {
     if (parseInt(row.entity.event) == 1) return 'MOS';
     else if (parseInt(row.entity.event) == 2) return 'Rec';
     else if (parseInt(row.entity.event) == 3) return 'M+R';
     else return 'no';
-  };
+  }
 
-  self.dateConvert = function(value) {
+  dateConvert(value) {
     const dt = new Date(parseInt(value / 1000));
-    return $filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', self.offset);
-  };
+    return this.$filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', this.offset);
+  }
 
-  self.dateSecondsConvert = function(value) {
+  dateSecondsConvert(value) {
     const dt = new Date(parseInt(value * 1000));
-    return $filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', self.offset);
-  };
+    return this.$filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', this.offset);
+  }
 
-  self.getCountryFlag = function(value) {
+  getCountryFlag(value) {
     if (value == '') value = 'UN';
     return '/img/cc/' + value + '.gif';
-  };
+  }
 
-  self.getCallStatus = function(value, transaction) {
+  getCallStatus(value, transaction) {
     const status = parseInt(value);
     let result = 'unknown';
     if (transaction === 'call') {
@@ -367,161 +403,18 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
         break;
       }
     }
-
     return result;
+  }
+
+  getCallStatusColor(value, rowIsSelected, transaction) {
+    return this.StyleHelper.getCallStatusColor(value, rowIsSelected, transaction);
   };
 
-  self.getCallStatusColor = function(value, rowIsSelected, transaction) {
-    const status = parseInt(value);
-    let color = 'white';
-
-    if (transaction === 'call') {
-      if (rowIsSelected) {
-        switch (status) {
-        case 1:
-          color = '#CC1900';
-          break;
-        case 2:
-          color = '#FF3332';
-          break;
-        case 3:
-          color = '#B8F2FF';
-          break;
-        case 4:
-          color = '#B8F2FF';
-          break;
-        case 5:
-          color = '#44c51a';
-          break;
-        case 6:
-          color = '#D7CAFA';
-          break;
-        case 7:
-          color = '#FFF6BA';
-          break;
-        case 8:
-          color = 'F41EC7';
-          break;
-        case 9:
-          color = 'F41EC7';
-          break;
-        case 10:
-          color = '#186600';
-          break;
-        case 11:
-          color = '#FFF6BA';
-          break;
-        case 12:
-          color = '#FF7F7E';
-          break;
-        case 13:
-          color = '#FF7F7E';
-          break;
-        case 14:
-          color = 'F41EC7';
-          break;
-        case 15:
-          color = 'F41EC7';
-          break;
-        default:
-          color = 'FFF6BA';
-        }
-      } else {
-        switch (status) {
-        case 1:
-          color = '#9E1E1E';
-          break;
-        case 2:
-          color = '#FF3332';
-          break;
-        case 3:
-          color = '#DDF8FD';
-          break;
-        case 4:
-          color = '#DDF8FD';
-          break;
-        case 5:
-          color = '#44c51a';
-          break;
-        case 6:
-          color = '#E7DDFD';
-          break;
-        case 7:
-          color = '#CCB712';
-          break;
-        case 8:
-          color = '##BC270B';
-          break;
-        case 9:
-          color = '#CEB712';
-          break;
-        case 10:
-          color = '#186600';
-          break;
-        case 11:
-          color = '#CEB712';
-          break;
-        case 12:
-          color = '#FF9F9E';
-          break;
-        case 13:
-          color = '#FF9F9E';
-          break;
-        case 14:
-          color = '#CDB712';
-          break;
-        case 15:
-          color = '#FDE2DD';
-          break;
-        default:
-          color = 'FFF6BA';
-        }
-      }
-    }
-
-    return {
-      'color': color,
-    };
+  getMosColor(rowmos) {
+    return this.StyleHelper.getMosColor(rowmos);
   };
 
-
-  self.getMosColor = function(rowmos) {
-    const mos = parseInt(rowmos / 100);
-    if (mos <= 2) {
-      return {
-        'color': 'red',
-      };
-    } else if (mos <= 3) {
-      return {
-        'color': 'orange',
-      };
-    } else {
-      return {
-        'color': 'green',
-      };
-    }
-  };
-
-
-  self.getCallIDColor = function(str) {
-    if (str === undefined || str === null) return str;
-
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    i = hash;
-    let col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
-    ((i >> 8) & 0xAF).toString(16) + (i & 0xAF).toString(16);
-    if (col.length < 6) col = col.substring(0, 3) + '' + col.substring(0, 3);
-    if (col.length > 6) col = col.substring(0, 6);
-    return {
-      'color': '#' + col,
-    };
-  };
-
-
-  self.getCallDuration = function(start, stop) {
+  getCallDuration(start, stop) {
     if (stop < start || !stop) return '';
     const diff = new Date((stop - start)).getTime();
     const hours = Math.floor(diff / 3600) % 24;
@@ -530,10 +423,10 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     return ('0' + hours).slice(-2) + ':' +
         ('0' + minutes).slice(-2) + ':' +
         ('0' + seconds).slice(-2);
-  };
+  }
 
-  self.showTransaction = function(localrow, event) {
-    const rows = self.gridApi.selection.getSelectedRows();
+  showTransaction(localrow, event) {
+    const rows = this.gridApi.selection.getSelectedRows();
     const callids = [];
     const uuids = [];
     let nodes = [];
@@ -592,14 +485,14 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
     };
 
     /* set to to our last search time */
-    const timezone = UserProfile.getProfile('timezone');
+    const timezone = this.UserProfile.getProfile('timezone');
     localrow.entity.trans = 'call';
     searchData['param']['transaction'][localrow.entity.trans] = true;
     const trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
 
-    nodes = UserProfile.getProfile('node');
+    nodes = this.UserProfile.getProfile('node');
 
-    let searchProfile = UserProfile.getProfile('search');
+    let searchProfile = this.UserProfile.getProfile('search');
     if (searchProfile.hasOwnProperty('uniq')) {
       searchData['param']['search']['uniq'] = searchProfile.uniq;
     }
@@ -613,75 +506,43 @@ const SearchCall = function($scope, $rootScope, EventBus, $http, $location, Sear
       divTop = (event.clientY - ((event.clientY + window.innerHeight / 1.8) - window.innerHeight)).toString() + 'px';
     }
 
-    $homerModal.open({
+    this.$homerModal.open({
       template: '<call-detail></call-detail>',
       component: true,
       cls: 'homer-modal-content',
-      id: 'trans' + SearchHelper.hashCode(trwindowId),
+      id: 'trans' + this.SearchHelper.hashCode(trwindowId),
       params: searchData,
       divLeft: event.clientX.toString() / 2 + 'px',
       divTop,
-      onOpen: function() {
-        $log.debug('modal1 transaction opened from url', this.id);
+      onOpen: () => {
+        this.$log.debug('modal1 transaction opened from url', this.id);
       },
     });
-  }; // END showTransaction
+  }
 
-  self.showInfo = function(row) {
-    $log.debug(row);
-  };
+  showInfo(row) {
+    this.$log.debug(row);
+  }
 
-  self.fileOneUploaded = true;
-  self.fileTwoUploaded = false;
+  saveState() {
+    this.state = this.gridApi.saveState.save();
+    this.localStorageService.set('localStorageGrid', this.state);
+  }
 
-  self.state = localStorageService.get('localStorageGrid');
+  restoreState() {
+    this.state = this.localStorageService.get('localStorageGrid');
+    if (this.state) this.gridApi.saveState.restore(this, this.state);
+  }
 
-  self.saveState = function() {
-    self.state = self.gridApi.saveState.save();
-    localStorageService.set('localStorageGrid', self.state);
-  };
+  resetState() {
+    this.state = {};
+    this.gridApi.saveState.restore(this, this.state);
+    this.localStorageService.set('localStorageGrid', this.state);
+  }
 
-  self.restoreState = function() {
-    self.state = localStorageService.get('localStorageGrid');
-    if (self.state) self.gridApi.saveState.restore(self, self.state);
-  };
-
-  self.resetState = function() {
-    self.state = {};
-    self.gridApi.saveState.restore(self, self.state);
-    localStorageService.set('localStorageGrid', self.state);
-  };
-
-
-  EventBus.subscribe(EVENTS.GRID_STATE_SAVE, function() {
-    console.log('save');
-    self.saveState();
-  });
-
-  EventBus.subscribe(EVENTS.GRID_STATE_RESTORE, function() {
-    console.log('restore');
-    self.restoreState();
-  });
-
-  EventBus.subscribe(EVENTS.GRID_STATE_RESET, function() {
-    console.log('reset');
-    self.resetState();
-  });
-
-  self.gridOpts.rowIdentity = function(row) {
-    return row.id;
-  };
-
-  self.gridOpts.onRegisterApi = function(gridApi) {
-    self.gridApi = gridApi;
-    gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-      $log.debug(row);
-    });
-  };
-
-  self.searchData = function() {
-    self.gridOpts.data = $filter('messageSearch')(self.Data, self.gridOpts, self.searchText);
-  };
-};
+  searchData() {
+    this.gridOpts.data = this.$filter('messageSearch')(this.Data, this.gridOpts, this.searchText);
+  }
+}
 
 export default SearchCall;

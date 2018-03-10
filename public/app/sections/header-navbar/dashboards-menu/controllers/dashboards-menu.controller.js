@@ -1,6 +1,5 @@
 class DashboardsMenu {
-
-  constructor($log, $scope, $state, $uibModal, $location, DashboardStorage, ModalHelper, EVENTS) {
+  constructor($log, $scope, $state, $uibModal, $location, DashboardStorage, ModalHelper, EVENTS, ROUTER) {
     'ngInject';
     this.$log = $log;
     this.$scope = $scope;
@@ -10,13 +9,14 @@ class DashboardsMenu {
     this.DashboardStorage = DashboardStorage;
     this.ModalHelper = ModalHelper;
     this.EVENTS = EVENTS;
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
     this.menu = {
       title: 'Home',
       dashboards: [],
-      isOpen: false
+      isOpen: false,
     };
 
     this.loadDashboardsMenu();
@@ -35,8 +35,9 @@ class DashboardsMenu {
   }
 
   go(dashboard) {
+    debugger;
     this.menu.isOpen = false;
-    return this.$state.go(this.$state.current, {boardID: dashboard.id}).then(() => {
+    return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
       this.menu.title = dashboard.name;
     });
   }
@@ -44,7 +45,7 @@ class DashboardsMenu {
   add() {
     this.menu.isOpen = false;
     this.$uibModal.open({
-      component: 'addDashboard'
+      component: 'addDashboard',
     }).result.then((dashboard) => {
       return this.storeDashboard(dashboard).then((dashboard) => {
         this.menu.dashboards.push(dashboard);
@@ -86,7 +87,7 @@ class DashboardsMenu {
 
   storeDashboard(dashboard) {
     const id = '_' + new Date().getTime();
-    //var currentUser = authService.getCurrentLoginUser(); // to-do: introduce user scopes
+    // const currentUser = authService.getCurrentLoginUser(); // to-do: introduce user scopes
     let name = dashboard.name;
     let type = dashboard.type;
     let param = '';
@@ -115,10 +116,10 @@ class DashboardsMenu {
       type: stype,
       param,
       shared,
-      //uuid: currentUser.uuid, //to-do: introduce user scopes
-      //gid: currentUser.gid,
+      // uuid: currentUser.uuid, //to-do: introduce user scopes
+      // gid: currentUser.gid,
       weight,
-      widgets: []
+      widgets: [],
     };
 
     const menu = {
@@ -130,14 +131,13 @@ class DashboardsMenu {
       param,
       weight,
       shared,
-      icon: ''
+      icon: '',
     };
 
     return this.storeDashboardData(data.id, data).then(() => {
       return this.storeDashboardMenu(menu.id, menu);
     }).then(() => menu);
   }
-  
 }
 
 export default DashboardsMenu;

@@ -1,5 +1,6 @@
 import angular from 'angular';
 import {findIndex, cloneDeep} from 'lodash';
+import uuid from 'uuid/v4'; // temporary, delete when uuid added in DB
 
 class MainDashboard {
   constructor($stateParams, $rootScope, $log, EVENTS, SweetAlert, $state, $uibModal,
@@ -36,6 +37,12 @@ class MainDashboard {
       if (!this.dashboard.widgets) {
         this.dashboard.widgets = [];
       }
+
+      this.dashboard.widgets.forEach((w) => { // temporary, delete when uuid added in DB
+        if (!w.uuid) {
+          w.uuid = uuid();
+        }
+      });
 
       // to-do: add user scopes
     }).catch((error) => {

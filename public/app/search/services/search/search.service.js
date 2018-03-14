@@ -1,3 +1,5 @@
+import {has} from 'lodash';
+
 const SearchService = function($q, $http, UserProfile, API) {
   'ngInject';
 
@@ -57,7 +59,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -74,7 +77,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -92,7 +96,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -110,7 +115,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -128,7 +134,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -146,7 +153,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -164,7 +172,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -182,7 +191,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -200,7 +210,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -218,7 +229,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -237,7 +249,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -255,7 +268,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -273,7 +287,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -291,7 +306,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -309,7 +325,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -327,7 +344,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -345,7 +363,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -364,7 +383,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -398,7 +418,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -422,7 +443,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -445,7 +467,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     $http.get(url, response).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -480,7 +503,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     $http.post(url, data, response).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -504,7 +528,8 @@ const SearchService = function($q, $http, UserProfile, API) {
             defer.reject('request failed');
           } else {
             results.data.ip = ip;
-            defer.resolve(results.data);
+            results = has(results, 'data.data') ? results.data.data : results.data || [];
+            defer.resolve(results);
           }
         },
         /* bad response */
@@ -532,8 +557,9 @@ const SearchService = function($q, $http, UserProfile, API) {
           if (!results || !results.data) {
             defer.reject('request failed');
           } else {
+            results = has(results, 'data.data') ? results.data.data : results.data || [];
             // console.log('GEO-LOOKUP',ip,results);
-            defer.resolve(results.data);
+            defer.resolve(results);
           }
         },
         /* bad response */
@@ -555,7 +581,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {
@@ -573,7 +600,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        defer.resolve(results.data);
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
       },
       /* bad response */
       function() {

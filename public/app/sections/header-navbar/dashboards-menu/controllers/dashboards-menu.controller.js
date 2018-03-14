@@ -35,7 +35,6 @@ class DashboardsMenu {
   }
 
   go(dashboard) {
-    debugger;
     this.menu.isOpen = false;
     return this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: dashboard.id}).then(() => {
       this.menu.title = dashboard.name;

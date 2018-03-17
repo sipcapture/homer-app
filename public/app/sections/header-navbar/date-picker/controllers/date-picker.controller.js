@@ -21,9 +21,8 @@ class DatePicker {
       isOpen: false,
     };
 
-    const timedata = this.TimeMachine.getTime();
-    this.timerange = timedata.timerange;
-    this.timezone = timedata.timezone;
+    this.timerange = this.TimeMachine.getTimerange();
+    this.timezone = this.TimeMachine.getTimezone();
 
     this.quick = new QuickRange();
     this.custom = new CustomRange();
@@ -34,33 +33,31 @@ class DatePicker {
   }
 
   setCustom() {
+    this.menu.isOpen = false;
     const from = moment(this.timerange.from).format('MMM, DD, YYYY HH:mm:ss');
     const to = moment(this.timerange.to).format('MMM, DD, YYYY HH:mm:ss');
     this.timerange.custom = `${from} to ${to}`;
-    this.menu.isOpen = false;
-    this.TimeMachine.setTime({
-      timezone: this.timezone,
-      timerange: this.timerange,
-    });
+
+    this.TimeMachine.setTimerange(this.timerange);
+    this.TimeMachine.setTimezone(this.timezone);
     this.tellDashboardAboutTimeChange();
   }
 
-  setQuick(option, custom = null) {
-    if (custom) {
-      this.timerange = assign(this.timerange, this.quick.getLast(option.min, option.text, this.timezone.value));
+  setQuick(option = null) {
+    this.menu.isOpen = false;
+    if (!option) {
+      const title = `Last ${this.quick.custom.last} Minutes`;
+      this.timerange = assign(this.timerange, this.quick.getLast(this.quick.custom.last, title, this.timezone.value));
     } else {
       this.timerange = assign(this.timerange, this.quick.getRange(option, this.timezone.value));
     }
-    this.menu.isOpen = false;
-    this.TimeMachine.setTime({
-      timezone: this.timezone,
-      timerange: this.timerange,
-    });
+
+    this.TimeMachine.setTimerange(this.timerange);
     this.tellDashboardAboutTimeChange();
   }
 
   tellDashboardAboutTimeChange() {
-    this.EventBus.broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
+    this.EventBus.broadcast(this.EVENTS.TIME_CHANGE);
   }
 }
 

@@ -69,8 +69,8 @@ class UserProfile {
     return this.$http.get(this.API.PROFILE.STORE, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data, (value, key) => {
         if (key === 'timerange') {
-          value.from = new Date(value.from);
-          value.to = new Date(value.to);
+          value.from = value.from;
+          value.to = value.to;
           this.TimeMachine.setTimerange(value);
           // this.profileScope.timerange = jsonObj; // to-do: it is reference to the old code, delete it during the final review
         } else if (key === 'timezone') {

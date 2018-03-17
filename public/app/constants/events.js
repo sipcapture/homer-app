@@ -31,6 +31,7 @@ const EVENTS = {
   SHOW_NEW_MESSAGE: 'showNewMessage',
   WEBSOCKET_OPEN: 'websocketOpen',
   WEBSOCKET_COMMAND: 'websocket:command',
+  TIME_CHANGE: 'time:change',
 };
 
 export default EVENTS;

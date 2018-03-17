@@ -5,35 +5,58 @@ class TimeMachine {
       name: 'Default',
     };
     this.timerange = {
-      from: new Date(new Date().getTime() - 900*1000),
-      to: new Date(),
+      from: new Date(this.getStartOfDay(this.timezone.value)),
+      to: new Date(this.getNowTime(this.timezone.value)),
       custom: 'Today',
     };
   }
 
-  // to-do: add methods to store timezone and timerange in DB
-  setTime(data) {
-    if (data.timezone) {
-      this.timezone = data.timezone;
-    }
-    if (data.timerange) {
-      this.timerange = data.timerange;
-    }
+  /**
+  * Get time from today start
+  *
+  * @param {integer} offset for timezone (min)
+  * @return {integer} num of ms since 1970/01/01 till today start
+  */
+  getStartOfDay(offset = 0) {
+    return new Date().setHours(0, 0, 0, 0) - offset * 60000;
   }
 
+  /**
+  * Get now time
+  *
+  * @param {integer} offset for timezone (min)
+  * @return {integer} num of ms since 1970/01/01 till now
+  */
+  getNowTime(offset = 0) {
+    return new Date().getTime() - offset * 60000;
+  }
+
+  /**
+  * Shift time
+  *
+  * @param {integer} value to shift for (ms)
+  */
+  shiftTime(value) {
+    this.timerange.from = new Date(this.timerange.from.getTime() + value);
+    this.timerange.to = new Date(this.timerange.to.getTime() + value);
+  }
+
+  /**
+  * Set time zone
+  *
+  * @param {object} timezone
+  */
   setTimezone(timezone) {
     this.timezone = timezone;
   }
 
+  /**
+  * Set time range
+  *
+  * @param {object} timerange
+  */
   setTimerange(timerange) {
     this.timerange = timerange;
-  }
-
-  getTime() {
-    return {
-      timezone: this.timezone,
-      timerange: this.timerange,
-    };
   }
 
   getTimezone() {

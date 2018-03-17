@@ -10,7 +10,7 @@ import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_us
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
-    $state, EVENTS, $log, CONFIGURATION, SearchHelper, StyleHelper) {
+    $state, EVENTS, $log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -29,6 +29,7 @@ class SearchCall {
     this.CONFIGURATION = CONFIGURATION;
     this.SearchHelper = SearchHelper;
     this.StyleHelper = StyleHelper;
+    this.TimeMachine = TimeMachine;
     this.expandme = true;
     this.showtable = true;
     this.dataLoading = false;
@@ -43,6 +44,13 @@ class SearchCall {
   }
 
   $onInit() {
+    this.updateTime();
+
+    this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
+      this.updateTime();
+      this.processSearchResult();
+    });
+
     this.UserProfile.getAll().then(() => {
       this.processSearchResult();
     }).catch((error) => {
@@ -67,197 +75,158 @@ class SearchCall {
         this.$log.debug(row);
       });
     };
+  }
 
-    const myListener = this.EventBus.subscribe(this.EVENTS.SEARCH_CALL_SUBMIT, () => {
-      this.processSearchResult();
-    });
+  async processSearchResult() {
+    const query = this.createQuery();
 
-    this.$scope.$on('$destroy', () => {
-      this.EventBus.broadcast(this.EVENTS.DESTROY_REFESH, '1');
-      myListener();
-    });
+    try {
+      this.dataLoading = true;
+      const data = await this.SearchService.searchCallByParam(query);
+      this.dataLoading = false;
 
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_SAVE, () => {
-      this.saveState();
-    });
+      if (data) {
+        this.restoreState();
+        this.count = data.length;
+        this.gridOpts.data = data;
+        this.Data = data;
+        this.$timeout(() => {
+          angular.element(this.$window).resize();
+        }, 200);
+      }
+    } catch (err) {
+      this.$log.error(['SearchCall'], err);
+    }
+  }
 
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESTORE, () => {
-      this.restoreState();
-    });
+  updateTime() {
+    this.timezone = this.TimeMachine.getTimezone();
+    this.timedate = this.TimeMachine.getTimerange();
+  }
 
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
-      this.resetState();
+  killParam(param) {
+    this.SweetAlert.swal({
+      title: 'Remove Filter?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DD6B55',
+      confirmButtonText: 'Yes, delete it!',
+      closeOnConfirm: true,
+      closeOnCancel: true,
+    },
+    (isConfirm) => {
+      if (isConfirm) {
+        delete this.searchParams[param];
+        this.processSearchResult();
+      }
     });
   }
 
-  processSearchResult() {
-    this.bump = false;
-    /* save data for next search */
-    const data = {
+  editParam(param) {
+    this.SweetAlert.swal({
+      title: `Edit Filter: [${param}]`,
+      type: 'input',
+      showCancelButton: true,
+      confirmButtonText: 'Update',
+      closeOnConfirm: true,
+      closeOnCancel: true,
+      inputPlaceholder: this.searchParams[param],
+    },
+    (input) => {
+      if (input) {
+        this.searchParams[param] = input;
+        this.processSearchResult();
+      }
+    });
+  }
+
+  swapParam(param) {
+    if (!this.searchParamsBackup[param]) {
+      this.searchParamsBackup[param] = this.searchParams[param];
+      delete this.searchParams[param];
+    } else {
+      this.searchParams[param] = this.searchParamsBackup[param];
+      delete this.searchParamsBackup[param];
+    }
+  }
+
+  createQuery() {
+    const query = {
       param: {},
-      timestamp: {},
+      timestamp: {
+        from: this.timedate.from.getTime(),
+        to: this.timedate.to.getTime(),
+      },
     };
 
     const transaction = this.UserProfile.getProfile('transaction');
     let limit = this.UserProfile.getProfile('limit');
-    const timezone = this.UserProfile.getProfile('timezone');
     const value = this.UserProfile.getProfile('search');
-    let timedate;
-
-    /* force time update for "last x minutes" ranges */
-    const timeNow = this.UserProfile.getProfile('timerange_last');
-    if (timeNow > 0) {
-      console.log('fast-forward to last ' + timeNow + ' minutes...');
-      this.diff = (new Date().getTimezoneOffset() - timezone.value);
-      const dt = new Date(new Date().setMinutes(new Date().getMinutes() - timeNow + this.diff));
-      timedate = {
-        from: dt,
-        to: new Date(new Date().setMinutes(new Date().getMinutes() + this.diff)),
-        custom: 'Now() - ' + timeNow,
-      };
-      this.UserProfile.setProfile('timerange', timedate);
-    } else {
-      timedate = this.UserProfile.getProfile('timerange');
-    }
 
     /* query manipulation functions & store */
     this.searchParams = value;
-    this.killParam = (param) => {
-      this.SweetAlert.swal({
-        title: 'Remove Filter?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, delete it!',
-        closeOnConfirm: true,
-        closeOnCancel: true,
-      },
-      (isConfirm) => {
-        if (isConfirm) {
-          delete this.searchParams[param];
-          this.processSearchResult();
-        }
-      });
-    };
-
-    this.editParam = (param) => {
-      this.SweetAlert.swal({
-        title: `Edit Filter: [${param}]`,
-        type: 'input',
-        showCancelButton: true,
-        confirmButtonText: 'Update',
-        closeOnConfirm: true,
-        closeOnCancel: true,
-        inputPlaceholder: this.searchParams[param],
-      },
-      (input) => {
-        if (input) {
-          this.searchParams[param] = input;
-          this.processSearchResult();
-        }
-      });
-    };
-
-    this.swapParam = (param) => {
-      if (!this.searchParamsBackup[param]) {
-        this.searchParamsBackup[param] = this.searchParams[param];
-        delete this.searchParams[param];
-      } else {
-        this.searchParams[param] = this.searchParamsBackup[param];
-        delete this.searchParamsBackup[param];
-      }
-    };
 
     /* preference processing */
-    const sObj = {};
+    const queryBody = {};
     const searchQueryObject = this.$location.search();
-    if (searchQueryObject.hasOwnProperty('query')) {
+    if (searchQueryObject.query) {
       let rison = searchQueryObject.query;
       rison = rison.substring(1, rison.length - 2);
       const ar = rison.split('\',');
       for (let i = 0; i < ar.length; i++) {
         const va = ar[i].split(':\'');
-        sObj[va[0]] = va[1];
+        queryBody[va[0]] = va[1];
       }
     }
 
-    this.diff = (new Date().getTimezoneOffset() - timezone.value);
-    this.diff = this.diff * 60 * 1000;
-    this.offset = timezone.offset;
-
-    if (Object.keys(sObj).length == 0) {
+    if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
-      data.param.transaction = {};
-      data.param.limit = limit;
-      data.param.search = value;
-      data.param.location = {};
-      data.param.timezone = timezone;
-      data.timestamp.from = timedate.from.getTime() - this.diff;
-      data.timestamp.to = timedate.to.getTime() - this.diff;
+      query.param.transaction = {};
+      query.param.limit = limit;
+      query.param.search = value;
+      query.param.location = {};
+      query.param.timezone = this.timezone;
       forEach(transaction.transaction, function(v) {
-        data.param.transaction[v.name] = true;
+        query.param.transaction[v.name] = true;
       });
     } else {
-      data.timestamp.from = timedate.from.getTime() + this.diff;
-      data.timestamp.to = timedate.to.getTime() + this.diff;
-      data.param.transaction = {};
+      query.param.transaction = {};
 
       const searchValue = {};
-      if (sObj.hasOwnProperty('limit')) limit = sObj['limit'];
-      if (sObj.hasOwnProperty('startts')) {
-        data.timestamp.from = sObj['startts'] * 1000;
+      if (queryBody.limit) {
+        limit = queryBody.limit;
       }
-      if (sObj.hasOwnProperty('endts')) {
-        data.timestamp.to = sObj['endts'] * 1000;
+      if (queryBody.startts) {
+        query.timestamp.from = queryBody.startts * 1000;
       }
-
-      if (sObj.hasOwnProperty('startdate')) {
-        let v = new Date(sObj['startdate']);
-        data.timestamp.from = v.getTime();
-      }
-      if (sObj.hasOwnProperty('enddate')) {
-        let v = new Date(sObj['enddate']);
-        data.timestamp.to = v.getTime();
-        console.log(data);
+      if (queryBody.endts) {
+        query.timestamp.to = queryBody['endts'] * 1000;
       }
 
-      if (sObj.hasOwnProperty('trancall')) data.param.transaction['call'] = true;
-      if (sObj.hasOwnProperty('tranreg')) data.param.transaction['registration'] = true;
-      if (sObj.hasOwnProperty('tranrest')) data.param.transaction['rest'] = true;
+      if (queryBody.startdate) {
+        let v = new Date(queryBody.startdate);
+        query.timestamp.from = v.getTime();
+      }
+      if (queryBody.enddate) {
+        let v = new Date(queryBody.enddate);
+        query.timestamp.to = v.getTime();
+        console.log(query);
+      }
 
-      if (sObj.hasOwnProperty('search_callid')) searchValue['callid'] = sObj['search_callid'];
-      if (sObj.hasOwnProperty('search_ruri_user')) searchValue['ruri_user'] = sObj['search_ruri_user'];
-      if (sObj.hasOwnProperty('search_from_user')) searchValue['from_user'] = sObj['search_from_user'];
-      if (sObj.hasOwnProperty('search_to_user')) searchValue['to_user'] = sObj['search_to_user'];
+      if (queryBody.trancall) query.param.transaction.call = true;
+      if (queryBody.tranreg) query.param.transaction.registration = true;
+      if (queryBody.tranrest) query.param.transaction.rest = true;
 
-      data.param.limit = limit;
-      data.param.search = searchValue;
-      data.param.location = {};
+      if (queryBody.search_callid) searchValue.callid = queryBody.search_callid;
+      if (queryBody.search_ruri_user) searchValue.ruri_user = queryBody.search_ruri_user;
+      if (queryBody.search_from_user) searchValue.from_user = queryBody.search_from_user;
+      if (queryBody.search_to_user) searchValue.to_user = queryBody.search_to_user;
 
-      /* set back timerange */
-      timedate.from = new Date(data.timestamp.from - this.diff);
-      timedate.to = new Date(data.timestamp.to - this.diff);
-      this.UserProfile.setProfile('timerange', timedate);
-      this.EventBus.broadcast(this.EVENTS.SET_TIME_RANGE, timedate);
+      query.param.limit = limit;
+      query.param.search = searchValue;
+      query.param.location = {};
     }
-
-    this.dataLoading = true;
-
-    this.SearchService.searchCallByParam(data).then((sdata) => {
-      if (sdata) {
-        this.restoreState();
-        this.count = sdata.length;
-        this.gridOpts.data = sdata;
-        this.Data = sdata;
-        this.$timeout(() => {
-          angular.element(this.$window).resize();
-        }, 200);
-      }
-    }).catch((error) => {
-      this.$log.error(['SearchCall'], error);
-    }).finally(() => {
-      this.dataLoading = false;
-    });
+    return query;
   }
 
   intToARGB(i) {
@@ -485,7 +454,7 @@ class SearchCall {
     };
 
     /* set to to our last search time */
-    const timezone = this.UserProfile.getProfile('timezone');
+    // const timezone = this.UserProfile.getProfile('timezone');
     localrow.entity.trans = 'call';
     searchData['param']['transaction'][localrow.entity.trans] = true;
     const trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
@@ -497,7 +466,7 @@ class SearchCall {
       searchData['param']['search']['uniq'] = searchProfile.uniq;
     }
 
-    searchData['param']['timezone'] = timezone;
+    searchData['param']['timezone'] = this.timezone;
 
     let divTop;
     if ((event.clientY + window.innerHeight / 2) < window.innerHeight) {

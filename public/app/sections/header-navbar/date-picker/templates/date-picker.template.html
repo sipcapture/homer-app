@@ -27,17 +27,15 @@
             <span class="input-label">Custom Quick Range</span>
             <span class="form-control">
               <center>
-                <button class="lastRangeButton"
-                  ng-click="$ctrl.setQuick({'min':timerange_last, 'text':'Last '+timerange_last+' Minutes'}, true);"> Set To </button>
+                <button class="lastRangeButton" ng-click="$ctrl.setQuick()"> Set To</button>
                 Last 
                 <input
+                  id="lastRangeInput"
                   type="number"
-                  ng-model="timerange_last"
-                  min="1"
-                  max="59"
+                  ng-model="$ctrl.quick.custom.last"
+                  size="4"
                   required
-                  style="margin-right:5px;"
-                  ng-init="timerange_last=5"> Minutes
+                >Minutes
               </center>
             </span>
           </div> <!-- END custom -->

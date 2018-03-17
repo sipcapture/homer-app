@@ -6,6 +6,9 @@ class QuickRange {
       left: dataQuickrangeOptions.slice(0, dataQuickrangeOptions.length/2),
       right: dataQuickrangeOptions.slice(dataQuickrangeOptions.length/2, dataQuickrangeOptions.length),
     };
+    this.custom = {
+      last: 5, // min
+    };
   }
 
   getRange(option, timezone) {
@@ -20,7 +23,7 @@ class QuickRange {
 
   getDay(day, text, timezone) {
     const min = day * 1440;
-    const diff = (new Date().getTimezoneOffset() - timezone);
+    const diff = new Date().getTimezoneOffset() - timezone;
     const bdt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
     const sdt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
     bdt.setHours(0, 0, 0, 0);
@@ -33,22 +36,20 @@ class QuickRange {
   }
 
   getNext(min, text, timezone) {
-    const diff = (new Date().getTimezoneOffset() - timezone);
-    const dt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
+    const diff = new Date().getTimezoneOffset() - timezone;
     return {
       from: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
-      to: dt,
+      to: new Date(new Date().setMinutes(new Date().getMinutes() + min + diff)),
       custom: text,
     };
   }
 
-  getLast(min, text, timezone) {
-    const diff = (new Date().getTimezoneOffset() - timezone);
-    const dt = new Date(new Date().setMinutes(new Date().getMinutes() - min + diff));
+  getLast(value, title, timezone) {
+    const diff = new Date().getTimezoneOffset() - timezone;
     return {
-      from: dt,
+      from: new Date(new Date().setMinutes(new Date().getMinutes() - value + diff)),
       to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
-      custom: text,
+      custom: title,
     };
   }
 }

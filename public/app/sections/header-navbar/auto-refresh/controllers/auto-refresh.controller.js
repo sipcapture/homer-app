@@ -1,11 +1,12 @@
 import dataRefresh from '../data/refresh_list';
 
 class AutoRefresh {
-  constructor($log, $interval, EventBus, EVENTS) {
+  constructor($log, $interval, EventBus, TimeMachine, EVENTS) {
     'ngInject';
     this.$log = $log;
     this.$interval = $interval;
     this.EventBus = EventBus;
+    this.TimeMachine = TimeMachine;
     this.EVENTS = EVENTS;
     this.loop;
     this.menu = {
@@ -24,7 +25,8 @@ class AutoRefresh {
    
     this.$interval.cancel(this.loop);
     this.loop = this.$interval(() => {
-      this.EventBus.broadcast(this.EVENTS.WIDGETS_GLOBAL_RELOAD, 1);
+      this.TimeMachine.shiftTime(delay);
+      this.EventBus.broadcast(this.EVENTS.TIME_CHANGE);
     }, delay);
   }
 

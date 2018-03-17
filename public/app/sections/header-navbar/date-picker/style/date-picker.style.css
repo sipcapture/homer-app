@@ -2,3 +2,8 @@ div.hepic2-date-picker-menu div.dropdown-menu {
   width: 350px;
   font-size: 15px;
 }
+
+input#lastRangeInput {
+  width: 100px;
+  margin-right: 5px;
+}

@@ -25,7 +25,7 @@ class CustomRange {
   }
 
   getNowDate(field, timezone) {
-    const diff = (new Date().getTimezoneOffset() - timezone);
+    const diff = new Date().getTimezoneOffset() - timezone;
     if (field === 'to') {
       return {
         to: new Date().setMinutes(new Date().getMinutes() + diff),

@@ -24,6 +24,13 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
         component: 'footerBar',
       },
     },
+    resolve: {
+      dashboardsMenu: function($log, DashboardStorage) {
+        return DashboardStorage.getAll().catch(function(err) {
+          $log.error(['headerNavbar state'], ['resolve dashboards'], err);
+        });
+      },
+    },
   });
 
   $urlRouterProvider.otherwise(ROUTER.HOME.PATH); // default route

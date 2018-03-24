@@ -1,5 +1,7 @@
+import {assign} from 'lodash';
+
 class DashboardsMenu {
-  constructor($log, $scope, $state, $uibModal, $location, DashboardStorage, ModalHelper, EVENTS, ROUTER) {
+  constructor($log, $scope, $state, $uibModal, $location, DashboardStorage, ModalHelper, EVENTS, ROUTER, EventBus) {
     'ngInject';
     this.$log = $log;
     this.$scope = $scope;
@@ -10,27 +12,23 @@ class DashboardsMenu {
     this.ModalHelper = ModalHelper;
     this.EVENTS = EVENTS;
     this.ROUTER = ROUTER;
+    this.EventBus = EventBus;
   }
 
   $onInit() {
     this.menu = {
       title: 'Home',
-      dashboards: [],
       isOpen: false,
     };
 
-    this.loadDashboardsMenu();
-
-    this.$scope.$on(this.EVENTS.DASHBOARD_DELETED, () => {
-      this.loadDashboardsMenu().then(() => {
-        this.updateTitle();
-      });
+    this.EventBus.subscribe(this.EVENTS.DASHBOARD_DELETED, (event, forDelete) => {
+      this.dashboards = this.deleteDashboard(forDelete.dashboardId);
+      this.menu.title = this.updateTitle();
     });
 
-    this.$scope.$on(this.EVENTS.DASHBOARD_UPDATE_SETTINGS, () => {
-      this.loadDashboardsMenu().then(() => {
-        this.updateTitle();
-      });
+    this.EventBus.subscribe(this.EVENTS.DASHBOARD_UPDATE_SETTINGS, (event, forUpdate) => {
+      this.updateDashboard(forUpdate.dashboardId, forUpdate.update);
+      this.menu.title = this.updateTitle();
     });
   }
 
@@ -47,7 +45,7 @@ class DashboardsMenu {
       component: 'addDashboard',
     }).result.then((dashboard) => {
       return this.storeDashboard(dashboard).then((dashboard) => {
-        this.menu.dashboards.push(dashboard);
+        this.dashboards.push(dashboard);
         return this.go(dashboard);
       });
     }).catch((error) => {
@@ -57,11 +55,17 @@ class DashboardsMenu {
     });
   }
 
-  updateTitle() {
-    const dashboard = this.menu.dashboards.filter((d) => d.id === this.pathId())[0];
-    if (dashboard) {
-      this.menu.title = dashboard.name;
-    }
+  deleteDashboard(dashId) {
+    return this.dashboards.filter((d) => d.id !== dashId);
+  }
+
+  updateTitle(dashboards) {
+    return this.dashboards.filter((d) => d.href === this.pathId())[0].name;
+  }
+
+  updateDashboard(dashId, update) {
+    const index = this.dashboards.findIndex((d) => d.href === dashId);
+    this.dashboards[index] = assign(this.dashboards[index], update);
   }
 
   pathId() {
@@ -70,7 +74,7 @@ class DashboardsMenu {
 
   loadDashboardsMenu() {
     return this.DashboardStorage.getAll().then((dashboards) => {
-      this.menu.dashboards = dashboards;
+      this.dashboards = dashboards;
     }).catch((error) => {
       this.$log.error('[DashboardsMenu]', '[init menu]', error);
     });

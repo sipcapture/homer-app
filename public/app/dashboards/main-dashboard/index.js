@@ -7,6 +7,13 @@ export default angular.module('hepicApp.mainDashboard', [])
     $stateProvider.state(ROUTER.DASHBOARD.NAME, {
       url: ROUTER.DASHBOARD.PATH,
       component: 'mainDashboard',
+      resolve: {
+        dashboard: function($log, $stateParams, DashboardStorage) {
+          return DashboardStorage.get($stateParams.boardID).catch(function(err) {
+            $log.error(['mainDashboard state'], ['resolve dashboard'], err);
+          });
+        },
+      },
     });
   })
   .component('mainDashboard', component);

@@ -19,8 +19,12 @@ class LoginUser {
   
   async login() {
     try {
-      await this.AuthenticationService.login(this.username, this.password);
-      this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: this.ROUTER.HOME.NAME});
+      const resp = await this.AuthenticationService.login(this.username, this.password);
+      if (resp.status === 200) {
+        this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: this.ROUTER.HOME.NAME});
+      } else {
+        await this.AuthenticationService.logout();
+      }
     } catch (err) {
       this.$log.error(['LoginUser'], ['login'], err);
     }

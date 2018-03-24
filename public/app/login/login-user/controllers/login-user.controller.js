@@ -1,5 +1,4 @@
 class LoginUser {
-
   constructor($state, $log, $location, $localStorage, $http, AuthenticationService, ROUTER) {
     'ngInject';
     this.ROUTER = ROUTER;
@@ -18,15 +17,14 @@ class LoginUser {
     this.$http.defaults.headers.common.Authorization = '';
   }
   
-  login() {
-    this.AuthenticationService.login(this.username, this.password).then(() => {
-      this.$state.go(this.ROUTER.DASHBOARD.NAME, { boardID: this.ROUTER.HOME.NAME });
-    }).catch((error) => {
-      this.error = error;
-      this.$log.error(error);
-    });
+  async login() {
+    try {
+      await this.AuthenticationService.login(this.username, this.password);
+      this.$state.go(this.ROUTER.DASHBOARD.NAME, {boardID: this.ROUTER.HOME.NAME});
+    } catch (err) {
+      this.$log.error(['LoginUser'], ['login'], err);
+    }
   }
-
 }
 
 export default LoginUser;

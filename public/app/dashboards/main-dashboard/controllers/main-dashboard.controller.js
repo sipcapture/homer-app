@@ -4,7 +4,7 @@ import uuid from 'uuid/v4'; // temporary, delete when uuid added in DB
 
 class MainDashboard {
   constructor($stateParams, $rootScope, $log, EVENTS, SweetAlert, $state, $uibModal,
-    CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER) {
+    CONFIGURATION, DashboardWidgetState, DashboardStorage, ModalHelper, ROUTER, EventBus) {
     'ngInject';
     this.$stateParams = $stateParams;
     this.$rootScope = $rootScope;
@@ -18,35 +18,25 @@ class MainDashboard {
     this.DashboardWidgetState = DashboardWidgetState;
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
+    this.EventBus = EventBus;
   }
 
   $onInit() {
     this.gridsterOptions = this.CONFIGURATION.DASHBOARD_DEFAULT;
     this.registeredWidgets = this.DashboardWidgetState.widgets;
-    this.initDashboard();
-  }
+  
+    if (!this.dashboard) {
+      this.dashboard = {};
+    }
 
-  initDashboard() {
-    return this.DashboardStorage.get(this.$stateParams.boardID).then((dashboard) => {
-      this.dashboard = dashboard;
+    if (!this.dashboard.widgets) {
+      this.dashboard.widgets = [];
+    }
 
-      if (!this.dashboard) {
-        this.dashboard = {};
+    this.dashboard.widgets.forEach((w) => { // temporary, delete when uuid added in DB
+      if (!w.uuid) {
+        w.uuid = uuid();
       }
-
-      if (!this.dashboard.widgets) {
-        this.dashboard.widgets = [];
-      }
-
-      this.dashboard.widgets.forEach((w) => { // temporary, delete when uuid added in DB
-        if (!w.uuid) {
-          w.uuid = uuid();
-        }
-      });
-
-      // to-do: add user scopes
-    }).catch((error) => {
-      this.$log.error('[MainDashboard]', '[load dashboards]', error);
     });
   }
 
@@ -75,8 +65,12 @@ class MainDashboard {
     });
   }
 
-  saveBoard() {
-    this.DashboardStorage.set(this.dashboard.alias, angular.toJson(this.dashboard));
+  async saveBoard() {
+    try {
+      return await this.DashboardStorage.set(this.dashboard.alias, angular.toJson(this.dashboard));
+    } catch (err) {
+      this.$log.error(['MainDashboard'], ['save board'], err);
+    }
   }
 
   deleteBoard() {
@@ -97,10 +91,10 @@ class MainDashboard {
 
       if (confirm) {
         this.DashboardStorage.delete(this.dashboard.id).then(() => {
-          this.$rootScope.$broadcast(this.EVENTS.DASHBOARD_DELETED);
+          this.EventBus.broadcast(this.EVENTS.DASHBOARD_DELETED, {dashboardId: this.dashboard.id});
           this.goHomeDashboard();
         }).catch((error) => {
-          this.$log.error('[MainDashboard]', '[delete board]', error);
+          this.$log.error(['MainDashboard'], ['delete board'], error);
         });
       }
     });
@@ -130,7 +124,7 @@ class MainDashboard {
       };
 
       return this.DashboardStorage.update(dashboard.id, update).then(() => {
-        this.$rootScope.$broadcast(this.EVENTS.DASHBOARD_UPDATE_SETTINGS);
+        this.EventBus.broadcast(this.EVENTS.DASHBOARD_UPDATE_SETTINGS, {dashboardId: this.dashboard.id, update});
       });
     }).catch((error) => {
       if (this.ModalHelper.isError(error)) {

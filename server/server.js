@@ -39,7 +39,7 @@ pem.createCertificate({
   
   server.connection({
     host: config.https_host || '127.0.0.1',
-    port: config.https_port,
+    port: config.https_port || 443,
     tls,
   });
   

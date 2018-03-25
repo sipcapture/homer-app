@@ -1,6 +1,8 @@
-class AuthenticationService {
+import {has} from 'lodash';
 
-  constructor($rootScope, $state, $http, $localStorage, ROUTER, API) {
+class AuthenticationService {
+  constructor($log, $rootScope, $state, $http, $localStorage, ROUTER, API) {
+    this.$log = $log;
     this.$rootScope = $rootScope;
     this.$state = $state;
     this.$http = $http;
@@ -9,21 +11,23 @@ class AuthenticationService {
     this.API = API;
   }
 
-  login(username, password) {
-    return this.$http.post(this.API.AUTH, { username, password }).then((response) => {
-      const data = response.data;
-      if (!data.token) {
-        throw new Error('something went wrong, no JWT token received');
+  async login(username, password) {
+    try {
+      const resp = await this.$http.post(this.API.AUTH, {username, password});
+      if (!has(resp, 'data.token') || !resp.data.token.length) {
+        throw new Error('something went wrong, no JWT token received, probably wrong credentials used to login');
       }
 
       this.$localStorage.user = {
         username,
-        token: data.token
+        token: resp.data.token,
       };
 
-      this.$http.defaults.headers.common.Authorization = `Bearer ${data.token}`;
-      return null;
-    });
+      this.$http.defaults.headers.common.Authorization = `Bearer ${resp.data.token}`;
+      return resp;
+    } catch (err) {
+      throw err;
+    }
   }
 
   logout() {

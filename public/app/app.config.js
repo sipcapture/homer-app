@@ -34,7 +34,7 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
   });
 
   $urlRouterProvider.otherwise(ROUTER.HOME.PATH); // default route
-  $httpProvider.interceptors.push('AuthenticationInterceptor'); // intercepts every response error - e.g., 'unauthorized'
+  $httpProvider.interceptors.push('RequestResponseInterceptor'); // intercepts every response error - e.g., 'unauthorized'
 });
 
 export default app;

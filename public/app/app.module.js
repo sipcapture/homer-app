@@ -32,6 +32,10 @@ import 'wavesurfer.js';
 import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
 import 'angular-filter';
+import 'font-awesome-webpack';
+
+// style
+import 'font-awesome/css/font-awesome.css';
 
 // old homer modal. To-do: refactor this modal to component based structure
 import './search/hepic-modal/homerCflow';

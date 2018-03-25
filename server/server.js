@@ -33,11 +33,13 @@ pem.createCertificate({
   };
   
   server.connection({
-    port: config.http_port,
+    host: config.http_host || '127.0.0.1',
+    port: config.http_port || 8001,
   });
   
   server.connection({
-    port: config.https_port,
+    host: config.https_host || '127.0.0.1',
+    port: config.https_port || 443,
     tls,
   });
   

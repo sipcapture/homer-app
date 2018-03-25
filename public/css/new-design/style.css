@@ -4400,6 +4400,7 @@ main:before {
 .modal .modal-dialog .modal-content .modal-header {
 	background: #24465F;
 	border: 0;
+	color: #FFF;
 }
 
 .modal .tab-content {

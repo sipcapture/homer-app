@@ -1,10 +1,11 @@
 import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
-  constructor($log, AuthenticationService) {
+  constructor($log, AuthenticationService, UI) {
     'ngInject';
     this.$log = $log;
     this.AuthenticationService = AuthenticationService;
+    this.ui = UI;
   }
 
   $onInit() {

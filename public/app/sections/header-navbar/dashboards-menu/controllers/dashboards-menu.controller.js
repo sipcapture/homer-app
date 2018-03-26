@@ -23,7 +23,7 @@ class DashboardsMenu {
 
     this.EventBus.subscribe(this.EVENTS.DASHBOARD_DELETED, (event, forDelete) => {
       this.dashboards = this.deleteDashboard(forDelete.dashboardId);
-      this.menu.title = this.updateTitle();
+      this.menu.title = 'Home';
     });
 
     this.EventBus.subscribe(this.EVENTS.DASHBOARD_UPDATE_SETTINGS, (event, forUpdate) => {
@@ -50,7 +50,7 @@ class DashboardsMenu {
       });
     }).catch((error) => {
       if (this.ModalHelper.isError(error)) {
-        this.$log.error('[DashboardsMenu]', '[add dashboard]', error);
+        this.$log.error(['DashboardsMenu'], ['add dashboard'], error);
       }
     });
   }
@@ -59,12 +59,17 @@ class DashboardsMenu {
     return this.dashboards.filter((d) => d.id !== dashId);
   }
 
-  updateTitle(dashboards) {
-    return this.dashboards.filter((d) => d.href === this.pathId())[0].name;
+  updateTitle() {
+    const currentDash = this.dashboards.filter((d) => d.id === this.pathId())[0];
+    if (currentDash) {
+      return currentDash.name;
+    }
+    this.$log.error(['DashboardsMenu'], ['add dashboard'], 'fail to find current dashboard name');
+    return 'Dashboard';
   }
 
   updateDashboard(dashId, update) {
-    const index = this.dashboards.findIndex((d) => d.href === dashId);
+    const index = this.dashboards.findIndex((d) => d.id === dashId);
     this.dashboards[index] = assign(this.dashboards[index], update);
   }
 
@@ -76,7 +81,7 @@ class DashboardsMenu {
     return this.DashboardStorage.getAll().then((dashboards) => {
       this.dashboards = dashboards;
     }).catch((error) => {
-      this.$log.error('[DashboardsMenu]', '[init menu]', error);
+      this.$log.error(['DashboardsMenu'], ['init menu'], error);
     });
   }
 

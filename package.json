@@ -83,6 +83,7 @@
     "requirejs": "2.3.5",
     "select": "1.1.2",
     "sortablejs": "1.1.1",
+    "sweetalert": "2.1.0",
     "ui-leaflet": "1.0.3",
     "ui-select": "0.19.5",
     "underscore": "1.7.0",

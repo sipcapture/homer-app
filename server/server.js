@@ -7,7 +7,7 @@ import proxyConfig from './config/proxy'; // temporary, to be deleted when the n
 
 const routes = {
   auth: require('./routes/authentication'),
-  search: require('./routes/search'),    
+  search: require('./routes/search'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
   proxy: require('./routes/proxy'),

@@ -7,14 +7,13 @@ const table = 'users';
  * A class to handle users in DB
  */
 class User extends LivingBeing {
-
   /**
    * Class constructor
    *
    * @param {object} username - name of user
    */
   constructor(username) {
-    super({ table });
+    super({table});
     this.username = username;
   }
 
@@ -22,18 +21,18 @@ class User extends LivingBeing {
    * Get user data by 'username'
    *
    * @param {array} columns - list of column names
+   * @return {array} data from table
    */
   get(columns) {
     return Knex(table)
       .where({
-        username: this.username
+        username: this.username,
       })
       .select(columns)
-      .then(function ([user]) {
+      .then(function([user]) {
         return user;
       });
   }
-
 }
 
 export default User;

@@ -5,6 +5,6 @@ export default {
   https_port: 8000,
   certificate: {
     self_signed: true,
-    days: 1
-  }
+    days: 1,
+  },
 };

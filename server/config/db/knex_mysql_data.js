@@ -7,5 +7,5 @@ export default require('knex')({
     password: 'password',
     database: 'homerdatadev',
     charset: 'utf8',
-  }
+  },
 });

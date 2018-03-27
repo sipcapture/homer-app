@@ -1,4 +1,3 @@
-import Knex from '../config/db/knex_pgsql_data';
 import LivingBeing from './living_being';
 
 const table = 'hep';
@@ -10,11 +9,13 @@ class SearchData extends LivingBeing {
   /**
    * Class constructor
    *
-   * @param {object} param - param of search
+   * @param {object} server of hapi
+   * @param {object} param of search
    */
-  constructor(param) {
-    super({table, param});
+  constructor(server, param) {
+    super({db: server.databases.data, table, param});
     this.param = 1;
+    this.dataDb = server.databases.data;
   }
 
   /*
@@ -23,7 +24,7 @@ class SearchData extends LivingBeing {
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
   get(columns) {
-    return Knex(table)
+    return this.dataDb(table)
       .whereRaw('(hep_header->>"payloadType")::int = ? ', this.param)
       .select(columns)
       .then(function(rows) {

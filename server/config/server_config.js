@@ -7,4 +7,10 @@ export default {
     self_signed: true,
     days: 1,
   },
+  db: {
+    type: { // only one type can be true
+      mysql: true,
+      pgsql: false,
+    },
+  },
 };

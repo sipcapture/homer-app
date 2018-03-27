@@ -1,4 +1,3 @@
-import Knex from '../config/db/knex_pgsql_config';
 import LivingBeing from './living_being';
 
 const table = 'users';
@@ -10,10 +9,12 @@ class User extends LivingBeing {
   /**
    * Class constructor
    *
-   * @param {object} username - name of user
+   * @param {object} server of hapi
+   * @param {object} username
    */
-  constructor(username) {
-    super({table});
+  constructor(server, username) {
+    super({db: server.databases.config, table});
+    this.configDb = server.databases.config;
     this.username = username;
   }
 
@@ -24,7 +25,8 @@ class User extends LivingBeing {
    * @return {array} data from table
    */
   get(columns) {
-    return Knex(table)
+    console.log(this.configDb);
+    return this.configDb(table)
       .where({
         username: this.username,
       })

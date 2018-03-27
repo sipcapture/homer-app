@@ -2,7 +2,7 @@ import Joi from 'joi';
 import Boom from 'boom';
 import SearchData from '../classes/searchdata';
 
-export default function auth(server) {
+export default function search(server) {
   server.route({
     path: '/api/v3/search/call/data',
     method: 'POST',
@@ -25,7 +25,7 @@ export default function auth(server) {
     },
     handler: function(request, reply) {
       console.log('REQUEST', request.payload);
-      const searchdata = new SearchData(request.payload);
+      const searchdata = new SearchData(server, request.payload);
 
       searchdata.get(['id', 'gid', 'hep_header', 'payload', 'raw']).then(function(data) {
         if (!data) {

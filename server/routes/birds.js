@@ -13,7 +13,7 @@ export default function birds(server) {
     path: '/api/v3/birds',
     method: 'GET',
     handler: function(request, reply) {
-      const bird = new Bird();
+      const bird = new Bird(server);
 
       bird.getAll(['name', 'species', 'picture_url']).then(function(data) {
         if (!data || !data.length) {
@@ -59,7 +59,7 @@ export default function birds(server) {
     handler: function(request, reply) {
       const {name, species, picture_url} = request.payload;
       const guid = uuid();
-      const bird = new Bird();
+      const bird = new Bird(server);
 
       bird.add({
         owner: request.auth.credentials.scope,
@@ -114,7 +114,7 @@ export default function birds(server) {
           method: function(request, reply) {
             const {birdGuid} = request.params;
             const {scope} = request.auth.credentials;
-            const bird = new Bird(birdGuid);
+            const bird = new Bird(server, birdGuid);
 
             bird.get(['owner']).then(function(result) {
               if (!result) {
@@ -136,7 +136,7 @@ export default function birds(server) {
     handler: function(request, reply) {
       const {name, species, picture_url, isPublic} = request.payload;
       const {birdGuid} = request.params;
-      const bird = new Bird(birdGuid);
+      const bird = new Bird(server, birdGuid);
 
       bird.update({
         name,

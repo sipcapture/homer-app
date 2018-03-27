@@ -1,4 +1,3 @@
-import Knex from '../config/db/knex_pgsql_config';
 import LivingBeing from './living_being';
 
 const table = 'birds';
@@ -10,10 +9,12 @@ class Bird extends LivingBeing {
   /**
    * Class constructor
    *
+   * @param {object} server of hapi
    * @param {object} guid - bird guid
    */
-  constructor(guid) {
-    super({table, guid});
+  constructor(server, guid) {
+    super({db: server.databases.config, table, guid});
+    this.configDb = server.databases.config;
     this.guid = guid;
   }
 
@@ -25,7 +26,7 @@ class Bird extends LivingBeing {
    * @return {array} data from table
    */
   getAll(columns, isPublic = true) {
-    return Knex(table)
+    return configDb(table)
       .where({
         isPublic,
       })

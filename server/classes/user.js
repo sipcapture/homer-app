@@ -1,4 +1,4 @@
-import Knex from '../config/db/knex';
+import Knex from '../config/db/knex_pgsql_config';
 import LivingBeing from './living_being';
 
 const table = 'users';

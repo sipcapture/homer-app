@@ -26,14 +26,7 @@ class SearchData extends LivingBeing {
   get(columns) {
     return this.dataDb(table)
       .whereRaw('(hep_header->>"payloadType")::int = ? ', this.param)
-      .select(columns)
-      .then(function(rows) {
-        console.log('Found !');
-        rows.forEach(function(row) {
-          console.log(row);
-        });
-        return rows;
-      });
+      .select(columns);
   }
 }
 

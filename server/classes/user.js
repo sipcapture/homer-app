@@ -22,10 +22,9 @@ class User extends LivingBeing {
    * Get user data by 'username'
    *
    * @param {array} columns - list of column names
-   * @return {array} data from table
+   * @return {object} user data
    */
   get(columns) {
-    console.log(this.configDb);
     return this.configDb(table)
       .where({
         username: this.username,

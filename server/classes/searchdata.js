@@ -1,7 +1,7 @@
 import LivingBeing from './living_being';
 import Log from './log';
 
-//const log = new Log(server, 'searchdata');
+// const log = new Log(server, 'searchdata');
 const table = 'hep';
 
 /**
@@ -30,37 +30,36 @@ class SearchData extends LivingBeing {
       .whereRaw('(hep_header->>\'payloadType\')::int = ? ', this.param)
       .select(columns)
       .then(function(rows) {
-        /* log.debug('loading search data');        
+        /* log.debug('loading search data');
         */
-        var data_reply = [];               
-        var data_keys = [];
+        let data_reply = [];
+        let data_keys = [];
         
         rows.forEach(function(row) {
-
-          var data_element = {};
-          for (var k in row) {
-              if(k == 'hep_header' || k == "payload") { 
-                  Object.assign(data_element, row[k]); 
-              }
-              else {
-                    data_element[k] = row[k];
-              }          
+          let data_element = {};
+          for (let k in row) {
+            if (k == 'hep_header' || k == 'payload') {
+              Object.assign(data_element, row[k]);
+            } else {
+              data_element[k] = row[k];
+            }
           }
           data_reply.push(data_element);
-          var keys = Object.keys(data_element);        
-          data_keys = data_keys.concat(keys.filter(function(i) { return data_keys.indexOf(i) == -1;}));                              
-        });        
+          let keys = Object.keys(data_element);
+          data_keys = data_keys.concat(keys.filter(function(i) {
+            return data_keys.indexOf(i) == -1;
+          }));
+        });
         
-        var global_reply = {
-              total: data_reply.length,
-              data: data_reply,
-              keys: data_keys,
-        };        
+        let global_reply = {
+          'total': data_reply.length,
+          'data': data_reply,
+          'keys': data_keys,
+        };
         
-        return global_reply;            
-  });
-  
- }
+        return global_reply;
+      });
+  }
 }
 
 export default SearchData;

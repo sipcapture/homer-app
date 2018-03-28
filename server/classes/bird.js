@@ -1,4 +1,3 @@
-import Knex from '../config/db/knex';
 import LivingBeing from './living_being';
 
 const table = 'birds';
@@ -7,31 +6,32 @@ const table = 'birds';
  * A class to handle birds in DB
  */
 class Bird extends LivingBeing {
-  
   /**
    * Class constructor
    *
+   * @param {object} server of hapi
    * @param {object} guid - bird guid
    */
-  constructor(guid) {
-    super({ table, guid });
+  constructor(server, guid) {
+    super({db: server.databases.config, table, guid});
+    this.configDb = server.databases.config;
     this.guid = guid;
   }
 
   /**
-   * Get all birds 
+   * Get all birds
    *
    * @param {array} columns - list of column names
    * @param {boolean} isPublic - public bird
+   * @return {array} data from table
    */
   getAll(columns, isPublic = true) {
-    return Knex(table)
+    return configDb(table)
       .where({
-        isPublic
+        isPublic,
       })
       .select(columns);
   }
-
 }
 
 export default Bird;

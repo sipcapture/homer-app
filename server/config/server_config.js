@@ -5,6 +5,12 @@ export default {
   https_port: 8000,
   certificate: {
     self_signed: true,
-    days: 1
-  }
+    days: 1,
+  },
+  db: {
+    type: { // only one type can be true
+      mysql: false,
+      pgsql: true,
+    },
+  },
 };

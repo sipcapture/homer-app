@@ -7,9 +7,15 @@ import proxyConfig from './config/proxy'; // temporary, to be deleted when the n
 
 const routes = {
   auth: require('./routes/authentication'),
+  search: require('./routes/search'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
   proxy: require('./routes/proxy'),
+};
+
+const databases = {
+  data: config.db.type.mysql ? require('./config/db/knex_mysql_data').default : require('./config/db/knex_pgsql_data').default,
+  config: config.db.type.mysql ? require('./config/db/knex_mysql_config').default : require('./config/db/knex_pgsql_config').default,
 };
 
 const server = new Hapi.Server({
@@ -61,6 +67,8 @@ pem.createCertificate({
         algorithms: [jwtSettings.algorithm],
       },
     });
+
+    server.databases = databases;
   
     // Initialize routes
     forEach(routes, function(routeSet) {

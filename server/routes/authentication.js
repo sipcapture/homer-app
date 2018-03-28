@@ -27,7 +27,7 @@ export default function auth(server) {
     },
     handler: function(request, reply) {
       const {username, password} = request.payload;
-      const user = new User(username);
+      const user = new User(server, username);
 
       user.get(['guid', 'hash']).then(function(user) {
         if (!user) {

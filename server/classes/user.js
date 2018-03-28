@@ -1,4 +1,3 @@
-import Knex from '../config/db/knex';
 import LivingBeing from './living_being';
 
 const table = 'users';
@@ -7,14 +6,15 @@ const table = 'users';
  * A class to handle users in DB
  */
 class User extends LivingBeing {
-
   /**
    * Class constructor
    *
-   * @param {object} username - name of user
+   * @param {object} server of hapi
+   * @param {object} username
    */
-  constructor(username) {
-    super({ table });
+  constructor(server, username) {
+    super({db: server.databases.config, table});
+    this.configDb = server.databases.config;
     this.username = username;
   }
 
@@ -22,18 +22,18 @@ class User extends LivingBeing {
    * Get user data by 'username'
    *
    * @param {array} columns - list of column names
+   * @return {object} user data
    */
   get(columns) {
-    return Knex(table)
+    return this.configDb(table)
       .where({
-        username: this.username
+        username: this.username,
       })
       .select(columns)
-      .then(function ([user]) {
+      .then(function([user]) {
         return user;
       });
   }
-
 }
 
 export default User;

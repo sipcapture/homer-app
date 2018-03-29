@@ -59,7 +59,7 @@ const SearchService = function($q, $http, UserProfile, API) {
     }).then(
       /* good response */
       function(results) {
-        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        results = has(results, 'data') ? results.data : results || [];
         defer.resolve(results);
       },
       /* bad response */

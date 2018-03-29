@@ -65,7 +65,8 @@ class SearchCall {
       gridColumnDefinitions.push.apply(gridColumnDefinitionsUserExtCr);
     }
 
-    this.gridOpts.columnDefs = gridColumnDefinitions;
+    /* this.gridOpts.columnDefs = gridColumnDefinitions;*/
+    this.gridOpts.columnDefs = [];
     this.gridOpts.rowIdentity = function(row) {
       return row.id;
     };
@@ -82,8 +83,30 @@ class SearchCall {
 
     try {
       this.dataLoading = true;
-      const data = await this.SearchService.searchCallByParam(query);
+
+      const response = await this.SearchService.searchCallByParam(query);
+      let data = response.data;
+      let keys = response.keys;
+      
       this.dataLoading = false;
+      /* displayName: this.$filter('translate')('hepic.pages.results.'+v) ? this.$filter('translate')('hepic.pages.results.'+v) : v,*/
+
+      if (keys) {
+        if (this.gridOpts.columnDefs.length == 0) {
+          let columns = [];
+          keys.forEach(function(v) {
+            let column = {
+              field: v,
+              
+              displayName: v,
+              type: 'string',
+              width: '*',
+            };
+            columns.push(column);
+          });
+          this.gridOpts.columnDefs = columns;
+        }
+      }
 
       if (data) {
         this.restoreState();

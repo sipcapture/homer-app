@@ -1,8 +1,6 @@
-import dataTimezones from '../../data/timezones';
-
 class CustomRange {
-  constructor() {
-    this.timezones = dataTimezones;
+  constructor(timezones) {
+    this.timezones = timezones;
     this.time = {
       hstep: 1,
       mstep: 1,

@@ -18,7 +18,12 @@ export default angular.module('hepicApp.clockWidget', [])
         title: 'World Clock',
         timePattern: 'HH:mm:ss',
         datePattern: 'YYYY-MM-DD',
-        location: 'Europe/Amsterdam',
+        location: {
+          value: -60,
+          offset: '+1',
+          name: 'GMT+1 CET',
+          desc: 'Central European Time',
+        },
         showseconds: false,
       },
     });

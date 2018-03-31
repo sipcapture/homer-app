@@ -11,6 +11,7 @@ const routes = {
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
   proxy: require('./routes/proxy'),
+  any: require('./routes/any'),
 };
 
 const databases = {
@@ -20,8 +21,8 @@ const databases = {
 
 const server = new Hapi.Server({
   debug: {
-    log: ['error', 'implementation', 'internal'],
-    request: ['error', 'implementation', 'internal'],
+    log: ['debug', 'warn', 'error', 'implementation', 'internal'],
+    request: ['debug', 'warn', 'error', 'implementation', 'internal'],
   },
 });
 

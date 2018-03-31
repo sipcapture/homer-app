@@ -82,9 +82,7 @@ class SearchCall {
 
     try {
       this.dataLoading = true;
-      debugger;
       const data = await this.SearchService.searchCallByParam(query);
-      debugger;
       this.dataLoading = false;
 
       if (data) {

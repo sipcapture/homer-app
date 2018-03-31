@@ -9,7 +9,7 @@
             <div class="form-group" ng-class="{error: _form.title.$error && _form.submitted}">
                 <label class="control-label col-lg-3 col-md-3">Title</label>
                 <div class="col-lg-9 col-md-9">
-                    <input name="name" type="text" ng-model="$ctrl.form.title" class="form-control" />
+                    <input name="name" type="text" ng-model="$ctrl.widget.title" class="form-control" />
                 </div>
             </div> <!-- END Title -->
 
@@ -18,11 +18,11 @@
                     <label class="control-label col-lg-6 col-md-6">Timezone</label>
                     <div class="col-lg-6 col-md-6" uib-dropdown is-open="status.isopen">
                         <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle>
-                            {{$ctrl.form.config.location}} <span class="caret"></span>
+                            {{$ctrl.locationName}} <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                            <li ng-repeat="(timezone, offset) in $ctrl.timezones">
-                                <a href ng-click="$ctrl.setTimezone(timezone)">{{timezone}}</a>
+                            <li ng-repeat="zone in $ctrl.timezones">
+                                <a href ng-click="$ctrl.setTimezone(zone)">{{zone.desc}}</a>
                             </li>
                         </ul> 
                     </div> <!-- END dropdown -->

@@ -153,7 +153,8 @@ class UserProfile {
         try {
           obj = JSON.parse(value);
         } catch (err) {
-          this.$log.warn(['UserProfile', 'getAllServerRemoteProfile', `fail to parse response data value: ${value}`], err);
+          const message = 'fail to JSON.parse(value) for local server profile, maybe this code should be refactored?!';
+          this.$log.warn(['UserProfile', 'getAllServerRemoteProfile', message], value);
         }
         this.setLocalServerProfile(key, obj);
         return 'yes';

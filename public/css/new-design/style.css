@@ -2504,7 +2504,7 @@ body, html, main {
 /*----------------------------start login----------------------------*/
 	.nd-auth-main {
 		background: #2B5D81;
-		background-image: linear-gradient(-180deg, #2B5D81 0%, #24465F 100%);
+		background-image: linear-gradient(-180deg, #2B5D81 0%, #008471 100%);
 		left: 0;
 		bottom: 0;
 	}
@@ -2578,7 +2578,7 @@ body, html, main {
 
 /*----------------------------start header----------------------------*/
 .nd-navbar-default {
-	background: #24465F;
+	background: #008471;
 	border: none;
 	border-radius: 0;
 	height: 70px;
@@ -2611,7 +2611,7 @@ body, html, main {
 	border: none;
 }
 .nd-modal-header {
-	/* background: #24465f; */
+	/* background: #008471; */
 	background: #34678c;
 }
 .homer-modal-header {
@@ -2690,7 +2690,7 @@ body, html, main {
     color: #9fc6f2;
 }*/
 .nav.nav-tabs a {
-	color: #24465f;
+	color: #008471;
 }
 .nav.nav-tabs a span, .nav.nav-tabs a i {
 	color: #7792a6;
@@ -2711,7 +2711,7 @@ body, html, main {
 	font-family: 'Lato', sans-serif;
 	font-size: 20px;
 	/* color: #383838; */
-	color: #24465f;
+	color: #008471;
 	font-weight: bold;
 	 text-transform: capitalize;
 }
@@ -2989,7 +2989,7 @@ input[type="text"].ui-grid-filter-input {
 	opacity: .2;
 }
 .ui-grid-row-selected [class*=" ui-grid-icon-ok"]:before, [class*="ui-grid-icon-ok"]:before {
-	color: #24465F; 
+	color: #008471; 
 }
 span.navText {
 	font-size: 14px;
@@ -3104,14 +3104,14 @@ main {
 	.ui-grid-menu .ui-grid-menu-inner ul li button {
 	/*	transition: background .3s ease-in;*/
 		font-size: 14px;
-		color: #24465F;
+		color: #008471;
 	}
 	.ui-grid-menu .ui-grid-menu-inner ul li button:hover, .ui-grid-menu .ui-grid-menu-inner ul li button:focus, .ui-grid-menu .ui-grid-menu-inner ul li button.ui-grid-menu-item-active {
 		box-shadow: none;
 		background: #F5F5F5;
 	}
 	.ui-grid-menu [class^="ui-grid-icon"]:before, .ui-grid-menu [class*=" ui-grid-icon"]:before {
-		color: #24465F;
+		color: #008471;
 	}
 	.ui-grid-menu .ui-grid-menu-inner .ui-grid-menu-close-button {
 		position: absolute;
@@ -3512,7 +3512,7 @@ table.table.table-striped>tbody>tr:last-child {
 	line-height: 33px;
 	margin-right: 40px !important;
 	font-size: 16px;
-	color: #24465F;
+	color: #008471;
 	display: inline-block;
 	vertical-align: top;
 }
@@ -4219,7 +4219,7 @@ input[type="checkbox"]:checked + span i {
 }
 
 .header {
-	background: #24465F;
+	background: #008471;
 }
 
 .panel {
@@ -4398,7 +4398,7 @@ main:before {
 }
 
 .modal .modal-dialog .modal-content .modal-header {
-	background: #24465F;
+	background: #008471;
 	border: 0;
 	color: #FFF;
 }
@@ -4523,7 +4523,7 @@ main:before {
 }
 
 .modal .dt-add-widget a {
-	color: #24465f;
+	color: #008471;
 	font-size: 16px;
 	font-weight: bold;
 }
@@ -4653,7 +4653,7 @@ main:before {
 		height: auto;
 		min-height: 1px;
 		margin-bottom: 0;
-		background: #24465F;
+		background: #008471;
 	}
 
 	.nd-logo {
@@ -4699,7 +4699,7 @@ main:before {
 	}
 
 	.navbar-default .navbar-nav .nav-dropdown>a:hover {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 
@@ -4730,7 +4730,7 @@ main:before {
 	.navbar-default .navbar-nav>.active>a, 
 	.navbar-default .navbar-nav>.active>a:hover,
 	.navbar-default .navbar-nav>.active>a:focus {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 
@@ -4765,12 +4765,12 @@ main:before {
 	}
 	
 	.nav.nav-tabs > .active > a {
-		color: #24465F;
+		color: #008471;
 	}
 
 	.nav.nav-tabs > li > a:hover {
 		background: #ACD8F6;
-		color: #24465F;
+		color: #008471;
 	}
 
 	.modal-body .nav-tabs > li > a{
@@ -4818,7 +4818,7 @@ main:before {
 		border-radius: 2px;
 		line-height: 32px;
 		font-size: 14px;
-		color: #24465F;
+		color: #008471;
 	}
 
 	.dropdown__link:hover,
@@ -4987,7 +4987,7 @@ main:before {
 	.navbar-default .navbar-nav>.open>a, 
 	.navbar-default .navbar-nav>.open>a:hover, 
 	.navbar-default .navbar-nav>.open>a:focus {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 	
@@ -5103,7 +5103,7 @@ main:before {
 		border: 1px solid #dadadc;
 		border-bottom: 0;
 		margin-bottom: -1px;
-		color: #24465F;
+		color: #008471;
 	    line-height: 35px;
 	    background: #ffffff;
 	    height: 37px;
@@ -5388,14 +5388,14 @@ button.btn.btn-default.btn-default.uib-right {
 		left: -2px;
 		position: relative;
 		z-index: 1;
-	 //   	background: #24465F;
+	 //   	background: #008471;
 	    	background: rgba(109, 133, 150, 0.20);
 	    	padding: 0px 28px 5px 5px;
 	    	moz-border-radius: 0 0 5px 5px;
 	    	border-radius: 0 0 5px 5px;
 	}
 	.edit-underpanel:hover {
-	//	background: #24465F;
+	//	background: #008471;
 	}
 
 	.edit-underpanel > a {
@@ -5405,7 +5405,7 @@ button.btn.btn-default.btn-default.uib-right {
 		text-transform: capitalize;
 		font-size: 14px;
 	//	color: #d0d0d0;
-		color: #24465F;
+		color: #008471;
 		line-height: 20px;
 	}
 

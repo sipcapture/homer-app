@@ -775,7 +775,7 @@ main:before {
 	}
 
 	.navbar-default .navbar-nav .nav-dropdown>a:hover {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 
@@ -806,7 +806,7 @@ main:before {
 	.navbar-default .navbar-nav>.active>a, 
 	.navbar-default .navbar-nav>.active>a:hover,
 	.navbar-default .navbar-nav>.active>a:focus {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 
@@ -1063,7 +1063,7 @@ main:before {
 	.navbar-default .navbar-nav>.open>a, 
 	.navbar-default .navbar-nav>.open>a:hover, 
 	.navbar-default .navbar-nav>.open>a:focus {
-		background: #246289;
+		background: #06a78f;
 		color: #ffffff;
 	}
 	

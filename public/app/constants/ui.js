@@ -1,5 +1,5 @@
 export default {
   logo: {
-    text: 'hepic.',
+    text: 'homer.',
   },
 };

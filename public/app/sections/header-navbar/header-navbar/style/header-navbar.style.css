@@ -20,7 +20,7 @@ nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo {
   vertical-align: baseline;
   color: #fff;
   font-family: "Helvetica-Neue-Bold";
-  padding: 10px;
+  padding: 5px;
 }
 
 nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo:first-letter {
@@ -45,7 +45,7 @@ nav.hepic2-navbar ul.dropdown-menu {
 
 .hepic2-navbar-button:hover {
   color: #ffffff;
-  background-color: #246289;
+  background-color: #06a78f;
 }
 
 .hepic2-navbar-button:active {

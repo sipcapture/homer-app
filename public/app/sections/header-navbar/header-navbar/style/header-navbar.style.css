@@ -1,5 +1,5 @@
 .hepic2-navbar {
-  background-color: #24465f;
+  background-color: #008471;
   border: none;
   border-radius: 0;
 }
@@ -33,13 +33,13 @@ nav.hepic2-navbar ul.dropdown-menu {
 
 .hepic2-navbar-button {
   color: #ffffff;
-  background-color: #24465f;
+  /*background-color: #24465f;*/
   border: 1px solid #314179;
   display: inline-block;
   cursor: pointer;
   font-family: Arial;
   font-size: 16px;
-  padding: 12px 33px;
+  padding: 12px 15px;
   text-decoration: none;
 }
 

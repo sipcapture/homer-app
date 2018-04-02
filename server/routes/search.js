@@ -26,8 +26,9 @@ export default function search(server) {
     handler: function(request, reply) {
       console.log('REQUEST', request.payload);
       const searchdata = new SearchData(server, request.payload);
-
-      searchdata.get(['id', 'gid', 'hep_header', 'payload', 'raw']).then(function(data) {
+      const searchTable = "hep_proto_1_default";
+      
+      searchdata.get(['id', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable).then(function(data) {
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }

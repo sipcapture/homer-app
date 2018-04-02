@@ -1,7 +1,5 @@
 import LivingBeing from './living_being';
 
-const table = 'hep';
-
 /**
  * A class to handle users in DB
  */
@@ -13,7 +11,7 @@ class SearchData extends LivingBeing {
    * @param {object} param of search
    */
   constructor(server, param) {
-    super({db: server.databases.data, table, param});
+    super({db: server.databases.data, param});
     this.param = 1;
     this.dataDb = server.databases.data;
   }
@@ -23,9 +21,9 @@ class SearchData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  get(columns) {
+  get(columns, table) {
     return this.dataDb(table)
-      .whereRaw('(hep_header->>\'payloadType\')::int = ? ', this.param)
+      .whereRaw('(protocol_header->>\'payloadType\')::int = ? ', this.param)
       .select(columns)
       .then(function(rows) {
         let dataReply = [];
@@ -34,7 +32,7 @@ class SearchData extends LivingBeing {
         rows.forEach(function(row) {
           let dataElement = {};
           for (let k in row) {
-            if (k == 'hep_header' || k == 'payload') {
+            if (k == 'protocol_header' || k == 'data_header') {
               Object.assign(dataElement, row[k]);
             } else {
               dataElement[k] = row[k];

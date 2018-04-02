@@ -50,6 +50,7 @@ import Login from './login';
 import Dashboards from './dashboards';
 import Widgets from './widgets';
 import Search from './search';
+import Filters from './filters';
 
 // register modules and components
 const app = angular.module('hepicApp', [
@@ -98,6 +99,7 @@ const app = angular.module('hepicApp', [
   Dashboards.name,
   Search.name,
   Widgets.name,
+  Filters.name,
 ]);
 
 export default app;

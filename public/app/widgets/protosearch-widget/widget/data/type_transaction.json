@@ -1,0 +1,10 @@
+[
+  {
+    "name": "call",
+    "value": "CALLS"
+  },
+  {
+    "name": "registration",
+    "value": "REGISTRATIONS"
+  }
+]

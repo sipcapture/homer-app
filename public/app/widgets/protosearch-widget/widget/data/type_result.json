@@ -1,0 +1,7 @@
+[
+  { "name": "table", "value": "TABLE" },
+  { "name": "count", "value": "COUNT" },
+  { "name": "pcap", "value": "PCAP" },
+  { "name": "text", "value": "TEXT" },
+  { "name": "cloud", "value": "CLOUD" }
+]

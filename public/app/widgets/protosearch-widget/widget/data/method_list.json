@@ -1,0 +1,16 @@
+[
+  "INVITE",
+  "REGISTER",
+  "BYE",
+  "CANCEL",
+  "OPTIONS",
+  "ACK",
+  "PRACK",
+  "SUBSCRIBE",
+  "NOTIFY",
+  "PUBLISH",
+  "INFO",
+  "REFER",
+  "MESSAGE",
+  "UPDATE"
+]

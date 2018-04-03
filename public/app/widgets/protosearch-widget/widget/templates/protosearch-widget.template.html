@@ -1,0 +1,182 @@
+<div class="box protosearch-widget">
+  <div class="box-header">
+    <h3>{{ $ctrl._widget.config.title }}</h3>
+    <div class="box-header-btns pull-right">
+      <a title="settings" ng-click="$ctrl.openSettings(widget)"><i class="glyphicon glyphicon-cog"></i></a>
+      <a title="Remove widget" ng-click="$ctrl.delete()"><i class="glyphicon glyphicon-trash"></i></a>
+    </div>
+  </div> <!-- END box-header -->
+
+  <div class="box-content">
+    <div ng-repeat="field in $ctrl._widget.fields" class="col-md-12  panel-body-column">    
+      <div ng-if="field.selection=='Logic OR'">
+        <div class="form-group">
+          <label style="cursor:pointer">
+            <div class="input-group">
+              <div class="input-group-addon" style="height:35px !important;">
+                <div ng-switch on="field.name">
+                  <label for="{{field.selection}}"
+                  style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                </div>
+              </div> <!-- END input-group-addon -->                                           
+              <input type="checkbox" name="{{field.selection}}" id="{{field.selection}}"
+                ng-model="$ctrl.newObject[field.name]">
+                <span style="width:40px;height:40px;"><i class="fa fa-check"></i></span>
+              </input>
+            </div> <!-- input-group -->
+          </label> <!-- END cursor:pointer --> 
+        </div> <!-- END form-group -->
+      </div> <!-- END Logic OR -->
+      
+      <div ng-if="field.selection=='Limit Query'">
+        <div ng-if="field.selection" class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <div ng-switch on="field.name">
+                <label for="{{field.selection}}"
+                  style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+              </div>
+            </div> <!-- input-group-addon -->
+            <input title="Limit" type="number" name="mylimit" id="mylimit" class="form-control"
+              ng-model="$ctrl.newResult.limit" style="height:35px !important;"/>
+          </div> <!-- END input-group -->
+        </div> <!-- field.selection -->
+      </div> <!-- END Limit Query -->
+      
+      <div ng-if="field.selection=='Unique'">
+        <div class="form-group">
+          <label style="cursor:pointer">
+            <div class="input-group">
+              <div class="input-group-addon">
+                <div ng-switch on="field.name">
+                  <label for="{{field.selection}}"
+                    style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+                </div>
+              </div> <!-- END input-group-addon --> 
+              <input type="checkbox" class="btn btn-check"
+                ng-model="$ctrl.newObject[field.name]"/><span><i class="fa fa-check"></i></span>
+            </div> <!-- input-group -->
+          <label> <!-- END cursor:pointer -->
+        </div> <!-- END form-group -->
+      </div> <!-- END Unique -->
+      
+      <div class="multi-select" ng-if="field.selection=='Proto Type'">
+        <div class="form-group">
+          <div class="input-group">
+            <label for="{{field.selection}}" class="select-wr">
+              <i class="fa  fa-angle-down  select-ico"></i>
+              <ui-select multiple ng-model="$ctrl.newProtoType[field.name]"theme="bootstrap" close-on-select="false"
+                title="Select Proto Type(s)">
+                <ui-select-match placeholder="Select Proto Type...">{{$item.name}}</ui-select-match> 
+                <ui-select-choices repeat="tr in $ctrl.type_prototype | filter:$select.search">{{tr.name}}
+                </ui-select-choices>
+              </ui-select>
+            </label> <!-- END field.selection -->
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END Proto Type -->
+      
+      <div ng-if="field.selection=='Transaction'">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <div ng-switch on="field.name">
+                <label for="{{field.selection}}"
+                  style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+              </div>
+            </div> <!-- END input-group-addon -->                        
+            <i class="fa  fa-angle-down  select-ico"></i> 
+            <select style="height: 35px;" id="{{field.selection}}" name="{{field.selection}}"
+              ng-model="$ctrl.newResult[field.name]" ng-selected="$index==0"
+              data-ng-options="tr as tr.value for tr in $ctrl.type_transaction track by tr.value"></select>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group-->
+      </div> <!-- END Transaction -->
+      
+      <div ng-if="field.selection=='Call Status' || field.selection=='Call status'">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <div ng-switch on="field.name">
+                <label for="{{field.selection}}"
+                  style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+              </div>
+            </div> <!-- END input-group-addon -->                                           
+            <i class="fa  fa-angle-down  select-ico"></i> 
+            <select ng-model="$ctrl.newObject[field.name]" style="height: 35px;">
+              <option ng-repeat="item in $ctrl.type_mono_status" value="{{item.name}}">{{item.value}}</option>
+            </select>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END Call Status-->
+      
+      <div ng-if="field.selection=='Result Type'">
+        <div class="form-group">
+          <div class="input-group">
+            <label for="{{field.selection}}" class="select-wr">
+              <i class="fa  fa-angle-down  select-ico"></i> 
+              <select id="{{field.selection}}" name="{{field.selection}}" ng-model="$ctrl.newResult[field.name]"
+                ng-selected="$index==0" data-ng-options="tr as tr.value for tr in $ctrl.type_result track by tr.value">
+              </select>
+            </label>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END Result Type -->
+      
+      <div class="multi-select" ng-if="field.selection=='DB Node'">
+        <div class="form-group">
+          <div class="input-group">
+            <label for="{{field.selection}}" class="select-wr">
+              <i class="fa  fa-angle-down  select-ico"></i> 
+              <ui-select multiple ng-model="$ctrl.newNode[field.name]" theme="bootstrap" close-on-select="false"
+                title="Select Database(s)">
+                <ui-select-match placeholder="Select DB...">{{$item.name}}</ui-select-match> 
+                <ui-select-choices repeat="tr in $ctrl.db_node | filter:$select.search">{{tr.name}}</ui-select-choices>
+              </ui-select>
+            </label>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END DB Node-->
+      
+      <div ng-if="field.selection=='Method'">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <i class="fa fa-search"></i>
+            </div>
+            <input-dropdown input-placeholder="" input-name="method" input-required="true"
+              selected-item="$ctrl.newObject[field.name]" default-dropdown-items="method_list"
+              filter-list-method="$ctrl.filterStringList(userInput)" item-selected-method="$ctrl.itemMethodSelected(item)">
+            </input-dropdown>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END Method-->
+      
+      <div ng-if="field.selection!='Limit Query' && field.selection!='Proto Type' && field.selection!='Call Status' && field.selection!='Logic OR' && field.selection!='Unique' && field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node' && field.selection!='Method'">
+        <div ng-if="field.selection" class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <div ng-switch on="field.name">
+                <label for="{{field.selection}}"
+                  style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;">{{field.selection}}</label>
+              </div>
+            </div> <!-- END input-group-addon --> 
+            <input title="{{getIndexType(field.name)}}" type="text" name="{{field.selection}}"
+              id="{{field.selection}}"  ng-enter="$ctrl.processSearchForm();"
+              class="form-control" ng-model="$ctrl.newObject[field.name]" style="height:35px !important;"/>
+            <span class="fa {{ getIndexIconType(field.name)}} form-control-search" title="search type"></span>
+          </div> <!-- END input-group -->
+        </div> <!-- END form-group -->
+      </div> <!-- END field.selection Other-->
+    </div><!-- END field in fields -->
+
+    <div class="form-group form-group-custom-3" ng-show="$ctrl._widget.config.searchbutton"
+      style="padding-right:0px;height:30px;">  
+      <button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning"
+        style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
+      <button type="submit" ng-click="$ctrl.processSearchForm();" class="btn btn-primary "
+        style="float:right;margin-right: 5px;height:auto;" ng-disabled="false"> 
+      <i class="fa" ng-class="{'fa-spinner fa-spin': isBusy, '': !isBusy}"></i>Search</button> 
+    </div> <!-- END form-group -->
+  </div> <!-- END box-content -->
+</div> <!-- END box -->

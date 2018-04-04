@@ -15,6 +15,20 @@
         <label style="display:block; margin-bottom:10px;">Search Button: 
           <input type="checkbox" ng-model="$ctrl.widget.config.searchbutton"/><span><i class="fa fa-check"></i></span>
         </label>
+        <div class="input-group">
+		<span class="input-label">Proto </span>
+                <label class="select-wr" for="proto">
+                	<i class="fa  fa-angle-down  select-ico"></i>
+                        <select ng-options="opt as opt.value for opt in $ctrl.protoData" ng-change="$ctrl.onProtoSelect()" ng-model="$ctrl.widget.config.protocol_id"></select>
+                </label>
+        </div>     
+	<div class="input-group">
+        	<span class="input-label">Profile </span>
+                <label class="select-wr" for="protocol_profile">
+                	<i class="fa  fa-angle-down  select-ico"></i>
+                        <select ng-options="opt as opt.value for opt in $ctrl.profileData" ng-change="$ctrl.onProfileSelect()" ng-model="$ctrl.widget.config.protocol_profile"></select> 
+                </label>
+        </div>
         <button ng-click="$ctrl.addField()" class="btn btn-default">Add Form Field</button>
       </p>
       <div ng-repeat="field in $ctrl.widget.fields" style="display: inline-block; vertical-align: top;">

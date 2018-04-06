@@ -3,5 +3,5 @@ export default {
   port: 80,
   protocol: 'http',
   path: '/api/v3/{param*}',
-  authCookie: 'PCAPTURESESSION=352abdc5-c0de-49e3-985e-e07c7ab26a88',
+  authCookie: 'PCAPTURESESSION=f339edcf-ee46-4def-847d-963ad6aa057f',
 };

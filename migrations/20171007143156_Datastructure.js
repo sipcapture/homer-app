@@ -11,7 +11,7 @@ exports.up = function(knex) {
       usersTable.string('email', 250).notNullable().unique();
       usersTable.string('hash', 128).notNullable();
       usersTable.string('guid', 50).notNullable().unique();
-      usersTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());            
+      usersTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     })
     .createTable('mapping_schema', function(mappingTable) {
       // Primary Key
@@ -21,9 +21,16 @@ exports.up = function(knex) {
       mappingTable.string('profile', 100).notNullable().defaultTo('default');
       mappingTable.integer('hepid').notNullable();
       mappingTable.integer('gid').notNullable().defaultTo(10);
-      mappingTable.string('profile', 100).notNullable().defaultTo('default');
       mappingTable.integer('version').notNullable();
-      mappingTable.string('email', 250).notNullable().unique(); 
+      mappingTable.integer('retention').notNullable().defaultTo(14);
+      mappingTable.integer('partition_step').notNullable().defaultTo(3600);
+      mappingTable.json('create_index');
+      mappingTable.text('create_table');
+      mappingTable.json('fields_mapping');
+      mappingTable.json('mapping_settings');
+      mappingTable.json('schema_mapping');
+      mappingTable.json('schema_settings');
+      mappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     })
     .createTable('birds', function(birdsTable) {
       // Primary Key

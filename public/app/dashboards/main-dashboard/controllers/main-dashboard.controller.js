@@ -1,5 +1,5 @@
 import angular from 'angular';
-import {findIndex, cloneDeep} from 'lodash';
+import {findIndex, cloneDeep, assign} from 'lodash';
 import uuid from 'uuid/v4'; // temporary, delete when uuid added in DB
 
 class MainDashboard {
@@ -113,7 +113,7 @@ class MainDashboard {
         },
       },
     }).result.then((dashboard) => {
-      this.gridsterOptions = dashboard.config;
+      this.gridsterOptions = assign(this.gridsterOptions, dashboard.config);
       this.dashboard = dashboard;
       this.dashboard.alias = this.dashboard.type;
 

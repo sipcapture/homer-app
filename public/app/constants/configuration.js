@@ -13,6 +13,18 @@ const CONFIGURATION = {
     draggable: {
       handle: '.box-header',
     },
+    resizable: {
+      enabled: true,
+      handles: ['n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw'],
+      resize: function(event, $element, widget) {
+        if (widget.api && widget.api.resizeUpdate) widget.api.resizeUpdate();
+      },
+      stop: function(event, $element, widget) {
+        setTimeout(function() {
+          if (widget.api && widget.api.resizeUpdate) widget.api.resizeUpdate();
+        }, 400);
+      },
+    },
   },
   FOOTER: {
     URL: 'https://www.sipcapture.org',

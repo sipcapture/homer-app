@@ -24,17 +24,16 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
 
   self.$onInit = function() {
     $scope.config = self.widget.config;
-    $scope.api = self.widget.api;
+    self.widget.api.resizeStart = resizeStart;
+    self.widget.api.resizeStop = resizeStop;
+    self.widget.api.resizeUpdate = resizeUpdate;
+    self.widget.api.refresh = refresh;
+
     if (!$scope.config) $scope.config = {};
     if (!$scope.config.fields) {};
     if (!$scope.config.title) $scope.config.title = ' QuickSearch';
     $scope.fields = $scope.config.fields;
     /* api */
-    $scope.api.resizeStart = resizeStart;
-    $scope.api.resizeStop = resizeStop;
-    $scope.api.resizeUpdate = resizeUpdate;
-    $scope.api.refresh = refresh;
-
     /* custom dataformat */
     $scope.formatDefault = function(d) {
       return d3.format('.0f')(d);
@@ -127,7 +126,7 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
     applyChart();
   };
 
-  function dataReszeOnNew() {
+  function resizeUpdateWithTimeout() {
     if (self.d3Chart.api) self.d3Chart.api.updateWithTimeout(200);
   };
 
@@ -141,10 +140,6 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
   function resizeStop() {
     if (self.d3Chart.api) self.d3Chart.api.update();
   };
-
-  angular.element(window).on('resize', function(e) {
-    dataReszeOnNew();
-  });
 
   /** ****************************** [PREPARING CHART DATA]  *******************************************/
 
@@ -287,7 +282,7 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
       if (!angular.equals(hepiChartobjQuery, {})) {
         InfluxdbchartService.get(config, hepiChartobjParam.path, hepiChartobjQuery).then(function(sdata) {
           loadNewChart(sdata, hepiChartobjQuery);
-          dataReszeOnNew();
+          resizeUpdateWithTimeout();
         }).catch(function(err) {
           log.error('create chart', err);
         });

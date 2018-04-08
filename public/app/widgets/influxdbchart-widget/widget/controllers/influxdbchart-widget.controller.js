@@ -1,5 +1,5 @@
 const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, EventBus,
-  $interval, $uibModal, InfluxdbchartService, EVENTS, HEPICSOURCES, CONFIGURATION, log, ModalHelper) {
+  $interval, $uibModal, InfluxdbchartService, EVENTS, HEPICSOURCES, CONFIGURATION, log, ModalHelper, TimeMachine) {
   'ngInject';
 
   log.initLocation('influxdbchartWidet');
@@ -15,6 +15,10 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
     api: {},
     config: {},
   };
+
+  EventBus.subscribe(EVENTS.TIME_CHANGE, function() {
+    createChart();
+  });
 
   /* MAIN FUNCTIONS */
 
@@ -147,8 +151,8 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
   function queryBuilder(qvr, filters, limit, total, index) {
     let query = JSON.parse(qvr);
 
-    let timedate = UserProfile.getProfile('timerange');
-    let timezone = UserProfile.getProfile('timezone');
+    let timedate = TimeMachine.getTimerange();
+    let timezone = TimeMachine.getTimezone();
     let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
 
     query.timestamp.from = timedate.from.getTime() - diff;
@@ -164,7 +168,6 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
 
     if (tsDiff < 4) {
       indexRange = 60;
-      tsFrom = tsDiff;
       fromDate.setSeconds(0);
     } else if (tsDiff > 4 && tsDiff < 50) {
       indexRange = 3600;

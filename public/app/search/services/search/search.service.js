@@ -394,6 +394,47 @@ const SearchService = function($q, $http, UserProfile, API) {
 
     return defer.promise;
   };
+  
+  const loadMappingProtocols = function() {
+    const defer = $q.defer();
+    $http.get(API.MAPPING.PROTOCOLS, {
+      handleStatus: [403, 503],
+    }).then(
+      /* good response */
+      function(results) {
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
+      },
+      /* bad response */
+      function() {
+        defer.reject('bad response combination');
+      }
+    );
+    
+    return defer.promise;
+  };
+      
+  const loadMappingFields = function(id,transaction) {
+    const defer = $q.defer();
+
+    let url = API.MAPPING.FIELDS+'/'+id+'/'+transaction;        
+    $http.get(url, {
+      handleStatus: [403, 503],
+    }).then(
+      /* good response */
+      function(results) {
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
+      },
+      /* bad response */
+      function() {
+        defer.reject('bad response combination');
+      }
+    );
+    
+    return defer.promise;
+  };
+  
 
   const makePcapTextforTransaction = function(data, type, trans) {
     const defer = $q.defer();
@@ -647,6 +688,8 @@ const SearchService = function($q, $http, UserProfile, API) {
     searchGeoLoc,
     searchMetaDataRecording,
     loadNode,
+    loadMappingProtocols,
+    loadMappingFields,    
   };
 };
 

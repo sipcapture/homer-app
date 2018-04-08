@@ -31,14 +31,10 @@ class ProtosearchWidget {
     this._widget = cloneDeep(this.widget);
     this._widget.config = this._widget.config || {};
     this._widget.config.title = this._widget.config.title || 'ProtoSearch';
-    this._widget.fields = this._widget.fields || dataFields;
+    this._widget.fields = this._widget.fields || [];
 
     // To-do: check if all the vars below are needed
     this.indexes = dataIndexes.indexes;
-
-    if (this.CONFIGURATION.USER_EXT_CR) {
-      this.indexes = angular.extend(this.indexes, dataIndexes.user_ext_cr_indexes);
-    }
             
     this.type_transaction = dataTypeTransaction;
     this.type_mono_status = dataTypeMonoStatus;
@@ -103,6 +99,8 @@ class ProtosearchWidget {
     this._widget.fields.forEach((field) => {
       this.newObject[field.name] = this.newObject[field.name] || '';
     });
+
+    console.log("FORMS", this._widget.fields);
     
     this.UserProfile.setProfile('search', this.newObject);
     this.UserProfile.setProfile('result', this.newResult);
@@ -148,6 +146,8 @@ class ProtosearchWidget {
     let timedate = this.UserProfile.getProfile('timerange');
     let value = this.UserProfile.getProfile('search');
     let node = this.UserProfile.getProfile('node').dbnode;
+
+    console.log("VALUE",value);
     
     /* make construct of query */
     data.param.transaction = {};

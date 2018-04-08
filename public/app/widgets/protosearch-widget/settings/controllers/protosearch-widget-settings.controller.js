@@ -1,24 +1,16 @@
-import dataHeaders from '../data/headers';
-import dataHeadersUserExtCr from '../data/headers_user_ext_cr';
-import dataProtoTransactions from '../data/proto_transactions';
-
 class ProtosearchWidgetSettings {
-  constructor(CONFIGURATION) {
+  constructor(CONFIGURATION, SearchService) {
     'ngInject';
     this.CONFIGURATION = CONFIGURATION;
+    this.SearchService = SearchService;
   }
 
   $onInit() {
     this.counter = 0;
     this.widget = this.resolve.widget;
-    this.headers = dataHeaders;
-    this.protoTransactions = dataProtoTransactions;
-    
+    this.headers = [];
+    this.protoTransactions = {};
     this.addDataToProto();
-
-    if (this.CONFIGURATION.USER_EXT_CR) {
-      this.headers = this.headers.concat(dataHeadersUserExtCr);
-    }
   }
 
   dismiss() {
@@ -32,27 +24,41 @@ class ProtosearchWidgetSettings {
   addDataToProto() {
     this.protoData = [];
     let hashLocal = [];
-    this.protoTransactions.forEach((field) => {
-      if (hashLocal.indexOf(field.id) == -1) {
-        let lobj = {
-          name: field.id,
-          value: field.id,
-        };
-        this.protoData.push(lobj);
-        hashLocal.push(field.id);
-      }
+    this.headers = [];
+
+    this.SearchService.loadMappingProtocols().then((data) => {
+      console.log('GOT', data);
+      this.protoTransactions = data.length ? data : {};
+    }).then(() => {
+      this.protoTransactions.forEach((field) => {
+        if (hashLocal.indexOf(field.hepid) == -1) {
+          let lobj = {
+            name: field.hep_alias,
+            value: field.hepid,
+          };
+  
+          this.protoData.push(lobj);
+          hashLocal.push(field.hepid);
+        }
+      });
+                  
+      // END To-do
+    }).catch((error) => {
+      this.$log.error('[ProtosearchWidget]', '[load mapping protocols]', error);
     });
-    this.ProfileSelect();
   }
 
   onProtoSelect() {
+
     this.profileData = [];
+    this.headers = [];
+    
     let id = this.widget.config.protocol_id.value;
     this.protoTransactions.forEach((field) => {
-      if (field.id == id) {
+      if (field.hepid == id) {
         let lobj = {
-          name: field.transaction,
-          value: field.transaction,
+          name: field.profile,
+          value: field.profile,
         };
         this.profileData.push(lobj);
       }
@@ -60,7 +66,38 @@ class ProtosearchWidgetSettings {
   }
   
   onProfileSelect() {
-  
+    let id = this.widget.config.protocol_id.value;
+    let profile = this.widget.config.protocol_profile.value;
+    this.headers = [];
+    
+    this.SearchService.loadMappingFields(id, profile).then((data) => {
+      console.log('GOT FIELDS', data);
+      this.fieldsData = data.fields_mapping ? data.fields_mapping : [];
+    }).then(() => {
+      console.log('FIELDS...', this.fieldsData);
+      this.fieldsData.forEach((field) => {
+        console.log('RRR', field);
+      
+        let lobj = {
+          name: id+':'+profile+':'+field.id,
+          selection: field.name,
+          type: field.type,
+          index: field.index,
+          form_type: field.form_type,
+          form_default: field.form_default,
+          disabled: false,
+          hepid: id,
+          profile: profile,
+        };
+        
+        this.headers.push(lobj);
+      });
+      
+      
+      // END To-do
+    }).catch((error) => {
+      this.$log.error('[ProtosearchWidget]', '[load fields]', error);
+    });
   }
 
   addField() {

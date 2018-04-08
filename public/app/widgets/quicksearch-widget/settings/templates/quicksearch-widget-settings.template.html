@@ -15,7 +15,7 @@
         <label style="display:block; margin-bottom:10px;">Search Button: 
           <input type="checkbox" ng-model="$ctrl.widget.config.searchbutton"/><span><i class="fa fa-check"></i></span>
         </label>
-        <button ng-click="$ctrl.addField()" class="btn btn-default">Add Form Field</button>
+        <button type="button" ng-click="$ctrl.addField()" class="btn btn-default">Add Form Field</button>
       </p>
       <div ng-repeat="field in $ctrl.widget.fields" style="display: inline-block; vertical-align: top;">
         <div field-display="field.selection" field-name="field.name" field-headers="$ctrl.headers"

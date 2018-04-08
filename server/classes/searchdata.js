@@ -21,7 +21,36 @@ class SearchData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  get(columns, table) {
+  get(columns, table, payload) {
+  
+    console.log("PAYLOAD", payload.search);
+    let sData = payload.search;
+    let dataWhereRawKey = [];
+    let dataWhereRawValue = [];
+    let dataWhere = {};
+    
+    //knex.raw("info#>>'{owner,firstName}'"),'LIKE','%john%'
+    
+    for(var key in sData) {
+          let res = key.split(":",3);          
+          console.log(key);
+          table = "hep_proto_"+res[0]+"_"+res[1];
+          let elem = res[2];
+          
+          console.log("EL", elem);
+          if (elem.indexOf('.') > -1)
+          {          
+              let elemArray = elem.split(".");                    
+              console.log("ELEM", elemArray);              
+              dataWhereRawKey.push("()::string")
+              
+          }          
+          else {
+            dataWhere[elem] = sData[key];
+          }
+    };   
+    
+      
     return this.dataDb(table)
       .whereRaw('(protocol_header->>\'payloadType\')::int = ? ', this.param)
       .select(columns)

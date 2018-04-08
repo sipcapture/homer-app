@@ -20,12 +20,14 @@ exports.up = function(knex) {
       mappingTable.uuid('guid');
       mappingTable.string('profile', 100).notNullable().defaultTo('default');
       mappingTable.integer('hepid').notNullable();
+      mappingTable.string('hep_alias', 100);
       mappingTable.integer('gid').notNullable().defaultTo(10);
       mappingTable.integer('version').notNullable();
       mappingTable.integer('retention').notNullable().defaultTo(14);
       mappingTable.integer('partition_step').notNullable().defaultTo(3600);
       mappingTable.json('create_index');
       mappingTable.text('create_table');
+      mappingTable.json('correlation_mapping');
       mappingTable.json('fields_mapping');
       mappingTable.json('mapping_settings');
       mappingTable.json('schema_mapping');

@@ -12,6 +12,10 @@ const API = {
     MENU: 'api/v3/dashboard/menu',
     INFO: 'api/v3/dashboard/info',
   },
+  MAPPING: {
+    PROTOCOLS: 'api/v3/mapping/protocols',
+    FIELDS: 'api/v3/mapping/fields',
+  },
   SHARE: {
     LINK: 'api/v3/share/link',
   },

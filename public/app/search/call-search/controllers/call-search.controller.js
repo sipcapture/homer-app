@@ -92,16 +92,30 @@ class SearchCall {
       /* displayName: this.$filter('translate')('hepic.pages.results.'+v) ? this.$filter('translate')('hepic.pages.results.'+v) : v,*/
 
       if (keys) {
+        this.gridOpts.columnDefs = [];
         if (this.gridOpts.columnDefs.length == 0) {
           let columns = [];
           keys.forEach(function(v) {
             let column = {
               field: v,
-              
               displayName: v,
+              resizable: true,
               type: 'string',
               width: '*',
             };
+            
+            if (v == 'sid') {
+              column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
+                +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
+            } else if (v == 'id') {
+              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" '
+                +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
+            } else if (v == 'create_date') {
+              column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
+                +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
+              column['type'] = 'date';
+            }
+                        
             columns.push(column);
           });
           this.gridOpts.columnDefs = columns;
@@ -326,7 +340,7 @@ class SearchCall {
   }
 
   dateConvert(value) {
-    const dt = new Date(parseInt(value / 1000));
+    const dt = new Date(parseInt(value));
     return this.$filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', this.offset);
   }
 

@@ -22,38 +22,57 @@ class SearchData extends LivingBeing {
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
   get(columns, table, payload) {
-  
-    console.log("PAYLOAD", payload.search);
     let sData = payload.search;
     let dataWhereRawKey = [];
     let dataWhereRawValue = [];
     let dataWhere = {};
     
-    //knex.raw("info#>>'{owner,firstName}'"),'LIKE','%john%'
+    /* jshint -W089 */
     
-    for(var key in sData) {
-          let res = key.split(":",3);          
-          console.log(key);
-          table = "hep_proto_"+res[0]+"_"+res[1];
-          let elem = res[2];
-          
-          console.log("EL", elem);
-          if (elem.indexOf('.') > -1)
-          {          
-              let elemArray = elem.split(".");                    
-              console.log("ELEM", elemArray);              
-              dataWhereRawKey.push("()::string")
-              
-          }          
-          else {
-            dataWhere[elem] = sData[key];
+    for (let key in sData) {
+      table = 'hep_proto_'+key;
+      if (sData.hasOwnProperty(key)) {
+        let elems = sData[key];
+        elems.forEach(function(el) {
+          if (el.value.length > 0) {
+            if (el.name.indexOf('.') > -1) {
+              let elemArray = el.name.split('.');
+              if (el.type == 'integer') {
+                dataWhereRawKey.push('('+elemArray[0]+'->>?)::int = ?');
+                dataWhereRawValue.push(elemArray[1], el.value);
+              } else {
+                let eqValue = '=';
+                if (el.value.indexOf('%') > -1) eqValue=' LIKE ';
+                dataWhereRawKey.push(elemArray[0]+'->>?'+eqValue+'?');
+                dataWhereRawValue.push(elemArray[1], el.value);
+              }
+            } else if (el.value.indexOf('%') > -1 ) {
+              dataWhereRawKey.push(el.name+' LIKE ?');
+              dataWhereRawValue.push(el.value);
+            } else {
+              dataWhere[el.name] = el.value;
+            }
           }
-    };   
+        });
+      }
+    };
     
+    let myWhereRawString = '';
+    if (dataWhereRawKey.length > 0 ) {
+      myWhereRawString = dataWhereRawKey.join(' AND ');
+    }
+
+    /*
+    this.dataDb.on( 'query', function( queryData ) {
+        console.log( queryData );
+    });
+    */
       
     return this.dataDb(table)
-      .whereRaw('(protocol_header->>\'payloadType\')::int = ? ', this.param)
+      .whereRaw(myWhereRawString, dataWhereRawValue)
+      .where(dataWhere)
       .select(columns)
+      .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];

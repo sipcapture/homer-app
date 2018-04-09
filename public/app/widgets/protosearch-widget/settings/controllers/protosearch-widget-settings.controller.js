@@ -11,6 +11,7 @@ class ProtosearchWidgetSettings {
     this.headers = [];
     this.protoTransactions = {};
     this.addDataToProto();
+    console.log("WIDGET", this.widget.fields);    
   }
 
   dismiss() {
@@ -20,11 +21,13 @@ class ProtosearchWidgetSettings {
   submit() {
     this.modalInstance.close(this.widget);
   }
-
+  
   addDataToProto() {
     this.protoData = [];
     let hashLocal = [];
     this.headers = [];
+    
+    console.log("ADD DATA TO PROTO");
 
     this.SearchService.loadMappingProtocols().then((data) => {
       console.log('GOT', data);
@@ -41,6 +44,9 @@ class ProtosearchWidgetSettings {
           hashLocal.push(field.hepid);
         }
       });
+
+      console.log("FINISHED");
+      this.onProtoSelect();
                   
       // END To-do
     }).catch((error) => {
@@ -53,6 +59,8 @@ class ProtosearchWidgetSettings {
     this.profileData = [];
     this.headers = [];
     
+    console.log("SELECTED PROTO");
+    
     let id = this.widget.config.protocol_id.value;
     this.protoTransactions.forEach((field) => {
       if (field.hepid == id) {
@@ -63,11 +71,28 @@ class ProtosearchWidgetSettings {
         this.profileData.push(lobj);
       }
     });
-  }
-  
+    
+    /* if element just one - select it */
+    console.log("LEN", this.profileData.length);
+    
+    this.onProfileSelect();    
+    
+    /*if(this.profileData.length == 1) {
+        console.log("LEN == 1");
+        onProfileSelect();    
+    }
+    */
+  }  
+
   onProfileSelect() {
+  
+    console.log("SELECTED PROFILE YES");
+  
     let id = this.widget.config.protocol_id.value;
     let profile = this.widget.config.protocol_profile.value;
+        
+    console.log("MMM PROFILE:", this.widget.config.protocol_profile);
+    
     this.headers = [];
     
     this.SearchService.loadMappingFields(id, profile).then((data) => {
@@ -82,6 +107,7 @@ class ProtosearchWidgetSettings {
           name: id+':'+profile+':'+field.id,
           selection: field.name,
           type: field.type,
+          field_name: field.id,
           index: field.index,
           form_type: field.form_type,
           form_default: field.form_default,
@@ -100,8 +126,10 @@ class ProtosearchWidgetSettings {
     });
   }
 
+
+
   addField() {
-    this.widget.fields.push({name: 'default' + this.counter});
+   this.widget.fields.push({name: 'default' + this.counter});
   }
   
   removeField(index) {

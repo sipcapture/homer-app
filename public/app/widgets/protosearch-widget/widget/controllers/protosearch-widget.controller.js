@@ -74,6 +74,9 @@ class ProtosearchWidget {
   }
 
   openSettings() {
+  
+    console.log(this._widget.fields);
+  
     this.$uibModal.open({
       component: 'protosearchWidgetSettings',
       resolve: {
@@ -96,13 +99,65 @@ class ProtosearchWidget {
       this.newObject = {};
     }
 
-    this._widget.fields.forEach((field) => {
-      this.newObject[field.name] = this.newObject[field.name] || '';
+   /* this._widget.fields.forEach((field) => {
+          this.newObject[field.name] = this.newObject[field.name] || '';
     });
-
-    console.log("FORMS", this._widget.fields);
+    */
     
-    this.UserProfile.setProfile('search', this.newObject);
+    let searchObject = {};
+
+    for (var key in this.newObject) {
+
+	console.log("K", key);
+	console.log("V", this.newObject[key]);
+
+        let myLocalObject = this._widget.fields.find(function(obj) {
+		    return obj.name == key;
+	});	
+
+	if(myLocalObject) {
+	    
+	    console.log("OBJ", myLocalObject);
+	    
+	    let subKey = myLocalObject.hepid + "_"+myLocalObject.profile;
+	
+	    let lobj = {
+	        name: myLocalObject.field_name,
+	        value: this.newObject[key],
+	        type: myLocalObject.type,
+	        hepid: myLocalObject.hepid,
+	        profile: myLocalObject.profile,	    
+	    }	
+	    if(!searchObject.hasOwnProperty(subKey)) searchObject[subKey]=[];
+
+	    searchObject[subKey].push(lobj);	    	    	    
+	}
+		
+	console.log("OB", myLocalObject);
+    }
+    
+    /*this.newObject.forEach((key,value) => {
+        console.log("NEWOB KEY:", key);
+        console.log("NEWOB VALUE:", value);
+    }); 
+    */   
+
+    if(Object.getOwnPropertyNames(searchObject).length === 0)
+    {
+        let subKey = this.widget.config.protocol_id.value + "_"+this.widget.config.protocol_profile.value;                    
+        searchObject[subKey]=[];
+    }
+    
+    console.log("SEARCH", searchObject);
+    console.log("RRR1", this.widget.config.protocol_id);
+    console.log("RRR2", this.widget.config.protocol_profile);
+    
+    console.log("FORMS1", this._widget.fields);
+    console.log("FORMS2", this.newObject);
+    console.log("FORMS3", searchObject);
+    
+    this.UserProfile.setProfile('search', searchObject);
+    //this.UserProfile.setProfile('search', this.newObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('node', this.newNode);
     this.UserProfile.setProfile('limit', this.newResult.limit);
@@ -146,6 +201,7 @@ class ProtosearchWidget {
     let timedate = this.UserProfile.getProfile('timerange');
     let value = this.UserProfile.getProfile('search');
     let node = this.UserProfile.getProfile('node').dbnode;
+
 
     console.log("VALUE",value);
     

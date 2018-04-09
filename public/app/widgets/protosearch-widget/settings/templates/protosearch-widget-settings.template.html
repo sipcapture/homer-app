@@ -1,4 +1,4 @@
-<div class="quicksearch-widget-settings">
+<div class="protosearch-widget-settings">
   <form name="_form" class="form-horizontal" ng-submit="$ctrl.submit(_form)">
     <div class="modal-header">
       <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
@@ -15,11 +15,30 @@
         <label style="display:block; margin-bottom:10px;">Search Button: 
           <input type="checkbox" ng-model="$ctrl.widget.config.searchbutton"/><span><i class="fa fa-check"></i></span>
         </label>
+        <div class="input-group">
+		<span class="input-label">Proto </span>
+                <label class="select-wr" for="proto">
+                	<i class="fa  fa-angle-down  select-ico"></i>
+                        <select ng-options="opt.name for opt in $ctrl.protoData track by opt.value" ng-change="$ctrl.onProtoSelect()" ng-model="$ctrl.widget.config.protocol_id"></select>
+                </label>
+        </div>     
+	<div class="input-group">
+        	<span class="input-label">Profile </span>
+                <label class="select-wr" for="protocol_profile">
+                	<i class="fa  fa-angle-down  select-ico"></i>
+                        <select ng-options="opt.name for opt in $ctrl.profileData track by opt.value" ng-change="$ctrl.onProfileSelect()" ng-model="$ctrl.widget.config.protocol_profile"></select> 
+                </label>
+        </div>
         <button type="button" ng-click="$ctrl.addField()" class="btn btn-default">Add Form Field</button>
       </p>
       <div ng-repeat="field in $ctrl.widget.fields" style="display: inline-block; vertical-align: top;">
-        <div field-display="field.selection" field-name="field.name" field-headers="$ctrl.headers"
-          style="display:inline-block;">
+        <div field-proto-display="field.selection" 
+        	field-proto-name="field.name" field-proto-headers="$ctrl.headers" 
+        	field-proto-form-type="field.form_type" 
+        	field-proto-type="field.type" 
+        	field-proto-hepid="field.hepid" 
+        	field-proto-hep-profile="field.profile" 
+        	field-proto-field-name="field.field_name"  style="display:inline-block;">
         </div>
         <i class="fa fa-trash-o fa-custom" ng-click="$ctrl.removeField($index);"
           style="display: inline-block;margin-right:10px;margin-top:3px;">

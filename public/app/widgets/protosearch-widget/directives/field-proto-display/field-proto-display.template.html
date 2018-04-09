@@ -1,0 +1,10 @@
+<label class="item item-input drop-down-wid__label">
+  <div class="style-select drop-down-wid__style-select">
+    <select class="drop-down-wid" ng-model="selectedItem"
+    ng-options="header.selection disable when header.disabled for header in fieldProtoHeaders track by header.name"></select>
+    <br>
+  </div>
+  <div class="drop-down-wid__wr-icon-drop">
+    <i style="left: 50%; margin-left: -7.125px;" class="fa  fa-angle-down  select-ico"></i>
+  </div>
+</label>

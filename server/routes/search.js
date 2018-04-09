@@ -25,16 +25,17 @@ export default function search(server) {
     },
     handler: function(request, reply) {
       console.log('REQUEST', request.payload);
-      const searchdata = new SearchData(server, request.payload);
-
-      searchdata.get(['id', 'gid', 'hep_header', 'payload', 'raw']).then(function(data) {
-        if (!data) {
-          return reply(Boom.notFound('data was not found'));
-        }
-        return reply(data);
-      }).catch(function(error) {
-        return reply(Boom.serverUnavailable(error));
-      });
+      const searchdata = new SearchData(server, request.payload.param);
+      const searchTable = 'hep_proto_1_default';
+      searchdata.get(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload.param)
+        .then(function(data) {
+          if (!data) {
+            return reply(Boom.notFound('data was not found'));
+          }
+          return reply(data);
+        }).catch(function(error) {
+          return reply(Boom.serverUnavailable(error));
+        });
     },
   });
 };

@@ -2,8 +2,6 @@ import angular from 'angular';
 import widget from './widget/clock-widget.component';
 import settings from './settings/clock-widget-settings.component';
 
-// to-do: refactor into two separate components: widget and settings modal
-
 export default angular.module('hepicApp.clockWidget', [])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
     DashboardWidgetStateProvider.set('visualize', 'clock-widget', {
@@ -18,7 +16,12 @@ export default angular.module('hepicApp.clockWidget', [])
         title: 'World Clock',
         timePattern: 'HH:mm:ss',
         datePattern: 'YYYY-MM-DD',
-        location: 'Europe/Amsterdam',
+        location: {
+          value: -60,
+          offset: '+1',
+          name: 'GMT+1 CET',
+          desc: 'Central European Time',
+        },
         showseconds: false,
       },
     });

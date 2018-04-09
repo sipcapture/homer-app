@@ -1,18 +1,22 @@
 import angular from 'angular';
 
-import Configuration from './configuration';
-import Events from './events';
-import Metricsdatasource from './metricsdatasource';
-import Resources from './resources';
-import Router from './router';
-import Api from './api';
-import Ui from './ui';
+import configuration from './configuration';
+import events from './events';
+import metricsdatasource from './metricsdatasource';
+import resources from './resources';
+import router from './router';
+import api from './api';
+import ui from './ui';
+import timezones from './timezones';
+import hepicsources from './hepicsources';
 
 export default angular.module('hepicApp.constants', [])
-  .constant('CONFIGURATION', Configuration)
-  .constant('EVENTS', Events)
-  .constant('METRICSDATASOURCE', Metricsdatasource)
-  .constant('RESOURCES', Resources)
-  .constant('API', Api)
-  .constant('ROUTER', Router)
-  .constant('UI', Ui);
+  .constant('CONFIGURATION', configuration)
+  .constant('EVENTS', events)
+  .constant('METRICSDATASOURCE', metricsdatasource)
+  .constant('RESOURCES', resources)
+  .constant('API', api)
+  .constant('ROUTER', router)
+  .constant('UI', ui)
+  .constant('HEPICSOURCES', hepicsources)
+  .constant('TIMEZONES', timezones);

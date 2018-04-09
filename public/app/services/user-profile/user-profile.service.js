@@ -2,8 +2,9 @@ import {forEach, pick} from 'lodash';
 import Promise from 'bluebird';
 
 class UserProfile {
-  constructor($http, API, TimeMachine) {
+  constructor($http, $log, API, TimeMachine) {
     this.$http = $http;
+    this.$log = $log;
     this.API = API;
     this.TimeMachine = TimeMachine;
     this.profileScope = {
@@ -148,8 +149,14 @@ class UserProfile {
   getAllServerRemoteProfile() {
     return this.$http.get(this.API.ADMIN.PROFILES, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data, (value, key) => {
-        const jsonObj = JSON.parse(value);
-        this.setLocalServerProfile(key, jsonObj);
+        let obj;
+        try {
+          obj = JSON.parse(value);
+        } catch (err) {
+          const message = 'fail to JSON.parse(value) for local server profile, maybe this code should be refactored?!';
+          this.$log.warn(['UserProfile', 'getAllServerRemoteProfile', message], value);
+        }
+        this.setLocalServerProfile(key, obj);
         return 'yes';
       });
     });

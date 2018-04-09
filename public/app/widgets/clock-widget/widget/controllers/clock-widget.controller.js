@@ -1,36 +1,37 @@
-import {cloneDeep} from 'lodash';
-
 import 'angular-clock';
 import 'angular-clock/dist/angular-clock.css';
 import '../style/clock-widget.css';
 
-import timezones from '../data/timezones';
+import {cloneDeep} from 'lodash';
 
 class ClockWidget {
-  constructor($log, $uibModal, ModalHelper) {
+  constructor($log, $uibModal, ModalHelper, TIMEZONES) {
     'ngInject';
     this.$log = $log;
     this.$uibModal = $uibModal;
     this.ModalHelper = ModalHelper;
+    this.TIMEZONES = TIMEZONES;
   }
 
   $onInit() {
-    this.initLocation(this.widget);
+    this._widget = cloneDeep(this.widget);
   }
 
-  initLocation(widget) {
-    this.timezones = timezones;
-    this.gmtOffset = timezones[widget.config.location];
-    this.displayLocation = widget.config.location.split('/')[1].toUpperCase();
+  get gmtOffset() {
+    return this._widget.config.location.offset || '+1';
+  }
+
+  get locationName() {
+    return this._widget.config.location.desc.toUpperCase() || 'unknown';
   }
 
   delete() {
-    this.onDelete({uuid: this.widget.uuid});
+    this.onDelete({uuid: this._widget.uuid});
   }
 
   update(widget) {
-    this.initLocation(widget);
-    this.onUpdate({uuid: this.widget.uuid, widget});
+    this._widget = widget;
+    this.onUpdate({uuid: this._widget.uuid, widget});
   }
 
   openSettings() {
@@ -38,17 +39,17 @@ class ClockWidget {
       component: 'clockWidgetSettings',
       resolve: {
         widget: () => {
-          return cloneDeep(this.widget);
+          return cloneDeep(this._widget);
         },
         timezones: () => {
-          return cloneDeep(this.timezones);
+          return this.TIMEZONES;
         },
       },
     }).result.then((widget) => {
       this.update(widget);
     }).catch((error) => {
       if (this.ModalHelper.isError(error)) {
-        this.$log.error('[ClockWidget]', '[settings]', error);
+        this.$log.error(['ClockWidget', 'settings'], error);
       }
     });
   }

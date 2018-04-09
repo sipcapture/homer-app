@@ -1,5 +1,5 @@
 .hepic2-navbar {
-  background-color: #24465f;
+  background-color: #008471;
   border: none;
   border-radius: 0;
 }
@@ -20,7 +20,7 @@ nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo {
   vertical-align: baseline;
   color: #fff;
   font-family: "Helvetica-Neue-Bold";
-  padding: 10px;
+  padding: 5px;
 }
 
 nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo:first-letter {
@@ -33,19 +33,19 @@ nav.hepic2-navbar ul.dropdown-menu {
 
 .hepic2-navbar-button {
   color: #ffffff;
-  background-color: #24465f;
-  border: 1px solid #314179;
+  /*background-color: #24465f;
+  border: 1px solid #314179;*/
   display: inline-block;
   cursor: pointer;
   font-family: Arial;
   font-size: 16px;
-  padding: 12px 33px;
+  padding: 12px 15px;
   text-decoration: none;
 }
 
 .hepic2-navbar-button:hover {
   color: #ffffff;
-  background-color: #246289;
+  background-color: #06a78f;
 }
 
 .hepic2-navbar-button:active {

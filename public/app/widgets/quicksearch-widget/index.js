@@ -3,8 +3,6 @@ import Directives from './directives';
 import component from './widget/quicksearch-widget.component';
 import settings from './settings/quicksearch-widget-settings.component';
 
-// to-do: refactor into two separate components: widget and settings modal
-
 export default angular.module('hepicApp.quicksearchWidget', [
   Directives.name,
 ])

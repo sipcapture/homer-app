@@ -35,6 +35,9 @@
                 <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </quicksearch-widget>
+                <influxdbchart-widget ng-if="widget.name==='influxdbchart'" widget=widget
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </influxdbchart-widget>
                 <protosearch-widget ng-if="widget.name==='protosearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </protosearch-widget>

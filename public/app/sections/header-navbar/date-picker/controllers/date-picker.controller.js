@@ -7,13 +7,14 @@ import QuickRange from './classes/quickrange';
 import CustomRange from './classes/customrange';
 
 class DatePicker {
-  constructor($log, UserProfile, TimeMachine, EventBus, EVENTS) {
+  constructor($log, UserProfile, TimeMachine, EventBus, EVENTS, TIMEZONES) {
     'ngInject';
     this.$log = $log;
     this.UserProfile = UserProfile;
     this.TimeMachine = TimeMachine;
     this.EventBus = EventBus;
     this.EVENTS = EVENTS;
+    this.TIMEZONES = TIMEZONES;
   }
 
   $onInit() {
@@ -25,7 +26,7 @@ class DatePicker {
     this.timezone = this.TimeMachine.getTimezone();
 
     this.quick = new QuickRange();
-    this.custom = new CustomRange();
+    this.custom = new CustomRange(this.TIMEZONES);
   }
 
   setNow(field) {

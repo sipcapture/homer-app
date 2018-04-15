@@ -42,6 +42,7 @@ import './search/hepic-modal/homerCflow';
 import './search/hepic-modal/homerModal';
 
 // components
+import Directives from './directives';
 import Controllers from './controllers';
 import Constants from './constants';
 import Services from './services';
@@ -51,6 +52,7 @@ import Dashboards from './dashboards';
 import Widgets from './widgets';
 import Search from './search';
 import Filters from './filters';
+import Mock from './mock';
 
 // register modules and components
 const app = angular.module('hepicApp', [
@@ -91,6 +93,7 @@ const app = angular.module('hepicApp', [
   'ds.clock',
   'homer.modal', // to-do: delete this modules when the homer modal refactored
   'homer.cflow',
+  Directives.name,
   Controllers.name,
   Constants.name,
   Services.name,
@@ -100,6 +103,7 @@ const app = angular.module('hepicApp', [
   Search.name,
   Widgets.name,
   Filters.name,
+  Mock.name,
 ]);
 
 export default app;

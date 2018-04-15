@@ -1,5 +1,5 @@
 export default {
-  logo: {
-    text: 'homer.',
+  LOGO: {
+    TEXT: 'homer.',
   },
 };

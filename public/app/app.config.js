@@ -30,6 +30,12 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           $log.error(['headerNavbar state'], ['resolve dashboards'], err);
         });
       },
+      appPreferences: function(mockAppPreferencesService) {
+        return {
+          data: mockAppPreferencesService.fetchData(),
+          schema: mockAppPreferencesService.fetchSchema(),
+        };
+      },
     },
   });
 

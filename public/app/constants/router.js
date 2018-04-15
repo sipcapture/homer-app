@@ -32,6 +32,12 @@ const ROUTER = {
     DESCRIPTION: 'search',
     SECURE: true,
   },
+  PREFERENCES: {
+    NAME: 'hepic.preferences',
+    PATH: '/preferences',
+    DESCRIPTION: 'app preferences',
+    SECURE: true,
+  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

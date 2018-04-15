@@ -13,4 +13,7 @@ export default {
       pgsql: false,
     },
   },
+  bcrypt: {
+    saltRounds: 10,
+  },
 };

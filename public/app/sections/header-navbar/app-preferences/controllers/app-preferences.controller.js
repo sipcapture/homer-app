@@ -1,21 +1,26 @@
 import '../style/style.css';
 
-import {assign, cloneDeep} from 'lodash';
+import {assign} from 'lodash';
 
 class AppPreferences {
-  constructor() {
+  constructor($state, ROUTER) {
     'ngInject';
+    this.$state = $state;
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
-    this.editor = {
-      data: cloneDeep(this.appPreferences.data),
-      schema: cloneDeep(this.appPreferences.schema),
-    };
+    this.goDefaultState();
   }
 
-  handlePersist(data) {
-    assign(this.appPreferences.data, data);
+  $onDestroy() {}
+
+  goDefaultState() {
+    this.$state.go(this.ROUTER.PREFERENCES_EDITOR.NAME);
+  }
+
+  handlePersist(sectionName, data) {
+    assign(this.appPreferences[sectionName].data, data);
   }
 }
 

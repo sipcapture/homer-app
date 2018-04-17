@@ -25,16 +25,19 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
       },
     },
     resolve: {
-      dashboardsMenu: function($log, DashboardStorage) {
+      dashboardsMenu: function(DashboardStorage, $log) {
+        'ngInject';
+
         return DashboardStorage.getAll().catch(function(err) {
-          $log.error(['headerNavbar state'], ['resolve dashboards'], err);
+          $log.error(['app.config', 'resolve dashboards menu'], err);
         });
       },
-      appPreferences: function(mockAppPreferencesService) {
-        return {
-          data: mockAppPreferencesService.fetchData(),
-          schema: mockAppPreferencesService.fetchSchema(),
-        };
+      appPreferences: function(PreferencesService, $log) {
+        'ngInject';
+
+        return PreferencesService.getDataAndSchema().catch(function(err) {
+          $log.error(['app.config', 'resolve app preferences data'], err);
+        });
       },
     },
   });

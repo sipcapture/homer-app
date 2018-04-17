@@ -26,7 +26,7 @@ export default function users(server) {
       const user = new User({server});
 
       try {
-        const data = await user.getAll(['name', 'username', 'email', 'guid', 'created_at']);
+        const data = await user.getAll(['name', 'username', 'email', 'guid']);
         if (!data || !data.length) {
           return reply(Boom.notFound('no users found'));
         }

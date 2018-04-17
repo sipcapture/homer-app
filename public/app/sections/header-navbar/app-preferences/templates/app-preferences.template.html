@@ -10,12 +10,19 @@
             <div class="alert alert-success">Yay! ..</div>
           </div>
           <div class="row">
-            <div class="col-md-12">
-              <json-editor
-                json-editor-data="$ctrl.appPreferences.data"
-                json-editor-schema="$ctrl.appPreferences.schema"
-                json-editor-persist="$ctrl.handlePersist(data)"
-              ></json-editor>
+            <div class="col-md-2">
+              <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" class="active" ng-repeat="(key, vlaue) in $ctrl.appPreferences">
+                  <a ui-sref=".app-preferences-editor({sectionName: key})">{{key}}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-10">
+              <div ui-view 
+                class="uiview"
+                app-preferences-editor-data="$ctrl.appPreferences.users"
+                app-preferences-editor-persist="$ctrl.handlePersist(sectionName, data)"
+              ></div>
             </div>
           </div>
         </div>

@@ -4,7 +4,6 @@ export default {
       remove_empty_properties: true,
       disable_array_delete_all_rows: false,
       disable_array_reorder: false,
-      disable_collapse: false,
     },
     type: 'array',
     format: 'table',

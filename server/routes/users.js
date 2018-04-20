@@ -116,7 +116,7 @@ export default function users(server) {
           name: Joi.string().min(3).max(50),
           username: Joi.string().min(3).max(50),
           email: Joi.string().min(6).max(250),
-          password: Joi.string().min(8).max(250),
+          password: Joi.string().min(6).max(250),
         },
       },
       pre: [
@@ -145,7 +145,7 @@ export default function users(server) {
       
       if (updates.password) {
         const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);
-        updates.hash = bcrypt.hashSync(password, salt);
+        updates.hash = bcrypt.hashSync(updates.password, salt);
         delete updates.password;
       }
 

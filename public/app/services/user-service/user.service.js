@@ -153,7 +153,7 @@ class UserService {
   */
   async update({guid, name, username, email, password}) {
     try {
-      return await this.$http.put([this.API.UPDATE, guid].join('/'));
+      return await this.$http.put([this.API.UPDATE, guid].join('/'), {name, username, email, password});
     } catch (err) {
       throw new Error(`fail to update user: ${err.message}`);
     }

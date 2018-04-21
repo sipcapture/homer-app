@@ -6,6 +6,7 @@ const mainDashboard = {
   template,
   bindings: {
     dashboard: '<',
+    appPreferences: '<',
   },
 };
 

@@ -6,6 +6,7 @@ const headerNavbar = {
   template,
   bindings: {
     dashboardsMenu: '<',
+    appPreferences: '=',
   },
 };
 

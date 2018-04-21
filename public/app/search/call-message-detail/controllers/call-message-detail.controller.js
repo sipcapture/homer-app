@@ -34,7 +34,6 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.dataLoading = false;
 
     const swapText = function(text) {
-      console.log("SWAP", text);
     
       let swpA;
       let swpB;
@@ -46,17 +45,18 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
         text = text.split(swpA).join(swpB);
       }
 
-      swpA = sdata.callid;
+      swpA = sdata.sid;
       swpB = '<font color=\'blue\'><b>' + swpA + '</b></font>';
       text = text.split(swpA).join(swpB);
 
       return $sce.trustAsHtml(text);
     };
+    
 
     $scope.msgId = sdata.id;
-    $scope.msgCallId = sdata.callid;
-    $scope.msgDate = sdata.micro_ts / 1000;
-    $scope.sipPath = sdata.source_ip + ':' + sdata.source_port + ' -> ' + sdata.destination_ip + ':' + sdata.destination_port;
+    $scope.msgCallId = sdata.sid;
+    $scope.msgDate = sdata.create_date;
+    $scope.sipPath = sdata.srcIp + ':' + sdata.srcPort + ' -> ' + sdata.dstIp + ':' + sdata.dstPort;
     $scope.sipMessage = swapText(sdata.raw); // .replace(/</g, "&lt;");
 
     const tabjson = [];
@@ -88,9 +88,9 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     };
 
     $scope.msgId = sdata.id;
-    $scope.msgCallId = sdata.callid;
-    $scope.msgDate = (sdata.micro_ts || sdata.report_ts || sdata.event_ts) / 1000;
-    $scope.sipPath = sdata.source_ip + ':' + sdata.source_port + ' -> ' + sdata.destination_ip + ':' + sdata.destination_port;
+    $scope.msgCallId = sdata.sid;
+    $scope.msgDate = (sdata.create_date || sdata.report_ts || sdata.event_ts);
+    $scope.sipPath = sdata.srcIp + ':' + sdata.srcPort + ' -> ' + sdata.dstIp + ':' + sdata.dstPort
     $scope.sipMessage = swapText(sdata.raw);
 
     let tabjson = [];
@@ -118,7 +118,7 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
         swpA = sdata[0].method;
         swpB = '<font color=\'red\'><b>' + swpA + '</b></font>';
         text = text.split(swpA).join(swpB);
-        swpA = sdata[0].callid;
+        swpA = sdata[0].sid;
         swpB = '<font color=\'blue\'><b>' + swpA + '</b></font>';
         text = text.split(swpA).join(swpB);
 
@@ -138,16 +138,15 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       };
 
       $scope.msgId = sdata[0].id;
-      $scope.msgCallId = sdata[0].callid;
-      $scope.msgDate = sdata[0].micro_ts / 1000;
-      $scope.sipPath = sdata[0].source_ip + ':' + sdata[0].source_port + ' -> ' + sdata[0].destination_ip + ':' + sdata[0].destination_port;
+      $scope.msgCallId = sdata[0].sid;
+      $scope.msgDate = sdata[0].create_date;
+      $scope.sipPath = sdata[0].srcIp + ':' + sdata[0].srcPort + ' -> ' + sdata[0].dstPort + ':' + sdata[0].dstIp;
       
-      console.log("SWAP3", sdata[0].msg);
-      $scope.sipMessage = swapText(sdata[0].msg); // .replace(/</g, "&lt;");
+      $scope.sipMessage = swapText(sdata[0].raw); // .replace(/</g, "&lt;");
 
       const tabjson = [];
       for (let p in sdata[0]) {
-        if (p == 'msg') continue;
+        if (p == 'raw') continue;
         if (sdata[0].hasOwnProperty(p) && sdata[0][p] != '') {
           tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[0][p].split('<').join('&lt;') + '</td></tr>');
         }

@@ -33,7 +33,7 @@ class User extends LivingBeing {
       .then(function([user]) {
         return user;
       });
-  }
+  }  
 }
 
 export default User;

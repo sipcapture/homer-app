@@ -9,7 +9,7 @@ class CallDetailFlow {
 
   $onChanges(bindings) {
     if (Object.keys(bindings.call.currentValue).length) {
-      this.drawCanvas(this.callid, bindings.call.currentValue);
+      this.drawCanvas(this.sid, bindings.call.currentValue);
     }
   }
 
@@ -22,7 +22,7 @@ class CallDetailFlow {
     }
 
     this.messages = call.messages;
-    this.callid = data.callid;
+    this.sid = data.sid;
     data.hostsA = data.hosts[data.hosts.length - 1];
     data.hosts.splice(-1, 1);
     this.hostsflow = data.hosts;

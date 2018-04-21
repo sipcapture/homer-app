@@ -34,6 +34,18 @@ exports.up = function(knex) {
       mappingTable.json('schema_settings');
       mappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     })
+    .createTable('user_settings', function(userSettingsTable) {
+      // Primary Key
+      userSettingsTable.increments();
+      // Data
+      userSettingsTable.uuid('guid');      
+      userSettingsTable.string('username', 100).notNullable();      
+      userSettingsTable.integer('gid').notNullable();
+      userSettingsTable.string('category', 100).notNullable().defaultTo('settings');
+      userSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
+      userSettingsTable.string('param', 100).notNullable().defaultTo('default');
+      userSettingsTable.json('data');
+    })
     .createTable('birds', function(birdsTable) {
       // Primary Key
       birdsTable.increments();
@@ -53,5 +65,6 @@ exports.down = function(knex) {
     .schema
     .dropTableIfExists( 'birds' )
     .dropTableIfExists( 'mapping_schema' )
+    .dropTableIfExists( 'user_settings' )
     .dropTableIfExists( 'users' );
 };

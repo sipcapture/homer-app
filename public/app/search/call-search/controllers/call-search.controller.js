@@ -280,8 +280,8 @@ class SearchCall {
   showMessage(localrow, event) {
     const searchData = {
       timestamp: {
-        from: parseInt(localrow.entity.micro_ts / 1000) - 100,
-        to: parseInt(localrow.entity.micro_ts / 1000) + 100,
+        from: parseInt(localrow.entity.create_date / 1000) - 100,
+        to: parseInt(localrow.entity.create_date / 1000) + 100,
       },
       param: {
         search: {
@@ -433,23 +433,25 @@ class SearchCall {
 
   showTransaction(localrow, event) {
     const rows = this.gridApi.selection.getSelectedRows();
-    const callids = [];
+    const sids = [];
     const uuids = [];
     let nodes = [];
+    
+    console.log(localrow);
 
-    callids.push(localrow.entity.callid);
+    sids.push(localrow.entity.sid);
     if (localrow.entity.uuid && localrow.entity.uuid.length > 1) uuids.push(localrow.entity.uuid);
 
-    if (callids.indexOf(localrow.entity.hep_correlation_id) == -1 && localrow.entity.hep_correlation_id.length > 1) {
-      callids.push(localrow.entity.hep_correlation_id);
+    if (localrow.entity.correlation_id && sids.indexOf(localrow.entity.correlation_id) == -1 && localrow.entity.correlation_id.length > 1) {
+      sids.push(localrow.entity.correlation_id);
     }
 
     forEach(rows, function(row) {
-      if (callids.indexOf(row.callid) == -1) {
-        callids.push(row.callid);
+      if (sids.indexOf(row.sid) == -1) {
+        sids.push(row.sid);
       }
-      if (callids.indexOf(row.hep_correlation_id) == -1 && row.hep_correlation_id.length > 1) {
-        callids.push(row.hep_correlation_id);
+      if (row.correlation_id && sids.indexOf(row.correlation_id) == -1 && row.correlation_id.length > 1) {
+        sids.push(row.correlation_id);
       }
       if (nodes.indexOf(row.dbnode) == -1) nodes.push(row.dbnode);
 
@@ -458,24 +460,23 @@ class SearchCall {
       }
     });
 
-    let stop;
-    if (localrow.entity.cdr_stop > (localrow.entity.micro_ts / 1000000)) {
+    let stop;    
+    if (localrow.entity.cdr_stop && (localrow.entity.cdr_stop > (localrow.entity.create_date / 1000))) {
       stop = (localrow.entity.cdr_stop * 1000);
     } else {
-      stop = parseInt(localrow.entity.micro_ts / 1000);
+      stop = parseInt(localrow.entity.create_date);
     }
       
     const searchData = {
       timestamp: {
-        from: parseInt(localrow.entity.micro_ts / 1000 - (5 * 1000)),
+        from: parseInt(localrow.entity.create_date - (300 * 1000)),
         to: parseInt(stop + (300 * 1000)),
       },
       param: {
         search: {
           id: parseInt(localrow.entity.id),
-          callid: callids,
+          callid: sids,
           uuid: uuids,
-          uniq: false,
         },
         location: {
         },
@@ -494,7 +495,7 @@ class SearchCall {
     // const timezone = this.UserProfile.getProfile('timezone');
     localrow.entity.trans = 'call';
     searchData['param']['transaction'][localrow.entity.trans] = true;
-    const trwindowId = '' + localrow.entity.callid + '_' + localrow.entity.dbnode;
+    const trwindowId = '' + localrow.entity.sid + '_' + localrow.entity.dbnode;
 
     nodes = this.UserProfile.getProfile('node');
 

@@ -78,7 +78,7 @@
           this.dataCallid = [];
           var mykey;
           var colorLine;
-          var callid;
+          var sid;
           var alias;
           var sizeLen = 0;
           var dataRtp = {};
@@ -89,16 +89,16 @@
           console.log(dataSIP);
 
 
-          for (var callid in dataSIP.callid) {
-            if (!dataSeriesCallid.hasOwnProperty(callid)) {
+          for (var sid in dataSIP.sid) {
+            if (!dataSeriesCallid.hasOwnProperty(sid)) {
               //colorLine = colorSets["colorSet1"][this.dataSeriesCallid.length];
               //colorLine = colorSets["colorSet1"][sizeLen];
-              colorLine = this.getCallIDColor(callid);
+              colorLine = this.getCallIDColor(sid);
               sizeLen++;
-              dataSeriesCallid[callid] = {
-                name: callid,
+              dataSeriesCallid[sid] = {
+                name: sid,
                 type: 'square',
-                legendText: callid,
+                legendText: sid,
                 markerColor: colorLine,
                 markerSize: 2,
                 divColor: {
@@ -107,15 +107,18 @@
                 lineColor: colorLine
               };
               this.dataCallid.push({
-                name: callid,
+                name: sid,
                 type: 'square',
-                legendText: callid,
+                legendText: sid,
                 markerColor: colorLine,
                 markerSize: 2,
                 lineColor: colorLine
               });
             }
           }
+
+          
+          console.log("RRR", dataSeriesCallid);
 
 
           var pos = 0;
@@ -226,13 +229,13 @@
 
           angular.forEach(data['calldata'], function(value) {
 
-            if (aliasMap.hasOwnProperty(value.src_id)) alias = aliasMap[value.src_id];
-            else alias = value.src_id;
+            if (aliasMap.hasOwnProperty(value.srcId)) alias = aliasMap[value.srcId];
+            else alias = value.srcId;
 
             tmpX = hosts[alias];
 
-            if (aliasMap.hasOwnProperty(value.dst_id)) alias = aliasMap[value.dst_id];
-            else alias = value.dst_id;
+            if (aliasMap.hasOwnProperty(value.dstId)) alias = aliasMap[value.dstId];
+            else alias = value.dstId;
             tmpY = hosts[alias];
 
             /****************************/
@@ -243,15 +246,15 @@
             iaz.sid = index;
             iaz.proto = value.protocol;
             iaz.position = i;
-            iaz.callid = value.hasOwnProperty('transaction_id') ? value.transaction_id : value.callid;
-            iaz.date = $filter('date')(new Date(value.micro_ts / 1000), "yyyy-MM-dd HH:mm:ss.sss Z", timezone.offset);;
+            iaz.sid = value.hasOwnProperty('transaction_id') ? value.transaction_id : value.sid;
+            iaz.date = $filter('date')(new Date(value.create_date), "yyyy-MM-dd HH:mm:ss.sss Z", timezone.offset);;
             iaz.method = value.method_text;
             iaz.method_ext = value.ruri_user;
             iaz.dbnode = value.node;
-            iaz.micro_ts = value.micro_ts;
+            iaz.micro_ts = value.create_date;
             iaz.x_pos = tmpX.position;
             iaz.y_pos = tmpY.position;
-            iaz.color = dataSeriesCallid[iaz.callid].divColor;
+            iaz.color = dataSeriesCallid[iaz.sid].divColor;
             iaz.direction = tmpX.position >= tmpY.position ? 1 : 0;
             if (iaz.direction == 0) {
               iaz.midle_c = tmpY.position - tmpX.position;
@@ -282,16 +285,16 @@
             messagesData.push(iaz);
             /****************************/
 
-            callid = value.callid;
+            sid = value.sid;
 
             /*********   RTP *******/
-            if (dataSIP.hasOwnProperty("rtppos") && dataSIP["rtppos"].hasOwnProperty(callid)) {
-              angular.forEach(dataSIP['rtppos'][callid], function(hd, k) {
+            if (dataSIP.hasOwnProperty("rtppos") && dataSIP["rtppos"].hasOwnProperty(sid)) {
+              angular.forEach(dataSIP['rtppos'][sid], function(hd, k) {
                 if (hd == value.id) {
 
-                  if (dataSIP.hasOwnProperty("sdp") && dataSIP["sdp"].hasOwnProperty(callid)) {
+                  if (dataSIP.hasOwnProperty("sdp") && dataSIP["sdp"].hasOwnProperty(sid)) {
 
-                    angular.forEach(dataSIP['sdp'][callid][k], function(osdp, rad) {
+                    angular.forEach(dataSIP['sdp'][sid][k], function(osdp, rad) {
 
                       i++;
 
@@ -336,7 +339,7 @@
           var testdata = {};
           testdata.hosts = hostsData;
           testdata.messages = messagesData;
-          testdata.callid = dataSeriesCallid;
+          testdata.sid = dataSeriesCallid;
 
           return testdata;
         }

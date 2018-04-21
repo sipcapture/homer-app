@@ -21,9 +21,9 @@
       <tbody ng-show="!$ctrl.dataLoading">
         <tr ng-repeat="row in $ctrl.displayedCollection" ng-click="$ctrl.showMessage(row,$event)" ng-class-odd="'shark0'" ng-class-even="'shark1'">
           <td width="6%"><a ng-click="$ctrl.showMessage(row,$event)">{{row.id}}</a></td>
-          <td width="8%">{{row.micro_ts/1000 | date:'dd-MM-yyyy'}}</td>
-          <td width="10%">{{row.micro_ts/1000 | date:'hh:mm:ss.sss'}}</td>
-          <td width="8%">{{ ddd = $index > 0 ? (row.micro_ts/1000 - $ctrl.displayedCollection[$index-1].micro_ts/1000) : 0 | date:( ddd>60000 ?'m:':'')+'s.sss' }}s</td>
+          <td width="8%">{{row.create_date | date:'dd-MM-yyyy'}}</td>
+          <td width="10%">{{row.create_date | date:'hh:mm:ss.sss'}}</td>
+          <td width="8%">{{ ddd = $index > 0 ? (row.create_date - $ctrl.displayedCollection[$index-1].create_date) : 0 | date:( ddd>60000 ?'m:':'')+'s.sss' }}s</td>
           <td width="10%" ng-if="row.event && ( !row.method || !row.reply_reason) ">
             <span ng-style="
               (row.event == 'CRITICAL') && {'color':'red'} || 
@@ -43,13 +43,16 @@
             {{row.method ? row.method : row.reply_reason}}
             </span>
           </td>
-          <td width="8%">{{ (row.message).length }}</td>
-          <td width="12%">{{ $ctrl.ip_alias[row.source_ip+":"+row.source_port] || $ctrl.ip_alias[row.source_ip] || row.source_ip}}</td> <!--to-do: not found ip_alias in controller-->
-          <td width="8%">{{row.source_port}}</td>
-          <td width="12%">{{ $ctrl.ip_alias[row.destination_ip+":"+row.destination_port]  || $ctrl.ip_alias[row.destination_ip] || row.destination_ip}}</td>
-          <td width="8%">{{row.destination_port}}</td>
-          <td width="5%">{{$ctrl.protoCheck(row.proto)}}</td> <!--to-do: not found in controller-->
-          <td width="5%">{{$ctrl.transactionCheck(row.type)}}</td>
+          <td width="10%" ng-if="!row.method && !row.reply_reason && !row.event">
+            <span ng-style="{'color':'red'}">{{$ctrl.transactionCheck(row.payloadType)}}</span>
+          </td>
+          <td width="8%">{{ (row.raw).length }}</td>
+          <td width="12%">{{ $ctrl.ip_alias[row.srcIp+":"+row.srcPort] || $ctrl.ip_alias[row.srcIp] || row.srcIp}}</td> <!--to-do: not found ip_alias in controller-->
+          <td width="8%">{{row.srcPort}}</td>
+          <td width="12%">{{ $ctrl.ip_alias[row.dstIp+":"+row.dstPort]  || $ctrl.ip_alias[row.dstIp] || row.dstIp}}</td>
+          <td width="8%">{{row.dstPort}}</td>
+          <td width="5%">{{$ctrl.protoCheck(row.protocolFamily)}}</td> <!--to-do: not found in controller-->
+          <td width="5%">{{$ctrl.transactionCheck(row.payloadType)}}</td>
         </tr>
       </tbody>
     </table>

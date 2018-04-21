@@ -138,7 +138,7 @@ class SearchData extends LivingBeing {
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];
-        let callid = {};
+        let sid = {};
         let hosts = {};
         let alias = {};
         let callData = [];
@@ -152,7 +152,7 @@ class SearchData extends LivingBeing {
             }
             else if (k == 'sid' || k == 'correlation_id') {
               dataElement[k] = row[k];
-              callid[row[k]] = row[k];
+              sid[row[k]] = row[k];
             }
              else {
               dataElement[k] = row[k];
@@ -161,18 +161,18 @@ class SearchData extends LivingBeing {
           
           let callElement = {
               id: 0,
-              callid: "12345",
-              dst_host: "127.0.0.1",
-              src_host: "127.0.0.1",
-              dst_id: "127.0.0.1:5060",
-              src_id: "127.0.0.1:5060",
-              source_ip: "127.0.0.1",
-              destination_ip: "127.0.0.2",
-              src_port:0,
-              dst_port:0,
+              sid: "12345",
+              dstHost: "127.0.0.1",
+              srcHost: "127.0.0.1",
+              dstId: "127.0.0.1:5060",
+              srcId: "127.0.0.1:5060",
+              srcIp: "127.0.0.1",
+              dstIp: "127.0.0.2",
+              srcPort:0,
+              dstPort:0,
               method: "UNKNOWN",
               method_text: "UNKNOWN",
-              micro_ts: 0,
+              create_date: 0,
               protocol: "1",
               msg_color: "blue",
               ruri_user: "",
@@ -181,21 +181,21 @@ class SearchData extends LivingBeing {
 
           if(dataElement.hasOwnProperty("id")) callElement.id = dataElement["id"];
           if(dataElement.hasOwnProperty("srcIp")) {
-                callElement.source_ip = dataElement["srcIp"];
-                callElement.src_host = dataElement["srcIp"];
+                callElement.srcIp = dataElement["srcIp"];
+                callElement.srcHost = dataElement["srcIp"];
           }
           if(dataElement.hasOwnProperty("dstIp")) {
-              callElement.destination_ip = dataElement["dstIp"];
-              callElement.dst_host = dataElement["dstIp"];
+              callElement.dstIp = dataElement["dstIp"];
+              callElement.dstHost = dataElement["dstIp"];
           }
-          if(dataElement.hasOwnProperty("srcPort")) callElement.src_port = dataElement["srcPort"];
-          if(dataElement.hasOwnProperty("dstPort")) callElement.dst_port = dataElement["dstPort"];          
+          if(dataElement.hasOwnProperty("srcPort")) callElement.srcPort = dataElement["srcPort"];
+          if(dataElement.hasOwnProperty("dstPort")) callElement.dstPort = dataElement["dstPort"];          
           if(dataElement.hasOwnProperty("method")) {
                   callElement.method = dataElement["method"];
                   callElement.method_text = dataElement["method"];
           }                    
           if(dataElement.hasOwnProperty("create_date")) {
-                  callElement.micro_ts = dataElement["create_date"];
+                  callElement.create_date = dataElement["create_date"];
           }          
           if(dataElement.hasOwnProperty("create_date")) {
                   callElement.micro_ts = dataElement["create_date"];
@@ -203,38 +203,40 @@ class SearchData extends LivingBeing {
           if(dataElement.hasOwnProperty("protocol")) {
                   callElement.protocol = dataElement["protocol"];
           }          
-          if(dataElement.hasOwnProperty("sid")) callElement.callid = dataElement["sid"];
-          if(dataElement.hasOwnProperty("raw")) callElement.ruri_user = dataElement["raw"].substr(0,20);
+          if(dataElement.hasOwnProperty("sid")) callElement.sid = dataElement["sid"];
+          if(dataElement.hasOwnProperty("raw")) {
+                callElement.ruri_user = dataElement["raw"].substr(0,20);
+          }
 
-          callElement.src_id = callElement.src_host+":"+callElement.src_port;
-          callElement.dst_id = callElement.dst_host+":"+callElement.dst_port;
-          let srcIpPort = callElement.source_ip+":"+callElement.src_port;
-          let dstIpPort= callElement.destination_ip+":"+callElement.dst_port;
+          callElement.srcId = callElement.srcHost+":"+callElement.srcPort;
+          callElement.dstId = callElement.dstHost+":"+callElement.dstPort;
+          let srcIpPort = callElement.srcIp+":"+callElement.srcPort;
+          let dstIpPort= callElement.dstIp+":"+callElement.dstPort;
                     
-          if(!hosts.hasOwnProperty(callElement.src_id)) 
+          if(!hosts.hasOwnProperty(callElement.srcId)) 
           {
                 let hostElement = {
-                      hosts: [ callElement.src_id],  
+                      hosts: [ callElement.srcId],  
                       position: position++,
                 };
 
-                hosts[callElement.src_id] = hostElement;                                                    
+                hosts[callElement.srcId] = hostElement;                                                    
           }
           
-          if(!hosts.hasOwnProperty(callElement.dst_id)) 
+          if(!hosts.hasOwnProperty(callElement.dstId)) 
           {
                 let hostElement = {
-                      hosts: [ callElement.dst_id],  
+                      hosts: [ callElement.dstId],  
                       position: position++,
                 };
                 
-                hosts[callElement.dst_id] = hostElement;                                                    
+                hosts[callElement.dstId] = hostElement;                                                    
           }
           
-          if(!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = callElement.src_id;
-          if(!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = callElement.dst_id;
+          if(!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = callElement.srcId;
+          if(!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = callElement.dstId;
 
-          callElement.destination = hosts[callElement.dst_id].position;
+          callElement.destination = hosts[callElement.dstId].position;
           
           callData.push(callElement);
           dataReply.push(dataElement);
@@ -248,7 +250,7 @@ class SearchData extends LivingBeing {
           total: dataReply.length,
           data: {
               messages: dataReply,              
-              callid: callid,
+              sid: sid,
               hosts: hosts,
               calldata: callData,
               alias: alias,

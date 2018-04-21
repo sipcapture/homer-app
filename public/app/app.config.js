@@ -32,10 +32,16 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           $log.error(['app.config', 'resolve dashboards menu'], err);
         });
       },
-      appPreferences: function(PreferencesService, $log) {
+      appPreferences: function(PreferencesService, mockAppPreferencesService, $log) {
         'ngInject';
 
-        return PreferencesService.getDataAndSchema().catch(function(err) {
+        return PreferencesService.getDataAndSchema().then(function(resp) {
+          resp.mock = {
+            data: mockAppPreferencesService.fetchData(),
+            schema: mockAppPreferencesService.fetchSchema(),
+          };
+          return resp;
+        }).catch(function(err) {
           $log.error(['app.config', 'resolve app preferences data'], err);
         });
       },

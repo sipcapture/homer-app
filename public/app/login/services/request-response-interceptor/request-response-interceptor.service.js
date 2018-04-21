@@ -29,6 +29,7 @@ class RequestResponseInterceptor {
       return self.$state.go(self.ROUTER.LOGIN.NAME);
     }
     self.$log.error(['RequestResponseInterceptor'], ['reponseError'], rejection);
+    return rejection;
   }
 }
 

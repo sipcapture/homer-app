@@ -6,6 +6,7 @@ class JsonEditor {
     this.scope = {
       jsonEditorSchema: '<',
       jsonEditorData: '<',
+      jsonEditorTrigger: '=',
       jsonEditorPersist: '&',
     };
     this.template = '<div id="json-editor-placeholder"></div>';
@@ -25,6 +26,10 @@ class JsonEditor {
     scope.$on('$destroy', function() {
       scope.jsonEditorPersist({data: editor.getValue()});
     });
+
+    scope.jsonEditorTrigger.save = function() {
+      scope.jsonEditorPersist({data: editor.getValue()});
+    };
   }
 }
 

@@ -33,6 +33,11 @@ export default {
           description: 'email address',
           minLength: 4,
         },
+        password: {
+          type: 'string',
+          description: 'password',
+          minLength: 4,
+        },
       },
     },
     default: [

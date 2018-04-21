@@ -34,6 +34,8 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.dataLoading = false;
 
     const swapText = function(text) {
+      console.log("SWAP", text);
+    
       let swpA;
       let swpB;
       text = text.split('<').join('&lt;');
@@ -55,11 +57,11 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.msgCallId = sdata.callid;
     $scope.msgDate = sdata.micro_ts / 1000;
     $scope.sipPath = sdata.source_ip + ':' + sdata.source_port + ' -> ' + sdata.destination_ip + ':' + sdata.destination_port;
-    $scope.sipMessage = swapText(sdata.message); // .replace(/</g, "&lt;");
+    $scope.sipMessage = swapText(sdata.raw); // .replace(/</g, "&lt;");
 
     const tabjson = [];
     for (let p in sdata) {
-      if (p == 'message') continue;
+      if (p == 'raw') continue;
       if (sdata.hasOwnProperty(p) && sdata[p] != '') {
         if (typeof sdata[p] === 'string' || sdata[p] instanceof String) {
           tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[p].split('<').join('&lt;') + '</td></tr>');
@@ -89,11 +91,11 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.msgCallId = sdata.callid;
     $scope.msgDate = (sdata.micro_ts || sdata.report_ts || sdata.event_ts) / 1000;
     $scope.sipPath = sdata.source_ip + ':' + sdata.source_port + ' -> ' + sdata.destination_ip + ':' + sdata.destination_port;
-    $scope.sipMessage = swapText(sdata.message);
+    $scope.sipMessage = swapText(sdata.raw);
 
     let tabjson = [];
     for (let p in sdata) {
-      if (p == 'message') continue;
+      if (p == 'raw') continue;
       if (sdata.hasOwnProperty(p) && sdata[p] != '') {
         if (typeof sdata[p] === 'string' || sdata[p] instanceof String) {
           tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[p].split('<').join('&lt;') + '</td></tr>');
@@ -139,6 +141,8 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       $scope.msgCallId = sdata[0].callid;
       $scope.msgDate = sdata[0].micro_ts / 1000;
       $scope.sipPath = sdata[0].source_ip + ':' + sdata[0].source_port + ' -> ' + sdata[0].destination_ip + ':' + sdata[0].destination_port;
+      
+      console.log("SWAP3", sdata[0].msg);
       $scope.sipMessage = swapText(sdata[0].msg); // .replace(/</g, "&lt;");
 
       const tabjson = [];

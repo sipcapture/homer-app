@@ -21,8 +21,10 @@ class SearchData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  get(columns, table, payload) {
-    let sData = payload.search;
+  get(columns, table, data) {
+  
+    console.log("RRR", data.param);
+    let sData = data.param.search;
     let dataWhereRawKey = [];
     let dataWhereRawValue = [];
     let dataWhere = {};
@@ -56,21 +58,30 @@ class SearchData extends LivingBeing {
         });
       }
     };
+
+    console.log("TimERange", data.timestamp);
+    let timeWhere = [];
+    
+    timeWhere.push(data.timestamp.from);
+    timeWhere.push(data.timestamp.to);
+    
+    
     
     let myWhereRawString = '';
     if (dataWhereRawKey.length > 0 ) {
       myWhereRawString = dataWhereRawKey.join(' AND ');
     }
 
-    /*
+    
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
-    */
+    
       
     return this.dataDb(table)
       .whereRaw(myWhereRawString, dataWhereRawValue)
       .where(dataWhere)
+      .whereBetween('create_date',timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
       .then(function(rows) {

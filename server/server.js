@@ -14,6 +14,7 @@ const routes = {
   proxy: require('./routes/proxy'),
   any: require('./routes/any'),
   users: require('./routes/users'),
+  dashboard: require('./routes/dashboard'),
 };
 
 const databases = {

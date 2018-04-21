@@ -1,4 +1,14 @@
+const base = 'api/v3';
+
 const API = {
+  PREFERENCES: {
+    USER: {
+      GETALL: `${base}/users`,
+      ADD: `${base}/users`,
+      UPDATE: `${base}/users`,
+      DELETE: `${base}/users`,
+    },
+  },
   PROFILE: {
     STORE: 'api/v3/profile/store',
   },

@@ -32,6 +32,30 @@ const ROUTER = {
     DESCRIPTION: 'search',
     SECURE: true,
   },
+  PREFERENCES: {
+    NAME: 'hepic.preferences',
+    PATH: '/preferences',
+    DESCRIPTION: 'app preferences',
+    SECURE: true,
+  },
+  PREFERENCES_USER_EDITOR: {
+    NAME: 'hepic.preferences.users',
+    PATH: '/users',
+    DESCRIPTION: 'users preferences editor',
+    SECURE: true,
+  },
+  PREFERENCES_MOCK_EDITOR: {
+    NAME: 'hepic.preferences.mock',
+    PATH: '/mock',
+    DESCRIPTION: 'mock preferences editor',
+    SECURE: true,
+  },
+  PREFERENCES_EDITOR: {
+    NAME: 'hepic.preferences.app-preferences-editor',
+    PATH: '/app-preferences-editor',
+    DESCRIPTION: 'app preferences editor',
+    SECURE: true,
+  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

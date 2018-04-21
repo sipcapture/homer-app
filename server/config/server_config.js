@@ -9,8 +9,11 @@ export default {
   },
   db: {
     type: { // only one type can be true
-      mysql: false,
-      pgsql: true,
+      mysql: true,
+      pgsql: false,
     },
+  },
+  bcrypt: {
+    saltRounds: 10,
   },
 };

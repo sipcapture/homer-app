@@ -9,7 +9,7 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#">
-          <div class="hepic2-navbar-logo">{{$ctrl.ui.logo.text}}</div>
+          <div class="hepic2-navbar-logo">{{$ctrl.logoText}}</div>
         </a> <!-- END logo -->
       </div>
   
@@ -35,9 +35,16 @@
         </ul> <!-- END date-time picker -->
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <dashboards-menu dashboards="$ctrl.dashboardsMenu"></dashboards-menu>
+            <dashboards-menu app-settings="$ctrl.appPreferences" dashboards="$ctrl.dashboardsMenu"></dashboards-menu>
           </li>
         </ul> <!-- END dashboards menu -->
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <div class="btn-group">
+              <a class="hepic2-navbar-button" ng-href="{{$ctrl.preferences.path}}" ui-sref="{{$ctrl.preferences.name}}">Preferences</a>
+            </div>
+          </li>
+        </ul> <!-- END app preferences -->
       </div>
     </div>
   </nav>

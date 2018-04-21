@@ -1,11 +1,17 @@
 import '../style/header-navbar.style.css';
 
 class HeaderNavbar {
-  constructor($log, AuthenticationService, UI) {
+  constructor($log, AuthenticationService, CONFIGURATION, ROUTER) {
     'ngInject';
     this.$log = $log;
     this.AuthenticationService = AuthenticationService;
-    this.ui = UI;
+    this.CONFIGURATION = CONFIGURATION;
+    this.ROUTER = ROUTER;
+    this.logoText = this.CONFIGURATION.APP_NAME;
+    this.preferences = {
+      path: this.ROUTER.PREFERENCES.PATH,
+      name: this.ROUTER.PREFERENCES.NAME,
+    };
   }
 
   $onInit() {

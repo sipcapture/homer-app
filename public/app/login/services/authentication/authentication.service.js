@@ -30,6 +30,10 @@ class AuthenticationService {
     }
   }
 
+  currentUser() {
+    return this.$localStorage.user;
+  }
+
   logout() {
     return this.$state.go(this.ROUTER.LOGIN.NAME);
   }

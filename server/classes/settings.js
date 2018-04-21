@@ -1,6 +1,4 @@
-const uuidv4 = require('uuid/v4');
 import LivingBeing from './living_being';
-var Promise = require('bluebird');
 
 const table = 'user_settings';
 
@@ -38,8 +36,7 @@ class Settings extends LivingBeing {
   }
   
   getDashboard(table, columns, dashboardId) {
-  
-   let dataWhere = {};
+    let dataWhere = {};
 
     dataWhere['username'] = this.username;
     dataWhere['category'] = 'dashboard';
@@ -49,20 +46,18 @@ class Settings extends LivingBeing {
       .where(dataWhere)
       .select(columns)
       .then(function([dashboard]) {
-          let globalReply = {
-		total: 3,
-        	data: dashboard,
-		status: "ok",
-		auth: "ok",
-	  };
-	    
-	  return globalReply;
+        let globalReply = {
+          total: 3,
+          data: dashboard,
+          status: 'ok',
+          auth: 'ok',
+        };
+        return globalReply;
       });
   }
   
   getDashboardList(table, columns) {
-  
-   let dataWhere = {};
+    let dataWhere = {};
 
     dataWhere['username'] = this.username;
     dataWhere['category'] = 'dashboard';
@@ -70,99 +65,90 @@ class Settings extends LivingBeing {
     return this.configDb(table)
       .where(dataWhere)
       .select(columns)
-      .then(function(rows) {     
-          let dashboardList = [];
+      .then(function(rows) {
+        let dashboardList = [];
            
-          rows.forEach(function(row) {
-          
-                let dashboardElement = {
-                    cssclass: "fa",
-                    href: "",
-                    id: "",
-                    name: "undefined",
-                    param: "",
-                    shared: 0,
-                    type: 0,
-                    weight: 10,                
-                };
+        rows.forEach(function(row) {
+          let dashboardElement = {
+            cssclass: 'fa',
+            href: '',
+            id: '',
+            name: 'undefined',
+            param: '',
+            shared: 0,
+            type: 0,
+            weight: 10,
+          };
                 
-                if(row.hasOwnProperty("param")) {
-                    dashboardElement.href = row["param"];
-                    dashboardElement.id = row["param"];
-                }
+          if (row.hasOwnProperty('param')) {
+            dashboardElement.href = row['param'];
+            dashboardElement.id = row['param'];
+          }
                 
-                if(row.hasOwnProperty("data")) 
-                {
-                    if(row["data"].hasOwnProperty("name")) dashboardElement.name = row["data"]["name"];
-                    if(row["data"].hasOwnProperty("weight")) dashboardElement.weight = row["data"]["weight"];
-                }
+          if (row.hasOwnProperty('data')) {
+            if (row['data'].hasOwnProperty('name')) dashboardElement.name = row['data']['name'];
+            if (row['data'].hasOwnProperty('weight')) dashboardElement.weight = row['data']['weight'];
+          }
                 
-                dashboardList.push(dashboardElement);
-
-          });
+          dashboardList.push(dashboardElement);
+        });
           
-	  let globalReply = {
-		total: dashboardList.length,
-        	data: dashboardList,
-		status: "ok",
-		auth: "ok",
-	  };
-  
-	  return globalReply;
-          
+        let globalReply = {
+          total: dashboardList.length,
+          data: dashboardList,
+          status: 'ok',
+          auth: 'ok',
+        };
+        return globalReply;
       });
   }
   
   insertDashboard(table, dashboardId, newBoard) {
-  
-   let dataWhere = {};
+    let dataWhere = {};
 
-   dataWhere['username'] = this.username;
-   dataWhere['category'] = 'dashboard';
-   dataWhere['param'] = dashboardId;
+    dataWhere['username'] = this.username;
+    dataWhere['category'] = 'dashboard';
+    dataWhere['param'] = dashboardId;
 
-   let that = this;
+    let that = this;
         
-   return this.configDb(table)
+    return this.configDb(table)
       .where(dataWhere)
       .del()
-      .then(function(rows) {     
-             return that.configDb(table).insert(newBoard).into(table)
-                   .then(function(resp) {     
-                    var id = resp[0];                                                    
-                    let globalReply = {
-                          total: 3,
-                          status: "ok",
-                          auth: "ok",
-                    };               
+      .then(function(rows) {
+        return that.configDb(table).insert(newBoard).into(table)
+          .then(function(resp) {
+            let id = resp[0];
+            let globalReply = {
+              total: 3,
+              status: 'ok',
+              auth: 'ok',
+            };
                     
-                    if(id == 0) globalReply = "bad";                         
+            if (id == 0) globalReply = 'bad';
                     
-                    return globalReply;                        
-            });           
+            return globalReply;
+          });
       });
   }
   
   deleteDashboard(table, dashboardId) {
-  
-   let dataWhere = {};
+    let dataWhere = {};
 
-   dataWhere['username'] = this.username;
-   dataWhere['category'] = 'dashboard';
-   dataWhere['param'] = dashboardId;
-
-   let that = this;
+    dataWhere['username'] = this.username;
+    dataWhere['category'] = 'dashboard';
+    dataWhere['param'] = dashboardId;
         
-   return this.configDb(table)
+    return this.configDb(table)
       .where(dataWhere)
       .del()
-      .then(function(rows) {     
-             let globalReply = {
-                total: 3,
-                status: "ok",
-                auth: "ok",
-             };                                   
-             return globalReply;                        
+      .then(function(rows) {
+        let globalReply = {
+          total: 3,
+          status: 'ok',
+          auth: 'ok',
+        };
+        return globalReply;
       });
   }
 }

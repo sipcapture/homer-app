@@ -13,6 +13,7 @@ const routes = {
   ui: require('./routes/ui'),
   proxy: require('./routes/proxy'),
   any: require('./routes/any'),
+  users: require('./routes/users'),
 };
 
 const databases = {

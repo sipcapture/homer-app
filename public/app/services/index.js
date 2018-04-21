@@ -4,6 +4,7 @@ import UserProfile from './user-profile';
 import TimeMachine from './time-machine';
 import EventBus from './event-bus';
 import Log from './log';
+import UserService from './user-service';
 
 export default angular.module('hepicApp.services', [
   ModalHelper.name,
@@ -11,4 +12,5 @@ export default angular.module('hepicApp.services', [
   TimeMachine.name,
   EventBus.name,
   Log.name,
+  UserService.name,
 ]);

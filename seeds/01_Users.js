@@ -17,8 +17,15 @@ exports.seed = function seed(knex) {
     {
       name: 'Alexandr Dubovikov',
       username: 'shurik',
-      hash: bcrypt.hashSync('123456', salt),
+      hash: bcrypt.hashSync('12345678', salt),
       email: 'shurik@email.com',
+      guid: uuidv4(),
+    },
+    {
+      name: 'Lorenzo Mangani',
+      username: 'lorenzo',
+      hash: bcrypt.hashSync('12345678', salt),
+      email: 'lmangani@gmail.com',
       guid: uuidv4(),
     }
   ];

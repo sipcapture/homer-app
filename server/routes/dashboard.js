@@ -13,6 +13,11 @@ export default function users(server) {
      */
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'GET',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+    },
     handler: function(request, reply) {
       const settings = new Settings(server, 'trex');
 
@@ -41,6 +46,11 @@ export default function users(server) {
      */
     path: '/api/v3/dashboard/info',
     method: 'GET',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+    },
     handler: function(request, reply) {
       const settings = new Settings(server, 'trex');
 

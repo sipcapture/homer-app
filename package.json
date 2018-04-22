@@ -7,7 +7,7 @@
     "build": "rimraf public/dist && webpack --bail --progress --profile",
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js",
-    "dev": "nodemon --inspect=0.0.0.0:9230 bootstrap.js"
+    "dev": "nodemon --inspect=0.0.0.0:9231 bootstrap.js"
   },
   "keywords": [],
   "author": "",
@@ -61,6 +61,7 @@
     "highlight.js": "9.12.0",
     "html2canvas": "1.0.0-alpha.9",
     "inert": "4.2.1",
+    "influx": "^5.0.7",
     "javascript-detect-element-resize": "0.5.3",
     "joi": "11.4.0",
     "jquery": "1.11.1",

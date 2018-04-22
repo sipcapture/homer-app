@@ -108,7 +108,7 @@ class SearchCall {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
                 +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
             } else if (v == 'id') {
-              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" '
+              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
                 +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
             } else if (v == 'create_date') {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
@@ -280,8 +280,8 @@ class SearchCall {
   showMessage(localrow, event) {
     const searchData = {
       timestamp: {
-        from: parseInt(localrow.entity.create_date / 1000) - 100,
-        to: parseInt(localrow.entity.create_date / 1000) + 100,
+        from: parseInt(localrow.entity.create_date) - 300*1000,
+        to: parseInt(localrow.entity.create_date) + 300*100,
       },
       param: {
         search: {
@@ -431,6 +431,21 @@ class SearchCall {
         ('0' + seconds).slice(-2);
   }
 
+  getCallIDColor(str, flag) {
+    let hash = 0;
+    let i = 0;
+    for (i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    i = hash;
+    let col = ((i >> 24) & 0xAF).toString(16) + ((i >> 16) & 0xAF).toString(16) +
+                        ((i >> 8) & 0xAF).toString(16) + (i & 0xAF).toString(16);
+    if (col.length < 6) col = col.substring(0, 3) + '' + col.substring(0, 3);
+    if (col.length > 6) col = col.substring(0, 6);
+    if (flag) return col;
+    else return {'color': '#' + col};
+  }
+
   showTransaction(localrow, event) {
     const rows = this.gridApi.selection.getSelectedRows();
     const sids = [];
@@ -460,7 +475,7 @@ class SearchCall {
       }
     });
 
-    let stop;    
+    let stop;
     if (localrow.entity.cdr_stop && (localrow.entity.cdr_stop > (localrow.entity.create_date / 1000))) {
       stop = (localrow.entity.cdr_stop * 1000);
     } else {

@@ -2,14 +2,15 @@ import uuid from 'uuid/v4';
 import Boom from 'boom';
 import Settings from '../classes/settings';
 
-export default function users(server) {
+export default function dashboards(server) {
+
   server.route({
     /**
-     * GET all users
+     * GET all dashboards
      *
      * @header
      *  @param {string} JWT token for authentication
-     * @return {array} list of users data
+     * @return {array} list of dashboards data
      */
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'GET',
@@ -19,7 +20,9 @@ export default function users(server) {
       },
     },
     handler: function(request, reply) {
-      const settings = new Settings(server, 'trex');
+
+      let userObject = request.auth.credentials;      
+      const settings = new Settings(server, userObject.username);
 
       let table = 'user_settings';
       let dashboardId = encodeURIComponent(request.params.dashboardId);
@@ -38,11 +41,11 @@ export default function users(server) {
   
   server.route({
     /**
-     * GET all users
+     * GET all dashboards
      *
      * @header
      *  @param {string} JWT token for authentication
-     * @return {array} list of users data
+     * @return {array} list of dashboards data
      */
     path: '/api/v3/dashboard/info',
     method: 'GET',
@@ -52,7 +55,9 @@ export default function users(server) {
       },
     },
     handler: function(request, reply) {
-      const settings = new Settings(server, 'trex');
+    
+      let userObject = request.auth.credentials;      
+      const settings = new Settings(server, userObject.username);
 
       let table = 'user_settings';
         
@@ -72,14 +77,20 @@ export default function users(server) {
 
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'POST',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+    },
     handler: function(request, reply) {
-      const settings = new Settings(server, 'trex');
+      let userObject = request.auth.credentials;      
+      const settings = new Settings(server, userObject.username);
 
       let dashboardId = encodeURIComponent(request.params.dashboardId);
       let table = 'user_settings';
       let newBoard = {
         guid: uuid(),
-        username: 'trex',
+        username: userObject.username,
         param: dashboardId,
         gid: 10,
         category: 'dashboard',
@@ -103,8 +114,14 @@ export default function users(server) {
 
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'DELETE',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+    },
     handler: function(request, reply) {
-      const settings = new Settings(server, 'trex');
+      let userObject = request.auth.credentials;      
+      const settings = new Settings(server, userObject.username);
       let dashboardId = encodeURIComponent(request.params.dashboardId);
         
       let table = 'user_settings';

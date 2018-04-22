@@ -7,5 +7,6 @@ export default require('knex')({
     password: '123456',
     database: 'homer_data',
     charset: 'utf8',
+    timezone     : 'utc',        
   },
 });

@@ -23,7 +23,6 @@ class SearchData extends LivingBeing {
   */
   get(columns, table, data) {
   
-    console.log("RRR", data.param);
     let sData = data.param.search;
     let dataWhereRawKey = [];
     let dataWhereRawValue = [];
@@ -62,10 +61,8 @@ class SearchData extends LivingBeing {
     console.log("TimERange", data.timestamp);
     let timeWhere = [];
     
-    timeWhere.push(data.timestamp.from);
-    timeWhere.push(data.timestamp.to);
-    
-    
+    timeWhere.push(new Date(data.timestamp.from).toISOString());
+    timeWhere.push(new Date(data.timestamp.to).toISOString());
     
     let myWhereRawString = '';
     if (dataWhereRawKey.length > 0 ) {
@@ -81,6 +78,55 @@ class SearchData extends LivingBeing {
     return this.dataDb(table)
       .whereRaw(myWhereRawString, dataWhereRawValue)
       .where(dataWhere)
+      .whereBetween('create_date',timeWhere)
+      .select(columns)
+      .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .then(function(rows) {
+        let dataReply = [];
+        let dataKeys = [];
+        
+        rows.forEach(function(row) {
+          let dataElement = {};
+          for (let k in row) {
+            if (k == 'protocol_header' || k == 'data_header') {
+              Object.assign(dataElement, row[k]);
+            } else {
+              dataElement[k] = row[k];
+            }
+          }
+          dataReply.push(dataElement);
+          let keys = Object.keys(dataElement);
+          dataKeys = dataKeys.concat(keys.filter(function(i) {
+            return dataKeys.indexOf(i) == -1;
+          }));
+        });
+        
+        let globalReply = {
+          total: dataReply.length,
+          data: dataReply,
+          keys: dataKeys,
+        };
+        
+        return globalReply;
+      });
+  }
+  
+  getMessageById(columns, table, data) {
+  
+    let sData = data.param.search;
+    let dataWhere = {};
+    
+    /* jshint -W089 */
+
+    if(sData.hasOwnProperty("id")) dataWhere["id"] = sData["id"];
+
+    let timeWhere = [];
+    
+    timeWhere.push(new Date(data.timestamp.from).toISOString());
+    timeWhere.push(new Date(data.timestamp.to).toISOString());
+              
+    return this.dataDb(table)
+      .where(dataWhere) 
       .whereBetween('create_date',timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))

@@ -25,7 +25,14 @@
         </div> <!-- END form-group -->
       </div> <!-- END field.selection Other-->
 
-    <div class="form-group form-group-custom-3" ng-show="$ctrl._widget.config.searchbutton"
+   <div ng-show="!$ctrl._widget.fields[0]">
+
+	<h4>No Fields</h4>
+        <a title="settings" ng-click="$ctrl.openSettings(widget)" class="alert-link">Edit preferences <i class="glyphicon glyphicon-cog"></i></a>
+
+   </div>
+
+    <div class="form-group form-group-custom-3" ng-show="$ctrl._widget.config.searchbutton" ng-hide="!$ctrl._widget.fields[0]"
       style="padding-right:0px;height:30px;">  
       <button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning"
         style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>

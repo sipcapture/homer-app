@@ -22,7 +22,7 @@ class SearchCall {
     this.UserProfile = UserProfile;
     this.localStorageService = localStorageService;
     this.$filter = $filter;
-    this.SweetAlet = SweetAlert;
+    this.SweetAlert = SweetAlert;
     this.$state = $state;
     this.EVENTS = EVENTS;
     this.$log = $log;

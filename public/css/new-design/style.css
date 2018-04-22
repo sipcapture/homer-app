@@ -2720,9 +2720,8 @@ body, html, main {
 	font-family: 'Lato', sans-serif;
 	font-size: 20px;
 	/* color: #383838; */
-	color: #008471;
 	font-weight: bold;
-	 text-transform: capitalize;
+	text-transform: capitalize;
 }
 .lath {
 	/*
@@ -3957,7 +3956,7 @@ input.btn.btn-warning.btn-warning:focus {
 }
 
 .btn.btn-primary.btn-primary {
-	background: #3A89E6;
+	background: #1dc27c;
 }
 
 .btn.btn-primary.btn-primary:focus {
@@ -5943,8 +5942,9 @@ input.form-control {
     width: 300px;
     height: 300px;
     padding: 10px;
-    background: url("https://user-images.githubusercontent.com/1423657/39084356-c723a81e-4574-11e8-963c-d11717789fa3.png") no-repeat;
+    background: url("/img/homerseven.png") no-repeat;
     background-size: 100% 100%;
     float: none;
     margin: 0 auto;¿¼	
 }
+

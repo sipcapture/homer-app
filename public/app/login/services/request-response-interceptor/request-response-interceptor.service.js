@@ -1,3 +1,5 @@
+import {includes} from 'lodash';
+
 let self = null; // it is necessary because interceptor looses context when invoked: https://stackoverflow.com/a/34163273/2393924
 
 class RequestResponseInterceptor {
@@ -24,12 +26,24 @@ class RequestResponseInterceptor {
   }
 
   responseError(rejection) {
-    if (rejection.status === 403) {
+    if (self._errorClient(rejection.status) || self._errorServer(rejection.status)) {
       self.$log.error(['RequestResponseInterceptor'], ['reponseError'], rejection.data.error, rejection.data.message);
       return self.$state.go(self.ROUTER.LOGIN.NAME);
     }
     self.$log.error(['RequestResponseInterceptor'], ['reponseError'], rejection);
     return rejection;
+  }
+
+  _errorUnauthorized(status) {
+    return includes([401, 403], status);
+  }
+
+  _errorClient(status) {
+    return status >= 400 && status < 500;
+  }
+
+  _errorServer(status) {
+    return status >= 500;
   }
 }
 

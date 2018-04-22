@@ -168,4 +168,45 @@ export default function statistics(server) {
       });
     },
   });
+  
+  server.route({
+
+    path: '/api/v3/statistic/data',
+    method: 'POST',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+      validate: {
+        payload: {
+          param: {
+            bfrom: Joi.number().integer().min(0),
+            limit: Joi.number().integer().min(0),
+            precision: Joi.number().integer().min(0),
+            filter: Joi.array(),
+            query: Joi.array(),
+            total: Joi.bool(),
+          },
+          timestamp: {
+            from: Joi.date().timestamp().required(),
+            to: Joi.date().timestamp().required(),
+          },
+        },
+      },
+    },
+    handler: function(request, reply) {
+      let payload = request.payload;
+      let userObject = request.auth.credentials;
+      const stats = new Stats(server, userObject.username);
+      
+      stats.getData(payload).then(function(data) {
+        if (!data) {
+          return reply(Boom.notFound('db was not found'));
+        }
+        return reply(data);
+      }).catch(function(error) {
+        return reply(Boom.serverUnavailable(error));
+      });
+    },
+  });
 };

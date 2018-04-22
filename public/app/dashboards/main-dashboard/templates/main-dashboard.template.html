@@ -5,19 +5,19 @@
                 <i class="fa fa-h-square" aria-hidden="true" style="margin-right:5px;"></i>
                 {{$ctrl.dashboard.name}}
             </small> <!-- END text-header-sip -->
-            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.saveBoard()" class="btn btn-whiter btn-primary"
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.saveBoard()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverB=true" ng-mouseout="hoverB=false" onclick="this.blur();">
                 <i title="Save Changes" class="fa fa-save"></i>
             </button>
-            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.deleteBoard()" class="btn btn-whiter btn-primary"
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.deleteBoard()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false" onclick="this.blur();">
                 <i title="Delete Dashboard" class="fa fa-trash"></i> 
             </button>
-            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.editBoard()" class="btn btn-whiter btn-primary"
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.editBoard()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false" onclick="this.blur();">
                 <i title="Edit Dashboard" class="fa fa-cogs"></i>
             </button>
-            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.addWidget()" class="btn btn-whiter btn-primary"
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.addWidget()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverA=true" ng-mouseout="hoverA=false" onclick="this.blur();">
                 <i title="Add New Widget" class="fa fa-plus"></i>
             </button>
@@ -32,9 +32,11 @@
                 <clock-widget ng-if="widget.name==='clock'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </clock-widget>
+		<!--
                 <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </quicksearch-widget>
+		-->
                 <influxdbchart-widget ng-if="widget.name==='influxdbchart'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </influxdbchart-widget>

@@ -2739,7 +2739,7 @@ body, html, main {
 }
 .nd-row {
 	margin: 0;
-	background: #fff;
+	/*background: #fff;*/
 }
 .ui-grid-footer-info {
 	display: none;
@@ -5916,7 +5916,7 @@ input.form-control {
 .ui-grid-icon-menu:before {
     content: " \e019";
     font-family: 'Glyphicons Halflings';
-    color: #9D9D9D;
+    color: #1dc27c;
     background:transparent;
     font-size:20px;
     width: 20px;
@@ -5927,4 +5927,24 @@ input.form-control {
 .ui-grid-header-cell {
     display: block;
     float: left;
+}
+
+.search-results .btn.btn-primary.btn-greener {
+    color: #1d9181;
+}
+
+/* login page */
+
+.login-form {
+    margin-top:5%;¿¼	
+}
+
+.homer-logo {
+    width: 300px;
+    height: 300px;
+    padding: 10px;
+    background: url("https://user-images.githubusercontent.com/1423657/39084356-c723a81e-4574-11e8-963c-d11717789fa3.png") no-repeat;
+    background-size: 100% 100%;
+    float: none;
+    margin: 0 auto;¿¼	
 }

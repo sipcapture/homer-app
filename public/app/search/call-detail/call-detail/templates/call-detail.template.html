@@ -1,7 +1,7 @@
 <div class="modal-header homer-modal-header nd-modal-header"
-  style="border-bottom:0;background:{{ $ctrl.getCallIDColor($ctrl.msgCallId).color }};" ng-dblclick="$ctrl.expandModal(this.id);$ctrl.EventBus.resizeNull();return;">
+  style="border-bottom:0;background:{{ $ctrl.getCallIDColor($ctrl.msgCallId).color }};" ng-dblclick="$ctrl.expandModal($ctrl.id);$ctrl.EventBus.resizeNull();return;">
   <button type="button" class="close nd-close" data-dismiss="modal" aria-hidden="true" ng-click="$ctrl.closeModal()" ><img src="/img/Close.svg" alt=""></button>
-  <button type="button" class="close nd-close nd-resize-full" data-dismiss="modal" aria-hidden="true" ng-click="$ctrl.expandModal(this.id);$ctrl.EventBus.resizeNull();" \>
+  <button type="button" class="close nd-close nd-resize-full" data-dismiss="modal" aria-hidden="true" ng-click="$ctrl.expandModal($ctrl.id);$ctrl.EventBus.resizeNull();" \>
     <span style="font-size: 16px; vertical-align: middle;"  class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>
   </button>
   
@@ -96,7 +96,6 @@
           enable="$ctrl.enable.blacklist"
           blacklistreport="$ctrl.blacklistreport">
         </call-detail-blacklist>
-
       </uib-tab>
     </uib-tabset>
   </div>

@@ -4,12 +4,13 @@ import treeData from '../data/tree_data';
 import {forEach} from 'lodash';
 
 class CallDetail {
-  constructor($scope, $log, SearchService, $homerModal, $timeout, UserProfile, EventBus, SearchHelper, StyleHelper) {
+  constructor($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, UserProfile, EventBus, SearchHelper, StyleHelper) {
     'ngInject';
     this.$scope = $scope;
     this.$log = $log;
     this.$timeout = $timeout;
     this.$homerModal = $homerModal;
+    this.$homerCflow = $homerCflow;
     this.SearchService = SearchService;
     this.UserProfile = UserProfile;
     this.EventBus = EventBus;
@@ -293,39 +294,19 @@ class CallDetail {
   }
 
   expandModal(id) {
-    // to-do: this currently doesn't work because id is undefined
-    const modal = document.getElementById(id);
-    const content = modal.getElementsByClassName('modal-body')[0];
+    const modalHeader = $(`[homer-modal="${id}"]`);
+    const modalContent = modalHeader.find('.modal-content');
+    const modalBody = modalHeader.find('.modal-body');
 
-    if ((modal.style.extop == modal.style.top && modal.style.exleft == modal.style.left) &&
-      (modal.style.extop != '100%' && modal.style.top != '100%') && !modal.style.fullscreen) {
-      return;
-    }
-
-    if (!modal.style.extop && modal.style.width != '100%') {
-      modal.style.fullscreen = true;
-      modal.style.extop = modal.style.top;
-      modal.style.exleft = modal.style.left;
-      modal.style.exheight = modal.style.height;
-      modal.style.exwidth = modal.style.width ? modal.style.width : '';
-      modal.style.top = '0px';
-      modal.style.left = '0px';
-      modal.style.height = '100%';
-      modal.style.width = '100%';
-      content.style.height = '95%';
-      content.style.width = '100%';
+    if (modalContent.hasClass('full-screen-modal')) {
+      modalContent.removeClass('full-screen-modal');
+      modalContent.css({'top': '102px', 'left': '385px', 'width': '1355px', 'height': '539px'});
+      modalBody.css({'width': '1344px', 'height': '479px'});
     } else {
-      modal.style.fullscreen = false;
-      modal.style.top = modal.style.extop;
-      modal.style.left = modal.style.exleft ? modal.style.exleft : (window.innerWidth - modal.style.width) / 2 + 'px';
-      modal.style.height = modal.style.exheight;
-      modal.style.width = modal.style.exwidth;
-      modal.style.extop = false;
-      content.style.height = '95%';
-      content.style.width = '100%';
+      modalContent.addClass('full-screen-modal');
+      modalContent.css({'position': 'absolute', 'top': '0', 'left': '0', 'width': '100%', 'height': '100%'});
+      modalBody.css({'width': '100%', 'height': '100%'});
     }
-    modal.classList.toggle('full-screen-modal');
-    this.drawCanvas(this.id, this.transaction);
   }
 
   closeModal() {

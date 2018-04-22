@@ -10,6 +10,10 @@ class CallDetailGraph {
       links: [],
     };
     this.getColor = d3.scale.category20();
+    this.d3Chart = {
+      api: {},
+      config: {},
+    };
     this.LiveGraph.options = {
       chart: {
         type: 'forceDirectedGraph',
@@ -54,10 +58,6 @@ class CallDetailGraph {
   }
 
   $onInit() {
-  }
-
-  callbackD3(scope) {
-    this.apiD3[scope.$id] = scope.api;
   }
 }
 

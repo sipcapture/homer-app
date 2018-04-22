@@ -15,6 +15,7 @@ const routes = {
   any: require('./routes/any'),
   users: require('./routes/users'),
   dashboard: require('./routes/dashboard'),
+  statistics: require('./routes/statistics'),
 };
 
 const databases = {
@@ -28,6 +29,15 @@ const server = new Hapi.Server({
     request: ['debug', 'warn', 'error', 'implementation', 'internal'],
   },
 });
+
+const Influx = require('influx');
+const influx = new Influx.InfluxDB({
+  host: '127.0.0.1',
+  port: 8086,    
+  database: 'hep',
+});
+
+databases.statistics = influx;
 
 pem.createCertificate({
   days: config.certificate.days,

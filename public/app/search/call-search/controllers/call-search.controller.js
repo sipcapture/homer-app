@@ -102,11 +102,13 @@ class SearchCall {
               resizable: true,
               type: 'string',
               width: '*',
+              visible: true,
             };
             
             if (v == 'sid') {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
                 +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
+	      column['width'] = '10%';
             } else if (v == 'id') {
               column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
                 +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
@@ -114,8 +116,12 @@ class SearchCall {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
                 +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
               column['type'] = 'date';
+	      column['width'] = '12%';
+	      /* Prepend Column */
+              columns.unshift(column);
+		return;
             }
-                        
+            /* Append Column */ 
             columns.push(column);
           });
           this.gridOpts.columnDefs = columns;

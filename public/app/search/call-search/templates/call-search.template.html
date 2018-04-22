@@ -10,11 +10,11 @@
         placeholder="Regex Results Filter" /> 
 
       <button id="mainSipSearch"
-        class="btn btn-white"
+        class="btn btn-primary"
         ng-class="searchClass"
         type="submit"
         ng-click="$ctrl.processSearchResult();"
-        ng-disabled="false" > 
+        ng-disabled="false" style="margin-top:6px;height:25px;" onclick="this.blur();" > 
         <span translate="hepic.buttons.refresh">&nbsp; Refresh Results &nbsp;</span>
         <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
       </button> <!--END button mainSipSearch -->

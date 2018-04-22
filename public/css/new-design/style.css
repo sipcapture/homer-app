@@ -2430,8 +2430,8 @@ span.navText {
     text-decoration: underline; }
   .modal .tab-content .active > a > tab-heading:hover {
     text-decoration: initial; }
-      .modal .modal-dialog .modal-content .modal-header a {
-        color: #c1ccd5; }
+     /* .modal .modal-dialog .modal-content .modal-header a {
+        color: #c1ccd5; } */
     .modal .modal-dialog .modal-content .modal-body input {
       border-color: #c1ccd5; }
     .modal .modal-dialog .modal-content .modal-body .seeMore {

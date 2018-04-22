@@ -5921,3 +5921,10 @@ input.form-control {
     font-size:20px;
     width: 20px;
 }
+
+/* grid column alignment */
+
+.ui-grid-header-cell {
+    display: block;
+    float: left;
+}

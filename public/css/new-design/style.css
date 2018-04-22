@@ -1100,16 +1100,18 @@ html {
   min-width: 320px; }
 
 html, body {
-  min-height: 100%;
+  /* min-height: 100%; */
   height: 100%;
   min-width: 320px; }
 
 main {
-  min-height: 100%;
+  /*min-height: 100%;*/
+  height: 95%;
   position: relative;
   font: 14px/16px "Roboto", sans-serif;
   color: #000000;
   background-color: #F0F3F4; }
+  /*
   main::before {
     content: '';
     position: fixed;
@@ -1121,6 +1123,7 @@ main {
     background-size: cover;
     will-change: transform;
     z-index: 0; }
+  */
   main .additional-bg {
     display: none; }
 
@@ -2478,6 +2481,12 @@ span.navText {
 .ui-grid-viewport {
   overflow-x: auto !important; }
 
+/* debug: force grid size */
+.ui-grid-contents-wrapper {
+  height: auto;
+  top: 15%;
+}
+
 .header-action-area {
   /* background-color: #f8f8f8; */
   position: relative; }
@@ -2736,7 +2745,8 @@ body, html, main {
 	display: none;
 }
 .ui-grid-pager-panel {
-	bottom: -30px;
+	top: 0px;
+/*	bottom: -30px; */
 	background: #FFFFFF;
 /*	box-shadow: 0 -2px 8px 0 rgba(0,0,0,0.13);*/
 	height: 60px;
@@ -2779,7 +2789,7 @@ body, html, main {
 	height: 100% !important;
 }
 .ui-grid-pager-panel {
-	border-top: 1px solid #DADADC;
+	border-top: 0px solid #DADADC;
 	border-left: 1px solid #DADADC;
 	border-right: 1px solid #DADADC;
 }
@@ -3057,6 +3067,7 @@ main {
 }
 .ui-grid-canvas {
 	margin-top: -1px;
+	height: auto !important;
 }
 /*----------------------------end result----------------------------*/
 
@@ -5880,4 +5891,40 @@ input.form-control {
 .form-horizontal .form-group {
     margin-right: 0px;
     margin-left: 0px;
+}
+
+/* grid menu positioning */
+
+.ui-grid-menu-button {
+    right: auto !important;
+    background: transparent;
+  }
+
+.ui-grid-menu-button .ui-grid-menu{
+    left: 0 !important;
+    width: auto;
+ }
+
+ .ui-grid-menu-button .ui-grid-menu .ui-grid-menu-mid .ui-grid-menu-items {
+    max-height: 500px;
+    overflow: auto;
+    min-width: 200px;
+    margin-top: 30px;
+    background:#f0f2f3;
+}
+
+.ui-grid-icon-menu:before {
+    content: " \e019";
+    font-family: 'Glyphicons Halflings';
+    color: #9D9D9D;
+    background:transparent;
+    font-size:20px;
+    width: 20px;
+}
+
+/* grid column alignment */
+
+.ui-grid-header-cell {
+    display: block;
+    float: left;
 }

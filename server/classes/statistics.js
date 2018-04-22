@@ -66,6 +66,96 @@ class Statistics extends LivingBeing {
         console.error('Error....');
       });
   }
+  
+  getMeasurements(database) {
+    return this.statsDb.getMeasurements(database).then((mses) => {
+      let mesNames = [];
+      mses.forEach((ms) => {
+        mesNames.push({name: ms, value: ms});
+      });
+
+      let globalReply = {
+        total: mesNames.length,
+        data: mesNames,
+        status: 'ok',
+        auth: 'ok',
+      };
+        
+      return globalReply;
+    })
+      .catch((err) => {
+        console.error('Error....');
+      });
+  }
+  
+  getMetrics(query) {
+    let main = query.main;
+    let database = query.database;
+    let retention = query.retention;
+     
+    let options = {
+      database: database,
+      precision: 's',
+      retentionPolicy: retention,
+    };
+    
+    let influxQuery = 'SHOW FIELD KEYS FROM "'+main+'"';
+      
+    return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
+      let mesNames = [];
+      let values = mses.results[0].series[0].values;
+      values.forEach((value) => {
+        mesNames.push({name: value[0], value: value[0]});
+      });
+
+      let globalReply = {
+        total: mesNames.length,
+        data: mesNames,
+        status: 'ok',
+        auth: 'ok',
+      };
+        
+      return globalReply;
+    })
+      .catch((err) => {
+        console.error('Error....');
+      });
+  }
+  
+  getTags(query) {
+    let main = query.main;
+    let database = query.database;
+    let retention = query.retention;
+    
+    let options = {
+      database: database,
+      precision: 's',
+      retentionPolicy: retention,
+    };
+    
+    let influxQuery = 'SHOW TAG KEYS FROM "'+main+'"';
+    
+    return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
+      let mesNames = [];
+      let values = mses.results[0].series[0].values;
+      
+      values.forEach((value) => {
+        mesNames.push({name: value[0], value: value[0]});
+      });
+
+      let globalReply = {
+        total: mesNames.length,
+        data: mesNames,
+        status: 'ok',
+        auth: 'ok',
+      };
+        
+      return globalReply;
+    })
+      .catch((err) => {
+        console.error('Error....');
+      });
+  }
 }
 
 export default Statistics;

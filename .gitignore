@@ -8,3 +8,4 @@ knexfile.js
 server/config/db/knex.js
 experiments
 *.swp
+server/config/server_config.js

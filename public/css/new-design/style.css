@@ -2789,7 +2789,7 @@ body, html, main {
 	height: 100% !important;
 }
 .ui-grid-pager-panel {
-	border-top: 1px solid #DADADC;
+	border-top: 0px solid #DADADC;
 	border-left: 1px solid #DADADC;
 	border-right: 1px solid #DADADC;
 }
@@ -5892,3 +5892,23 @@ input.form-control {
     margin-right: 0px;
     margin-left: 0px;
 }
+
+/* grid column menu placement */
+
+.ui-grid-menu-button {
+    position: relative !important;
+    right: auto !important;
+  }
+
+.ui-grid-menu-button .ui-grid-menu{
+    left: 0 !important;
+    top: 25px;
+    width: auto;
+ }
+
+ .ui-grid-menu-button .ui-grid-menu .ui-grid-menu-mid .ui-grid-menu-items {
+    max-height: 80%;
+    overflow: auto;
+    min-width: 150px;
+}
+

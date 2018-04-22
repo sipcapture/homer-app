@@ -1,5 +1,5 @@
 .hepic2-navbar {
-  background-color: #008471;
+  background-color: #202020;
   border: none;
   border-radius: 0;
 }
@@ -24,7 +24,7 @@ nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo {
 }
 
 nav.hepic2-navbar a.navbar-brand div.hepic2-navbar-logo:first-letter {
-  color: #1DC27C;
+  color: #EE3324;
 }
 
 nav.hepic2-navbar ul.dropdown-menu {
@@ -45,7 +45,7 @@ nav.hepic2-navbar ul.dropdown-menu {
 
 .hepic2-navbar-button:hover {
   color: #ffffff;
-  background-color: #06a78f;
+  background-color: #303030;
 }
 
 .hepic2-navbar-button:active {

@@ -8,6 +8,7 @@
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
     "start": "node bootstrap.js",
     "dev": "nodemon --inspect=0.0.0.0:9220 bootstrap.js"
+    "dev": "nodemon --inspect=0.0.0.0:9231 bootstrap.js"
   },
   "keywords": [],
   "author": "",

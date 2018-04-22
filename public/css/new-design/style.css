@@ -5893,22 +5893,31 @@ input.form-control {
     margin-left: 0px;
 }
 
-/* grid column menu placement */
+/* grid menu positioning */
 
 .ui-grid-menu-button {
-    position: relative !important;
     right: auto !important;
+    background: transparent;
   }
 
 .ui-grid-menu-button .ui-grid-menu{
     left: 0 !important;
-    top: 25px;
     width: auto;
  }
 
  .ui-grid-menu-button .ui-grid-menu .ui-grid-menu-mid .ui-grid-menu-items {
-    max-height: 80%;
+    max-height: 500px;
     overflow: auto;
-    min-width: 150px;
+    min-width: 200px;
+    margin-top: 30px;
+    background:#f0f2f3;
 }
 
+.ui-grid-icon-menu:before {
+    content: " \e019";
+    font-family: 'Glyphicons Halflings';
+    color: #9D9D9D;
+    background:transparent;
+    font-size:20px;
+    width: 20px;
+}

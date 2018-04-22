@@ -8,6 +8,7 @@ class HeaderNavbar {
     this.CONFIGURATION = CONFIGURATION;
     this.ROUTER = ROUTER;
     this.logoText = this.CONFIGURATION.APP_NAME;
+    this.logoUrl = this.CONFIGURATION.APP_LOGO;
     this.preferences = {
       path: this.ROUTER.PREFERENCES.PATH,
       name: this.ROUTER.PREFERENCES.NAME,

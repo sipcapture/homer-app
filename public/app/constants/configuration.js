@@ -1,5 +1,6 @@
 const CONFIGURATION = {
   APP_NAME: 'homer',
+  APP_LOGO: 'img/homerseven.png',
   DEBUG: true,
   USER_EXT_CR: false,
   WEBSOCKET: false,

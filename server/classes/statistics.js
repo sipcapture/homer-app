@@ -25,16 +25,25 @@ class Statistics extends LivingBeing {
    * @return {object} user data
    */
   getDatabases() {
-    console.log("DB OOUT");
-  
-    return this.statsDb(table)
-      .where({
-        username: this.username,
-      })
-      .select(columns)
-      .then(function([user]) {
-        return user;
-      });
+    return this.statsDb.getDatabaseNames().then(names => {    
+
+        let dbNames = [];
+        for (let k in names) {
+              dbNames.push({name: names[k], value: names[k]});
+        }           
+
+	let globalReply = {
+          total: dbNames.length,
+          data: dbNames,
+          status: 'ok',
+          auth: 'ok',
+        };
+        
+        return globalReply;      
+    })
+    .catch(err => {
+	    console.error('Error....');
+    })    
   }  
 }
 

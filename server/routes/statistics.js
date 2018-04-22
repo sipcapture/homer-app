@@ -6,7 +6,7 @@ export default function statistics(server) {
 
   server.route({
 
-    path: '/api/v4/statistic/_db',
+    path: '/api/v3/statistic/_db',
     method: 'GET',
     config: {
       auth: {
@@ -15,20 +15,14 @@ export default function statistics(server) {
     },
     handler: function(request, reply) {
     
-      console.log("SERVER", server.databases.statistics);
       let userObject = request.auth.credentials;      
       const stats = new Stats(server, userObject.username);
 
-      let table = 'user_settings';
-      let dashboardId = "a";
-      //let dashboardId = encodeURIComponent(request.params.dashboardId);
-        
-      stats.getDatabases()
-        .then(function(data) {
+      stats.getDatabases().then(function(data) {
           if (!data) {
-            return reply(Boom.notFound('dashboard was not found'));
+            return reply(Boom.notFound('db was not found'));
           }
-          return reply(data.data);
+          return reply(data);
         }).catch(function(error) {
           return reply(Boom.serverUnavailable(error));
         });

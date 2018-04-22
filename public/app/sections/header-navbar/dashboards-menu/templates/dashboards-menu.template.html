@@ -5,7 +5,11 @@
       <input type="search" ng-model="q" placeholder="filter dashboards ..." aria-label="filter dashboards" />
     </li>
     <li role="menuitem" ng-repeat="dashboard in $ctrl.dashboards | filter:q">
-      <a ng-click="$ctrl.go(dashboard)"><i class="fa fa-hashtag" ng-show="!!dashboard.shared"></i>{{dashboard.name}}</a>
+      <a ng-click="$ctrl.go(dashboard)">
+	<i class="fa fa-fw fa-slideshare" ng-show="!!dashboard.shared"> &nbsp;</i>
+	<i class="fa fw-fw fa-user" ng-hide="!!dashboard.shared"> &nbsp;</i>
+	{{dashboard.name}}
+      </a>
     </li>
     <li role="menuitem">
       <a ng-click="$ctrl.add()">+ Add New Dashboard</a>

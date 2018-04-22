@@ -10,3 +10,7 @@
     color: grey;
     text-align: center;
 }
+
+.modal .modal-dialog .modal-content {
+    overflow: visible;
+}

@@ -9,4 +9,11 @@ export default require('knex')({
     charset: 'utf8',
     timezone     : 'utc',        
   },
+  pool: {
+    afterCreate: function(connection, callback) {
+      connection.query('SET time_zone = "UTC";', function(err) {
+        callback(err, connection);
+      });
+    }
+ }
 });

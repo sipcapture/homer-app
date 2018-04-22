@@ -11,7 +11,7 @@ export default require('knex')({
   },
   pool: {
     afterCreate: function(connection, callback) {
-      connection.query('SET time_zone = "UTC";', function(err) {
+      connection.query('SET time_zone = "+00:00";', function(err) {
         callback(err, connection);
       });
     }

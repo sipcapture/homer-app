@@ -5,21 +5,21 @@
                 <i class="fa fa-h-square" aria-hidden="true" style="margin-right:5px;"></i>
                 {{$ctrl.dashboard.name}}
             </small> <!-- END text-header-sip -->
-            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.addWidget()" class="btn btn-whiter btn-primary"
-                type="submit" ng-mouseover="hoverA=true" ng-mouseout="hoverA=false">
-                <i title="Add New Widget" class="glyphicon glyphicon-plus"></i>
-            </button>
             <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.saveBoard()" class="btn btn-whiter btn-primary"
-                type="submit" ng-mouseover="hoverB=true" ng-mouseout="hoverB=false">
-                <i title="Save Changes" class="glyphicon glyphicon-save"></i>
+                type="submit" ng-mouseover="hoverB=true" ng-mouseout="hoverB=false" onclick="this.blur();">
+                <i title="Save Changes" class="fa fa-save"></i>
             </button>
             <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.deleteBoard()" class="btn btn-whiter btn-primary"
-                type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false">
-                <i title="Delete Dashboard" class="glyphicon glyphicon-trash"></i> 
+                type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false" onclick="this.blur();">
+                <i title="Delete Dashboard" class="fa fa-trash"></i> 
             </button>
             <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.editBoard()" class="btn btn-whiter btn-primary"
-                type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false">
-                <i title="Edit Dashboard" class="glyphicon glyphicon-edit"></i>
+                type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false" onclick="this.blur();">
+                <i title="Edit Dashboard" class="fa fa-cogs"></i>
+            </button>
+            <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.addWidget()" class="btn btn-whiter btn-primary"
+                type="submit" ng-mouseover="hoverA=true" ng-mouseout="hoverA=false" onclick="this.blur();">
+                <i title="Add New Widget" class="fa fa-plus"></i>
             </button>
         </h1> <!-- END lath -->
     </div> <!-- END header-action-area -->

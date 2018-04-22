@@ -61,10 +61,8 @@ class SearchData extends LivingBeing {
     console.log("TimERange", data.timestamp);
     let timeWhere = [];
     
-    timeWhere.push(data.timestamp.from);
-    timeWhere.push(data.timestamp.to);
-    
-    
+    timeWhere.push(new Date(data.timestamp.from).toISOString());
+    timeWhere.push(new Date(data.timestamp.to).toISOString());
     
     let myWhereRawString = '';
     if (dataWhereRawKey.length > 0 ) {
@@ -118,22 +116,18 @@ class SearchData extends LivingBeing {
     let sData = data.param.search;
     let dataWhere = {};
     
-    console.log("PARAM", sData);
-    
     /* jshint -W089 */
 
     if(sData.hasOwnProperty("id")) dataWhere["id"] = sData["id"];
 
-    console.log("TimERange", data.timestamp);
     let timeWhere = [];
     
-    timeWhere.push(data.timestamp.from);
-    timeWhere.push(data.timestamp.to);
-        
-    //.whereBetween('create_date',timeWhere)
-      
+    timeWhere.push(new Date(data.timestamp.from).toISOString());
+    timeWhere.push(new Date(data.timestamp.to).toISOString());
+              
     return this.dataDb(table)
       .where(dataWhere) 
+      .whereBetween('create_date',timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
       .then(function(rows) {

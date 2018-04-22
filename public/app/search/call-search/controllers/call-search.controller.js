@@ -108,7 +108,7 @@ class SearchCall {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
                 +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
             } else if (v == 'id') {
-              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" '
+              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
                 +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
             } else if (v == 'create_date') {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
@@ -280,8 +280,8 @@ class SearchCall {
   showMessage(localrow, event) {
     const searchData = {
       timestamp: {
-        from: parseInt(localrow.entity.create_date / 1000) - 100,
-        to: parseInt(localrow.entity.create_date / 1000) + 100,
+        from: parseInt(localrow.entity.create_date) - 300*1000,
+        to: parseInt(localrow.entity.create_date) + 300*100,
       },
       param: {
         search: {

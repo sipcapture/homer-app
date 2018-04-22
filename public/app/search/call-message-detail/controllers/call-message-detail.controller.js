@@ -34,7 +34,6 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.dataLoading = false;
 
     const swapText = function(text) {
-    
       let swpA;
       let swpB;
       text = text.split('<').join('&lt;');
@@ -90,7 +89,7 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
     $scope.msgId = sdata.id;
     $scope.msgCallId = sdata.sid;
     $scope.msgDate = (sdata.create_date || sdata.report_ts || sdata.event_ts);
-    $scope.sipPath = sdata.srcIp + ':' + sdata.srcPort + ' -> ' + sdata.dstIp + ':' + sdata.dstPort
+    $scope.sipPath = sdata.srcIp + ':' + sdata.srcPort + ' -> ' + sdata.dstIp + ':' + sdata.dstPort;
     $scope.sipMessage = swapText(sdata.raw);
 
     let tabjson = [];
@@ -140,7 +139,7 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       $scope.msgId = sdata[0].id;
       $scope.msgCallId = sdata[0].sid;
       $scope.msgDate = sdata[0].create_date;
-      $scope.sipPath = sdata[0].srcIp + ':' + sdata[0].srcPort + ' -> ' + sdata[0].dstPort + ':' + sdata[0].dstIp;
+      $scope.sipPath = sdata[0].srcIp + ':' + sdata[0].srcPort + ' -> ' + sdata[0].dstIp + ':' + sdata[0].dstPort;
       
       $scope.sipMessage = swapText(sdata[0].raw); // .replace(/</g, "&lt;");
 
@@ -148,7 +147,13 @@ const TransactionMessage = function($scope, $log, SearchService, $homerModal, $t
       for (let p in sdata[0]) {
         if (p == 'raw') continue;
         if (sdata[0].hasOwnProperty(p) && sdata[0][p] != '') {
-          tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[0][p].split('<').join('&lt;') + '</td></tr>');
+          if (typeof sdata[0][p] === 'string' || sdata[0][p] instanceof String) {
+            tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[0][p].split('<').join('&lt;') + '</td></tr>');
+          } else {
+            if (p == '$$hashKey') return;
+            if (p == 'proto') sdata[0][p] = $scope.protoCheck(sdata[0][p]);
+            tabjson.push('<tr><td>' + p + '' + '</td><td>' + sdata[0][p] + '</td></tr>');
+          }
         }
       }
       tabjson.push();

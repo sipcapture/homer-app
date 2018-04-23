@@ -24,10 +24,9 @@ export default function search(server) {
       },
     },
     handler: function(request, reply) {
-      console.log('REQUEST', request.payload);
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      searchdata.get(['id', 'sid', 'gid', 'protocol_header', 'data_header'], searchTable, request.payload)
+      searchdata.getSearchData(['id', 'sid', 'gid', 'protocol_header', 'data_header'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -60,7 +59,6 @@ export default function search(server) {
       },
     },
     handler: function(request, reply) {
-      console.log('REQUEST', request.payload);
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
       searchdata.getMessageById(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
@@ -97,10 +95,9 @@ export default function search(server) {
       },
     },
     handler: function(request, reply) {
-      console.log('REQUEST', request.payload);
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload.param)
+      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));

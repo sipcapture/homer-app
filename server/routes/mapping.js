@@ -7,7 +7,6 @@ export default function search(server) {
     path: '/api/v3/mapping/protocols',
     method: 'GET',
     handler: function(request, reply) {
-      console.log('REQUEST PROTO', request.payload);
       const mappingdata = new MappingData(server, request.payload);
       const searchTable = "mapping_schema";
       
@@ -27,9 +26,6 @@ export default function search(server) {
     method: 'GET',
     handler: function(request, reply) {
 
-      console.log('REQUEST FIELDS ID:', encodeURIComponent(request.params.id));
-      console.log('REQUEST FIELDS TRANS:', encodeURIComponent(request.params.transaction));
-      
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
       

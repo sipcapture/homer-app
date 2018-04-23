@@ -72,7 +72,13 @@ class CallDetail {
     const bindings = this.$scope.$parent.bindings;
     this.data = bindings.params;
     this.id = bindings.id;
-    this.msgCallId = this.data.param.search.callid[0];
+    this.msgCallId = "";
+
+    for (let key in this.data.param.search) {
+      if (this.data.param.search.hasOwnProperty(key)) {
+	this.msgCallId = this.data.param.search[key].callid[0];	
+      }
+    };    
 
     this.$timeout(() => {
       if (this.$homerModal.getOpenedModals().indexOf('tempModal') !== -1) {

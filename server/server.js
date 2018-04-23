@@ -11,7 +11,7 @@ const routes = {
   mapping: require('./routes/mapping'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
-  proxy: require('./routes/proxy'),
+  //proxy: require('./routes/proxy'),
   any: require('./routes/any'),
   users: require('./routes/users'),
   dashboard: require('./routes/dashboard'),

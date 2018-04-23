@@ -58,7 +58,6 @@ class SearchData extends LivingBeing {
       }
     };
 
-    console.log("TimERange", data.timestamp);
     let timeWhere = [];
     
     timeWhere.push(new Date(data.timestamp.from).toISOString());
@@ -69,10 +68,11 @@ class SearchData extends LivingBeing {
       myWhereRawString = dataWhereRawKey.join(' AND ');
     }
     
+    /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
-    
+    */
       
     return this.dataDb(table)
       .whereRaw(myWhereRawString, dataWhereRawValue)
@@ -164,8 +164,9 @@ class SearchData extends LivingBeing {
   }
   
   
-  getTransaction(columns, table, payload) {
-    let sData = payload.search;
+  getTransaction(columns, table, data) {
+
+    let sData = data.param.search;
     let dataWhere = [];
     
     /* jshint -W089 */
@@ -176,6 +177,10 @@ class SearchData extends LivingBeing {
         dataWhere = sData[key]['callid'];
       }
     };
+
+    let timeWhere = [];    
+    timeWhere.push(new Date(data.timestamp.from).toISOString());
+    timeWhere.push(new Date(data.timestamp.to).toISOString());
     
     /*
     this.dataDb.on( 'query', function( queryData ) {
@@ -185,6 +190,7 @@ class SearchData extends LivingBeing {
       
     return this.dataDb(table)
       .whereIn('sid', dataWhere)
+      .whereBetween('create_date',timeWhere)            
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
       .then(function(rows) {
@@ -230,12 +236,25 @@ class SearchData extends LivingBeing {
               ruri_user: "",
               destination: 0,            
           }
+          
+          if(!dataElement.hasOwnProperty("srcIp")) {
+                  dataElement["srcIp"] = "127.0.0.1";
+                  dataElement["srcPort"] = 0;
+          }                              
+          
+          if(!dataElement.hasOwnProperty("dstIp")) {
+                  dataElement["dstIp"] = "127.0.0.2";
+                  dataElement["dstPort"] = 0;
+          }                              
 
           if(dataElement.hasOwnProperty("id")) callElement.id = dataElement["id"];
           if(dataElement.hasOwnProperty("srcIp")) {
                 callElement.srcIp = dataElement["srcIp"];
                 callElement.srcHost = dataElement["srcIp"];
           }
+
+          
+          
           if(dataElement.hasOwnProperty("dstIp")) {
               callElement.dstIp = dataElement["dstIp"];
               callElement.dstHost = dataElement["dstIp"];

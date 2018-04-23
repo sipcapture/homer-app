@@ -1,10 +1,10 @@
 .clock-widget-settings .dropdown-toggle {
-    width: 180px;
+    width: 350px;
 }
 
 .clock-widget-settings .dropdown-menu {
     height: auto;
-    max-height: 100px;
+    max-height: 200px;
     overflow-x: hidden;
 }
 

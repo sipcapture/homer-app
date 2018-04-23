@@ -120,6 +120,9 @@ class SearchCall {
 	      /* Prepend Column */
               columns.unshift(column);
 		return;
+            } else if (v == 'table') {
+              columns['visible'] = false;
+              return;
             }
             /* Append Column */ 
             columns.push(column);
@@ -284,6 +287,9 @@ class SearchCall {
   }
 
   showMessage(localrow, event) {
+  
+    let proto = localrow.entity.table.replace('hep_proto_','');
+    
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.create_date) - 300*1000,
@@ -291,8 +297,7 @@ class SearchCall {
       },
       param: {
         search: {
-          id: parseInt(localrow.entity.id),
-          callid: localrow.entity.callid,
+     
         },
         location: {
         },
@@ -303,6 +308,11 @@ class SearchCall {
         },
       },
     };
+    
+    searchData.param.search[proto] = {
+        id: parseInt(localrow.entity.id),
+        sid: localrow.entity.sid,
+    };                  
 
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
     searchData['param']['transaction'][localrow.entity.trans] = true;
@@ -458,6 +468,9 @@ class SearchCall {
     const uuids = [];
     let nodes = [];
     
+    let protoTable = localrow.entity.table.replace('hep_proto_','');
+        
+    
     console.log(localrow);
 
     sids.push(localrow.entity.sid);
@@ -495,9 +508,6 @@ class SearchCall {
       },
       param: {
         search: {
-          id: parseInt(localrow.entity.id),
-          callid: sids,
-          uuid: uuids,
         },
         location: {
         },
@@ -510,6 +520,12 @@ class SearchCall {
           uuid: localrow.entity.uuid,
         },
       },
+    };
+    
+    searchData.param.search[protoTable] = {
+        id: parseInt(localrow.entity.id),
+	callid: sids,
+	uuid: uuids,
     };
 
     /* set to to our last search time */

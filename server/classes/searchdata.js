@@ -21,7 +21,7 @@ class SearchData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  get(columns, table, data) {
+  getSearchData(columns, table, data) {
   
     let sData = data.param.search;
     let dataWhereRawKey = [];
@@ -68,7 +68,6 @@ class SearchData extends LivingBeing {
     if (dataWhereRawKey.length > 0 ) {
       myWhereRawString = dataWhereRawKey.join(' AND ');
     }
-
     
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
@@ -94,6 +93,7 @@ class SearchData extends LivingBeing {
               dataElement[k] = row[k];
             }
           }
+          dataElement['table'] = table;                        
           dataReply.push(dataElement);
           let keys = Object.keys(dataElement);
           dataKeys = dataKeys.concat(keys.filter(function(i) {
@@ -117,11 +117,14 @@ class SearchData extends LivingBeing {
     let dataWhere = {};
     
     /* jshint -W089 */
+    for (let key in sData) {
+      table = 'hep_proto_'+key;
+      if (sData.hasOwnProperty(key)) {
+        dataWhere = Object.assign({}, dataWhere, sData[key]);                  
+      }
+    };
 
-    if(sData.hasOwnProperty("id")) dataWhere["id"] = sData["id"];
-
-    let timeWhere = [];
-    
+    let timeWhere = [];    
     timeWhere.push(new Date(data.timestamp.from).toISOString());
     timeWhere.push(new Date(data.timestamp.to).toISOString());
               
@@ -162,14 +165,17 @@ class SearchData extends LivingBeing {
   
   
   getTransaction(columns, table, payload) {
-    let sData = payload.search.callid;
-    let dataWhere = {};
+    let sData = payload.search;
+    let dataWhere = [];
     
     /* jshint -W089 */
   
-    sData.forEach(function(el) {
-          dataWhere['sid'] = el;
-    });
+    for (let key in sData) {
+      table = 'hep_proto_'+key;
+      if (sData.hasOwnProperty(key)) {        
+        dataWhere = sData[key]['callid'];
+      }
+    };
     
     /*
     this.dataDb.on( 'query', function( queryData ) {
@@ -178,7 +184,7 @@ class SearchData extends LivingBeing {
     */
       
     return this.dataDb(table)
-      .orWhere(dataWhere)
+      .whereIn('sid', dataWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
       .then(function(rows) {

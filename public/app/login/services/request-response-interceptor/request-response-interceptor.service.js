@@ -26,7 +26,7 @@ class RequestResponseInterceptor {
   }
 
   responseError(rejection) {
-    if (self._errorClient(rejection.status) || self._errorServer(rejection.status)) {
+    if (self._errorUnauthorized(rejection.status)) {
       self.$log.error(['RequestResponseInterceptor'], ['reponseError'], rejection.data.error, rejection.data.message);
       return self.$state.go(self.ROUTER.LOGIN.NAME);
     }

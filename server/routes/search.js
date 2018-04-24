@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import Boom from 'boom';
 import SearchData from '../classes/searchdata';
+import Settings from '../classes/settings';
 
 export default function search(server) {
   server.route({
@@ -94,22 +95,30 @@ export default function search(server) {
         },
       },
     },
-    handler: function(request, reply) {
-      const searchdata = new SearchData(server, request.payload.param);
+    handler: async function(request, reply) {
+      let userObject = request.auth.credentials;
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload)
-        .then(function(data) {
-          if (!data) {
-            return reply(Boom.notFound('data was not found'));
-          }
-          return reply(data);
-        }).catch(function(error) {
-          return reply(Boom.serverUnavailable(error));
-        });
+      
+      const searchdata = new SearchData(server, request.payload.param);
+      //const settings = new Settings(server, userObject.username);            
+      const settings = new Settings(server, "null");            
+            
+      try {
+        const correlation = await settings.getCorrelationMap(request.payload);
+                
+        const data = await searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'],
+          searchTable, request.payload, correlation);
+        if (!data) {
+          return reply(Boom.notFound('data was not found'));
+        }
+        return reply(data);
+      } catch (error) {
+        return reply(Boom.serverUnavailable(error));
+      };
     },
   });
   
-    server.route({
+  server.route({
     path: '/api/v3/call/report/qos',
     method: 'POST',
     config: {
@@ -133,7 +142,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload)
+      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -169,7 +178,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload)
+      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -205,7 +214,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header','raw'], searchTable, request.payload)
+      searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));

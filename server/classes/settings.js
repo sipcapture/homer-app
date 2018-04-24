@@ -151,6 +151,49 @@ class Settings extends LivingBeing {
         return globalReply;
       });
   }
+        
+  async getCorrelationMap(data) {
+
+    try {
+      let sData = data.param.search;
+      let dataWhere = {};
+      let columns = ["correlation_mapping"];
+      let profileKey = "";
+      let table = "mapping_schema";
+      let resultMap = {};
+    
+      /* jshint -W089 */
+  
+      for (let key in sData) {
+        profileKey = key;
+      };
+
+      let dataParse = profileKey.split('_', 2);
+      dataWhere = {
+          hepid: dataParse[0],
+          profile: dataParse[1]
+      };
+      
+    this.configDb.on( 'query', function( queryData ) {
+        console.log( queryData );
+    });
+      
+      return await this.configDb(table)
+        .where(dataWhere)
+        .select(columns)
+        .then(function(rows) {
+
+          rows.forEach(function(row) {
+            let dataElement = {};
+            resultMap = row["correlation_mapping"];
+          });        
+          
+          return resultMap;
+        });
+    } catch (err) {
+      throw new Error('fail to get data map:'+err);
+    }
+  }  
 }
 
 export default Settings;

@@ -265,6 +265,10 @@ class SearchData extends LivingBeing {
                   callElement.method = dataElement["method"];
                   callElement.method_text = dataElement["method"];
           }                    
+          if(dataElement.hasOwnProperty("event")) {
+                  callElement.method = dataElement["event"];
+                  callElement.method_text = dataElement["event"];
+          }                    
           if(dataElement.hasOwnProperty("create_date")) {
                   callElement.create_date = dataElement["create_date"];
           }          

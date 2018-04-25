@@ -5,7 +5,7 @@ import {forEach} from 'lodash';
 
 class CallDetail {
   constructor($scope, $log, SearchService, $homerModal, $homerCflow, $timeout,
-    UserProfile, EventBus, SearchHelper, StyleHelper, hepicModalService) {
+    UserProfile, EventBus, SearchHelper, StyleHelper) {
     'ngInject';
     this.$scope = $scope;
     this.$log = $log;
@@ -17,7 +17,6 @@ class CallDetail {
     this.EventBus = EventBus;
     this.SearchHelper = SearchHelper;
     this.StyleHelper = StyleHelper;
-    this.hepicModalService = hepicModalService;
     this.dataLoading = true;
     this.call = {};
     this.apiD3 = {};
@@ -301,8 +300,8 @@ class CallDetail {
     });
   }
 
-  expandModal(modalId) {
-    this.hepicModalService.toggleFullscreen(modalId);
+  expandModal() {
+    this.$scope.$parent.toggleFullscreen();
   }
 
   closeModal() {

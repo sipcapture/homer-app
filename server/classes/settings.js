@@ -174,9 +174,11 @@ class Settings extends LivingBeing {
           profile: dataParse[1]
       };
       
+      /*
     this.configDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
+    */
       
       return await this.configDb(table)
         .where(dataWhere)

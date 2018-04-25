@@ -1,8 +1,8 @@
 export default {
   http_host: '0.0.0.0',
-  http_port: 8005,
+  http_port: 8006,
   https_host: '0.0.0.0',
-  https_port: 8009,
+  https_port: 8010,
   certificate: {
     self_signed: true,
     days: 1,

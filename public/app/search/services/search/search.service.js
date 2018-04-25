@@ -299,25 +299,6 @@ const SearchService = function($q, $http, UserProfile, API) {
     return defer.promise;
   };
 
-  const searchRecordingReport = function(data) {
-    const defer = $q.defer();
-    $http.post(API.CALL.RECORDING.DATA, data, {
-      handleStatus: [403, 503],
-    }).then(
-      /* good response */
-      function(results) {
-        results = has(results, 'data.data') ? results.data.data : results.data || [];
-        defer.resolve(results);
-      },
-      /* bad response */
-      function() {
-        defer.reject('bad response combination');
-      }
-    );
-
-    return defer.promise;
-  };
-
   const searchRtcReport = function(data) {
     const defer = $q.defer();
     $http.post(API.CALL.REPORT.RTC, data, {
@@ -680,7 +661,6 @@ const SearchService = function($q, $http, UserProfile, API) {
     searchCallRTCPReport,
     searchQOSReport,
     searchLogReport,
-    searchRecordingReport,
     searchRtcReport,
     searchRemoteLog,
     searchQualityReport,

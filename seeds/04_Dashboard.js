@@ -68,6 +68,27 @@ exports.seed = function seed(knex) {
       data: dashboardSearch,
       create_date: new Date(),
     },
+    {
+      guid: uuidv4(),
+      username: 'negbie',            
+      param: 'home',
+      gid: 10,
+      category: 'dashboard',
+      //data: JSON.stringify(empty),
+      data: dashboardHome,
+      create_date: new Date(),
+    },
+    {
+      guid: uuidv4(),
+      username: 'negbie',            
+      param: 'search',
+      gid: 10,
+      category: 'dashboard',
+      //data: JSON.stringify(empty),
+      data: dashboardSearch,
+      create_date: new Date(),
+    },
+
   ];
 
   return knex(tableName)

@@ -27,6 +27,13 @@ exports.seed = function seed(knex) {
       hash: bcrypt.hashSync('12345678', salt),
       email: 'lmangani@gmail.com',
       guid: uuidv4(),
+    },
+    {
+      name: 'Eugene',
+      username: 'negbie',
+      hash: bcrypt.hashSync('12345678', salt),
+      email: 'negbie@gmail.com',
+      guid: uuidv4(),
     }
   ];
 

@@ -22,12 +22,12 @@ class UserService {
   }
 
   /*
-  * Save users in DB
+  * Update/delete multiple users in DB
   *
   * @param {array} data to store
   * @return {object} API confirm
   */
-  async store(data) {
+  async batchUpdate(data) {
     try {
       const editor = {
         users: data,

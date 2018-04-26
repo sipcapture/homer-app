@@ -2,10 +2,9 @@ import Promise from 'bluebird';
 import {pick, includes, isEqual} from 'lodash';
 
 class UserService {
-  constructor($http, API, APP_PREF_SCHEMA) {
+  constructor($http, API) {
     this.$http = $http;
     this.API = API.PREFERENCES.USER;
-    this.APP_PREF_SCHEMA = APP_PREF_SCHEMA;
   }
 
   /*
@@ -16,10 +15,7 @@ class UserService {
   async getAll() {
     try {
       const res = await this.$http.get(this.API.GETALL);
-      return {
-        data: res.data.data,
-        schema: this.APP_PREF_SCHEMA.USERS,
-      };
+      return res.data.data;
     } catch (err) {
       throw new Error(`fail to get all users: ${err.message}`);
     }

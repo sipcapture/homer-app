@@ -9,9 +9,8 @@ class PreferencesService {
   * @return {object} app preferences data with schema
   *   {object} users
   *     {array} data
-  *     {object} schema
   */
-  async getDataAndSchema() {
+  async getData() {
     const res = {
       users: {},
     };

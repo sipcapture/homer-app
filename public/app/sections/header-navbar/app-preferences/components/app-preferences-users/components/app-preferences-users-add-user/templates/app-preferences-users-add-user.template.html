@@ -1,0 +1,76 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title">Account of {{$ctrl.user.username}}</h4>
+    <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+  </div>
+  <div class="modal-body">
+    <form role="form" name="myForm">
+      <div class="row">
+        <h3 class="setting__main-title">User Settings</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-4 col-sm-4 col_margin-r">
+          <div class="form-group">
+            <label class="label-sett" for="profileUsername">Username</label>
+            <input type="text" ng-readonly="false" class="form-control form-control-settings" id="profileUsername" ng-model="$ctrl.user.username" required="">
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileGroup">Group</label>
+            <input type="text" ng-readonly="false" class="form-control form-control-settings" id="profileGrp" ng-model="$ctrl.user.group" required="">
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileGroup">Partition ID</label>
+            <input type="text" ng-readonly="false" class="form-control form-control-settings" id="profileGid" ng-model="$ctrl.user.gid" required="">
+          </div>
+        </div>
+        <div class="col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="label-sett" for="profilePassword">Password</label>
+            <input type="password" class="form-control form-control-settings" id="profilePassword" name="profilePassword" ng-model="$ctrl.user.password" ng-required />       
+            <div class="msg-block" ng-show="$ctrl.passwordNotSet"> 
+              <span style="color:red;" class="msg-error" ng-show="$ctrl.passwordNotSet">
+              Please set the password.
+              </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profilePassword">Repeat password</label>
+            <input type="password" class="form-control form-control-settings" id="profilePassword2" name="profilePassword2" ng-model="$ctrl.user.password2" ng-required pw-check="$ctrl.profilePassword" />
+            <div class="msg-block" ng-show="myForm.$error"> 
+              <span style="color:red;" class="msg-error" ng-show="myForm.profilePassword2.$error.pwmatch">
+              Passwords don't match.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <h3 class="setting__main-title">Personal information</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-4 col-sm-4 col_margin-r">
+          <div class="form-group">
+            <label class="label-sett" for="profileFirstname">First name</label>
+            <input type="text" class="form-control form-control-settings" id="profileFirstname" ng-model="$ctrl.user.firstname" required="">
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileLastname">Last name</label>
+            <input type="text" class="form-control form-control-settings" id="profileLastname" ng-model="$ctrl.user.lastname" required="">
+          </div>
+        </div>
+        <div class="col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="label-sett" for="profileEmail">Email</label>
+            <input type="text" class="form-control form-control-settings" id="profileEmail" ng-model="$ctrl.user.email" required="">
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileDepartment">Department</label>
+            <input type="text" class="form-control form-control-settings" id="profileDepartment" ng-model="$ctrl.user.department" required="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+      <button ng-click="$ctrl.submit()" ng-disabled="myForm.$invalid || !myForm.$dirty" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+    </div>
+  </form>
+</div>

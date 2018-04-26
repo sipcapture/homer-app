@@ -6,9 +6,6 @@ const appPreferencesUsers = {
   template,
   bindings: {
     appPreferencesEditorData: '<',
-    appPreferencesEditorSchema: '<',
-    appPreferencesEditorTrigger: '=',
-    appPreferencesEditorPersist: '&',
   },
 };
 

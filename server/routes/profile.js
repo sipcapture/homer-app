@@ -19,7 +19,7 @@ export default function dashboards(server) {
       let dashboardId = encodeURIComponent(request.params.dashboardId);
         
       let table = 'user_settings';
-      settings.getDashboardList(table, ['id', 'username', 'gid', 'category', 'param', 'create_date', 'data'])
+      settings.getDashboardList(table, ['id', 'username', 'partid', 'category', 'param', 'create_date', 'data'])
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('dashboard was not found'));
@@ -46,7 +46,7 @@ export default function dashboards(server) {
       let dashboardId = encodeURIComponent(request.params.dashboardId);
         
       let table = 'user_settings';
-      settings.getDashboardList(table, ['id', 'username', 'gid', 'category', 'param', 'create_date', 'data'])
+      settings.getDashboardList(table, ['id', 'username', 'partid', 'category', 'param', 'create_date', 'data'])
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('dashboard was not found'));
@@ -73,7 +73,7 @@ export default function dashboards(server) {
       let dashboardId = encodeURIComponent(request.params.dashboardId);
         
       let table = 'user_settings';
-      settings.getDashboardList(table, ['id', 'username', 'gid', 'category', 'param', 'create_date', 'data'])
+      settings.getDashboardList(table, ['id', 'username', 'partid', 'category', 'param', 'create_date', 'data'])
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('dashboard was not found'));

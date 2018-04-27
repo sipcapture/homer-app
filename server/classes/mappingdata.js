@@ -23,8 +23,8 @@ class MappingData extends LivingBeing {
   */
   getProtocols(table) {
     return this.dataDb(table)
-      .where('gid', 10)
-      .select(['hepid','hep_alias','gid','profile'])
+      .where('partid', 10)
+      .select(['hepid','hep_alias','partid','profile'])
       .then(function(rows) {
       
        let dataReply = {
@@ -42,7 +42,7 @@ class MappingData extends LivingBeing {
           hepid: id,
           profile: transaction
       })
-      .select(['id','gid','profile','fields_mapping'])
+      .select(['id','partid','profile','fields_mapping'])
       .then(function(rows) {
       
        let dataReply = {

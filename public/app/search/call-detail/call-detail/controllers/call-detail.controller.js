@@ -73,11 +73,11 @@ class CallDetail {
     this.data = bindings.params;
     this.id = bindings.id;
     this.msgCallId = "";
-
+    
     for (let key in this.data.param.search) {
       if (this.data.param.search.hasOwnProperty(key)) {
 	this.msgCallId = this.data.param.search[key].callid[0];	
-      }
+      }            
     };    
 
     this.$timeout(() => {

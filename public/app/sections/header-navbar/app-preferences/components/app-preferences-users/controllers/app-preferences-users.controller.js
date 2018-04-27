@@ -1,4 +1,4 @@
-import {pick, assign} from 'lodash';
+import {pick, cloneDeep} from 'lodash';
 import swal from 'sweetalert';
 
 class AppPreferencesUsers {
@@ -24,15 +24,27 @@ class AppPreferencesUsers {
 
   addUser() {
     this.$uibModal.open({
-      component: 'appPreferencesUsersAddUser',
+      component: 'appPreferencesUsersAddEditUser',
     }).result.then((user) => {
-      this.storeUser(user);
+      this.addUserToStorage(user);
     }).catch((err) => {
       this.log.info(err);
     });
   }
-  
-  editUser() {
+
+  editUser(user) {
+    this.$uibModal.open({
+      component: 'appPreferencesUsersAddEditUser',
+      resolve: {
+        user: () => {
+          return cloneDeep(user);
+        },
+      },
+    }).result.then((user) => {
+      this.updateUserInStorage(user);
+    }).catch((err) => {
+      this.log.info(err);
+    });
   }
 
   async deleteUser(user) {
@@ -58,15 +70,32 @@ class AppPreferencesUsers {
     }
   }
 
-  async storeUser(user) {
+  async updateUserInStorage(user) {
+    if (!user) {
+      this.log.warn('no user was updated by modal');
+      return;
+    }
+
+    try {
+      const resp = await this.UserService.update(pick(user, ['username', 'email', 'password', 'name', 'guid']));
+      if (resp.status >= 400) {
+        this.log.error(resp.data.message || resp.data.error);
+      } else {
+        this._tableUserUpdate();
+      }
+    } catch (err) {
+      this.log.error(err.message);
+    }
+  }
+
+  async addUserToStorage(user) {
     if (!user) {
       this.log.warn('no user was added by modal');
       return;
     }
 
-    const newUser = assign(pick(user, ['username', 'email', 'password']), this._createName(user));
     try {
-      const resp = await this.UserService.add(newUser);
+      const resp = await this.UserService.add(pick(user, ['username', 'email', 'password', 'name']));
       if (resp.status >= 400) {
         this.log.error(resp.data.message || resp.data.error);
       } else {
@@ -87,13 +116,8 @@ class AppPreferencesUsers {
     this.$state.reload();
   }
 
-  /*
-  * @return {object} contains name
-  */
-  _createName(user) {
-    return {
-      name: [user.firstname, user.lastname].join(' '),
-    };
+  _tableUserUpdate() {
+    this.$state.reload();
   }
 }
 

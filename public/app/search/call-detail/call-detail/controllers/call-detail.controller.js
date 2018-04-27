@@ -246,7 +246,6 @@ class CallDetail {
         /*  TIMELINE TEST END */
         await this.showQOSReport(data);
         await this.showLogReport(data);
-        await this.showRecordingReport(data);
         this.dataLoading = false;
       }
     } catch (err) {
@@ -850,18 +849,6 @@ class CallDetail {
       }
     }).catch((err) => {
       this.$log.error(['CallDetail'], 'show log report', err);
-    });
-  }
-
-  showRecordingReport(rdata) {
-    this.SearchService.searchRecordingReport(rdata).then((msg) => {
-      if (msg.length > 0) {
-        this.enableRecordingReport = true;
-        this.rowRecordingCollection = msg;
-        this.displayedRecordingCollection = [].concat(this.rowRecordingCollection);
-      }
-    }).catch((err) => {
-      this.$log.error(['CallDetail'], 'show recording report', err);
     });
   }
 

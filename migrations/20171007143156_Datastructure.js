@@ -6,9 +6,13 @@ exports.up = function(knex) {
       // Primary Key
       usersTable.increments();
       // Data
-      usersTable.string('name', 50).notNullable();
       usersTable.string('username', 50).notNullable().unique();
+      usersTable.integer('partid').notNullable().defaultTo(10);
       usersTable.string('email', 250).notNullable().unique();
+      usersTable.string('firstname', 50).notNullable();
+      usersTable.string('lastname', 50).notNullable();
+      usersTable.string('department', 50).notNullable().defaultTo('NOC');
+      usersTable.string('usergroup', 250).notNullable();
       usersTable.string('hash', 128).notNullable();
       usersTable.string('guid', 50).notNullable().unique();
       usersTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
@@ -21,7 +25,7 @@ exports.up = function(knex) {
       mappingTable.string('profile', 100).notNullable().defaultTo('default');
       mappingTable.integer('hepid').notNullable();
       mappingTable.string('hep_alias', 100);
-      mappingTable.integer('gid').notNullable().defaultTo(10);
+      mappingTable.integer('partid').notNullable().defaultTo(10);
       mappingTable.integer('version').notNullable();
       mappingTable.integer('retention').notNullable().defaultTo(14);
       mappingTable.integer('partition_step').notNullable().defaultTo(3600);
@@ -38,9 +42,9 @@ exports.up = function(knex) {
       // Primary Key
       userSettingsTable.increments();
       // Data
-      userSettingsTable.uuid('guid');      
-      userSettingsTable.string('username', 100).notNullable();      
-      userSettingsTable.integer('gid').notNullable();
+      userSettingsTable.uuid('guid');
+      userSettingsTable.string('username', 100).notNullable();
+      userSettingsTable.integer('partid').notNullable();
       userSettingsTable.string('category', 100).notNullable().defaultTo('settings');
       userSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');

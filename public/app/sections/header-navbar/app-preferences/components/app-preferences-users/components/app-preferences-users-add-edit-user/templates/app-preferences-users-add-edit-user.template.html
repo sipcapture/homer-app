@@ -4,7 +4,7 @@
     <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
   </div>
   <div class="modal-body">
-    <form role="form" name="myForm">
+    <form role="form" name="form">
       <div class="row">
         <h3 class="setting__main-title">User Settings</h3>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
@@ -35,8 +35,8 @@
           <div class="form-group">
             <label class="label-sett" for="profilePassword">Repeat password</label>
             <input type="password" class="form-control form-control-settings" id="profilePassword2" name="profilePassword2" ng-model="$ctrl.user.password2" ng-required pw-check="$ctrl.profilePassword" />
-            <div class="msg-block" ng-show="myForm.$error"> 
-              <span style="color:red;" class="msg-error" ng-show="myForm.profilePassword2.$error.pwmatch">
+            <div class="msg-block" ng-show="form.$error"> 
+              <span style="color:red;" class="msg-error" ng-show="form.profilePassword2.$error.pwmatch">
               Passwords don't match.
               </span>
             </div>

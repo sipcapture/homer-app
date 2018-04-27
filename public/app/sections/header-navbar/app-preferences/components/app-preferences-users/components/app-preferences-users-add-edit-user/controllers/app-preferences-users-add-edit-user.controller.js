@@ -12,7 +12,10 @@ class AppPreferencesUsersAddEditUser {
       this.user = {};
     }
     this.user = this.resolve.user || {};
-    this._splitName(this.user);
+    
+    if (!this.isNewUser(this.user)) {
+      this._splitName(this.user);
+    }
   }
 
   _splitName(user) {
@@ -27,7 +30,7 @@ class AppPreferencesUsersAddEditUser {
     user.name = [user.firstname, user.lastname].join(' ');
   }
 
-  _isNewUser(user) {
+  isNewUser(user) {
     return !!Object.keys(user);
   }
 

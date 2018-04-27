@@ -27,8 +27,6 @@ class AppPreferencesUsers {
       component: 'appPreferencesUsersAddEditUser',
     }).result.then((user) => {
       this.addUserToStorage(user);
-    }).catch((err) => {
-      this.log.info(err);
     });
   }
 
@@ -42,8 +40,6 @@ class AppPreferencesUsers {
       },
     }).result.then((user) => {
       this.updateUserInStorage(user);
-    }).catch((err) => {
-      this.log.info(err);
     });
   }
 
@@ -58,12 +54,8 @@ class AppPreferencesUsers {
 
     if (mustDelete) {
       try {
-        const resp = await this.UserService.delete(user.guid);
-        if (resp.status >= 400) {
-          this.log.error(resp.data.message || resp.data.error);
-        } else {
-          this._tableUserDelete(user);
-        }
+        await this.UserService.delete(user.guid);
+        this._tableUserDelete(user);
       } catch (err) {
         this.log.error(err.message);
       }
@@ -77,12 +69,9 @@ class AppPreferencesUsers {
     }
 
     try {
-      const resp = await this.UserService.update(pick(user, ['username', 'email', 'password', 'name', 'guid']));
-      if (resp.status >= 400) {
-        this.log.error(resp.data.message || resp.data.error);
-      } else {
-        this._tableUserUpdate();
-      }
+      const data = pick(user, ['guid', 'firstname', 'lastname', 'username', 'email', 'password', 'partid', 'usergroup', 'department']);
+      await this.UserService.update(data);
+      this._tableUserUpdate();
     } catch (err) {
       this.log.error(err.message);
     }
@@ -95,12 +84,9 @@ class AppPreferencesUsers {
     }
 
     try {
-      const resp = await this.UserService.add(pick(user, ['username', 'email', 'password', 'name']));
-      if (resp.status >= 400) {
-        this.log.error(resp.data.message || resp.data.error);
-      } else {
-        this._tableUserAdd(user);
-      }
+      const data = pick(user, ['firstname', 'lastname', 'username', 'email', 'password', 'partid', 'usergroup', 'department']);
+      await this.UserService.add(data);
+      this._tableUserAdd(user);
     } catch (err) {
       this.log.error(err.message);
     }

@@ -3,7 +3,7 @@ const uuidv4 = require('uuid/v4');
 
 exports.seed = function seed(knex) {
   const tableName = 'users';
-  const salt = bcrypt.genSaltSync(10)
+  const salt = bcrypt.genSaltSync(10);
 
   const rows = [
     {

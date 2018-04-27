@@ -16,7 +16,8 @@
         <table st-table="$ctrl.users" class="table table-striped ng-isolate-scope">
           <thead>
             <tr>
-              <th width="30%" st-sort-default="true" st-sort="name">Name</th>
+              <th width="30%" st-sort-default="true" st-sort="name">Firstname</th>
+              <th width="30%" st-sort-default="true" st-sort="name">Lastname</th>
               <th width="30%" st-sort-default="true" st-sort="username">Username</th>
               <th width="30%" st-sort="email">Email</th>
               <th width="10%">Action</th>
@@ -27,7 +28,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="user in $ctrl.users">
-              <td width="30%" >{{user.name}}</td>
+              <td width="30%" >{{user.firstname}}</td>
+              <td width="30%" >{{user.lastname}}</td>
               <td width="30%" >{{user.username}}</td>
               <td width="30%">{{user.email}}</td>
               <td width="10%">

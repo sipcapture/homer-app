@@ -29,7 +29,7 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
         'ngInject';
 
         return DashboardStorage.getAll().catch(function(err) {
-          $log.error(['app.config', 'resolve dashboards menu'], err);
+          $log.error(['app.config', 'dashboardsMenu'], err);
         });
       },
       appPreferences: function(PreferencesService, $log) {
@@ -39,7 +39,8 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           resp.mock = [];
           return resp;
         }).catch(function(err) {
-          $log.error(['app.config', 'resolve app preferences data'], err);
+          $log.error(['app.config', 'appPreferences'], err);
+          return {};
         });
       },
     },

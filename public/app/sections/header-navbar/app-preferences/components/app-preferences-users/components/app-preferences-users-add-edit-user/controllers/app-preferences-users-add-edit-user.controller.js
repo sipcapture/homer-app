@@ -5,6 +5,7 @@ class AppPreferencesUsersAddEditUser {
 
   $onInit() {
     this._initUser();
+    this.isNewUser = !Object.keys(this.user).length;
   }
 
   _initUser() {
@@ -12,26 +13,10 @@ class AppPreferencesUsersAddEditUser {
       this.user = {};
     }
     this.user = this.resolve.user || {};
-    
-    if (!this.isNewUser(this.user)) {
-      this._splitName(this.user);
-    }
   }
 
-  _splitName(user) {
-    if (!!user.name.length && !user.firstname || !user.lastname) {
-      const splittedName = user.name.split(' ');
-      user.firstname = splittedName[0];
-      user.lastname = splittedName.slice(1, splittedName.length).join(' ');
-    }
-  }
-
-  _mergeName(user) {
-    user.name = [user.firstname, user.lastname].join(' ');
-  }
-
-  isNewUser(user) {
-    return !!Object.keys(user);
+  get passwordNotSet() {
+    return this.isNewUser && (!this.user.password || !this.user.password.length);
   }
 
   dismiss() {
@@ -39,7 +24,6 @@ class AppPreferencesUsersAddEditUser {
   }
 
   submit() {
-    this._mergeName(this.user);
     this.modalInstance.close(this.user);
   }
 }

@@ -227,7 +227,7 @@ class Statistics extends LivingBeing {
           } else {
             let dataPoint = {
               attemps: 1,
-              gid: 10,
+              partid: 10,
               group: 0,
               id: 0,
               reporttime: reporttime,

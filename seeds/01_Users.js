@@ -42,13 +42,13 @@ exports.seed = function seed(knex) {
       hash: bcrypt.hashSync('12345678', salt),
       email: 'negbie@gmail.com',
       guid: uuidv4(),
-    }
+    },
   ];
 
   return knex(tableName)
     // Empty the table (DELETE)
     .del()
-    .then(function () {
+    .then(function() {
       return knex.insert(rows).into(tableName);
     });
 };

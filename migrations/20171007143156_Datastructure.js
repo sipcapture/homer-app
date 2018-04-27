@@ -12,7 +12,7 @@ exports.up = function(knex) {
       usersTable.string('firstname', 50).notNullable();
       usersTable.string('lastname', 50).notNullable();
       usersTable.string('department', 50).notNullable().defaultTo('NOC');
-      usersTable.string('usergroup', 250).notNullable();            
+      usersTable.string('usergroup', 250).notNullable();
       usersTable.string('hash', 128).notNullable();
       usersTable.string('guid', 50).notNullable().unique();
       usersTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
@@ -42,8 +42,8 @@ exports.up = function(knex) {
       // Primary Key
       userSettingsTable.increments();
       // Data
-      userSettingsTable.uuid('guid');      
-      userSettingsTable.string('username', 100).notNullable();      
+      userSettingsTable.uuid('guid');
+      userSettingsTable.string('username', 100).notNullable();
       userSettingsTable.integer('partid').notNullable();
       userSettingsTable.string('category', 100).notNullable().defaultTo('settings');
       userSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());

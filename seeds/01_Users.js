@@ -1,10 +1,9 @@
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
-const config = require('../server/config/server_config');
 
 exports.seed = function seed(knex) {
   const tableName = 'users';
-  const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);
+  const salt = bcrypt.genSaltSync(10)
 
   const rows = [
     {
@@ -42,13 +41,13 @@ exports.seed = function seed(knex) {
       hash: bcrypt.hashSync('12345678', salt),
       email: 'negbie@gmail.com',
       guid: uuidv4(),
-    }
+    },
   ];
 
   return knex(tableName)
     // Empty the table (DELETE)
     .del()
-    .then(function () {
+    .then(function() {
       return knex.insert(rows).into(tableName);
     });
 };

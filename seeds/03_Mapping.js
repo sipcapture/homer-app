@@ -103,7 +103,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-      form_default: ['INVITE','BYE','100','200','183','CANCEL'],
+      form_default: ['INVITE', 'BYE', '100', '200', '183', 'CANCEL'],
     },
     {
       id: 'data_header.callid',
@@ -153,7 +153,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-    },  
+    },
   ];
   
   let fieldsMapping100default = [
@@ -254,7 +254,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-    },  
+    },
   ];
   
   let fieldsMapping34default = [
@@ -355,7 +355,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-    }
+    },
   ];
   
   let fieldsMapping1000default = [
@@ -428,7 +428,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-    },  
+    },
   ];
   
   let correlationMapping1default = [
@@ -437,8 +437,8 @@ exports.seed = function seed(knex) {
       lookup_id: 100,
       lookup_profile: 'default',
       lookup_field: 'sid',
-      lookup_range: [-300,200],
-    }
+      lookup_range: [-300, 200],
+    },
   ];
     
   let correlationMapping100default = [
@@ -447,32 +447,32 @@ exports.seed = function seed(knex) {
       lookup_id: 1,
       lookup_profile: 'call',
       lookup_field: 'data_header.callid',
-      lookup_range: [-300,200],
+      lookup_range: [-300, 200],
     },
     {
       source_field: 'sid',
       lookup_id: 1,
       lookup_profile: 'registration',
       lookup_field: 'data_header.callid',
-      lookup_range: [-300,200],
+      lookup_range: [-300, 200],
     },
     {
       source_field: 'sid',
       lookup_id: 1,
       lookup_profile: 'default',
       lookup_field: 'data_header.callid',
-      lookup_range: [-300,200],
-    }
+      lookup_range: [-300, 200],
+    },
   ];
   
-    let correlationMapping34default = [
+  let correlationMapping34default = [
     {
       source_field: 'sid',
       lookup_id: 1,
       lookup_profile: 'call',
       lookup_field: 'data_header.callid',
-      lookup_range: [-300,200],
-    }
+      lookup_range: [-300, 200],
+    },
   ];
   
   let correlationMapping1000default = [
@@ -481,8 +481,8 @@ exports.seed = function seed(knex) {
       lookup_id: 1,
       lookup_profile: 'call',
       lookup_field: 'data_header.callid',
-      lookup_range: [-300,200],
-    }
+      lookup_range: [-300, 200],
+    },
   ];
             
   const rows = [

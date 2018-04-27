@@ -1,10 +1,11 @@
-/* global document, window */
+/* global window */
 
 import treeData from '../data/tree_data';
 import {forEach} from 'lodash';
 
 class CallDetail {
-  constructor($scope, $log, SearchService, $homerModal, $homerCflow, $timeout, UserProfile, EventBus, SearchHelper, StyleHelper) {
+  constructor($scope, $log, SearchService, $homerModal, $homerCflow, $timeout,
+    UserProfile, EventBus, SearchHelper, StyleHelper) {
     'ngInject';
     this.$scope = $scope;
     this.$log = $log;
@@ -72,13 +73,13 @@ class CallDetail {
     const bindings = this.$scope.$parent.bindings;
     this.data = bindings.params;
     this.id = bindings.id;
-    this.msgCallId = "";
-    
+    this.msgCallId = '';
+
     for (let key in this.data.param.search) {
       if (this.data.param.search.hasOwnProperty(key)) {
-	this.msgCallId = this.data.param.search[key].callid[0];	
-      }            
-    };    
+        this.msgCallId = this.data.param.search[key].callid[0];
+      }
+    };
 
     this.$timeout(() => {
       if (this.$homerModal.getOpenedModals().indexOf('tempModal') !== -1) {
@@ -298,20 +299,8 @@ class CallDetail {
     });
   }
 
-  expandModal(id) {
-    const modalHeader = $(`[homer-modal="${id}"]`);
-    const modalContent = modalHeader.find('.modal-content');
-    const modalBody = modalHeader.find('.modal-body');
-
-    if (modalContent.hasClass('full-screen-modal')) {
-      modalContent.removeClass('full-screen-modal');
-      modalContent.css({'top': '102px', 'left': '385px', 'width': '1355px', 'height': '539px'});
-      modalBody.css({'width': '1344px', 'height': '479px'});
-    } else {
-      modalContent.addClass('full-screen-modal');
-      modalContent.css({'position': 'absolute', 'top': '0', 'left': '0', 'width': '100%', 'height': '100%'});
-      modalBody.css({'width': '100%', 'height': '100%'});
-    }
+  expandModal() {
+    this.$scope.$parent.toggleFullscreen();
   }
 
   closeModal() {

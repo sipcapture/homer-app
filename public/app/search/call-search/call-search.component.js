@@ -3,7 +3,7 @@ import controller from './controllers/call-search.controller';
 
 const callSearch = {
   controller,
-  template
+  template,
 };
 
 export default callSearch;

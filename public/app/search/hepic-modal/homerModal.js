@@ -1,4 +1,4 @@
-/* global angular, document, window*/
+/* global angular, document, window */
 /**
  * homerModal - An angularJS modal directive / service with multiple window, resizing and draggable
  * @version v0.0.1
@@ -211,7 +211,7 @@
           } else if (modal.params.url) {
             modal.$scope.modalUrl = modal.params.url; // load the view
           } else {
-            throw 'You need to define a template or an url';
+            throw new Error('you need to define a template or an url');
           }
 
           if (typeof callback === 'function') {
@@ -285,28 +285,89 @@
       restrict: 'AE',
       replace: true,
       scope: true,
-      //transclude: true,
-      //scope: {},
-      template: '<div>' +
-        '<div draggable class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ng-if="modalTemplate"></div>' +
-        '<div draggable id="{{customId}}" class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ng-include="modalUrl" style="top: {{divTop}}; left: {{divLeft}}"></div>' +
-        '</div>',
-
-
+      template: '<div><div draggable id="{{customId}}" class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ' +
+        'ng-if="modalTemplate" style="top: {{divTop}}; left: {{divLeft}}"></div>' +
+        '<div draggable id="{{homerModal}}" ng-if="modalUrl" class="modal-content {{customClass}}" ng-class="{opened: modalShow}" ' +
+        'ng-include="modalUrl" style="top: {{homerModalPositionTop}}; left: {{homerModalPositionLeft}}"></div></div>',
       link: function link($scope, $element, $attrs) {
-        var id = $attrs.homerModal,
-          $templateWrapper;
+        let id = $attrs.homerModal;
+        let $templateWrapper;
 
         $scope.closeModal = function() {
-          var args = Array.prototype.slice.call(arguments);
+          let args = Array.prototype.slice.call(arguments);
           args.unshift(id);
           $homerModal.close.apply(undefined, args);
+        };
+
+        $scope._savePosition = function() {
+          this.modalContent[0].hepic.extop = this.modalContent.position().top;
+          this.modalContent[0].hepic.exleft = this.modalContent.position().left;
+          this.modalBody[0].hepic.extop = this.modalBody.position().top;
+          this.modalBody[0].hepic.exleft = this.modalBody.position().left;
+        };
+
+        $scope._saveSize = function() {
+          this.modalContent[0].hepic.exwidth = this.modalContent.width();
+          this.modalContent[0].hepic.exheight = this.modalContent.height();
+          this.modalBody[0].hepic.exwidth = this.modalBody.width();
+          this.modalBody[0].hepic.exheight = this.modalBody.height();
+        };
+
+        $scope._fitBody = function() {
+          this.modalBody.css({
+            width: '100%',
+            height: '100%',
+          });
+        };
+
+        $scope._switchOnFullscreen = function() {
+          this.modalContent.addClass('full-screen-modal');
+          this.modalContent.css({
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+          });
+          this._fitBody();
+        };
+
+        $scope._switchOffFullscreen = function() {
+          this.modalContent.removeClass('full-screen-modal');
+          this.modalContent.css({
+            top: this.modalContent[0].hepic.extop || window.innerHeight * 0.1,
+            left: this.modalContent[0].hepic.exleft || window.innerWidth * 0.2,
+            width: this.modalContent[0].hepic.exwidth || window.innerWidth * 0.7,
+            height: this.modalContent[0].hepic.exheight || window.innerHeight * 0.5,
+          });
+          this._fitBody();
+        };
+
+        $scope.toggleFullscreen = function() {
+          const modalHeader = $(`[homer-modal="${this.customId}"]`);
+          this.modalContent = modalHeader.find('.modal-content');
+          this.modalBody = modalHeader.find('.modal-body');
+
+          if (!this.modalContent[0].hepic) {
+            this.modalContent[0].hepic = {};
+          }
+          if (!this.modalBody[0].hepic) {
+            this.modalBody[0].hepic = {};
+          }
+
+          if (!this.modalContent.hasClass('full-screen-modal')) {
+            this._savePosition();
+            this._saveSize();
+            this._switchOnFullscreen();
+          } else {
+            this._switchOffFullscreen();
+          }
         };
 
         $homerModal.register({
           id: id,
           $scope: $scope,
-          $element: $element
+          $element: $element,
         });
 
         $element.on('$destroy', function() {
@@ -322,7 +383,7 @@
             $rootScope.$broadcast('$includeContentLoaded');
           }
         });
-      }
+      },
     };
   }]);
 
@@ -347,7 +408,7 @@
               };
             }
             if (!params.url) {
-              throw 'You need to set the modal url';
+              throw new Error('you need to set the modal url');
             }
             $scope.$apply(function() {
               $homerModal.open(params);

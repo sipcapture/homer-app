@@ -1,6 +1,7 @@
 import angular from 'angular';
 import appPreferences from './app-preferences.component';
 import appPreferencesUsers from './components/app-preferences-users';
+import appPreferencesUsersAddEditUser from './components/app-preferences-users/components/app-preferences-users-add-edit-user';
 import appPreferencesMock from './components/app-preferences-mock';
 import PreferencesService from './services/preferences-service';
 
@@ -24,5 +25,6 @@ export default angular.module('hepicApp.appPreferences', [])
   })
   .factory('PreferencesService', /* @ngInject */ (UserService) => new PreferencesService(UserService))
   .component('appPreferencesUsers', appPreferencesUsers)
+  .component('appPreferencesUsersAddEditUser', appPreferencesUsersAddEditUser)
   .component('appPreferencesMock', appPreferencesMock)
   .component('appPreferences', appPreferences);

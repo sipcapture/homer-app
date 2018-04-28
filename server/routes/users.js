@@ -26,7 +26,7 @@ export default function users(server) {
       const user = new User({server});
 
       try {
-        const data = await user.getAll(['name', 'username', 'email', 'guid']);
+        const data = await user.getAll(['firstname', 'lastname', 'username', 'email', 'guid', 'partid', 'usergroup', 'department']);
         if (!data || !data.length) {
           return reply(Boom.notFound('no users found'));
         }
@@ -62,22 +62,26 @@ export default function users(server) {
       },
       validate: {
         payload: {
-          name: Joi.string().min(3).max(50).required(),
+          firstname: Joi.string().min(3).max(50).required(),
+          lastname: Joi.string().min(3).max(50).required(),
           username: Joi.string().min(3).max(50).required(),
           email: Joi.string().min(6).max(250).required(),
           password: Joi.string().min(8).max(250).required(),
+          partid: Joi.number(),
+          usergroup: Joi.string().min(2).max(250),
+          department: Joi.string().min(2).max(250),
         },
       },
     },
     handler: async function(request, reply) {
-      const {name, username, email, password} = request.payload;
+      const {firstname, lastname, username, email, partid, usergroup, department, password} = request.payload;
       const guid = uuid();
       const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);
       const hash = bcrypt.hashSync(password, salt);
       const user = new User({server});
 
       try {
-        await user.add({name, username, email, guid, hash});
+        await user.add({firstname, lastname, username, email, guid, partid, usergroup, department, guid, hash});
         return reply({
           data: guid,
           message: 'successfully created user',
@@ -113,10 +117,14 @@ export default function users(server) {
           userGuid: Joi.string().min(12).max(46).required(),
         },
         payload: {
-          name: Joi.string().min(3).max(50),
+          firstname: Joi.string().min(3).max(50),
+          lastname: Joi.string().min(3).max(50),
           username: Joi.string().min(3).max(50),
           email: Joi.string().min(6).max(250),
           password: Joi.string().min(6).max(250),
+          partid: Joi.number(),
+          usergroup: Joi.string().min(2).max(250),
+          department: Joi.string().min(2).max(250),
         },
       },
       pre: [
@@ -141,7 +149,7 @@ export default function users(server) {
     },
     handler: async function(request, reply) {
       const {userGuid} = request.params;
-      const updates = pick(request.payload, ['name', 'username', 'email', 'password']);
+      const updates = pick(request.payload, ['firstname', 'lastname', 'username', 'email', 'guid', 'partid', 'usergroup', 'department', 'password']);
       
       if (updates.password) {
         const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);

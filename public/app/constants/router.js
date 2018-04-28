@@ -50,12 +50,6 @@ const ROUTER = {
     DESCRIPTION: 'mock preferences editor',
     SECURE: true,
   },
-  PREFERENCES_EDITOR: {
-    NAME: 'hepic.preferences.app-preferences-editor',
-    PATH: '/app-preferences-editor',
-    DESCRIPTION: 'app preferences editor',
-    SECURE: true,
-  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

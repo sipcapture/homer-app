@@ -1,44 +1,27 @@
 <div class="container-fluid content">
   <div class="row">
-    <form action="../submit" id="formentry" class="form-horizontal" role="form" data-parsley-validate="" novalidate="">
-      <div class="container-fluid shadow">
-        <div class="row">
-          <div id="valErr" class="row viewerror clearfix hidden">
-            <div class="alert alert-danger">Oops! Seems there are some errors..</div>
-          </div>
-          <div id="valOk" class="row viewerror clearfix hidden">
-            <div class="alert alert-success">Yay! ..</div>
-          </div>
-          <div class="row">
-            <div class="col-md-2">
-              <button type="button" class="btn btn-default" ng-click="$ctrl.editorTrigger.save()">Save</button>
-            </div>
-            <div class="col-md-10">
-              <div class="alert alert-danger" ng-show="$ctrl.message.err.enabled">
-                <strong>Error!</strong> {{$ctrl.message.err.text}}
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-2">
-              <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" ng-click="$ctrl.selectSection($index, sectionName)" ng-class="{'active': $index == $ctrl.sections.selectedIndex}" ng-repeat="(sectionName, data) in $ctrl.appPreferences">
-                  <a ui-sref=".{{sectionName}}">{{sectionName}}</a>
-                </li>
-              </ul>
-            </div>
-            <div class="col-md-10">
-              <div ui-view 
-                class="uiview"
-                app-preferences-editor-data="$ctrl.appPreferences[$ctrl.sections.activeSectionName].data"
-                app-preferences-editor-schema="$ctrl.appPreferences[$ctrl.sections.activeSectionName].schema"
-                app-preferences-editor-trigger="$ctrl.editorTrigger"
-                app-preferences-editor-persist="$ctrl.handlePersist(sectionName, data)"
-              ></div>
-            </div>
-          </div>
-        </div>
+    <div class="col-md-2">
+      <div class="setting__nav-title">Admin Settings</div>
+      <nav class="js-nav navbar" role="navigation">
+        <ul class="setting__nav-items">
+          <li class="setting__nav-item"
+            ng-class="{'active': $index == $ctrl.sections.selectedIndex}"
+            ng-repeat="sectionName in $ctrl.sections.categories.admin"
+            ng-click="$ctrl.selectSection($index, sectionName)">
+            <a class="setting__nav-link cng-setting__nav-link" ui-sref=".{{sectionName}}">
+            {{sectionName}}
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="col-md-10">
+      <div class="wr-setting">
+        <div class="setting__main"
+          ui-view
+          app-preferences-editor-data="$ctrl._appPreferences[$ctrl.sections.activeSectionName]"
+        ></div>
       </div>
-    </form>
+    </div>
   </div>
 </div>

@@ -2,10 +2,9 @@ import Promise from 'bluebird';
 import {pick, includes, isEqual} from 'lodash';
 
 class UserService {
-  constructor($http, API, APP_PREF_SCHEMA) {
+  constructor($http, API) {
     this.$http = $http;
     this.API = API.PREFERENCES.USER;
-    this.APP_PREF_SCHEMA = APP_PREF_SCHEMA;
   }
 
   /*
@@ -15,23 +14,24 @@ class UserService {
   */
   async getAll() {
     try {
-      const res = await this.$http.get(this.API.GETALL);
-      return {
-        data: res.data.data,
-        schema: this.APP_PREF_SCHEMA.USERS,
-      };
+      const resp = await this.$http.get(this.API.GETALL);
+      if (resp.status >= 400) {
+        throw new Error(resp.data.message || resp.data.error);
+      }
+
+      return resp.data.data;
     } catch (err) {
       throw new Error(`fail to get all users: ${err.message}`);
     }
   }
 
   /*
-  * Save users in DB
+  * Update/delete multiple users in DB
   *
   * @param {array} data to store
   * @return {object} API confirm
   */
-  async store(data) {
+  async batchUpdate(data) {
     try {
       const editor = {
         users: data,
@@ -58,8 +58,8 @@ class UserService {
       await Promise.each(dbUsers, async (user) => {
         if (this._userDeleted(user.guid, editorGuids)) {
           const resp = await this.delete(user.guid);
-          if (resp && resp.status >= 400) {
-            throw new Error(resp.data.message);
+          if (resp.status >= 400) {
+            throw new Error(resp.data.message || resp.data.error);
           }
         }
       });
@@ -72,9 +72,10 @@ class UserService {
     try {
       await Promise.each(editorUsers, async (user) => {
         if (this._userAdded(user.guid, dbGuids)) {
-          const resp = await this.add(pick(user, ['name', 'username', 'email', 'password']));
-          if (resp && resp.status >= 400) {
-            throw new Error(resp.data.message);
+          const data = pick(user, ['firstname', 'lastname', 'username', 'email', 'password', 'partid', 'usergroup', 'department']);
+          const resp = await this.add(data);
+          if (resp.status >= 400) {
+            throw new Error(resp.data.message || resp.data.error);
           }
         }
       });
@@ -87,9 +88,10 @@ class UserService {
     try {
       await Promise.each(editorUsers, async (user) => {
         if (this._userUpdated(user, dbUsers)) {
-          const resp = await this.update(pick(user, ['guid', 'name', 'username', 'email', 'password']));
-          if (resp && resp.status >= 400) {
-            throw new Error(resp.data.message);
+          const data = pick(user, ['guid', 'firstname', 'lastname', 'username', 'email', 'password', 'partid', 'usergroup', 'department']);
+          const resp = await this.update(data);
+          if (resp.status >= 400) {
+            throw new Error(resp.data.message || resp.data.error);
           }
         }
       });
@@ -140,9 +142,15 @@ class UserService {
   /*
   * @return {object} API confirm
   */
-  async add({name, username, email, password}) {
+  async add({firstname, lastname, username, email, password, partid, usergroup, department}) {
     try {
-      return await this.$http.post(this.API.ADD, {name, username, email, password});
+      const user = {firstname, lastname, username, email, password, partid, usergroup, department};
+      const resp = await this.$http.post(this.API.ADD, user);
+      if (resp.status >= 400) {
+        throw new Error(resp.data.message || resp.data.error);
+      }
+    
+      return resp;
     } catch (err) {
       throw new Error(`fail to add user: ${err.message}`);
     }
@@ -151,9 +159,15 @@ class UserService {
   /*
   * @return {object} API confirm
   */
-  async update({guid, name, username, email, password}) {
+  async update({guid, firstname, lastname, username, email, password, partid, usergroup, department}) {
     try {
-      return await this.$http.put([this.API.UPDATE, guid].join('/'), {name, username, email, password});
+      const user = {firstname, lastname, username, email, password, partid, usergroup, department};
+      const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), user);
+      if (resp.status >= 400) {
+        throw new Error(resp.data.message || resp.data.error);
+      }
+    
+      return resp;
     } catch (err) {
       throw new Error(`fail to update user: ${err.message}`);
     }
@@ -164,7 +178,12 @@ class UserService {
   */
   async delete(guid) {
     try {
-      return await this.$http.delete([this.API.DELETE, guid].join('/'));
+      const resp = await this.$http.delete([this.API.DELETE, guid].join('/'));
+      if (resp.status >= 400) {
+        throw new Error(resp.data.message || resp.data.error);
+      }
+    
+      return resp;
     } catch (err) {
       throw new Error(`fail to delete user: ${err.message}`);
     }

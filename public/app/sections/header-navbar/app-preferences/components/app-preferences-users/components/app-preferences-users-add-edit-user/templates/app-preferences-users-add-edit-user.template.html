@@ -60,6 +60,10 @@
               Please set the password.
               </span>
             </div>
+	   <div class="msg-block" ng-show="form.profileFirstname.$dirty" role="alert">
+		<span ng-show="form.profileFirstname.$error.required"> Please enter Firstname</span>
+		<span ng-show="form.profileFirstname.$error.minlength"> Please enter atleast 3 characters</span>
+	  </div>
           </div>
           <div class="form-group">
             <label class="label-sett" for="profilePassword">Repeat password</label>
@@ -90,6 +94,7 @@
               type="text"
               class="form-control form-control-settings"
               id="profileFirstname"
+              ng-minlength="3"
               ng-model="$ctrl.user.firstname"
               ng-required="$ctrl.isNewUser"
             >
@@ -100,6 +105,7 @@
               type="text"
               class="form-control form-control-settings"
               id="profileLastname"
+              ng-minlength="3"
               ng-model="$ctrl.user.lastname"
               ng-required="$ctrl.isNewUser"
             >
@@ -112,6 +118,7 @@
               type="text"
               class="form-control form-control-settings"
               id="profileEmail"
+              ng-minlength="3"
               ng-model="$ctrl.user.email"
               ng-required="$ctrl.isNewUser"
             >

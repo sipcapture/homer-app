@@ -19,7 +19,7 @@ class AppPreferencesUsers {
   }
 
   $onInit() {
-    this.users = this.appPreferencesEditorData;
+    this.users = this.appPreferencesData;
   }
 
   addUser() {

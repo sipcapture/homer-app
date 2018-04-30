@@ -5,7 +5,7 @@ const appPreferencesUsers = {
   controller,
   template,
   bindings: {
-    appPreferencesEditorData: '<',
+    appPreferencesData: '<',
   },
 };
 

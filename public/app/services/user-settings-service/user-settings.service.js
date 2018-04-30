@@ -1,6 +1,3 @@
-import Promise from 'bluebird';
-import {pick, includes, isEqual} from 'lodash';
-
 class UserSettingsService {
   constructor($http, API) {
     this.$http = $http;
@@ -31,6 +28,13 @@ class UserSettingsService {
   async add({username, partid, category, param, data}) {
     try {
       const settings = {username, partid, category, param, data};
+
+      try {
+        settings.data = JSON.stringify(settings.data);
+      } catch (err) {
+        throw new Error(`fail to stringify data: ${err.message}`);
+      }
+
       const resp = await this.$http.post(this.API.ADD, settings);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
@@ -48,6 +52,13 @@ class UserSettingsService {
   async update({guid, username, partid, category, param, data}) {
     try {
       const settings = {username, partid, category, param, data};
+
+      try {
+        settings.data = JSON.stringify(settings.data);
+      } catch (err) {
+        throw new Error(`fail to stringify data: ${err.message}`);
+      }
+
       const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), settings);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);

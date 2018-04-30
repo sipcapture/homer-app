@@ -17,7 +17,7 @@ class JsonEditor {
     const editorElement = document.getElementById('json-editor-placeholder');
 
     const editor = new JSONEditor(editorElement, {
-      theme: 'bootstrap3',
+      theme: 'barebones',
       schema: scope.jsonEditorSchema,
     });
     

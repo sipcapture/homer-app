@@ -2,14 +2,13 @@ import {pick, cloneDeep} from 'lodash';
 import swal from 'sweetalert';
 
 class AppPreferencesUsers {
-  constructor($uibModal, $state, UserService, log, ROUTER) {
+  constructor($uibModal, $state, UserService, log) {
     'ngInject';
     this.log = log;
     this.log.initLocation('AppPreferencesUsers');
     this.$uibModal = $uibModal;
     this.$state = $state;
     this.UserService = UserService;
-    this.ROUTER = ROUTER;
     this.smartTable = {
       options: {
         pagination: '',
@@ -94,16 +93,20 @@ class AppPreferencesUsers {
 
   _tableUserDelete(user) {
     this.users.splice(this.users.findIndex((u) => u.guid === user.guid), 1);
-    this.$state.reload(this.ROUTER.PREFERENCES_USERS.NAME);
+    this._reloadThisState();
   }
 
   _tableUserAdd(user) {
     this.users.push(user);
-    this.$state.reload(this.ROUTER.PREFERENCES_USERS.NAME);
+    this._reloadThisState();
   }
 
   _tableUserUpdate() {
-    this.$state.reload(this.ROUTER.PREFERENCES_USERS.NAME);
+    this._reloadThisState();
+  }
+
+  _reloadThisState() {
+    this.$state.reload(this.$state.$current.name);
   }
 }
 

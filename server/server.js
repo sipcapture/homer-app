@@ -3,18 +3,19 @@ import {forEach} from 'lodash';
 import pem from 'pem';
 import jwtSettings from './private/jwt_settings';
 import config from './config/server_config';
-import proxyConfig from './config/proxy'; // temporary, to be deleted when the new API is ready
+// import proxyConfig from './config/proxy';
 
 const routes = {
+  // proxy: require('./routes/proxy'),
   auth: require('./routes/authentication'),
   search: require('./routes/search'),
   mapping: require('./routes/mapping'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
-  //proxy: require('./routes/proxy'),
   profile: require('./routes/profile'),
   any: require('./routes/any'),
   users: require('./routes/users'),
+  user_settings: require('./routes/user_settings'),
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
 };
@@ -34,7 +35,7 @@ const server = new Hapi.Server({
 const Influx = require('influx');
 const influx = new Influx.InfluxDB({
   host: '127.0.0.1',
-  port: 8086,    
+  port: 8086,
   database: 'hep',
 });
 

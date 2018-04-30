@@ -32,17 +32,6 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           $log.error(['app.config', 'dashboardsMenu'], err);
         });
       },
-      appPreferences: function(PreferencesService, $log) {
-        'ngInject';
-
-        return PreferencesService.getData().then(function(resp) {
-          resp.mock = [];
-          return resp;
-        }).catch(function(err) {
-          $log.error(['app.config', 'appPreferences'], err);
-          return {};
-        });
-      },
     },
   });
 

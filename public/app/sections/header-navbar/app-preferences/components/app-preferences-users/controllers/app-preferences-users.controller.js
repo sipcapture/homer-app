@@ -19,7 +19,6 @@ class AppPreferencesUsers {
   }
 
   $onInit() {
-    this.users = this.appPreferencesData;
   }
 
   addUser() {

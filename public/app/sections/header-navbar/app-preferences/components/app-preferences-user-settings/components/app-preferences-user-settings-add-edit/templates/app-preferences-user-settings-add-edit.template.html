@@ -1,0 +1,88 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title">Account of {{$ctrl.settings.username}}</h4>
+    <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+  </div>
+  <div class="modal-body">
+    <form role="form" name="form">
+      <div class="row">
+        <h3 class="setting__main-title">User Settings</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-4 col-sm-4 col_margin-r">
+          <div class="form-group">
+            <label class="label-sett" for="profileUsername">Username</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-settings"
+              id="profileUsername"
+              ng-model="$ctrl.settings.username"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileGroup">Partition ID</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control form-control-settings"
+              id="profileGid"
+              ng-model="$ctrl.settings.partid"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+        <div class="col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="label-sett" for="profileCategory">Category</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-settings"
+              id="profileCategory"
+              ng-model="$ctrl.settings.category"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+          <div class="form-group">
+            <label class="label-sett" for="profileParam">Param</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-settings"
+              id="profileParam"
+              ng-model="$ctrl.settings.param"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <h3 class="setting__main-title">Data</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-4 col-sm-4 col_margin-r">
+          <div class="form-group">
+            <label class="label-sett" for="profileData">Data</label>
+            <input
+              type="text"
+              class="form-control form-control-settings"
+              id="profileData"
+              ng-minlength="3"
+              ng-model="$ctrl.settings.data"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+      <button ng-click="$ctrl.submit()" ng-disabled="form.$pristine && form.$invalid || form.$dirty && form.$invalid" class="btn btn-primary btn-lg">
+        <i class="glyphicon glyphicon-ok"></i>Save
+      </button>
+    </div>
+  </form>
+</div>

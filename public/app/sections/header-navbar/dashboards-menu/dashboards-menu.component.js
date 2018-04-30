@@ -6,7 +6,6 @@ const dashboardsMenu = {
   template,
   bindings: {
     dashboards: '<',
-    appPreferences: '<',
   },
 };
 

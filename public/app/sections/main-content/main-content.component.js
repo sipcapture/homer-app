@@ -5,7 +5,6 @@ const mainContent = {
   controller,
   template,
   bindings: {
-    appPreferences: '=',
   },
 };
 

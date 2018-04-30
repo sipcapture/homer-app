@@ -38,16 +38,20 @@ const ROUTER = {
     DESCRIPTION: 'app preferences',
     SECURE: true,
   },
-  PREFERENCES_USER_EDITOR: {
+  PREFERENCES_USERS: {
     NAME: 'hepic.preferences.users',
+    CHILDNAME: 'users',
+    CHILDPATH: 'users',
     PATH: '/users',
-    DESCRIPTION: 'users preferences editor',
+    DESCRIPTION: 'users preferences',
     SECURE: true,
   },
-  PREFERENCES_MOCK_EDITOR: {
-    NAME: 'hepic.preferences.mock',
-    PATH: '/mock',
-    DESCRIPTION: 'mock preferences editor',
+  PREFERENCES_USER_SETTINGS: {
+    NAME: 'hepic.preferences.usersettings',
+    CHILDNAME: 'user settings',
+    CHILDPATH: 'usersettings',
+    PATH: '/usersettings',
+    DESCRIPTION: 'user settings preferences',
     SECURE: true,
   },
   SETTINGSMAIN: {

@@ -5,12 +5,10 @@
       <nav class="js-nav navbar" role="navigation">
         <ul class="setting__nav-items">
           <li class="setting__nav-item"
-            ng-class="{'active': $index == $ctrl.sections.selectedIndex}"
-            ng-repeat="sectionName in $ctrl.sections.categories.admin"
-            ng-click="$ctrl.selectSection($index, sectionName)">
-            <a class="setting__nav-link cng-setting__nav-link" ui-sref=".{{sectionName}}">
-            {{sectionName}}
-            </a>
+            ng-class="{'active': $index == $ctrl.leftMenu.selectedIndex}"
+            ng-repeat="section in $ctrl.leftMenu.sections"
+            ng-click="$ctrl.selectMenuItem($index)">
+            <a class="setting__nav-link cng-setting__nav-link" ui-sref=".{{section.path}}">{{section.name}}</a>
           </li>
         </ul>
       </nav>
@@ -19,7 +17,6 @@
       <div class="wr-setting">
         <div class="setting__main"
           ui-view
-          app-preferences-data="$ctrl._appPreferences[$ctrl.sections.activeSectionName]"
         ></div>
       </div>
     </div>

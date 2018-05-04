@@ -1,4 +1,4 @@
-import {cloneDeep, isEmpty} from 'lodash';
+// import {cloneDeep, isEmpty} from 'lodash';
 
 class AppPreferences {
   constructor($state, $scope, UserService, ROUTER, log) {
@@ -10,47 +10,31 @@ class AppPreferences {
     this.log = log;
     this.log.initLocation('AppPreferences');
 
-    this.sections = {
+    this.leftMenu = {
       selectedIndex: 0,
-      activeSectionName: 'users',
-      categories: {
-        admin: {},
-      },
-    };
-
-    this.message = {
-      err: {
-        enabled: false,
-        text: 'Message',
-      },
-    };
-
-    this.editorTrigger = {
-      save: function() {},
+      sections: [
+        {
+          name: ROUTER.PREFERENCES_USERS.CHILDNAME,
+          path: ROUTER.PREFERENCES_USERS.CHILDPATH,
+        },
+        {
+          name: ROUTER.PREFERENCES_USER_SETTINGS.CHILDNAME,
+          path: ROUTER.PREFERENCES_USER_SETTINGS.CHILDPATH,
+        },
+      ],
     };
   }
 
   $onInit() {
-    this._appPreferences = cloneDeep(this.appPreferences);
-    if (isEmpty(this._appPreferences)) {
-      this.log.error('fail to load app preferences');
-    } else {
-      this.placeSectionNamesIntoCategories();
-      this.switchToDefaultView();
-    }
+    this._switchToDefaultView();
   }
 
-  selectSection(index, sectionName) {
-    this.sections.selectedIndex = index;
-    this.sections.activeSectionName = sectionName;
+  selectMenuItem(index, sectionName) {
+    this.leftMenu.selectedIndex = index;
   }
 
-  switchToDefaultView() {
-    this.$state.go(this.ROUTER.PREFERENCES_USER_EDITOR.NAME);
-  }
-
-  placeSectionNamesIntoCategories() {
-    this.sections.categories.admin = Object.keys(this._appPreferences);
+  _switchToDefaultView() {
+    this.$state.go(this.ROUTER.PREFERENCES_USERS.NAME);
   }
 }
 

@@ -48,10 +48,14 @@ export default function users(server) {
      * @header
      *  @param {string} JWT token for authentication
      * @payload
-     *  @param {string} name
+     *  @param {string} firstname
+     *  @param {string} lastname
      *  @param {string} username
      *  @param {string} email
      *  @param {string} password
+     *  @param {number} partid
+     *  @param {string} usergroup
+     *  @param {string} department
      * @return user guid and success message
      */
     path: '/api/v3/users',
@@ -101,10 +105,15 @@ export default function users(server) {
      * @request
      *  @param {string} userGuid
      * @payload
-     *  @param {string} name
+     *  @param {string} firstname
+     *  @param {string} lastname
      *  @param {string} username
      *  @param {string} email
      *  @param {string} password
+     *  @param {number} partid
+     *  @param {string} usergroup
+     *  @param {string} department
+     * @return user guid and success message
      */
     path: '/api/v3/users/{userGuid}',
     method: 'PUT',
@@ -149,7 +158,8 @@ export default function users(server) {
     },
     handler: async function(request, reply) {
       const {userGuid} = request.params;
-      const updates = pick(request.payload, ['firstname', 'lastname', 'username', 'email', 'guid', 'partid', 'usergroup', 'department', 'password']);
+      const updates = pick(request.payload,
+        ['firstname', 'lastname', 'username', 'email', 'guid', 'partid', 'usergroup', 'department', 'password']);
       
       if (updates.password) {
         const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);
@@ -179,6 +189,7 @@ export default function users(server) {
      *  @param {string} JWT token for authentication
      * @request
      *  @param {string} userGuid
+     * @return user guid and success message
      */
     path: '/api/v3/users/{userGuid}',
     method: 'DELETE',

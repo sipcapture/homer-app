@@ -8,6 +8,12 @@ const API = {
       UPDATE: `${base}/users`,
       DELETE: `${base}/users`,
     },
+    USER_SETTINGS: {
+      GETALL: `${base}/user/settings`,
+      ADD: `${base}/user/settings`,
+      UPDATE: `${base}/user/settings`,
+      DELETE: `${base}/user/settings`,
+    },
   },
   PROFILE: {
     STORE: 'api/v3/profile/store',

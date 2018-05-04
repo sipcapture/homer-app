@@ -5,7 +5,6 @@ const appPreferences = {
   controller,
   template,
   bindings: {
-    appPreferences: '=',
   },
 };
 

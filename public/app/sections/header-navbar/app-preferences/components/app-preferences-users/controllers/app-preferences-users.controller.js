@@ -19,7 +19,6 @@ class AppPreferencesUsers {
   }
 
   $onInit() {
-    this.users = this.appPreferencesEditorData;
   }
 
   addUser() {
@@ -94,16 +93,20 @@ class AppPreferencesUsers {
 
   _tableUserDelete(user) {
     this.users.splice(this.users.findIndex((u) => u.guid === user.guid), 1);
-    this.$state.reload();
+    this._reloadThisState();
   }
 
   _tableUserAdd(user) {
     this.users.push(user);
-    this.$state.reload();
+    this._reloadThisState();
   }
 
   _tableUserUpdate() {
-    this.$state.reload();
+    this._reloadThisState();
+  }
+
+  _reloadThisState() {
+    this.$state.reload(this.$state.$current.name);
   }
 }
 

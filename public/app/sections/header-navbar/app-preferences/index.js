@@ -2,8 +2,8 @@ import angular from 'angular';
 import appPreferences from './app-preferences.component';
 import appPreferencesUsers from './components/app-preferences-users';
 import appPreferencesUsersAddEditUser from './components/app-preferences-users/components/app-preferences-users-add-edit-user';
-import appPreferencesMock from './components/app-preferences-mock';
-import PreferencesService from './services/preferences-service';
+import appPreferencesUserSettings from './components/app-preferences-user-settings';
+import appPreferencesUserSettingsAddEdit from './components/app-preferences-user-settings/components/app-preferences-user-settings-add-edit';
 
 export default angular.module('hepicApp.appPreferences', [])
   .config(function($stateProvider, ROUTER) {
@@ -14,17 +14,37 @@ export default angular.module('hepicApp.appPreferences', [])
         url: ROUTER.PREFERENCES.PATH,
         component: 'appPreferences',
       })
-      .state(ROUTER.PREFERENCES_USER_EDITOR.NAME, {
-        url: ROUTER.PREFERENCES_USER_EDITOR.PATH,
+      .state(ROUTER.PREFERENCES_USERS.NAME, {
+        url: ROUTER.PREFERENCES_USERS.PATH,
         component: 'appPreferencesUsers',
+        resolve: {
+          users: function(UserService, log) {
+            'ngInject';
+            log.initLocation('appPreferences');
+
+            return UserService.getAll().catch(function(err) {
+              log.error(err.message);
+            });
+          },
+        },
       })
-      .state(ROUTER.PREFERENCES_MOCK_EDITOR.NAME, {
-        url: ROUTER.PREFERENCES_MOCK_EDITOR.PATH,
-        component: 'appPreferencesMock',
+      .state(ROUTER.PREFERENCES_USER_SETTINGS.NAME, {
+        url: ROUTER.PREFERENCES_USER_SETTINGS.PATH,
+        component: 'appPreferencesUserSettings',
+        resolve: {
+          userSettings: function(UserSettingsService, log) {
+            'ngInject';
+            log.initLocation('appPreferences');
+
+            return UserSettingsService.getAll().catch(function(err) {
+              log.error(err.message);
+            });
+          },
+        },
       });
   })
-  .factory('PreferencesService', /* @ngInject */ (UserService) => new PreferencesService(UserService))
   .component('appPreferencesUsers', appPreferencesUsers)
   .component('appPreferencesUsersAddEditUser', appPreferencesUsersAddEditUser)
-  .component('appPreferencesMock', appPreferencesMock)
+  .component('appPreferencesUserSettings', appPreferencesUserSettings)
+  .component('appPreferencesUserSettingsAddEdit', appPreferencesUserSettingsAddEdit)
   .component('appPreferences', appPreferences);

@@ -1,7 +1,9 @@
 // npm modules
 import 'jquery';
 import 'jquery-ui-dist/jquery-ui';
+import 'ace-builds/src-min-noconflict/ace';
 import angular from 'angular';
+import 'angular-ui-ace/src/ui-ace';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap';
 import 'angular-aria';
@@ -22,7 +24,6 @@ import 'angular-smart-table';
 import 'leaflet';
 import 'ui-leaflet';
 import 'angular-simple-logger';
-import 'angular-ui-ace';
 import 'angular-websocket';
 import 'ng-fittext';
 import 'angular-translate';

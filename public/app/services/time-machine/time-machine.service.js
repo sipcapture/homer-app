@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 class TimeMachine {
   constructor() {
     this.timezone = {
@@ -64,7 +66,25 @@ class TimeMachine {
   }
 
   getTimerange() {
+    this.timerange = this._updateTimeIfLast(this.timerange);
     return this.timerange;
+  }
+
+  _isLastRange(label) {
+    return label && !!label.match(/last.*/i);
+  }
+
+  _updateTimeIfLast(timerange) {
+    const {to, from, custom} = timerange;
+    if (this._isLastRange(custom)) {
+      const diff = moment(moment(new Date)).diff(to);
+      return {
+        from: new Date(from.getTime() + diff),
+        to: new Date(),
+        custom,
+      };
+    }
+    return timerange;
   }
 }
 

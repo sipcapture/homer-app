@@ -204,6 +204,9 @@ class SearchCall {
       },
     };
 
+    this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
+    this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
+
     const transaction = this.UserProfile.getProfile('transaction');
     let limit = this.UserProfile.getProfile('limit');
     const value = this.UserProfile.getProfile('search');

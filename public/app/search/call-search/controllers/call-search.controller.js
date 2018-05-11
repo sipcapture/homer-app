@@ -10,7 +10,7 @@ import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_us
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
-    $state, EVENTS, $log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine) {
+    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -25,7 +25,6 @@ class SearchCall {
     this.SweetAlert = SweetAlert;
     this.$state = $state;
     this.EVENTS = EVENTS;
-    this.$log = $log;
     this.CONFIGURATION = CONFIGURATION;
     this.SearchHelper = SearchHelper;
     this.StyleHelper = StyleHelper;
@@ -41,20 +40,19 @@ class SearchCall {
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
     this.state = localStorageService.get('localStorageGrid');
+    this.log = log;
+    this.log.initLocation('SearchCall');
   }
 
   $onInit() {
-    this.updateTime();
-
     this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
-      this.updateTime();
       this.processSearchResult();
     });
 
     this.UserProfile.getAll().then(() => {
       this.processSearchResult();
     }).catch((error) => {
-      this.$log.error(['SearchCall'], error);
+      this.log.error(error);
     });
 
     gridColumnDefinitions.forEach((column) => {
@@ -73,12 +71,13 @@ class SearchCall {
     this.gridOpts.onRegisterApi = (gridApi) => {
       this.gridApi = gridApi;
       this.gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => {
-        this.$log.debug(row);
+        this.log.debug(row);
       });
     };
   }
 
   async processSearchResult() {
+    this.updateTime();
     const query = this.createQuery();
 
     try {
@@ -108,7 +107,7 @@ class SearchCall {
             if (v == 'sid') {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
                 +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
-	      column['width'] = '10%';
+              column['width'] = '10%';
             } else if (v == 'id') {
               column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
                 +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
@@ -116,15 +115,15 @@ class SearchCall {
               column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
                 +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
               column['type'] = 'date';
-	      column['width'] = '12%';
-	      /* Prepend Column */
+              column['width'] = '12%';
+              /* Prepend Column */
               columns.unshift(column);
-		return;
+              return;
             } else if (v == 'table') {
               columns['visible'] = false;
               return;
             }
-            /* Append Column */ 
+            /* Append Column */
             columns.push(column);
           });
           this.gridOpts.columnDefs = columns;
@@ -141,7 +140,7 @@ class SearchCall {
         }, 200);
       }
     } catch (err) {
-      this.$log.error(['SearchCall'], err);
+      this.log.error(err);
     }
   }
 
@@ -205,6 +204,9 @@ class SearchCall {
       },
     };
 
+    this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
+    this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
+
     const transaction = this.UserProfile.getProfile('transaction');
     let limit = this.UserProfile.getProfile('limit');
     const value = this.UserProfile.getProfile('search');
@@ -256,7 +258,7 @@ class SearchCall {
       if (queryBody.enddate) {
         let v = new Date(queryBody.enddate);
         query.timestamp.to = v.getTime();
-        console.log(query);
+        this.log.debug('query', query);
       }
 
       if (queryBody.trancall) query.param.transaction.call = true;
@@ -287,8 +289,7 @@ class SearchCall {
   }
 
   showMessage(localrow, event) {
-  
-    let proto = localrow.entity.table.replace('hep_proto_','');
+    let proto = localrow.entity.table.replace('hep_proto_', '');
     
     const searchData = {
       timestamp: {
@@ -310,9 +311,9 @@ class SearchCall {
     };
     
     searchData.param.search[proto] = {
-        id: parseInt(localrow.entity.id),
-        sid: localrow.entity.sid,
-    };                  
+      id: parseInt(localrow.entity.id),
+      sid: localrow.entity.sid,
+    };
 
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
     searchData['param']['transaction'][localrow.entity.trans] = true;
@@ -327,7 +328,7 @@ class SearchCall {
       divTop: event.clientY.toString() + 'px',
       params: searchData,
       onOpen: () => {
-        this.$log.debug('modal1 message opened from url ' + this.id);
+        this.log.debug('modal1 message opened from url ' + this.id);
       },
     });
   }
@@ -468,10 +469,9 @@ class SearchCall {
     const uuids = [];
     let nodes = [];
     
-    let protoTable = localrow.entity.table.replace('hep_proto_','');
-        
+    let protoTable = localrow.entity.table.replace('hep_proto_', '');
     
-    console.log(localrow);
+    this.log.debug(localrow);
 
     sids.push(localrow.entity.sid);
     if (localrow.entity.uuid && localrow.entity.uuid.length > 1) uuids.push(localrow.entity.uuid);
@@ -523,9 +523,9 @@ class SearchCall {
     };
     
     searchData.param.search[protoTable] = {
-        id: parseInt(localrow.entity.id),
-	callid: sids,
-	uuid: uuids,
+      id: parseInt(localrow.entity.id),
+      callid: sids,
+      uuid: uuids,
     };
 
     /* set to to our last search time */
@@ -559,13 +559,13 @@ class SearchCall {
       divLeft: event.clientX.toString() / 2 + 'px',
       divTop,
       onOpen: () => {
-        this.$log.debug('modal1 transaction opened from url', this.id);
+        this.log.debug('modal1 transaction opened from url', this.id);
       },
     });
   }
 
   showInfo(row) {
-    this.$log.debug(row);
+    this.log.debug(row);
   }
 
   saveState() {

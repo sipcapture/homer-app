@@ -442,6 +442,8 @@ class SearchData extends LivingBeing {
         console.log( queryData );
     });
     */
+      let sid = {};
+          
     
       return await this.dataDb(table)
         .whereIn('sid', dataWhere)
@@ -503,7 +505,8 @@ class SearchData extends LivingBeing {
         console.log( queryData );
     });
     */
-    
+      let sid = {};
+          
       return await this.dataDb(table)
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)

@@ -244,7 +244,7 @@ class CallDetail {
         }
 
         /*  TIMELINE TEST END */
-        await this.showQOSReport(data);
+        //await this.showQOSReport(data);
         await this.showLogReport(data);
         this.dataLoading = false;
       }

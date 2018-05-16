@@ -195,14 +195,26 @@ class SearchData extends LivingBeing {
           dstIp: '127.0.0.2',
           srcPort: 0,
           dstPort: 0,
-          method: 'UNKNOWN',
-          method_text: 'UNKNOWN',
+          method: 'Generic',
+          method_text: 'generic',
           create_date: 0,
           protocol: '1',
           msg_color: 'blue',
           ruri_user: '',
           destination: 0,
         };
+
+	if (dataElement.hasOwnProperty('payloadType')) {
+
+          if(dataElement['payloadType'] == 81) {
+            callElement.method = "CDR";
+            callElement.method_text = "CDR";
+          }
+          if(dataElement['payloadType'] == 100) {
+            callElement.method = "LOG";
+            callElement.method_text = "LOG";
+          }
+        }
           
         if (!dataElement.hasOwnProperty('srcIp')) {
           dataElement['srcIp'] = '127.0.0.1';
@@ -381,7 +393,7 @@ class SearchData extends LivingBeing {
     
       /* correlation requests */
 
-      correlation.forEach(function(corrs) {
+      for (let corrs of correlation) {             
         let sourceField = corrs['source_field'];
         let lookupId = corrs['lookup_id'];
         let lookupProfile = corrs['lookup_profile'];
@@ -405,12 +417,11 @@ class SearchData extends LivingBeing {
         
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-
         
-        const newDataRow = this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+        const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
         
         if (newDataRow.length > 0) dataRow = dataRow.concat(newDataRow);
-      }, this);
+      }
       const globalReply = await this.getTransactionSummary(dataRow);
       
       return globalReply;

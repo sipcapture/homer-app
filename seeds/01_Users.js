@@ -7,41 +7,23 @@ exports.seed = function seed(knex) {
 
   const rows = [
     {
-      firstname: 'Sergey',
-      lastname: 'Bondarenko',
-      username: 'trex',
+      firstname: 'Homer',
+      lastname: 'Admin',
+      username: 'admin',
       usergroup: 'admin',
-      hash: bcrypt.hashSync('password', salt),
-      email: 'trex@email.com',
+      hash: bcrypt.hashSync('sipcapture', salt),
+      email: 'root@localhost',
       guid: 'f03ede7c-b121-4112-bcc7-130a3e87988c',
     },
     {
-      firstname: 'Alexandr',
-      lastname: 'Dubovikov',
-      username: 'shurik',
+      firstname: 'Homer',
+      lastname: 'Support',
+      username: 'support',
       usergroup: 'admin',
-      hash: bcrypt.hashSync('12345678', salt),
-      email: 'shurik@email.com',
+      hash: bcrypt.hashSync('sipcapture', salt),
+      email: 'root@localhost',
       guid: uuidv4(),
-    },
-    {
-      firstname: 'Lorenzo',
-      lastname: 'Mangani',
-      username: 'lorenzo',
-      usergroup: 'admin',
-      hash: bcrypt.hashSync('12345678', salt),
-      email: 'lmangani@gmail.com',
-      guid: uuidv4(),
-    },
-    {
-      firstname: 'Eugene',
-      lastname: 'Negbie',
-      username: 'negbie',
-      usergroup: 'admin',
-      hash: bcrypt.hashSync('12345678', salt),
-      email: 'negbie@gmail.com',
-      guid: uuidv4(),
-    },
+    }
   ];
 
   return knex(tableName)

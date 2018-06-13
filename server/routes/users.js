@@ -4,7 +4,7 @@ import Joi from 'joi';
 import Boom from 'boom';
 import bcrypt from 'bcryptjs';
 import User from '../classes/user';
-import config from '../config/server_config';
+import config from '../config';
 
 export default function users(server) {
   server.route({

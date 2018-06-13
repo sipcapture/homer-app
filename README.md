@@ -41,7 +41,7 @@ knex seed:run
 First, get JWT token.
 ```
 curl -X POST localhost:8001/api/v3/auth \
--d "username=trex&password=password"
+-d "username=admin&password=password"
 ```
 You will receive a message similiar to the following one:
 ```

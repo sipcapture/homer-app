@@ -14,8 +14,17 @@ This projects provides the Front-End and Back-End components of Homer 7.x and hi
 
 1. Install Postgres
     * Create new user and database
-    * Configure database connection parameters in `knexfile.js` (Provisioning)
-    * Configure database connection parameters in `server/config/db/knex.js` (API)
+```
+sudo su - postgres
+createuser homer --pwprompt
+createdb -O homer homer_config
+createdb -O homer homer_data
+psql
+postgres=# GRANT ALL PRIVILEGES ON DATABASE "homer_config" to homer;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE "homer_data" to homer;
+```
+    * Configure database connection parameters in `server/config.js` (API)
+    * Make sure you use the correct db `connection` in `knexfile.js` (Provisioning)
 2. Install the Homer-App
     * `npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google`
 3. Provision migrations and defaults to database:
@@ -41,7 +50,7 @@ knex seed:run
 First, get JWT token.
 ```
 curl -X POST localhost:8001/api/v3/auth \
--d "username=trex&password=password"
+-d "username=admin&password=password"
 ```
 You will receive a message similiar to the following one:
 ```

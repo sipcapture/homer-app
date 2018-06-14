@@ -9,7 +9,6 @@ import api from './api';
 import ui from './ui';
 import timezones from './timezones';
 import hepicsources from './hepicsources';
-import app_preferences_schema from './app_preferences_schema';
 
 export default angular.module('hepicApp.constants', [])
   .constant('CONFIGURATION', configuration)
@@ -20,5 +19,4 @@ export default angular.module('hepicApp.constants', [])
   .constant('ROUTER', router)
   .constant('UI', ui)
   .constant('HEPICSOURCES', hepicsources)
-  .constant('APP_PREF_SCHEMA', app_preferences_schema)
   .constant('TIMEZONES', timezones);

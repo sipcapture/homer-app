@@ -13,7 +13,7 @@ exports.seed = function seed(knex) {
       usergroup: 'admin',
       hash: bcrypt.hashSync('sipcapture', salt),
       email: 'root@localhost',
-      guid: 'f03ede7c-b121-4112-bcc7-130a3e87988c',
+      guid: '11111111-1111-1111-1111-111111111111',
     },
     {
       firstname: 'Homer',
@@ -22,7 +22,7 @@ exports.seed = function seed(knex) {
       usergroup: 'admin',
       hash: bcrypt.hashSync('sipcapture', salt),
       email: 'root@localhost',
-      guid: uuidv4(),
+      guid: '22222222-2222-2222-2222-222222222222',
     }
   ];
 

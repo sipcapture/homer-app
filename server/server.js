@@ -2,11 +2,9 @@ import Hapi from 'hapi';
 import {forEach} from 'lodash';
 import pem from 'pem';
 import jwtSettings from './private/jwt_settings';
-import config from './config/server_config';
-// import proxyConfig from './config/proxy';
+import config from './config';
 
 const routes = {
-  // proxy: require('./routes/proxy'),
   auth: require('./routes/authentication'),
   search: require('./routes/search'),
   mapping: require('./routes/mapping'),
@@ -21,8 +19,8 @@ const routes = {
 };
 
 const databases = {
-  data: config.db.type.mysql ? require('./config/db/knex_mysql_data').default : require('./config/db/knex_pgsql_data').default,
-  config: config.db.type.mysql ? require('./config/db/knex_mysql_config').default : require('./config/db/knex_pgsql_config').default,
+  data: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_data),
+  config: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_config),
 };
 
 const server = new Hapi.Server({

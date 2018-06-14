@@ -8,7 +8,7 @@ exports.up = function(knex) {
       // Data
       usersTable.string('username', 50).notNullable().unique();
       usersTable.integer('partid').notNullable().defaultTo(10);
-      usersTable.string('email', 250).notNullable().unique();
+      usersTable.string('email', 250).notNullable();
       usersTable.string('firstname', 50).notNullable();
       usersTable.string('lastname', 50).notNullable();
       usersTable.string('department', 50).notNullable().defaultTo('NOC');
@@ -49,25 +49,12 @@ exports.up = function(knex) {
       userSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');
       userSettingsTable.json('data');
-    })
-    .createTable('birds', function(birdsTable) {
-      // Primary Key
-      birdsTable.increments();
-      birdsTable.string('owner', 36).references('guid').inTable('users');
-      // Data
-      birdsTable.string('name', 250).notNullable();
-      birdsTable.string('species', 250).notNullable();
-      birdsTable.string('picture_url', 250).notNullable();
-      birdsTable.string('guid', 36).notNullable().unique();
-      birdsTable.boolean('isPublic').notNullable().defaultTo(true);
-      birdsTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     });
 };
 
 exports.down = function(knex) {
   return knex
     .schema
-    .dropTableIfExists( 'birds' )
     .dropTableIfExists( 'mapping_schema' )
     .dropTableIfExists( 'user_settings' )
     .dropTableIfExists( 'users' );

@@ -1,6 +1,13 @@
+<img src="https://camo.githubusercontent.com/c287bf83f8d5969635b5bed047a3e70854bc1840/687474703a2f2f736970636170747572652e6f72672f646174612f696d616765732f736970636170747572655f6865616465722e706e67" width=500>
+
 # homer-app
 
 This projects provides the Front-End and Back-End components of Homer 7.x and higher
+
+## WARNING
+This is a beta release intended for developers. Please refer to the Docker containers and Installation guides to try Homer 7.x
+
+<img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
 ## Developement Build
 

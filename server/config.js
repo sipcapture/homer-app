@@ -29,6 +29,12 @@ const mysql = {
   },
 };
 
+const influxdb = {
+  host: 'influxdb',
+  port: 8086,
+  database: 'hep'
+}
+
 export default {
   http_host: '0.0.0.0',
   http_port: 80,
@@ -46,6 +52,7 @@ export default {
       mysql: false,
       pgsql: true,
     },
+    influxdb: influxdb,
     pgsql: {
       homer_config: {
         client: 'pg',

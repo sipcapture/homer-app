@@ -1,11 +1,11 @@
 # HOMER 7.0.x UI+API
 FROM node:8
-RUN npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
 
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app
 WORKDIR /app
 RUN npm install
+RUN npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
 RUN npm run build
 
 # Expose Ports

@@ -1,6 +1,6 @@
 # HOMER 7.0.x UI+API
 FROM node:8-alpine
-RUN apk add sed
+RUN apk add sed --update-cache
 RUN npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
 
 # Requires HOMER7-UI Git

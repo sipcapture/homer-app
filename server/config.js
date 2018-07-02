@@ -32,7 +32,7 @@ const mysql = {
 const influxdb = {
   host: 'influxdb',
   port: 8086,
-  database: 'hep'
+  database: 'homer'
 }
 
 export default {

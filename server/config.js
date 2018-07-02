@@ -1,8 +1,8 @@
 const pgsql = {
   host: 'localhost',
-  user: 'homer',
+  user: 'homer_user',
   port: 5432,
-  password: '123456',
+  password: 'homer_password',
   charset: 'utf8',
   timezone: 'utc',
   pool: {
@@ -16,8 +16,8 @@ const pgsql = {
 
 const mysql = {
   host: 'localhost',
-  user: 'homer',
-  password: 'password',
+  user: 'homer_user',
+  password: 'homer_password',
   charset: 'utf8',
   timezone: 'utc',
   pool: {
@@ -31,9 +31,9 @@ const mysql = {
 
 export default {
   http_host: '0.0.0.0',
-  http_port: 8001,
+  http_port: 80,
   https_host: '0.0.0.0',
-  https_port: 4433,
+  https_port: 433,
   certificate: {
     self_signed: true,
     days: 1,

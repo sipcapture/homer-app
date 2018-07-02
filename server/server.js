@@ -32,9 +32,9 @@ const server = new Hapi.Server({
 
 const Influx = require('influx');
 const influx = new Influx.InfluxDB({
-  host: '127.0.0.1',
-  port: 8086,
-  database: 'hep',
+  host: config.db.influxdb.host || '127.0.0.1',
+  port: config.db.influxdb.port || 8086,
+  database: config.db.influxdb.database || 'hep',
 });
 
 databases.statistics = influx;

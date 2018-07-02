@@ -1,9 +1,13 @@
 #!/bin/bash
 
 cd /app
-knex migrate:latest
-knex seed:run
-
-echo "Seeding completed!"
+if [ -f bootstrapped ]; then
+   echo "Bootstrap exists!"
+else
+   knex migrate:latest
+   knex seed:run
+   touch bootstrapped
+   echo "Seeding completed!"
+fi
 
 exec "$@"

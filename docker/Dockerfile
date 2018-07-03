@@ -1,6 +1,9 @@
 # HOMER 7.0.x UI+API
 FROM node:8
 
+# BUILD FORCE
+ENV BUILD 912883
+
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app
 WORKDIR /app

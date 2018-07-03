@@ -27,7 +27,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getSearchData(['id', 'sid', 'gid', 'protocol_header', 'data_header'], searchTable, request.payload)
+      searchdata.getSearchData(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -62,7 +62,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getMessageById(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
+      searchdata.getMessageById(['id', 'sid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -106,7 +106,7 @@ export default function search(server) {
       try {
         const correlation = await settings.getCorrelationMap(request.payload);
                 
-        const data = await searchdata.getTransaction(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'],
+        const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
           searchTable, request.payload, correlation);
         if (!data) {
           return reply(Boom.notFound('data was not found'));
@@ -142,7 +142,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransactionQos(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
+      searchdata.getTransactionQos(['id', 'sid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -178,7 +178,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransactionLog(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
+      searchdata.getTransactionLog(['id', 'sid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -214,7 +214,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getTransactionRecording(['id', 'sid', 'gid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
+      searchdata.getTransactionRecording(['id', 'sid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));

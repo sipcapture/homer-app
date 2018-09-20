@@ -29,7 +29,7 @@ class CallDetail {
         quality: false,
         rtcp: false,
         xrtp: false,
-        log: false,
+        log: true,
         recording: false,
         dtmf: false,
         remotelog: false,
@@ -247,6 +247,22 @@ class CallDetail {
         //await this.showQOSReport(data);
         await this.showLogReport(data);
         this.dataLoading = false;
+
+        try {
+          console.log('Scanning for Aliases...');
+          this.ip_alias = [];
+          if (msg.alias) {;
+            angular.forEach(msg.alias, function(v, k) {
+              this.ip_alias[k.split(':')[0]] = v.split(':')[0];
+              this.ip_alias[k] = v;
+            });
+          } else {
+            this.ip_alias = [];
+          }
+        } catch(e) {
+          console.log(e);
+          this.ip_alias = [];
+        }
       }
     } catch (err) {
       this.$log.error(['CallDetail'], 'get call', err);

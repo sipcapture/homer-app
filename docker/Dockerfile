@@ -2,13 +2,14 @@
 FROM node:8
 
 # BUILD FORCE
-ENV BUILD 912883
+ENV BUILD 912884
 
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app
 WORKDIR /app
 RUN npm install
 RUN npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
+RUN npm install -g modclean && modclean -r
 RUN npm run build
 
 # Expose Ports

@@ -1,3 +1,5 @@
+import '../styles/angular-json-tree.css';
+
 class CallDetailLogs {
   constructor($log) {
     'ngInject';

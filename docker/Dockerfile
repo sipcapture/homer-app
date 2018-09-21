@@ -2,7 +2,7 @@
 FROM node:8
 
 # BUILD FORCE
-ENV BUILD 912884
+ENV BUILD 912885
 
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app

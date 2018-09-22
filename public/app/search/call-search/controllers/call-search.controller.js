@@ -42,6 +42,7 @@ class SearchCall {
     this.state = localStorageService.get('localStorageGrid');
     this.log = log;
     this.log.initLocation('SearchCall');
+    this.searchText = null; // search results, regex results filter
   }
 
   $onInit() {
@@ -558,10 +559,65 @@ class SearchCall {
       params: searchData,
       divLeft: event.clientX.toString() / 2 + 'px',
       divTop,
+      bindings: {
+        searchText: this.searchText,
+        matchJSON: this.matchJSON
+      },
       onOpen: () => {
         this.log.debug('modal1 transaction opened from url', this.id);
       },
     });
+  }
+
+  // Horrible design. Create a proper filter instead
+  matchJSON(project) {
+    // Match all if no terms are entered
+    if (!this.searchText) return project;
+
+    function splitTerms(text) {
+      if (text == null) return [];
+      return text.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+    }
+
+    function walkTerms(obj, ignored, terms) {
+      console.log('Walking',obj,ignored,terms);
+      if (ignored == null) {
+        ignored = [];
+      }
+      if (terms == null) {
+        terms = [];
+      }
+      for (var key in obj) {
+        // Ignore specified keys
+        if (ignored.indexOf(key) !== -1) continue;
+        // Ignore properties added by Angular
+        if (key.startsWith('$$')) continue;
+        // Ignore `null`, `undefined` or Array values
+        if (obj[key] == null || obj[key].constructor === Array) continue;
+        if (obj[key].constructor === Object) {
+          walkTerms(obj[key], terms);
+          continue;
+        }
+        if (typeof(obj[key]) === 'string') {
+          Array.prototype.push.apply(terms, splitTerms(obj[key]));
+          continue;
+        }
+        // Must be a boolean or number
+        terms.push(obj[key].toString());
+      }
+      return terms;
+    }
+
+    // Match if all terms are matched
+    console.log('Filtering',project);
+    var searchTerms = splitTerms(this.searchText);
+    var projectTerms = walkTerms(project.data);
+    var unmatchedTerms = searchTerms.filter(function (searchTerm) {
+      return projectTerms.filter(function (projectTerm) {
+        return projectTerm.indexOf(searchTerm) !== -1;
+      }).length === 0;
+    });
+    return unmatchedTerms.length === 0;
   }
 
   showInfo(row) {

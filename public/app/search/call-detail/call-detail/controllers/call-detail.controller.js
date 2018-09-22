@@ -71,6 +71,7 @@ class CallDetail {
 
   async $onInit() {
     const bindings = this.$scope.$parent.bindings;
+    this.matchJSON = bindings.matchJSON;
     this.data = bindings.params;
     this.id = bindings.id;
     this.msgCallId = '';

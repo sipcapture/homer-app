@@ -36,7 +36,6 @@ class SearchCall {
     this.gridOpts.gridRowTemplate = gridRowTemplate;
     this.autorefresh = false;
     this.searchParamsBackup = {};
-    this.UserProfile.getAllServerRemoteProfile();
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
     this.state = localStorageService.get('localStorageGrid');
@@ -46,14 +45,10 @@ class SearchCall {
   }
 
   $onInit() {
+    this.initData();
+
     this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
       this.processSearchResult();
-    });
-
-    this.UserProfile.getAll().then(() => {
-      this.processSearchResult();
-    }).catch((error) => {
-      this.log.error(error);
     });
 
     gridColumnDefinitions.forEach((column) => {
@@ -71,10 +66,22 @@ class SearchCall {
     };
     this.gridOpts.onRegisterApi = (gridApi) => {
       this.gridApi = gridApi;
-      this.gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => {
-        this.log.debug(row);
-      });
     };
+  }
+
+  $onDestroy() {
+    this.saveState();
+  }
+
+  async initData() {
+    try {
+      await this.UserProfile.getAll();
+      await this.processSearchResult();
+      await this.UserProfile.getAllServerRemoteProfile();
+      await this.restoreState();
+    } catch (err) {
+      this.log.error(err);
+    }
   }
 
   async processSearchResult() {
@@ -132,7 +139,6 @@ class SearchCall {
       }
 
       if (data) {
-        this.restoreState();
         this.count = data.length;
         this.gridOpts.data = data;
         this.Data = data;
@@ -631,12 +637,14 @@ class SearchCall {
 
   restoreState() {
     this.state = this.localStorageService.get('localStorageGrid');
-    if (this.state) this.gridApi.saveState.restore(this, this.state);
+    if (this.state) {
+      return this.gridApi.saveState.restore(this.$scope, this.state);
+    }
   }
 
   resetState() {
     this.state = {};
-    this.gridApi.saveState.restore(this, this.state);
+    this.gridApi.saveState.restore(this.$scope, this.state);
     this.localStorageService.set('localStorageGrid', this.state);
   }
 

@@ -161,8 +161,8 @@ class InfluxdbchartWidgetSettings {
   popuplateMetricDatabase(type) {
     const dbdata = [
       {
-        name: 'hepic',
-        value: 'hepic',
+        name: 'homer',
+        value: 'homer',
       },
     ];
   

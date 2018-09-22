@@ -213,11 +213,11 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
       }
 
       if (dobj.hasOwnProperty('database')) {
-        obj['database'] = dobj['database'].name;
+          obj['database'] = "\""+dobj['database'].name+"\"";
       }
 
       if (dobj.hasOwnProperty('retention')) {
-        obj['retention'] = dobj['retention'].name;
+        obj['retention'] = "\""+dobj['retention'].name+"\"";        
       }
 
       if (dobj.hasOwnProperty('value')) {

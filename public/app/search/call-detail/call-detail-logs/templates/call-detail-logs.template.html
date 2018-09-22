@@ -5,7 +5,7 @@
 </div>
 <div id="log-root" ng-if="!!$ctrl.logreport.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
   <section class="json-tree-out" ng-repeat="log in $ctrl.logreport | filter:$ctrl.onMatchJson">
-    <span style="font-size:12px;">{{ log.type || ( $ctrl.onIpAlias[log.srcIp] || log.srcIp ) }}</span>
+    <span style="font-size:12px;">{{ log.type || log.srcIp }}</span>
     <json-tree object="log" start-expanded="true"></json-tree>
   </section>
   <!--

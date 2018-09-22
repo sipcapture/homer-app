@@ -6,6 +6,8 @@ package-lock.json
 public/dist
 knexfile.js
 server/config/db/knex.js
+server/config.js
 experiments
 *.swp
 server/config/server_config.js
+../../../../../../server/config.js

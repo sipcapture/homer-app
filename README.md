@@ -9,6 +9,12 @@ This is a beta release intended for developers. Please refer to the Docker conta
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
+## Docker Bundles
+The following H7 `docker-compose` bundles are available in multiple flavours with the following backends:
+* [H7 + InfluxDB](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-influx)
+* [H7 + Prometheus](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-prom-graf)
+* [H7 + Elastic](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-elastic)
+
 ## Developement Build
 
 ### Node Requirments

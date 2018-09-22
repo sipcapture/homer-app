@@ -76,7 +76,10 @@
         </call-detail-dtmf>
 
         <call-detail-logs
-          ng-if="tab.heading === 'Logs'">
+          ng-if="tab.heading === 'Logs'"
+          logreport="$ctrl.logreport"
+          on-match-json="$ctrl.matchJSON"
+        >
         </call-detail-logs>
 
         <call-detail-logs-remote

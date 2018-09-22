@@ -8,6 +8,9 @@
  * Based on ocModal
  * @author Olivier Combe <olivier.combe@gmail.com>
  */
+
+import { assign, get } from 'lodash';
+
 (function() {
   'use strict';
 
@@ -179,6 +182,10 @@
               params: opt.params,
               sdata: opt.sdata,
             };
+            // Horrible design. All those params abiove should go inside one property .bindings
+            if (get(modal, 'params.bindings')) {
+              assign(modal.$scope.bindings, modal.params.bindings);
+            }
           }
 
           // timeout for animations (if any)

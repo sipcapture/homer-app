@@ -28,6 +28,7 @@
     "angular-file-upload": "1.1.5",
     "angular-filter": "0.5.16",
     "angular-gridster": "0.13.14",
+    "angular-json-tree": "^1.0.1",
     "angular-local-storage": "0.6.0",
     "angular-messages": "1.6.7",
     "angular-mocks": "1.6.6",

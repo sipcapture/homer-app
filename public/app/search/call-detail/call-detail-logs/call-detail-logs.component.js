@@ -5,6 +5,8 @@ const callDetailLogs = {
   controller,
   template,
   bindings: {
+    logreport: '=',
+    onMatchJson: '&'
   },
 };
 

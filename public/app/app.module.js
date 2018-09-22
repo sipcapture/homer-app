@@ -34,6 +34,7 @@ import 'angular-sweetalert/SweetAlert';
 import 'ngstorage';
 import 'angular-filter';
 import 'font-awesome-webpack';
+import 'angular-json-tree';
 
 // style
 import 'font-awesome/css/font-awesome.css';
@@ -94,6 +95,7 @@ const app = angular.module('hepicApp', [
   'ds.clock',
   'homer.modal', // to-do: delete this modules when the homer modal refactored
   'homer.cflow',
+  'angular-json-tree',
   Directives.name,
   Controllers.name,
   Constants.name,

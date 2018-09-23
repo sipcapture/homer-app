@@ -67,6 +67,18 @@ class SearchCall {
     this.gridOpts.onRegisterApi = (gridApi) => {
       this.gridApi = gridApi;
     };
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_SAVE, () => {
+        this.saveState();
+    });
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESTORE, () => {
+        this.restoreState();
+    });
+
+    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
+        this.resetState();
+    });
   }
 
   $onDestroy() {

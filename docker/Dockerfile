@@ -2,15 +2,15 @@
 FROM node:8
 
 # BUILD FORCE
-ENV BUILD 702002
+ENV BUILD 702003
 
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app
 WORKDIR /app
-RUN npm install
-RUN npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
-RUN npm install -g modclean && modclean -r
-RUN npm run build
+RUN npm install \
+ && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google \
+ && npm install -g modclean && modclean -r \
+ && npm run build
 
 # Expose Ports
 EXPOSE 80
@@ -23,4 +23,3 @@ RUN chmod +x /docker-entrypoint.d/* /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD [ "npm", "start" ]
-

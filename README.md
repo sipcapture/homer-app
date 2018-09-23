@@ -5,7 +5,7 @@
 This projects provides the Front-End and Back-End components of Homer 7.x and higher
 
 ## WARNING
-This is a beta release mostly intended for developers. Please refer to the Docker containers and Installation guides to try Homer 7.x
+This is a beta release mostly intended for developers. 
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 

@@ -548,9 +548,9 @@ class CallDetail {
 
     this.SearchService.searchQOSReport(rdata).then((msg) => {
       /* HEPIC Types */
-      if (msg.reports.rtpagent && msg.reports.rtpagent.chart) {
+      if (msg.reports && msg.reports.rtpagent && msg.reports.rtpagent.chart) {
         if (Object.keys(msg.reports.rtpagent.chart).length == 0) return;
-        this.enableQualityReport = true;
+        this.enable.report.quality = true;
 
         let fullrep = msg.reports.rtpagent.chart;
         this.list_legend = [];
@@ -738,7 +738,7 @@ class CallDetail {
         }
         this.$log.debug('Enable RTCP Report');
         this.calc_report = chartDataExtended;
-        this.enableRTCPReport = true;
+        this.enable.report.rtcp = true;
       }
     }).catch((err) => {
       this.$log.error(['CallDetail'], 'show qos report', err);
@@ -785,7 +785,7 @@ class CallDetail {
   }
 
   showQOSChart(seriesData) {
-    this.enableQOSChart = true;
+    this.enable.report.quality = true;
     this.chartConfig = {
       chart: {
         type: 'line',
@@ -856,7 +856,7 @@ class CallDetail {
                 });
               } catch (err) {
                 this.$log.error(['CallDetail'], err);
-                this.enableDTMFReport = false;
+                this.enable.report.dtmf = false;
               }
             }
           }
@@ -871,7 +871,7 @@ class CallDetail {
 
   showRemoteLogReport(rdata) {
     this.SearchService.searchRemoteLog(rdata).then((msg) => {
-      this.enableRemoteLogReport = true;
+      this.enable.report.remotelog = true;
       if (msg && msg.hits && msg.hits.hits) this.remotelogreport = msg.hits.hits;
     }).catch((err) => {
       this.$log.error(['CallDetail'], 'show remote log report', err);

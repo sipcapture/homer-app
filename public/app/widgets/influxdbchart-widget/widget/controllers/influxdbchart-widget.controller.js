@@ -126,8 +126,8 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
     applyChart();
   };
 
-  function resizeUpdateWithTimeout() {
-    if (self.d3Chart.api) self.d3Chart.api.updateWithTimeout(200);
+  function resizeUpdateWithTimeout(val) {
+    if (self.d3Chart.api) self.d3Chart.api.updateWithTimeout(val||500);
   };
 
   function resizeStart() {};
@@ -282,7 +282,7 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
       if (!angular.equals(hepiChartobjQuery, {})) {
         InfluxdbchartService.get(config, hepiChartobjParam.path, hepiChartobjQuery).then(function(sdata) {
           loadNewChart(sdata, hepiChartobjQuery);
-          resizeUpdateWithTimeout();
+          resizeUpdateWithTimeout(900);
         }).catch(function(err) {
           log.error('create chart', err);
         });

@@ -122,7 +122,7 @@ class Statistics extends LivingBeing {
       });
   }
   
-  getTags(query) {
+  getTagsKeys(query) {
     let main = query.main;
     let database = query.database;
     let retention = query.retention;
@@ -141,6 +141,42 @@ class Statistics extends LivingBeing {
       
       values.forEach((value) => {
         mesNames.push({name: value[0], value: value[0]});
+      });
+
+      let globalReply = {
+        total: mesNames.length,
+        data: mesNames,
+        status: 'ok',
+        auth: 'ok',
+      };
+        
+      return globalReply;
+    })
+      .catch((err) => {
+        console.error('Error....');
+      });
+  }
+  
+  getTagsValues(query) {
+    let main = query.main;
+    let database = query.database;
+    let retention = query.retention;
+    let key = query.tag;
+    
+    let options = {
+      database: database,
+      precision: 's',
+      retentionPolicy: retention,
+    };
+    
+    let influxQuery = 'SHOW TAG VALUES FROM "'+main+'" WITH KEY IN ("'+key+'")';
+    
+    return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
+      let mesNames = [];
+      let values = mses.results[0].series[0].values;
+      
+      values.forEach((value) => {
+        mesNames.push({name: value[1], value: value[1]});
       });
 
       let globalReply = {

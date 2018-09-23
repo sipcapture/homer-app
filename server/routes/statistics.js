@@ -57,7 +57,7 @@ export default function statistics(server) {
 
       stats.getRetentions(database).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('db was not found'));
+          return reply(Boom.notFound('retentions has been not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -82,7 +82,7 @@ export default function statistics(server) {
 
       stats.getMeasurements(databaseId).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('db was not found'));
+          return reply(Boom.notFound('measurements has been not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -118,9 +118,47 @@ export default function statistics(server) {
       let userObject = request.auth.credentials;
       const stats = new Stats(server, userObject.username);
       
-      stats.getTags(search).then(function(data) {
+      stats.getTagsKeys(search).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('db was not found'));
+          return reply(Boom.notFound('tags keys has been not found'));
+        }
+        return reply(data);
+      }).catch(function(error) {
+        return reply(Boom.serverUnavailable(error));
+      });
+    },
+  });
+  
+  server.route({
+
+    path: '/api/v3/statistic/_fields',
+    method: 'POST',
+    config: {
+      auth: {
+        strategy: 'token',
+      },
+      validate: {
+        payload: {
+          param: {
+            limit: Joi.number().integer().min(0),
+            search: Joi.object(),
+          },
+          timestamp: {
+            from: Joi.date().timestamp().required(),
+            to: Joi.date().timestamp().required(),
+          },
+        },
+      },
+    },
+    handler: function(request, reply) {
+      let param = request.payload.param;
+      let search = param.search;
+      let userObject = request.auth.credentials;
+      const stats = new Stats(server, userObject.username);
+      
+      stats.getTagsValues(search).then(function(data) {
+        if (!data) {
+          return reply(Boom.notFound('tags values was not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -160,7 +198,7 @@ export default function statistics(server) {
       
       stats.getMetrics(query).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('db was not found'));
+          return reply(Boom.notFound('metrics has been not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -201,7 +239,7 @@ export default function statistics(server) {
       
       stats.getData(payload).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('db was not found'));
+          return reply(Boom.notFound('stats data has been not found'));
         }
         return reply(data);
       }).catch(function(error) {

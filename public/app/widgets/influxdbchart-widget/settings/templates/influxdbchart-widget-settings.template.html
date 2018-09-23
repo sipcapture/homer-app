@@ -149,25 +149,10 @@
                           <td class="text-center">&nbsp;</td>
                         </tr>
                         <tr>
-                          <td class="text-center col-md-2">Value</td>
+                          <td class="text-center col-md-2">Values</td>
                           <td class="text-center col-md-10" colspan="3">
                             <div class="select-wr">
-                              <ui-select multiple tagging="tValueTransform" ng-model="$ctrl._config.dataquery.data[$ctrl.localindex]['tvalue']" style="height: 50px;" theme="bootstrap" title="Select Tag Value">
-                                <ui-select-match placeholder="Select...">{{$item.name}}</ui-select-match>
-                                <ui-select-choices repeat="tvalue in $ctrl.myValuedata  | propsFilter: {name: $select.search, value: $select.search}">
-                                  <div ng-if="tvalue.isTag" ng-bind-html="(tvalue.name | highlight: $select.search) +' (new)'"></div>
-                                  <div ng-if="!tvalue.isTag" ng-bind-html="tvalue.name + tvalue.isTag| highlight: $select.search"></div>
-                                </ui-select-choices>
-                              </ui-select>
-                            </div>
-                          </td>
-                          <td class="text-center">&nbsp;</td>
-                        </tr>                        
-                        <tr>
-                          <td class="text-center col-md-2">Group</td>
-                          <td class="text-center col-md-10" colspan="3">
-                            <div class="select-wr">
-                              <ui-select multiple tagging="tagTransform" ng-model="$ctrl._config.dataquery.data[$ctrl.localindex]['tag']" style="height: 50px;" theme="bootstrap" title="Select Group">
+                              <ui-select multiple tagging="tagTransform" ng-model="$ctrl._config.dataquery.data[$ctrl.localindex]['tag']" style="height: 50px;" theme="bootstrap" title="Select Tag Values">
                                 <ui-select-match placeholder="Select...">{{$item.name}}</ui-select-match>
                                 <ui-select-choices repeat="counter in $ctrl.myGroupdata  | propsFilter: {name: $select.search, value: $select.search}">
                                   <div ng-if="counter.isTag" ng-bind-html="(counter.name | highlight: $select.search) +' (new)'"></div>

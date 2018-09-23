@@ -29,7 +29,7 @@ class CallDetail {
         quality: false,
         rtcp: false,
         xrtp: false,
-        log: true,
+        log: false,
         recording: false,
         dtmf: false,
         remotelog: false,
@@ -245,7 +245,7 @@ class CallDetail {
         }
 
         /*  TIMELINE TEST END */
-        //await this.showQOSReport(data);
+        await this.showQOSReport(data);
         await this.showLogReport(data);
         this.dataLoading = false;
 
@@ -832,7 +832,7 @@ class CallDetail {
   showLogReport(rdata) {
     this.SearchService.searchLogReport(rdata).then((msg) => {
       if (msg.length > 0) {
-        this.enableLogReport = true;
+        this.enable.report.log = true;
         msg.forEach((entry) => {
           if (entry.data) {
             try {
@@ -843,7 +843,7 @@ class CallDetail {
             /* DTMF Parser */
             if (entry.data.DTMF) {
               entry.dtmf = {};
-              this.enableDTMFReport = true;
+              this.enable.report.dtmf = true;
               try {
                 entry.data.DTMF.split(';').forEach(function(item, i) {
                   if (!item || item == '') return;
@@ -881,7 +881,7 @@ class CallDetail {
   showRtcReport(rdata) {
     this.SearchService.searchRtcReport(rdata).then((msg) => {
       if (msg && msg.length > 0) {
-        this.enableRtcReport = true;
+        this.enable.report.rtcp = true;
         this.rtcreport = msg;
       }
     }).catch((err) => {

@@ -1,15 +1,16 @@
-<img src="https://camo.githubusercontent.com/c287bf83f8d5969635b5bed047a3e70854bc1840/687474703a2f2f736970636170747572652e6f72672f646174612f696d616765732f736970636170747572655f6865616465722e706e67" width=500>
+<img src="https://github.com/sipcapture/homer-app/raw/master/public/img/homerseven.png" width=200 />
 
 # homer-app
 
 This projects provides the Front-End and Back-End components of Homer 7.x and higher
 
 ## WARNING
-This is a beta release intended for developers. Please refer to the Docker containers and Installation guides to try Homer 7.x
+This is a beta release mostly intended for developers. Please refer to the Docker containers and Installation guides to try Homer 7.x
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
 ## Docker Bundles
+Getting started with HOMER Seven? <br>
 The following H7 `docker-compose` bundles are available in multiple flavours with the following backends:
 * [H7 + InfluxDB](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-influx)
 * [H7 + Prometheus](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-prom-graf)
@@ -74,3 +75,15 @@ You will receive a message similiar to the following one:
 ```
 This token should be included in every API request, in the header section. It will expire in 1 hour; you can set the expire value in `jwt_settings.json`.
 
+---
+
+This project is part of HOMER
+
+<img src="https://camo.githubusercontent.com/c287bf83f8d5969635b5bed047a3e70854bc1840/687474703a2f2f736970636170747572652e6f72672f646174612f696d616765732f736970636170747572655f6865616465722e706e67" width=300>
+
+----
+#### Made by Humans
+This Open-Source project is made possible by actual Humans without corporate sponsors, angels or patreons.<br>
+If you use this software in production, please consider supporting its development with contributions or [donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donation%40sipcapture%2eorg&lc=US&item_name=SIPCAPTURE&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donation%40sipcapture%2eorg&lc=US&item_name=SIPCAPTURE&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest) 

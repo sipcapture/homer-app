@@ -438,7 +438,7 @@ class SearchData extends LivingBeing {
       /* jshint -W089 */
   
       for (let key in sData) {
-        table = 'hep_proto_34_default';
+        table = 'hep_proto_5_default';
         if (sData.hasOwnProperty(key)) {
           dataWhere = sData[key]['callid'];
         }

@@ -184,11 +184,11 @@
               <div id="queryTab">
                 <div class="input-group">
                   <label for="path" class="input-label">API Query Path</label>
-                  <input type="text" class="form-control" id="path" ng-model="$ctrl._config.path" ng-change="$ctrl.updateDebugUrl()" placeholder="Enter Path (call/function)">
+                  <input type="text" class="form-control" id="path" ng-model="$ctrl._config.dataquery.data[$ctrl.localindex]['rawpath']" ng-change="$ctrl.updateDebugUrl($ctrl.localindex)" placeholder="Enter Path (call/function)">
                 </div>
                 <div class="input-group input-group--last">
                   <label for="query" class="input-label">API Query Value</label>
-                  <textarea style="height: 200px;" class="form-control" id="query" ng-change="$ctrl.updateDebugUrl()" ng-model="$ctrl._config.query" placeholder="Query"></textarea>
+                  <textarea style="height: 200px;" class="form-control" id="query" ng-change="$ctrl.updateDebugUrl($ctrl.localindex)" ng-model="$ctrl._config.dataquery.data[$ctrl.localindex]['rawquery']" placeholder="Query"></textarea>
                 </div>
                 <p ng-class="parsingColorClass" class="syntax-error">{{parsingStatus}}</p>
               </div>

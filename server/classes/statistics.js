@@ -205,6 +205,8 @@ class Statistics extends LivingBeing {
     let type = query.type;
     let retention = query.retention;
     let sData = payload.param.search;
+    let rawQuery = '';
+    let rawPath = '';
     let dataWhere = {};
     /* jshint -W089 */
     let timeWhere = [];
@@ -247,7 +249,18 @@ class Statistics extends LivingBeing {
 
     let influxQuery = 'SELECT '+counterName+' FROM '+queryDB+'."'+main+'" WHERE '
 		+'time > '+fromTs+' AND '+toTs+' > time '+tagName+' GROUP BY time('+indexRange+') FILL(null) LIMIT '+localLimit;
-    
+		
+    if (query.hasOwnProperty("rawquery") && query.rawquery && query.rawquery.length > 0) {
+          rawQuery =  query.rawquery;
+          influxQuery = rawQuery.replace(":database:", database)
+                      .replace(":retention:", retention)
+                      .replace(":measurement:", main)
+                      .replace(":from:", fromTs)
+                      .replace(":to:", toTs)
+                      .replace(":interval:", indexRange)
+                      .replace(":limit:", localLimit);                      
+    }
+ 				    
     
     return this.statsDb.query(influxQuery, options).then((mses) => {
       let mesNames = [];

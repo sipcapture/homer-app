@@ -77,7 +77,7 @@ class SearchCall {
     }
   }
 
-  getUiGridColumnDefs(columnDefs = [], colNames = []) {
+  getUiGridColumnDefs(colNames = []) {
     if (!colNames || isEmpty(colNames)) {
       throw new Error('array of col names should be present as argument');
     }
@@ -123,10 +123,7 @@ class SearchCall {
       return enrichedColumns; 
     }
 
-    if (isEmpty(columnDefs)) {
-      return getEnrichedDefs(getDefaultDefs(colNames));
-    }
-    return getEnrichedDefs(columnDefs);
+    return getEnrichedDefs(getDefaultDefs(colNames));
   }
 
   async processSearchResult() {
@@ -139,13 +136,12 @@ class SearchCall {
 
     try {
       const response = await this.SearchService.searchCallByParam(query);
-      await this.restoreState();
 
       const { data, keys } = response;
       /* displayName: this.$filter('translate')('hepic.pages.results.'+v) ? this.$filter('translate')('hepic.pages.results.'+v) : v,*/
 
       if (isArray(keys) && !isEmpty(keys)) {
-        this.gridOpts.columnDefs = this.getUiGridColumnDefs(this.gridOpts.columnDefs, keys);
+        this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 
@@ -157,6 +153,8 @@ class SearchCall {
           angular.element(this.$window).resize();
         }, 200);
       }
+
+      await this.restoreState();
     } catch (err) {
       this.log.error(err);
     }

@@ -30,7 +30,7 @@ const mysql = {
 };
 
 const influxdb = {
-  host: '127.0.0.1',
+  host: 'influxdb',
   port: 8086,
   database: 'homer'
 }

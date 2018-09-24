@@ -123,7 +123,6 @@ class SearchCall {
       return enrichedColumns; 
     }
 
-    debugger;
     if (isEmpty(columnDefs)) {
       return getEnrichedDefs(getDefaultDefs(colNames));
     }

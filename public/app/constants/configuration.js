@@ -5,7 +5,7 @@ const CONFIGURATION = {
   USER_EXT_CR: false,
   WEBSOCKET: false,
   HEPIC_VERSION: '2.1.11',
-  VERSION: '7.0.2',
+  VERSION: '7.0.3',
   APIURL: 'api/v3/',
   DASHBOARD_DEFAULT: {
     margins: [10, 10],

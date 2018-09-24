@@ -1,16 +1,15 @@
 /* global angular, window */
 
-import {forEach} from 'lodash';
+import { forEach, isArray, isEmpty } from 'lodash';
+import Promise from 'bluebird';
 
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
-import gridColumnDefinitions from '../data/grid/collumns/definitions';
-import gridColumnDefinitionsUserExtCr from '../data/grid/collumns/definitions_user_ext_cr';
 
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
-    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine) {
+    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -31,17 +30,16 @@ class SearchCall {
     this.TimeMachine = TimeMachine;
     this.expandme = true;
     this.showtable = true;
-    this.dataLoading = false;
     this.gridOpts = gridOptions;
     this.gridOpts.gridRowTemplate = gridRowTemplate;
-    this.autorefresh = false;
     this.searchParamsBackup = {};
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
-    this.state = localStorageService.get('localStorageGrid');
+    this.state = this.getState();
     this.log = log;
     this.log.initLocation('SearchCall');
     this.searchText = null; // search results, regex results filter
+    this.uiGridConstants = uiGridConstants;
   }
 
   $onInit() {
@@ -51,33 +49,17 @@ class SearchCall {
       this.processSearchResult();
     });
 
-    gridColumnDefinitions.forEach((column) => {
-      column.displayName = this.$filter('translate')(column._hepic_translate);
-    });
-
-    if (this.CONFIGURATION.USER_EXT_CR) {
-      gridColumnDefinitions.push.apply(gridColumnDefinitionsUserExtCr);
-    }
-
-    /* this.gridOpts.columnDefs = gridColumnDefinitions;*/
     this.gridOpts.columnDefs = [];
     this.gridOpts.rowIdentity = function(row) {
       return row.id;
     };
+
     this.gridOpts.onRegisterApi = (gridApi) => {
       this.gridApi = gridApi;
     };
 
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_SAVE, () => {
-        this.saveState();
-    });
-
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESTORE, () => {
-        this.restoreState();
-    });
-
     this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
-        this.resetState();
+      this.resetState();
     });
   }
 
@@ -88,76 +70,91 @@ class SearchCall {
   async initData() {
     try {
       await this.UserProfile.getAll();
-      await this.processSearchResult();
       await this.UserProfile.getAllServerRemoteProfile();
-      await this.restoreState();
+      await this.processSearchResult();
     } catch (err) {
       this.log.error(err);
     }
   }
 
+  getUiGridColumnDefs(colNames = []) {
+    if (!colNames || isEmpty(colNames)) {
+      throw new Error('array of col names should be present as argument');
+    }
+
+    function getDefaultDefs(colNames) {
+      return colNames.map(name => {
+        return {
+          field: name,
+          displayName: name,
+          resizable: true,
+          type: 'string',
+          width: '*',
+          visible: true,
+        };
+      });
+    }
+
+    function getEnrichedDefs(columnDefs) {
+      const enrichedColumns = [];
+      columnDefs.forEach(col => {
+        if (col.name === 'sid' || col.field === 'sid') {
+          col.cellTemplate = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
+            +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
+          col.width = '10%';
+        } else if (col.name === 'id' || col.field === 'id') {
+          col.cellTemplate = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
+            +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
+        } else if (col.name === 'create_date' || col.field === 'create_date') {
+          col.cellTemplate = '<div class="ui-grid-cell-contents" title="date">'
+            +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
+          col.type = 'date';
+          col.width = '12%';
+        } else if (col.name === 'table' || col.field === 'table') {
+          col.visible = false;
+        }
+
+        if (col.name === 'create_date' || col.field === 'create_date') {
+          enrichedColumns.unshift(col);
+        } else {
+          enrichedColumns.push(col);
+        }
+      });
+      return enrichedColumns; 
+    }
+
+    return getEnrichedDefs(getDefaultDefs(colNames));
+  }
+
   async processSearchResult() {
+    if (isArray(this.data) && !isEmpty(this.data)) {
+      this.saveState();
+    }
+
     this.updateTime();
     const query = this.createQuery();
 
     try {
-      this.dataLoading = true;
-
       const response = await this.SearchService.searchCallByParam(query);
-      let data = response.data;
-      let keys = response.keys;
-      
-      this.dataLoading = false;
+
+      const { data, keys } = response;
       /* displayName: this.$filter('translate')('hepic.pages.results.'+v) ? this.$filter('translate')('hepic.pages.results.'+v) : v,*/
 
-      if (keys) {
-        this.gridOpts.columnDefs = [];
-        if (this.gridOpts.columnDefs.length == 0) {
-          let columns = [];
-          keys.forEach(function(v) {
-            let column = {
-              field: v,
-              displayName: v,
-              resizable: true,
-              type: 'string',
-              width: '*',
-              visible: true,
-            };
-            
-            if (v == 'sid') {
-              column['cellTemplate'] = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
-                +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
-              column['width'] = '10%';
-            } else if (v == 'id') {
-              column['cellTemplate'] = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
-                +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
-            } else if (v == 'create_date') {
-              column['cellTemplate'] = '<div class="ui-grid-cell-contents" title="date">'
-                +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
-              column['type'] = 'date';
-              column['width'] = '12%';
-              /* Prepend Column */
-              columns.unshift(column);
-              return;
-            } else if (v == 'table') {
-              columns['visible'] = false;
-              return;
-            }
-            /* Append Column */
-            columns.push(column);
-          });
-          this.gridOpts.columnDefs = columns;
-        }
+      if (isArray(keys) && !isEmpty(keys)) {
+        this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 
-      if (data) {
+      if (isArray(data) && !isEmpty(data)) {
         this.count = data.length;
         this.gridOpts.data = data;
-        this.Data = data;
+        this.data = data;
         this.$timeout(() => {
           angular.element(this.$window).resize();
         }, 200);
       }
+
+      await this.restoreState();
     } catch (err) {
       this.log.error(err);
     }
@@ -642,16 +639,21 @@ class SearchCall {
     this.log.debug(row);
   }
 
+  getState() {
+    return this.localStorageService.get('localStorageGrid');
+  }
+
   saveState() {
     this.state = this.gridApi.saveState.save();
     this.localStorageService.set('localStorageGrid', this.state);
   }
 
-  restoreState() {
-    this.state = this.localStorageService.get('localStorageGrid');
+  restoreState(state) {
+    this.state = state || this.getState();
     if (this.state) {
       return this.gridApi.saveState.restore(this.$scope, this.state);
     }
+    return Promise.resolve();
   }
 
   resetState() {
@@ -661,7 +663,7 @@ class SearchCall {
   }
 
   searchData() {
-    this.gridOpts.data = this.$filter('messageSearch')(this.Data, this.gridOpts, this.searchText);
+    this.gridOpts.data = this.$filter('messageSearch')(this.data, this.gridOpts, this.searchText);
   }
 }
 

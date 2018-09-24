@@ -223,6 +223,14 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
       if (dobj.hasOwnProperty('value')) {
         obj['value'] = dobj['value'];
       }
+      
+      if (dobj.hasOwnProperty('rawquery')) {
+        obj['rawquery'] = dobj['rawquery'];
+      }
+      
+      if (dobj.hasOwnProperty('rawpath')) {
+        obj['rawpath'] = dobj['rawpath'];
+      }
 
       if (dobj.hasOwnProperty('type')) {
         const daz = [];

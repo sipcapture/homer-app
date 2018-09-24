@@ -35,7 +35,7 @@ class InfluxdbchartWidgetSettings {
     this.displayExpertMode = false;
     this.expertMode = 'Switch to expert mode';
     this.expertClass = 'glyphicon glyphicon-chevron-down';
-    this.updateDebugUrl();
+    //this.updateDebugUrl(0);
   
     if (!this._config.dataquery) {
       this._config.dataquery = {};
@@ -135,10 +135,10 @@ class InfluxdbchartWidgetSettings {
     this.modalInstance.close(this.config);
   };
 
-  updateDebugUrl() {
-    const url = this.CONFIGURATION.APIURL + this._config.path;
+  updateDebugUrl(index) {
+    const url = this.CONFIGURATION.APIURL + this._config.dataquery.data[index]['rawpath'];
     try {
-      const objQuery = JSON.parse(this._config.query);
+      const objQuery = JSON.parse(this._config.dataquery.data[index]['rawquery']);
       this.debug = `curl -v --cookie 'HEPICSSID=HEPICSSID' -X POST \\\n-d '${JSON.stringify(objQuery)}' \\\n ` +
         `"${window.location.protocol}//${window.location.host}/${url}"\n`;
       this.parsingStatus = 'No syntax errors';
@@ -386,6 +386,8 @@ class InfluxdbchartWidgetSettings {
 
     let countervalue = this._config.dataquery.data[index][param].value;
     this._config.dataquery.data[index]['type'] = {};
+    this._config.dataquery.data[index]['rawpath'] = [];
+    this._config.dataquery.data[index]['rawquery'] = [];
     this.popuplateSourceTypeData(index, countervalue);
     this.mainTag = countervalue;
   };
@@ -411,6 +413,8 @@ class InfluxdbchartWidgetSettings {
   
     this._config.dataquery.data[index]['type'] = [];
     this._config.dataquery.data[index]['tag'] = [];
+    this._config.dataquery.data[index]['rawpath'] = [];
+    this._config.dataquery.data[index]['rawquery'] = [];
   
     this.popuplateSourceTypeData(index, mainTag);
     this.popuplateTags(index, mainTag);

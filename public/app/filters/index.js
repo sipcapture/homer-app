@@ -1,6 +1,8 @@
 import angular from 'angular';
-import PropsFilter from './props-filter';
+import propsFilter from './props-filter';
+import messageSearch from './message-search';
 
 export default angular.module('hepicApp.filters', [
-  PropsFilter.name,
+  propsFilter.name,
+  messageSearch.name
 ]);

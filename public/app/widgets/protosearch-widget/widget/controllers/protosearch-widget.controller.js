@@ -191,6 +191,11 @@ class ProtosearchWidget {
   clearSearchForm() {
     this.UserProfile.profileScope.search = {};
     this.UserProfile.setProfile('search', this.newObject);
+    this._nullifyObjectKeys(this.newObject);
+  }
+
+  _nullifyObjectKeys(obj) {
+    Object.keys(obj).forEach(key => obj[key] = null);
   }
 
   processSearchResult(type) {

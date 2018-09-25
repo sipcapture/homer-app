@@ -2,13 +2,14 @@
 
 import { forEach, isArray, isEmpty } from 'lodash';
 import Promise from 'bluebird';
+import swal from 'sweetalert2';
 
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
 
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
-    $timeout, $window, $homerModal, UserProfile, localStorageService, $filter, SweetAlert,
+    $timeout, $window, $homerModal, UserProfile, localStorageService, $filter,
     $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants) {
     'ngInject';
     this.$scope = $scope;
@@ -21,7 +22,6 @@ class SearchCall {
     this.UserProfile = UserProfile;
     this.localStorageService = localStorageService;
     this.$filter = $filter;
-    this.SweetAlert = SweetAlert;
     this.$state = $state;
     this.EVENTS = EVENTS;
     this.CONFIGURATION = CONFIGURATION;
@@ -166,17 +166,15 @@ class SearchCall {
   }
 
   killParam(param) {
-    this.SweetAlert.swal({
+    swal({
       title: 'Remove Filter?',
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#DD6B55',
       confirmButtonText: 'Yes, delete it!',
-      closeOnConfirm: true,
-      closeOnCancel: true,
-    },
-    (isConfirm) => {
-      if (isConfirm) {
+      timer: 120000,
+    }).then((resp) => {
+      if (!resp.dismiss) {
         delete this.searchParams[param];
         this.processSearchResult();
       }
@@ -184,18 +182,17 @@ class SearchCall {
   }
 
   editParam(param) {
-    this.SweetAlert.swal({
+    swal({
       title: `Edit Filter: [${param}]`,
-      type: 'input',
+      type: 'info',
       showCancelButton: true,
       confirmButtonText: 'Update',
-      closeOnConfirm: true,
-      closeOnCancel: true,
+      input: 'text',
       inputPlaceholder: this.searchParams[param],
-    },
-    (input) => {
-      if (input) {
-        this.searchParams[param] = input;
+      timer: 120000,
+    }).then((resp) => {
+      if (!resp.dismiss) {
+        this.searchParams[param] = resp.value;
         this.processSearchResult();
       }
     });

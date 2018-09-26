@@ -1,4 +1,5 @@
 import LivingBeing from './living_being';
+import { forEach } from 'lodash';
 
 /**
  * A class to handle users in DB
@@ -33,7 +34,7 @@ class SearchData extends LivingBeing {
       table = 'hep_proto_'+key;
       if (sData.hasOwnProperty(key)) {
         let elems = sData[key];
-        elems.forEach(function(el) {
+        forEach(elems, function(el) {
           if (el.value.length > 0) {
             if (el.name.indexOf('.') > -1) {
               let elemArray = el.name.split('.');

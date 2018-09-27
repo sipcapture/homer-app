@@ -99,12 +99,7 @@ class ProtosearchWidget {
       this.newObject = {};
     }
 
-   /* this._widget.fields.forEach((field) => {
-          this.newObject[field.name] = this.newObject[field.name] || '';
-    });
-    */
-    
-    let searchObject = {};
+    this.searchObject = {};
 
     for (var key in this.newObject) {
 
@@ -128,36 +123,29 @@ class ProtosearchWidget {
 	        hepid: myLocalObject.hepid,
 	        profile: myLocalObject.profile,	    
 	    }	
-	    if(!searchObject.hasOwnProperty(subKey)) searchObject[subKey]=[];
+	    if(!this.searchObject.hasOwnProperty(subKey)) this.searchObject[subKey]=[];
 
-	    searchObject[subKey].push(lobj);	    	    	    
+	    this.searchObject[subKey].push(lobj);	    	    	    
 	}
 		
 	console.log("OB", myLocalObject);
     }
-    
-    /*this.newObject.forEach((key,value) => {
-        console.log("NEWOB KEY:", key);
-        console.log("NEWOB VALUE:", value);
-    }); 
-    */   
 
-    if(Object.getOwnPropertyNames(searchObject).length === 0)
+    if(Object.getOwnPropertyNames(this.searchObject).length === 0)
     {
         let subKey = this.widget.config.protocol_id.value + "_"+this.widget.config.protocol_profile.value;                    
-        searchObject[subKey]=[];
+        this.searchObject[subKey]=[];
     }
     
-    console.log("SEARCH", searchObject);
+    console.log("SEARCH", this.searchObject);
     console.log("RRR1", this.widget.config.protocol_id);
     console.log("RRR2", this.widget.config.protocol_profile);
     
     console.log("FORMS1", this._widget.fields);
     console.log("FORMS2", this.newObject);
-    console.log("FORMS3", searchObject);
+    console.log("FORMS3", this.searchObject);
     
-    this.UserProfile.setProfile('search', searchObject);
-    //this.UserProfile.setProfile('search', this.newObject);
+    this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('node', this.newNode);
     this.UserProfile.setProfile('limit', this.newResult.limit);
@@ -185,7 +173,12 @@ class ProtosearchWidget {
   }
 
   searchForProtocol(protoID) {
-    this.$state.go(this.ROUTER.SEARCH.NAME, {protoID});
+    this.$state.go(this.ROUTER.SEARCH.NAME, {
+      protoID,
+      search: this.searchObject,
+      limit: this.newResult.limit,
+      transaction: this.newResult.transaction || {}
+    });
   }
 
   clearSearchForm() {

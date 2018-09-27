@@ -9,6 +9,7 @@ import api from './api';
 import ui from './ui';
 import timezones from './timezones';
 import hepicsources from './hepicsources';
+import search from './search';
 
 export default angular.module('hepicApp.constants', [])
   .constant('CONFIGURATION', configuration)
@@ -19,4 +20,5 @@ export default angular.module('hepicApp.constants', [])
   .constant('ROUTER', router)
   .constant('UI', ui)
   .constant('HEPICSOURCES', hepicsources)
-  .constant('TIMEZONES', timezones);
+  .constant('TIMEZONES', timezones)
+  .constant('SEARCH', search);

@@ -172,7 +172,7 @@ class SearchCall {
       showCancelButton: true,
       confirmButtonColor: '#DD6B55',
       confirmButtonText: 'Yes, delete it!',
-      timer: 120000,
+      timer: 240000,
     }).then((resp) => {
       if (!resp.dismiss) {
         delete this.searchParams[param];
@@ -187,12 +187,13 @@ class SearchCall {
       type: 'info',
       showCancelButton: true,
       confirmButtonText: 'Update',
-      input: 'text',
-      inputPlaceholder: this.searchParams[param],
-      timer: 120000,
+      input: 'textarea',
+      inputValue: JSON.stringify(this.searchParams[param]),
+      inputPlaceholder: 'Type search parameters here',
+      timer: 240000,
     }).then((resp) => {
       if (!resp.dismiss) {
-        this.searchParams[param] = resp.value;
+        this.searchParams[param] = JSON.parse(resp.value);
         this.processSearchResult();
       }
     });
@@ -209,6 +210,8 @@ class SearchCall {
   }
 
   createQuery() {
+    let { search, limit, transaction } = this.$state.params;
+
     const query = {
       param: {},
       timestamp: {
@@ -220,12 +223,8 @@ class SearchCall {
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
 
-    const transaction = this.UserProfile.getProfile('transaction');
-    let limit = this.UserProfile.getProfile('limit');
-    const value = this.UserProfile.getProfile('search');
-
     /* query manipulation functions & store */
-    this.searchParams = value;
+    this.searchParams = search;
 
     /* preference processing */
     const queryBody = {};
@@ -244,7 +243,7 @@ class SearchCall {
       /* make construct of query */
       query.param.transaction = {};
       query.param.limit = limit;
-      query.param.search = value;
+      query.param.search = search;
       query.param.location = {};
       query.param.timezone = this.timezone;
       forEach(transaction.transaction, function(v) {

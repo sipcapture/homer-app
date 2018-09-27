@@ -2,7 +2,7 @@ import {forEach, pick} from 'lodash';
 import Promise from 'bluebird';
 
 class UserProfile {
-  constructor($http, $log, API, TimeMachine) {
+  constructor($http, $log, API, TimeMachine, SEARCH) {
     this.$http = $http;
     this.$log = $log;
     this.API = API;
@@ -15,7 +15,7 @@ class UserProfile {
       prototype: {},
       result: {},
       node: {},
-      limit: 200,
+      limit: SEARCH.LIMIT,
     };
     this.loadedProfile = false;
     this.factory = {};

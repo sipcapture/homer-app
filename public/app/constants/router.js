@@ -28,7 +28,7 @@ const ROUTER = {
   },
   SEARCH: {
     NAME: 'hepic.search',
-    PATH: '/search/:protoID',
+    PATH: '/search',
     DESCRIPTION: 'search',
     SECURE: true,
   },

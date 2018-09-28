@@ -9,7 +9,7 @@ import gridRowTemplate from '../data/grid/row_template.html';
 
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
-    $timeout, $window, $homerModal, UserProfile, localStorageService, $filter,
+    $timeout, $window, $homerModal, UserProfile, $filter,
     $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants) {
     'ngInject';
     this.$scope = $scope;
@@ -20,7 +20,6 @@ class SearchCall {
     this.$window = $window;
     this.$homerModal = $homerModal;
     this.UserProfile = UserProfile;
-    this.localStorageService = localStorageService;
     this.$filter = $filter;
     this.$state = $state;
     this.EVENTS = EVENTS;
@@ -35,11 +34,12 @@ class SearchCall {
     this.searchParamsBackup = {};
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
-    this.state = this.getState();
     this.log = log;
     this.log.initLocation('SearchCall');
     this.searchText = null; // search results, regex results filter
     this.uiGridConstants = uiGridConstants;
+    this.localStorage = window.localStorage;
+    this.state = this.getUiGridState();
   }
 
   $onInit() {
@@ -59,12 +59,12 @@ class SearchCall {
     };
 
     this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
-      this.resetState();
+      this.resetUiGridState();
     });
   }
 
   $onDestroy() {
-    this.saveState();
+    this.saveUiGridState();
   }
 
   async initData() {
@@ -128,7 +128,7 @@ class SearchCall {
 
   async processSearchResult() {
     if (isArray(this.data) && !isEmpty(this.data)) {
-      this.saveState();
+      this.saveUiGridState();
     }
 
     this.updateTime();
@@ -154,7 +154,7 @@ class SearchCall {
         }, 200);
       }
 
-      await this.restoreState();
+      await this.restoreUiGridState();
     } catch (err) {
       this.log.error(err);
     }
@@ -635,27 +635,27 @@ class SearchCall {
     this.log.debug(row);
   }
 
-  getState() {
-    return this.localStorageService.get('localStorageGrid');
+  getUiGridState() {
+    return this.localStorage.getItem('hepic.localStorageGrid');
   }
 
-  saveState() {
+  saveUiGridState() {
     this.state = this.gridApi.saveState.save();
-    this.localStorageService.set('localStorageGrid', this.state);
+    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.state));
   }
 
-  restoreState(state) {
-    this.state = state || this.getState();
+  restoreUiGridState(state) {
+    this.state = state || this.getUiGridState();
     if (this.state) {
-      return this.gridApi.saveState.restore(this.$scope, this.state);
+      return this.gridApi.saveState.restore(this.$scope, JSON.parse(this.state));
     }
     return Promise.resolve();
   }
 
-  resetState() {
+  resetUiGridState() {
     this.state = {};
     this.gridApi.saveState.restore(this.$scope, this.state);
-    this.localStorageService.set('localStorageGrid', this.state);
+    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.state));
   }
 
   searchData() {

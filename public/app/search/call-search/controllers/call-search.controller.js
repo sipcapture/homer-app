@@ -1,6 +1,6 @@
 /* global angular, window */
 
-import { forEach, isArray, isEmpty } from 'lodash';
+import { get, forEach, isArray, isEmpty } from 'lodash';
 import Promise from 'bluebird';
 import swal from 'sweetalert2';
 
@@ -67,8 +67,10 @@ class SearchCall {
     });
 
     this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
-      this._updateUiRouterState();
-      this.processSearchResult();
+      if (this._isCurrentUiRouterState()) {
+        this._updateUiRouterState();
+        this.processSearchResult();
+      }
     });
   }
 
@@ -78,6 +80,7 @@ class SearchCall {
 
   async initData() {
     try {
+      this.EventBus.broadcast(this.EVENTS.TIME_CHANGE_BY_URL);
       await this.UserProfile.getAll();
       await this.UserProfile.getAllServerRemoteProfile();
       await this.processSearchResult();
@@ -86,14 +89,19 @@ class SearchCall {
     }
   }
 
-  _updateUiRouterState() {
+  _isCurrentUiRouterState() {
+    return this.$state.current.name === this.ROUTER.SEARCH.NAME;
+  }
+
+  _updateUiRouterState(notify = false) {
     const timerange = this.TimeMachine.getTimerange();
 
     this.$state.params.to = timerange.to.getTime();
     this.$state.params.from = timerange.from.getTime();
+    this.$state.params.custom = timerange.custom;
     this.$state.params.timezone = this.TimeMachine.getTimezone();
 
-    this.$state.go(this.ROUTER.SEARCH.NAME, this.$state.params);
+    this.$state.go(this.ROUTER.SEARCH.NAME, this.$state.params, { notify });
   }
 
   getUiGridColumnDefs(colNames = []) {
@@ -254,7 +262,7 @@ class SearchCall {
       query.param.search = search;
       query.param.location = {};
       query.param.timezone = this.timezone;
-      forEach(transaction.transaction, function(v) {
+      forEach(get(transaction, 'transaction'), function(v) {
         query.param.transaction[v.name] = true;
       });
     } else {

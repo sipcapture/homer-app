@@ -56,6 +56,13 @@ class SearchCall {
 
     this.gridOpts.onRegisterApi = (gridApi) => {
       this.gridApi = gridApi;
+      this.gridApi.colMovable.on.columnPositionChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.colResizable.on.columnSizeChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.grouping.on.aggregationChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.grouping.on.groupingChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.core.on.columnVisibilityChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.core.on.filterChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.core.on.sortChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
     };
 
     this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
@@ -639,8 +646,8 @@ class SearchCall {
     return this.localStorage.getItem('hepic.localStorageGrid');
   }
 
-  saveUiGridState() {
-    this.state = this.gridApi.saveState.save();
+  saveUiGridState(state) {
+    this.state = state ? state.saveState.save() : this.gridApi.saveState.save();
     this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.state));
   }
 

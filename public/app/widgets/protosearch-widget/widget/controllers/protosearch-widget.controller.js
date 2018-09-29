@@ -14,7 +14,8 @@ import dataTypeCallStatus from '../data/type_call_status';
 import dataDbNode from '../data/db_node';
 
 class ProtosearchWidget {
-  constructor($scope, $state, UserProfile, $log, SearchService, $uibModal, CONFIGURATION, ModalHelper, ROUTER) {
+  constructor($scope, $state, UserProfile, $log, SearchService, $uibModal,
+  CONFIGURATION, ModalHelper, ROUTER, TimeMachine) {
     'ngInject';
     this.$scope = $scope;
     this.$state = $state;
@@ -25,6 +26,7 @@ class ProtosearchWidget {
     this.CONFIGURATION = CONFIGURATION;
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
+    this.TimeMachine = TimeMachine;
   }
 
   $onInit() {
@@ -173,11 +175,17 @@ class ProtosearchWidget {
   }
 
   searchForProtocol(protoID) {
+    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
+
     this.$state.go(this.ROUTER.SEARCH.NAME, {
       protoID,
       search: this.searchObject,
       limit: this.newResult.limit,
-      transaction: this.newResult.transaction || {}
+      transaction: this.newResult.transaction || {},
+      timezone: this.TimeMachine.getTimezone(),
+      from,
+      to,
+      custom,
     });
   }
 

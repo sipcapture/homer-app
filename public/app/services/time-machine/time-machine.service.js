@@ -1,15 +1,15 @@
 import moment from 'moment';
 
 class TimeMachine {
-  constructor() {
+  constructor(TIME) {
     this.timezone = {
       value: new Date().getTimezoneOffset(),
-      name: 'Default',
+      name: TIME.DEFAULT,
     };
     this.timerange = {
       from: new Date(this.getStartOfDay(this.timezone.value)),
       to: new Date(this.getNowTime(this.timezone.value)),
-      custom: 'Today',
+      custom: TIME.LABEL,
     };
   }
 
@@ -68,6 +68,15 @@ class TimeMachine {
   getTimerange() {
     this.timerange = this._updateTimeIfLast(this.timerange);
     return this.timerange;
+  }
+
+  getTimerangeUnix(timerange) {
+    timerange = timerange || this.getTimerange();
+    return {
+      from: timerange.from.getTime(), 
+      to: timerange.to.getTime(), 
+      custom: timerange.custom,
+    };
   }
 
   _isLastRange(label) {

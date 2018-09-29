@@ -5,5 +5,8 @@ export default {
   },
   TRANSACTION: {
     DEFAULT: {}
+  },
+  PROTO: {
+    ID: 'call'
   }
 };

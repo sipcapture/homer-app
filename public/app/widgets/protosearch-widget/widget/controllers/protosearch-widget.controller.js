@@ -175,7 +175,7 @@ class ProtosearchWidget {
   }
 
   searchForProtocol(protoID) {
-    const { from, to } = this.TimeMachine.getTimerangeUnix();
+    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
 
     this.$state.go(this.ROUTER.SEARCH.NAME, {
       protoID,
@@ -185,6 +185,7 @@ class ProtosearchWidget {
       timezone: this.TimeMachine.getTimezone(),
       from,
       to,
+      custom,
     });
   }
 

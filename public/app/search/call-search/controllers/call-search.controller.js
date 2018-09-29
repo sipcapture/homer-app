@@ -10,7 +10,7 @@ import gridRowTemplate from '../data/grid/row_template.html';
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, $filter,
-    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants) {
+    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants, ROUTER) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -40,14 +40,11 @@ class SearchCall {
     this.uiGridConstants = uiGridConstants;
     this.localStorage = window.localStorage;
     this.state = this.getUiGridState();
+    this.ROUTER = ROUTER;
   }
 
   $onInit() {
     this.initData();
-
-    this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
-      this.processSearchResult();
-    });
 
     this.gridOpts.columnDefs = [];
     this.gridOpts.rowIdentity = function(row) {
@@ -68,6 +65,11 @@ class SearchCall {
     this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
       this.resetUiGridState();
     });
+
+    this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
+      this._updateUiRouterState();
+      this.processSearchResult();
+    });
   }
 
   $onDestroy() {
@@ -82,6 +84,16 @@ class SearchCall {
     } catch (err) {
       this.log.error(err);
     }
+  }
+
+  _updateUiRouterState() {
+    const timerange = this.TimeMachine.getTimerange();
+
+    this.$state.params.to = timerange.to.getTime();
+    this.$state.params.from = timerange.from.getTime();
+    this.$state.params.timezone = this.TimeMachine.getTimezone();
+
+    this.$state.go(this.ROUTER.SEARCH.NAME, this.$state.params);
   }
 
   getUiGridColumnDefs(colNames = []) {
@@ -138,7 +150,6 @@ class SearchCall {
       this.saveUiGridState();
     }
 
-    this.updateTime();
     const query = this.createQuery();
 
     try {
@@ -149,8 +160,9 @@ class SearchCall {
       if (isArray(keys) && !isEmpty(keys)) {
         this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
-        await this.restoreUiGridState();
       }
+
+      await this.restoreUiGridState();
 
       this.gridOpts.data = data;
       this.data = data;
@@ -161,11 +173,6 @@ class SearchCall {
     } catch (err) {
       this.log.error(err);
     }
-  }
-
-  updateTime() {
-    this.timezone = this.TimeMachine.getTimezone();
-    this.timedate = this.TimeMachine.getTimerange();
   }
 
   killParam(param) {
@@ -213,14 +220,12 @@ class SearchCall {
   }
 
   createQuery() {
-    let { search, limit, transaction } = this.$state.params;
+    let { search, limit, transaction, from, to, timezone } = this.$state.params;
+    this.timezone = timezone;
 
     const query = {
       param: {},
-      timestamp: {
-        from: this.timedate.from.getTime(),
-        to: this.timedate.to.getTime(),
-      },
+      timestamp: { from, to },
     };
 
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));

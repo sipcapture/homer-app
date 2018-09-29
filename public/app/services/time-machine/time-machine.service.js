@@ -70,6 +70,15 @@ class TimeMachine {
     return this.timerange;
   }
 
+  getTimerangeUnix(timerange) {
+    timerange = timerange || this.getTimerange();
+    return {
+      from: timerange.from.getTime(), 
+      to: timerange.to.getTime(), 
+      custom: timerange.custom,
+    };
+  }
+
   _isLastRange(label) {
     return label && !!label.match(/last.*/i);
   }

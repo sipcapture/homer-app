@@ -39,7 +39,7 @@ class SearchCall {
     this.searchText = null; // search results, regex results filter
     this.uiGridConstants = uiGridConstants;
     this.localStorage = window.localStorage;
-    this.state = this.getUiGridState();
+    this.uiGridState = this.getUiGridState();
     this.ROUTER = ROUTER;
   }
 
@@ -648,22 +648,22 @@ class SearchCall {
   }
 
   saveUiGridState(state) {
-    this.state = state ? state.saveState.save() : this.gridApi.saveState.save();
-    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.state));
+    this.uiGridState = state ? state.saveState.save() : this.gridApi.saveState.save();
+    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.uiGridState));
   }
 
   restoreUiGridState(state) {
-    this.state = state || this.getUiGridState();
-    if (this.state) {
-      return this.gridApi.saveState.restore(this.$scope, JSON.parse(this.state));
+    this.uiGridState = state || this.getUiGridState();
+    if (this.uiGridState) {
+      return this.gridApi.saveState.restore(this.$scope, JSON.parse(this.uiGridState));
     }
     return Promise.resolve();
   }
 
   resetUiGridState() {
-    this.state = {};
-    this.gridApi.saveState.restore(this.$scope, this.state);
-    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.state));
+    this.uiGridState = {};
+    this.gridApi.saveState.restore(this.$scope, this.uiGridState);
+    this.localStorage.setItem('hepic.localStorageGrid', JSON.stringify(this.uiGridState));
   }
 
   searchData() {

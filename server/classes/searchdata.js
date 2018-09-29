@@ -1,5 +1,5 @@
 import LivingBeing from './living_being';
-import { forEach } from 'lodash';
+import { forEach, isEmpty, size } from 'lodash';
 
 /**
  * A class to handle users in DB
@@ -35,7 +35,7 @@ class SearchData extends LivingBeing {
       if (sData.hasOwnProperty(key)) {
         let elems = sData[key];
         forEach(elems, function(el) {
-          if (el.value.length > 0) {
+          if (!isEmpty(el.value)) {
             if (el.name.indexOf('.') > -1) {
               let elemArray = el.name.split('.');
               if (el.type == 'integer') {
@@ -64,7 +64,7 @@ class SearchData extends LivingBeing {
     timeWhere.push(new Date(data.timestamp.to).toISOString());
     
     let myWhereRawString = '';
-    if (dataWhereRawKey.length > 0 ) {
+    if (!isEmpty(dataWhereRawKey)) {
       myWhereRawString = dataWhereRawKey.join(' AND ');
     }
     
@@ -102,7 +102,7 @@ class SearchData extends LivingBeing {
         });
         
         let globalReply = {
-          total: dataReply.length,
+          total: size(dataReply),
           data: dataReply,
           keys: dataKeys,
         };
@@ -153,7 +153,7 @@ class SearchData extends LivingBeing {
         });
         
         let globalReply = {
-          total: dataReply.length,
+          total: size(dataReply),
           data: dataReply,
           keys: dataKeys,
         };
@@ -300,7 +300,7 @@ class SearchData extends LivingBeing {
         
       let globalReply = {
           
-        total: dataReply.length,
+        total: size(dataReply),
         data: {
           messages: dataReply,
           sid: sid,
@@ -362,7 +362,7 @@ class SearchData extends LivingBeing {
       let dataRow = await this.getTransactionData(table, columns, 'sid', dataWhere, timeWhere);
       // let dataRow = []
    
-      if (correlation.length > 0) {
+      if (!isEmpty(correlation)) {
         dataRow.forEach(function(row) {
           /* looping over correlation object and extraction keys */
           correlation.forEach(function(corrs) {
@@ -411,7 +411,7 @@ class SearchData extends LivingBeing {
         let tFrom = new Date(data.timestamp.from);
         let tTo = new Date(data.timestamp.to);
         
-        if (lookupRange.length > 0) {
+        if (!isEmpty(lookupRange)) {
           tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
           tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
         }
@@ -421,7 +421,7 @@ class SearchData extends LivingBeing {
         
         const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
         
-        if (newDataRow.length > 0) dataRow = dataRow.concat(newDataRow);
+        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
       const globalReply = await this.getTransactionSummary(dataRow);
       
@@ -482,7 +482,7 @@ class SearchData extends LivingBeing {
           });
         
           let globalReply = {
-            total: dataReply.length,
+            total: size(dataReply),
             data: dataReply,
           };
         
@@ -544,7 +544,7 @@ class SearchData extends LivingBeing {
           });
         
           let globalReply = {
-            total: dataReply.length,
+            total: size(dataReply),
             data: dataReply,
           };
         

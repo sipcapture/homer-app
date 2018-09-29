@@ -145,23 +145,19 @@ class SearchCall {
       const response = await this.SearchService.searchCallByParam(query);
 
       const { data, keys } = response;
-      /* displayName: this.$filter('translate')('hepic.pages.results.'+v) ? this.$filter('translate')('hepic.pages.results.'+v) : v,*/
 
       if (isArray(keys) && !isEmpty(keys)) {
         this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
+        await this.restoreUiGridState();
       }
 
-      if (isArray(data) && !isEmpty(data)) {
-        this.count = data.length;
-        this.gridOpts.data = data;
-        this.data = data;
-        this.$timeout(() => {
-          angular.element(this.$window).resize();
-        }, 200);
-      }
+      this.gridOpts.data = data;
+      this.data = data;
 
-      await this.restoreUiGridState();
+      this.$timeout(() => {
+        angular.element(this.$window).resize();
+      }, 200);
     } catch (err) {
       this.log.error(err);
     }

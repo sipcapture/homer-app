@@ -38,6 +38,7 @@ import 'angular-json-tree';
 
 // style
 import 'font-awesome/css/font-awesome.css';
+import 'nvd3/build/nv.d3.css';
 
 // old homer modal. To-do: refactor this modal to component based structure
 import './search/hepic-modal/homerCflow';

@@ -113,6 +113,15 @@ class CallDetail {
         'icon': 'fa fa-exchange',
       },
       {
+        'heading': 'QoS',
+        'active': true,
+        'select': () => {
+          this.refreshGrid();
+        },
+        'ngshow': 'tab',
+        'icon': 'zmdi zmdi-grid',
+      },
+      {
         'heading': 'IP Graph',
         'active': true,
         'select': () => {

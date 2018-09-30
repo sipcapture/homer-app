@@ -1,14 +1,17 @@
 <div data-role="page" id="page1">
+ 
+  <div role="main" class="ui-content">
+    <nvd3 id="qosTabChart" options="callDetailQos.chartOptions" data="callDetailQos.reportData"></nvd3>
+  </div>
+  
   <div data-role="header">
      <div class="btn-group btn-group-justified" role="group" aria-label="..." ng-repeat="(metric,block) in callDetailQos._stats">
-      <div class="btn-group" role="group" ng-repeat="(k,v) in block">
-        <button  class="btn btn-primary" type="button" style="padding: 5px; border-radius: 10px;">
+      <div class="btn-group" role="group" ng-repeat="(k,v) in block" style="padding: 5px;">
+        <button  class="btn btn-info" type="button" style="border-radius: 10px;">
           {{k}} {{metric}} <span class="badge">{{v}}</span>
         </button> 
       </div>
     </div>
   </div>
-  <div role="main" class="ui-content">
-    <nvd3 id="qosTabChart" options="callDetailQos.chartOptions" data="callDetailQos.reportData"></nvd3>
-  </div>
+
 </div>

@@ -108,6 +108,7 @@ export default function search(server) {
                 
         const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
           searchTable, request.payload, correlation);
+                    
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }

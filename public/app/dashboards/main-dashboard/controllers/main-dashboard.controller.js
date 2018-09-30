@@ -59,6 +59,7 @@ class MainDashboard {
         },
       },
     }).result.then((widget) => {
+      widget.boardID = this.$state.params.boardID;
       this.dashboard.widgets.push(widget);
     }).catch((reason) => {
       this.$log.info('[MainDashboard]', '[add widget modal]', reason);

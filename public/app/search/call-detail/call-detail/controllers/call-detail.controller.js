@@ -67,6 +67,7 @@ class CallDetail {
     this.packetsLostFilterAll = true;
     this.activeMainTab = true;
     this.treedata2 = treeData;
+    this.qosData = [];
   }
 
   async $onInit() {
@@ -111,6 +112,15 @@ class CallDetail {
         },
         'ngshow': 'tab',
         'icon': 'fa fa-exchange',
+      },
+      {
+        'heading': 'QoS',
+        'active': true,
+        'select': () => {
+          this.refreshGrid();
+        },
+        'ngshow': 'tab',
+        'icon': 'zmdi zmdi-grid',
       },
       {
         'heading': 'IP Graph',
@@ -245,7 +255,8 @@ class CallDetail {
         }
 
         /*  TIMELINE TEST END */
-        await this.showQOSReport(data);
+
+        this.qosData = await this.SearchService.searchQOSReport(data);
         await this.showLogReport(data);
         this.dataLoading = false;
 
@@ -538,295 +549,6 @@ class CallDetail {
         this.$log.error(['CallDetail'], 'no call stats', err);
       }
     }
-  }
-
-  showQOSReport(rdata) {
-    /* new charts test */
-    this.d3chart = {};
-    this.d3chart.data = {};
-    this.d3chart.stats = {};
-
-    this.SearchService.searchQOSReport(rdata).then((msg) => {
-      /* HEPIC Types */
-      if (msg.reports && msg.reports.rtpagent && msg.reports.rtpagent.chart) {
-        if (Object.keys(msg.reports.rtpagent.chart).length == 0) return;
-        this.enable.report.quality = true;
-
-        let fullrep = msg.reports.rtpagent.chart;
-        this.list_legend = [];
-
-        forEach(fullrep, (count, key) => {
-          forEach(fullrep[key], (count, callid) => {
-            forEach(fullrep[key][callid], (count, leg) => {
-              let xleg = leg;
-              forEach(fullrep[key][callid][leg], (count, rep) => {
-                let d3newchart = {
-                  key: xleg,
-                  values: [],
-                  color: '#' + Math.floor(Math.random() * 16777215).toString(16),
-                };
-
-                this.list_legend.push(rep);
-                forEach(fullrep[key][callid][leg][rep], (count, data) => {
-                  // NEW chart
-                  d3newchart.values.push({
-                    x: fullrep[key][callid][leg][rep][data][0], // VALUE
-                    y: fullrep[key][callid][leg][rep][data][1], // TS
-                  });
-
-                  if (!this.d3chart.stats[rep]) {
-                    this.d3chart.stats[rep] = {raw: []};
-                  }
-                  this.d3chart.stats[rep].raw.push(fullrep[key][callid][leg][rep][data][1]);
-                });
-
-                // NEW CHART
-                if (!this.d3chart.data[0][rep]) {
-                  this.d3chart.data[0][rep] = {
-                    series: [],
-                  };
-                }
-
-                let d3merged = false;
-                this.d3chart.data[0][rep].series.forEach(function(entry) {
-                  if (xleg == entry.name) {
-                    entry.data.concat(entry.data);
-                    d3merged = true;
-                  }
-                });
-
-                // Create new group if non-mergeable
-                if (!d3merged) {
-                  this.d3chart.data[0][rep].series.push(d3newchart);
-                }
-                this.d3chart.stats[rep].min = Math.min.apply(null, this.d3chart.stats[rep].raw);
-                this.d3chart.stats[rep].max = Math.max.apply(null, this.d3chart.stats[rep].raw);
-              });
-            });
-          });
-        });
-      }
-
-      /* CLASSIC version below */
-      let chartDataExtended = {
-        list: [],
-        from: 0,
-        to: 0,
-        totalRtcpMessages: 0,
-        totalPacketLost: 0,
-        totalJitters: 0,
-        averageJitterMsec: 0,
-        averagePacketLost: 0,
-        maxPacketLost: 0,
-        totalPackets: 0,
-        maxJitterMsec: 0,
-        msg: [],
-        mos: [],
-        averageMos: 0,
-        worstMos: 5,
-      };
-
-      if (msg.global) {
-        try {
-          if (msg.global.main) {
-            // Call Duration
-            let adur = new Date(null);
-            adur.setSeconds(msg.global.main.duration / 1000); // seconds
-            this.call_duration = adur.toISOString().substr(11, 8);
-            // Map averages
-            chartDataExtended.averageMos = (msg.global.main.mos_average).toFixed(2);
-            chartDataExtended.worstMos = (msg.global.main.mos_worst).toFixed(2);
-            chartDataExtended.totalPacketLost = msg.global.main.packets_lost;
-            chartDataExtended.maxPacketLost = msg.global.main.packets_lost;
-            chartDataExtended.totalPackets = msg.global.main.packets_sent + msg.global.main.packets_recv;
-            chartDataExtended.averagePacketLost = (msg.global.main.packets_lost * 100 / chartDataExtended.totalPackets).toFixed(1);
-            chartDataExtended.averageJitterMsec = msg.global.main.jitter_avg.toFixed(2);
-            chartDataExtended.maxJitterMsec = msg.global.main.jitter_max.toFixed(2);
-          }
-        } catch (err) {
-          this.$log.error(['CallDetail'], 'no rtcp stats', err);
-        }
-
-        try {
-          if (msg.global.calls) {
-            this.calc_calls = msg.global.calls;
-            if (!this.call_duration) {
-              let adur = new Date(null);
-              adur.setSeconds(this.calc_calls[Object.keys(this.calc_calls)[0]].aparty.metric.duration / 1000); // seconds
-              this.call_duration = adur.toISOString().substr(11, 8);
-            }
-          }
-        } catch (err) {
-          this.$log.error(['CallDetail'], 'no call stats', err);
-        }
-
-        try {
-          if (msg.reports.xrtpstats && msg.reports.xrtpstats.main) {
-            this.calc_xrtp = msg.reports.xrtpstats.main;
-            this.calc_xrtp.mos_avg = this.calc_xrtp.mos_avg.toFixed(2);
-            this.calc_xrtp.mos_worst = this.calc_xrtp.mos_worst.toFixed(2);
-            this.calc_xrtp.packets_all = parseInt(this.calc_xrtp.packets_sent) + parseInt(this.calc_xrtp.packets_recv);
-            this.calc_xrtp.lost_avg = (this.calc_xrtp.packets_lost * 100 / this.calc_xrtp.packets_all).toFixed(2);
-          }
-        } catch (err) {
-          this.$log.error(['CallDetail'], 'no x-rtp stats', err);
-        }
-
-        try {
-          if (msg.reports.rtpagent && msg.reports.rtpagent.main) {
-            this.calc_rtpagent = msg.reports.rtpagent.main;
-            this.calc_rtpagent.mos_average = this.calc_rtpagent.mos_average.toFixed(2);
-            this.calc_rtpagent.mos_worst = this.calc_rtpagent.mos_worst.toFixed(2);
-            this.calc_rtpagent.lost_avg = (this.calc_rtpagent.packets_lost * 100 / this.calc_rtpagent.total_pk).toFixed(2);
-          }
-        } catch (err) {
-          this.$log.error(['CallDetail'], 'no rtpagent stats', err);
-        }
-
-        // RTCP
-        try {
-          if (msg.reports.length != 0) {
-            let charts = {};
-            if (msg.reports.rtcp && msg.reports.rtcp.chart) {
-              this.$log.debug('processing rtcp charts');
-              charts = msg.reports.rtcp.chart;
-            }
-
-            // RTCP-XR
-            if (msg.reports.rtcpxr && msg.reports.rtcpxr.chart) {
-              this.$log.debug('processing rtcpxr charts');
-              let xrcharts = msg.reports.rtcpxr.chart;
-              forEach(xrcharts, function(count, key) {
-                if (!charts[key]) charts[key] = count;
-              });
-            }
-
-            // RTPAGENT
-            if (msg.reports.rtpagent && msg.reports.rtpagent.chart) {
-              this.$log.debug('processing rtpagent charts');
-              let agcharts = msg.reports.rtpagent.chart;
-              forEach(agcharts, function(count, key) {
-                if (!charts[key]) charts[key] = count;
-              });
-            }
-
-            this.chartData = charts;
-            this.streamsChart = {};
-            let i = 0;
-            forEach(charts, (count, key) => {
-              this.streamsChart[key] = {};
-              this.streamsChart[key]['enable'] = true;
-              this.streamsChart[key]['name'] = key;
-              this.streamsChart[key]['short_name'] = key.substr(key.indexOf(' ') + 1);
-              this.streamsChart[key]['type'] = key.substr(0, key.indexOf(' '));
-              this.streamsChart[key]['sub'] = {};
-              forEach(count, (v, k) => {
-                this.streamsChart[key]['sub'][k] = {};
-                this.streamsChart[key]['sub'][k]['enable'] = false;
-                this.streamsChart[key]['sub'][k]['parent'] = key;
-                this.streamsChart[key]['sub'][k]['name'] = k;
-                this.streamsChart[key]['sub'][k]['color'] = this.colorsChart[i++];
-                if (k == 'mos') this.streamsChart[key]['sub'][k]['enable'] = true;
-              });
-            });
-
-            let selData = this.presetQOSChartData();
-            this.showQOSChart(selData);
-          }
-        } catch (err) {
-          this.$log.error(['CallDetail'], 'no chart data', err);
-        }
-        this.$log.debug('Enable RTCP Report');
-        this.calc_report = chartDataExtended;
-        this.enable.report.rtcp = true;
-      }
-    }).catch((err) => {
-      this.$log.error(['CallDetail'], 'show qos report', err);
-    });
-  }
-
-  addRemoveStreamSerie() {
-    const selData = this.presetQOSChartData();
-    this.showQOSChart(selData);
-  }
-
-  presetQOSChartData() {
-    let seriesData = [];
-    let chartData = this.chartData;
-    this.selectedColorsChart = [];
-    forEach(chartData, (count, key) => {
-      if (this.streamsChart && this.streamsChart[key] && this.streamsChart[key]['enable'] == false) {
-        return;
-      }
-
-      let localData = chartData[key];
-      forEach(localData, (das, kes) => {
-        /* skip it */
-        if (this.streamsChart[key]['sub'][kes]['enable'] == false) return;
-
-        let sar = {};
-        sar['name'] = kes;
-        sar['type'] = 'line';
-        sar['color'] = this.streamsChart[key]['sub'][kes]['color'];
-
-        let lDas = [];
-        forEach(das, function(v) {
-          lDas.push([v[0], v[1]]);
-        });
-
-        lDas.sort(function(a, b) {
-          return a[0] - b[0];
-        });
-        sar['data'] = lDas;
-        seriesData.push(sar);
-      });
-    });
-    return seriesData;
-  }
-
-  showQOSChart(seriesData) {
-    this.enable.report.quality = true;
-    this.chartConfig = {
-      chart: {
-        type: 'line',
-      },
-      title: {
-        text: 'TEST',
-        style: {
-          display: 'none',
-        },
-      },
-      xAxis: {
-        title: {
-          text: null,
-        },
-        type: 'datetime',
-      },
-      yAxis: {
-        title: {
-          text: null,
-        },
-        min: 0,
-      },
-      plotOptions: {
-        column: {},
-      },
-      tooltip: {},
-      legend: {
-        enabled: false,
-        borderWidth: 0,
-      },
-      series: seriesData,
-      func: (chart) => {
-        this.$evalAsync(function() {
-          chart.reflow();
-        });
-      },
-    };
-
-    this.chartConfig.chart['zoomType'] = 'x';
-    this.chartConfig.tooltip['crosshairs'] = false; // BETA CHANGE
-    this.chartConfig.tooltip['shared'] = false; // BETA CHANGE
   }
 
   showLogReport(rdata) {

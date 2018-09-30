@@ -100,7 +100,7 @@ class CallDetailQos {
           axisLabel: 'Time',
           tickValues: this.reportData[0].values.map(p => p.x),
           tickFormat: function (d) {
-            return d3.time.format('%x')(new Date(+d))
+            return d3.time.format('%X')(new Date(+d))
           }
         },
         yAxis: {

@@ -1,9 +1,11 @@
 const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, EventBus,
-  $interval, $uibModal, InfluxdbchartService, EVENTS, HEPICSOURCES, CONFIGURATION, log, ModalHelper, TimeMachine) {
+  $interval, $uibModal, InfluxdbchartService, EVENTS, HEPICSOURCES,
+  CONFIGURATION, log, ModalHelper, TimeMachine, $state, homerHelper, ROUTER) {
   'ngInject';
 
   log.initLocation('influxdbchartWidet');
   const self = this;
+  $scope.$state = $state;
 
   if (!$scope.config) {
     $scope.config = {};
@@ -16,8 +18,10 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
     config: {},
   };
 
-  EventBus.subscribe(EVENTS.TIME_CHANGE, function() {
-    createChart();
+  EventBus.subscribe(EVENTS.TIME_CHANGE, function () {
+    if (homerHelper.isCurrentUiRouterState($scope.$state, ROUTER.DASHBOARD.NAME, self.widget.boardID)) {
+      createChart();
+    }
   });
 
   /* MAIN FUNCTIONS */

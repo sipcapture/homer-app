@@ -5765,7 +5765,7 @@ input.form-control {
  }
 
 .xy-tooltip {
-	z-index: 200000;
+	z-index: 200000 !important;
 }
 
 .nv-pieLabels text {

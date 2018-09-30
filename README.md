@@ -1,6 +1,7 @@
 <img src="https://github.com/sipcapture/homer-app/raw/master/public/img/homerseven.png" width=200 />
 
 # homer-app
+![ezgif com-optimize 10](https://user-images.githubusercontent.com/1423657/46264200-211a6680-c51a-11e8-8477-3b7a53f9aa0b.gif)
 
 This projects provides the Front-End and Back-End components of Homer 7.x and higher
 

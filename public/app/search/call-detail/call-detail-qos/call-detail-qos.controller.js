@@ -1,3 +1,4 @@
+/* global d3 */
 import { cloneDeep, size } from 'lodash';
 import './call-detail-qos.styles.css';
 
@@ -6,20 +7,6 @@ class CallDetailQos {
     'ngInject';
     this.$log = $log;
     this.$state = $state;
-    this.about = 'QoS';
-    this.chartOptions = {
-      chart: {
-        type: 'multiBarChart',
-        transitionDuration: 0,
-        tooltipContent: function (key, x, y, e, graph) { //return html content
-          return `<h3>${y} ${key}</h3></p>${e.point.label}</p>`;
-        },
-        reduceXTicks: false, //If 'false', every single x-axis tick label will be rendered.
-        rotateLabels: 0, //Angle to rotate x-axis labels.
-        showControls: false, //Allow user to switch between 'Grouped' and 'Stacked' mode.
-        groupSpacing: 0.1, //Distance between each group of bars.
-      }
-    };
     this._raw = {
       total: 0,
       data: [],
@@ -37,6 +24,7 @@ class CallDetailQos {
     this._sortReports();
     this._processRTCPReports();
     this._aggregateAllStats();
+    this._configureChart();
   }
 
   _sortReports() {
@@ -94,6 +82,39 @@ class CallDetailQos {
     this._labels.forEach((label) => { 
       this.reportData.push(this._reports[label][0])
     });
+  }
+
+  _configureChart() {
+    this.chartOptions = {
+      chart: {
+        type: 'multiBarChart',
+        xAxis: {
+          axisLabel: 'Time',
+          tickValues: this.reportData[0].values.map(p => p.x),
+          tickFormat: function (d) {
+            return d3.time.format('%x')(new Date(+d))
+          }
+        },
+        yAxis: {
+          tickFormat: d3.format('.01f')
+        },
+        interactive: true,
+        useInteractiveGuideline: false,
+        transitionDuration: 0,
+        reduceXTicks: false, //If 'false', every single x-axis tick label will be rendered.
+        rotateLabels: 0, //Angle to rotate x-axis labels.
+        showLegend: false,
+        showControls: false, //Allow user to switch between 'Grouped' and 'Stacked' mode.
+        groupSpacing: 0.1, //Distance between each group of bars.
+        callback: function (chart) {
+          chart.tooltip.contentGenerator(function (e) {
+            const { y, key, label } = e.data;
+            return `<div><h3>${y} ${key}</h3></p>${label}</p></div>`;
+          });
+          return chart;
+        }
+      }
+    };
   }
 }
 

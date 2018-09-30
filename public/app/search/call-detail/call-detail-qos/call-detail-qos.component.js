@@ -6,8 +6,7 @@ const callDetailQos = {
   controllerAs: 'callDetailQos',
   template,
   bindings: {
-    someObjectToShare: '=',
-    someFnToExecute: '&'
+    qosData: '=',
   },
 };
 

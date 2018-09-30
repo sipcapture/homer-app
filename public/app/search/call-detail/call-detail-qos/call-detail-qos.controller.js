@@ -111,7 +111,7 @@ class CallDetailQos {
         transitionDuration: 0,
         reduceXTicks: false, //If 'false', every single x-axis tick label will be rendered.
         rotateLabels: 0, //Angle to rotate x-axis labels.
-        showLegend: false,
+        showLegend: true,
         showControls: false, //Allow user to switch between 'Grouped' and 'Stacked' mode.
         groupSpacing: 0.1, //Distance between each group of bars.
         callback: function (chart) {

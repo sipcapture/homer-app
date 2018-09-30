@@ -98,8 +98,8 @@ class CallDetailQos {
       if (banlist.includes(label)) return;
       this._stats[label] = {
         min: this._reports[label][0].values.reduce((min, p) => p.y < min ? p.y : min, this._reports[label][0].values[0].y),
-        max: this._reports[label][0].values.reduce((max, p) => p.y > max ? p.y : max, this._reports[label][0].values[0].y),
-        avg: parseInt(this._reports[label][0].values.reduce((tot, p) => (tot + p.y) / this._reports[label][0].values.length , 0))
+        avg: parseInt(this._reports[label][0].values.reduce((tot, p) => (tot + p.y) / this._reports[label][0].values.length , 0)),
+        max: this._reports[label][0].values.reduce((max, p) => p.y > max ? p.y : max, this._reports[label][0].values[0].y)
       }
     });
   }

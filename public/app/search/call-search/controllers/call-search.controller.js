@@ -10,7 +10,8 @@ import gridRowTemplate from '../data/grid/row_template.html';
 class SearchCall {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, $filter,
-    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper, TimeMachine, uiGridConstants, ROUTER) {
+    $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper,
+    TimeMachine, uiGridConstants, ROUTER, homerHelper) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -41,6 +42,7 @@ class SearchCall {
     this.localStorage = window.localStorage;
     this.uiGridState = this.getUiGridState();
     this.ROUTER = ROUTER;
+    this.homerHelper = homerHelper;
   }
 
   $onInit() {
@@ -67,7 +69,7 @@ class SearchCall {
     });
 
     this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
-      if (this._isCurrentUiRouterState()) {
+      if (this.homerHelper.isCurrentUiRouterState(this.$state, this.ROUTER.SEARCH.NAME)) {
         this._updateUiRouterState();
         this.processSearchResult();
       }
@@ -87,10 +89,6 @@ class SearchCall {
     } catch (err) {
       this.log.error(err);
     }
-  }
-
-  _isCurrentUiRouterState() {
-    return this.$state.current.name === this.ROUTER.SEARCH.NAME;
   }
 
   _updateUiRouterState(notify = false) {

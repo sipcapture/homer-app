@@ -423,6 +423,12 @@ class SearchData extends LivingBeing {
         
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
+
+      /* sort it by create data */
+      dataRow.sort(function(a, b) {
+	    return a.create_date - b.create_date;
+      });
+      
       const globalReply = await this.getTransactionSummary(dataRow);
       
       return globalReply;

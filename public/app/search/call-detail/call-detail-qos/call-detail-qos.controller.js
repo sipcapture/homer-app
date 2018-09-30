@@ -44,33 +44,52 @@ class CallDetailQos {
       this._raw.data.forEach((report) => {
         var rtcp = JSON.parse(report.raw) || {};
         var label = report.srcIp+'->'+report.dstIp;
+        var sid = report.sid;
         
         if (rtcp.sender_information){
           if (rtcp.sender_information.packets){
             var ts = 'packets'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.sender_information.packets, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.sender_information.packets, 
+                                              label:label, sid:sid })
           }
           if (rtcp.sender_information.octets){
             var ts = 'octets'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.sender_information.octets, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.sender_information.octets, 
+                                              label:label, sid:sid })
           }
         }
         if (rtcp.report_count > 0){
           if (rtcp.report_blocks[rtcp.report_count-1].highest_seq_no){
             var ts = 'highest_seq_no'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.report_blocks[rtcp.report_count-1].highest_seq_no, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.report_blocks[rtcp.report_count-1].highest_seq_no, 
+                                              label:label, sid:sid })
           }
           if (rtcp.report_blocks[rtcp.report_count-1].ia_jitter){
             var ts = 'ia_jitter'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.report_blocks[rtcp.report_count-1].ia_jitter, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.report_blocks[rtcp.report_count-1].ia_jitter, 
+                                              label:label, sid:sid })
           }
           if (rtcp.report_blocks[rtcp.report_count-1].dlsr){
             var ts = 'dlsr'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.report_blocks[rtcp.report_count-1].dlsr, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.report_blocks[rtcp.report_count-1].dlsr, 
+                                              label:label, sid:sid })
           }
           if (rtcp.report_blocks[rtcp.report_count-1].packets_lost){
             var ts = 'packets_lost'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), y: rtcp.report_blocks[rtcp.report_count-1].packets_lost, label:label })
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.report_blocks[rtcp.report_count-1].packets_lost, 
+                                              label:label, sid:sid })
+          }
+          if (rtcp.report_blocks[rtcp.report_count-1].lsr){
+            var ts = 'lsr'; this._prepare(ts);
+            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                              y: rtcp.report_blocks[rtcp.report_count-1].lsr, 
+                                              label:label, sid:sid })
           }
         }
       });
@@ -116,8 +135,8 @@ class CallDetailQos {
         groupSpacing: 0.1, //Distance between each group of bars.
         callback: function (chart) {
           chart.tooltip.contentGenerator(function (e) {
-            const { y, key, label } = e.data;
-            return `<div><h3>${y} ${key}</h3></p>${label}</p></div>`;
+            const { y, key, label, sid } = e.data;
+            return `<div><h3>${y} ${key}</h3><p>${label}</p><p>${sid}</p></div>`;
           });
           return chart;
         }

@@ -1,11 +1,11 @@
 const CONFIGURATION = {
-  APP_NAME: 'homer',
+  APP_NAME: 'HOMER',
   APP_LOGO: 'img/homerseven.png',
   DEBUG: true,
   USER_EXT_CR: false,
   WEBSOCKET: false,
   HEPIC_VERSION: '2.1.11',
-  VERSION: '7.0.3',
+  VERSION: '7.0.4',
   APIURL: 'api/v3/',
   DASHBOARD_DEFAULT: {
     margins: [10, 10],

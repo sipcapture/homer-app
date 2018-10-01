@@ -211,9 +211,21 @@ class SearchData extends LivingBeing {
             callElement.method = "CDR";
             callElement.method_text = "CDR";
           }
-          if(dataElement['payloadType'] == 100) {
+          else if(dataElement['payloadType'] == 100) {
             callElement.method = "LOG";
             callElement.method_text = "LOG";
+          }
+          else if(dataElement['payloadType'] == 5) {
+            callElement.method = "RTCP";
+            callElement.method_text = "RTCP";
+          }
+          else if(dataElement['payloadType'] == 34) {
+            callElement.method = "Report RTP";
+            callElement.method_text = "Report RTP";
+          }
+          else if(dataElement['payloadType'] == 35) {
+            callElement.method = "Report RTP";
+            callElement.method_text = "Report RTP";
           }
         }
           

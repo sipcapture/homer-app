@@ -6,12 +6,12 @@
 <div id="log-root" ng-if="!!$ctrl.logreport.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
   <section class="json-tree-out" ng-repeat="log in $ctrl.logreport | filter:$ctrl.onMatchJson">
     <span style="font-size:12px;">{{ log.type || log.srcIp }}</span>
-    <json-tree object="log" start-expanded="true"></json-tree>
+    <json-tree object="log" start-expanded="false"></json-tree>
   </section>
   <!--
   <section class="json-tree-out" ng-repeat="log in LiveLogs | filter: matchJSON">
     <span style="font-size:12px;">{{ log.type || ( ip_alias[log.source_ip] || log.source_ip ) }}</span>
-    <json-tree object="log.data" start-expanded="true"></json-tree>
+    <json-tree object="log.data" start-expanded="false"></json-tree>
   </section>
   -->
 </div>				

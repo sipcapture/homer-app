@@ -2757,7 +2757,8 @@ body, html, main {
 	margin-top: 22px;
 }
 .gridStyle {
-	border: none;
+  border: none;
+  height: 490px !important;
 }
 /*.ui-grid-render-container:after {
 	position: relative;

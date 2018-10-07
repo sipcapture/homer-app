@@ -381,8 +381,8 @@ body, html {
 
 .cflow-bubble {
     background: #d8d8d8;
-    padding: 8px;
-    border-radius: 6px;
+    padding: 4px;
+    border-radius: 4px;
     color: #fff;
     position: relative;
     border: 1px dotted #7792a6;

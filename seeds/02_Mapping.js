@@ -439,6 +439,13 @@ exports.seed = function seed(knex) {
       lookup_field: 'sid',
       lookup_range: [-300, 200],
     },
+    {
+      source_field: 'data_header.callid',
+      lookup_id: 5,
+      lookup_profile: 'default',
+      lookup_field: 'sid',
+      lookup_range: [-300, 200],
+    },
   ];
     
   let correlationMapping100default = [
@@ -466,6 +473,16 @@ exports.seed = function seed(knex) {
   ];
   
   let correlationMapping34default = [
+    {
+      source_field: 'sid',
+      lookup_id: 1,
+      lookup_profile: 'call',
+      lookup_field: 'data_header.callid',
+      lookup_range: [-300, 200],
+    },
+  ];
+  
+  let correlationMapping5default = [
     {
       source_field: 'sid',
       lookup_id: 1,

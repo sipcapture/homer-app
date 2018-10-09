@@ -7,6 +7,7 @@ import config from './config';
 const routes = {
   auth: require('./routes/authentication'),
   search: require('./routes/search'),
+  export: require('./routes/export'),
   mapping: require('./routes/mapping'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),

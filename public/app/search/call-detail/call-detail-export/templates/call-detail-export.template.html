@@ -22,46 +22,13 @@
           <i class="fa fa-file-text-o" aria-hidden="true"></i>
           <span>Export TEXT</span>
         </button>
-        <!-- Export Exclusion -->
-        <div style="margin-top:18px;"> <!-- to-do: I didn't find options of the multiselect in the controller -->
-          <multiselect
-            ng-model="$ctrl.exportBlacklist"
-            options="$ctrl.uniqueHosts"
-            id-prop="$ctrl.value"
-            display-prop="$ctrl.name"
-            placeholder="Export Exclusion"
-            classes-btn="'btn-normal btn-export btn-info btn-export_blue'"
-            style="margin:8px;">
-          </multiselect>
-        </div>			
-    </div>
-    <!-- COLUMN 2 -->
-    <div style="width: 32%;padding: 10px;">
-      <button
-        ng-disabled="$ctrl.exporting"
-        class="btn btn-normal btn-export btn-danger btn-export_blue"
-        ng-click="$ctrl.exportDiv('');"
-        data-placement="top-right"
-        style="margin-top:18px;margin-left:8px;width:18%;">
-        <i ng-hide="$ctrl.exporting" class="fa fa-file-image-o" aria-hidden="true"></i>
-        <i ng-show="$ctrl.exporting" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-        <span>Export PNG</span>
-      </button>
-      <!-- report -->
-      <button
-        class="btn btn-normal btn-export btn-danger btn-export_blue"
-        ng-click="$ctrl.makeREPORT()"
-        data-placement="top-right"
-        style="margin-top:18px;;margin-left:8px;width:18%;">
-        <i class="fa fa-file-text-o" aria-hidden="true"></i>
-        <span>Export REPORT</span>
-      </button>
     </div>
     <!-- COLUMN 3 -->
     <div style="width: 32%;padding: 10px;">
       <!-- Cloudshark -->
       <button
         ng-hide="$ctrl.sharecloud"
+        ng-disabled="true"
         class="btn btn-normal btn-export btn-info btn-export_green"
         ng-click="$ctrl.exportCloud()"
         data-placement="top-right"
@@ -72,6 +39,7 @@
       <!-- share link -->
       <button
         ng-if="!$ctrl.shareLinkDisabled"
+        ng-disabled="true"
         class="btn btn-normal btn-export btn-info btn-export_green"
         ng-click="$ctrl.exportShare()"
         data-placement="top-right"

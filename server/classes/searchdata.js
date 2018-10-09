@@ -332,7 +332,7 @@ class SearchData extends LivingBeing {
     }
   }
   
-  async getTransaction(columns, table, data, correlation) {
+  async getTransaction(columns, table, data, correlation, doexp) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
@@ -429,6 +429,9 @@ class SearchData extends LivingBeing {
 	    return a.create_date - b.create_date;
       });
       
+      
+      if(doexp) return dataRow;
+            
       const globalReply = await this.getTransactionSummary(dataRow);
       
       return globalReply;

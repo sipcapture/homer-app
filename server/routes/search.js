@@ -107,7 +107,7 @@ export default function search(server) {
         const correlation = await settings.getCorrelationMap(request.payload);
                 
         const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
-          searchTable, request.payload, correlation);
+          searchTable, request.payload, correlation, false);
                     
         if (!data) {
           return reply(Boom.notFound('data was not found'));

@@ -438,7 +438,7 @@ h5 {
         margin-bottom: 0;
         list-style: none; }
   .lists-widget ul.blur li:before {
-    content: "• ";
+    content: "â¢ ";
     color: #ecc839;
     width: 10px;
     display: inline-block; }
@@ -2757,7 +2757,8 @@ body, html, main {
 	margin-top: 22px;
 }
 .gridStyle {
-	border: none;
+  border: none;
+  height: 490px !important;
 }
 /*.ui-grid-render-container:after {
 	position: relative;
@@ -5763,8 +5764,9 @@ input.form-control {
  .topbar {
  	padding: 8px 0px 8px 10px;
  }
-.nvtooltip {
-	z-index: 99999999999;
+
+.xy-tooltip {
+	z-index: 200000 !important;
 }
 
 .nv-pieLabels text {
@@ -5935,7 +5937,7 @@ input.form-control {
 /* login page */
 
 .login-form {
-    margin-top:5%;��	
+    margin-top:5%;¿¼	
 }
 
 .homer-logo {
@@ -5945,6 +5947,6 @@ input.form-control {
     background: url("/img/homerseven.png") no-repeat;
     background-size: 100% 100%;
     float: none;
-    margin: 0 auto;��	
+    margin: 0 auto;¿¼	
 }
 

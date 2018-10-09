@@ -35,6 +35,12 @@
           on-message="$ctrl.showMessage(data, event)">
         </call-detail-flow>
 
+        <call-detail-qos
+          ng-if="tab.heading === 'QoS'"
+          qos-data="$ctrl.qosData"
+        >
+        </call-detail-qos>
+
         <call-detail-export
           ng-if="tab.heading === 'Export'"
           data="$ctrl.data"

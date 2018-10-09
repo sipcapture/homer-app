@@ -1,0 +1,7 @@
+#qosTabChart svg {
+  height: 350px;
+  background: #fefefe;
+  border: 0px solid #777;
+  border-radius: 8px;
+  box-shadow: 0px 0px 0px #888888;
+}

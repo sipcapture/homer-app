@@ -13,6 +13,7 @@ class CallDetailExport {
     this.isTextBusy = false;
     this.isCloudBusy = false;
     this.exporting = false;
+    this.$log = $log;
   }
 
   $onInit() {}
@@ -56,7 +57,7 @@ class CallDetailExport {
         });
       }
     }).catch((error) => {
-      this.$log.error('[CallDetailExport]', error);
+      this.$log.error('[CallDetailExport exportShare]', error);
     });
   }
 
@@ -70,7 +71,7 @@ class CallDetailExport {
       });
       fileSaver.saveAs(blob, filename);
     }).catch((error) => {
-      this.$log.error('[CallDetailExport]', error);
+      this.$log.error('[CallDetailExport makeReportRequest]', error);
     });
   }
 
@@ -108,13 +109,15 @@ class CallDetailExport {
       window.open(myImage);
       cb();
     }).catch((error) => {
-      this.$log.error('[CallDetailExport]', error);
+      this.$log.error('[CallDetailExport exportDiv]', error);
     });
   }
 
   getCallFileName() {
-    const transaction = this.transaction.calldata[0];
-    const tsHms = new Date(transaction.milli_ts);
+    //const transaction = this.transaction.calldata[0];
+    //const tsHms = new Date(transaction.milli_ts);
+    const transaction = "call-";
+    const tsHms = new Date();
     const date = (tsHms.getMonth() + 1) + '/' + tsHms.getDate() + '/' + tsHms.getFullYear();
     const time = tsHms.getHours() + ':' + tsHms.getMinutes() + ':' + tsHms.getSeconds();
     return `HEPIC-${transaction.destination_ip}-${transaction.ruri_user}-${date} ${time}`;
@@ -125,6 +128,9 @@ class CallDetailExport {
       this.isPcapBusy = false;
       this.isTextBusy = false;
       this.isCloudBusy = false;
+
+      this.$log.error('[CallDetailExport TEST!]', msg);
+      this.$log.error('[CallDetailExport TYPE!]', type);
 
       let filename = this.getCallFileName() + '.pcap';
       let contentType = 'application/pcap';
@@ -156,7 +162,7 @@ class CallDetailExport {
       });
       fileSaver.saveAs(blob, filename);
     }).catch((error) => {
-      this.$log.error('[CallDetailExport]', error);
+      this.$log.error('[CallDetailExport makePcapText]', error);
     });
   }
 }

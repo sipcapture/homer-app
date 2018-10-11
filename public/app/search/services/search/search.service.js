@@ -435,10 +435,8 @@ const SearchService = function($q, $http, UserProfile, API) {
       };
     } else url += 'pcap';
 
-    console.log(response);
-
     $http.post(url, data, response).then(
-      /* good response */
+      /* good response */      
       function(results) {
         results = has(results, 'data.data') ? results.data.data : results.data || [];
         defer.resolve(results);
@@ -448,7 +446,6 @@ const SearchService = function($q, $http, UserProfile, API) {
         defer.reject('bad response combination');
       }
     );
-
     return defer.promise;
   };
 
@@ -534,6 +531,7 @@ const SearchService = function($q, $http, UserProfile, API) {
       }
     );
 
+    console.log("RETURN!!!!");
     return defer.promise;
   };
 

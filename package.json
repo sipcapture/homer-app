@@ -1,6 +1,6 @@
 {
-  "name": "hepic-2",
-  "version": "1.0.0",
+  "name": "homer-app",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {

@@ -47,7 +47,7 @@ Module
 ======
 
 Create a widget module and register at least 2 components: settings and widget.
-Use `DashboardWidgetStateProvider` to set widget defaults which become part of a dashboard config when you add the widget and save the dashboard. Check [the documentation](https://github.com/ManifestWebDesign/angular-gridster#via-scope) to find more about the allowed configuration properties.
+Use `DashboardWidgetStateProvider` to set widget defaults which become part of a dashboard config when you add the widget and save the dashboard. Check [the documentation](https://github.com/ManifestWebDesign/angular-gridster#via-scope) to find more about the allowed UI grid configuration properties.
 ```
 $ vi a-widget/index.js
 
@@ -128,7 +128,7 @@ export default class AWidget {
 
     this._widget = cloneDeep(this.widget); // create local widget config object to avoid implicit update
 
-    // Call async func when wizard is initializing if you need
+    // Call async func when widget is initializing if you need
     this.searchStuff();
   }
 

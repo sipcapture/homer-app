@@ -41,14 +41,19 @@ class RemoteData extends LivingBeing {
 	console.log(query,regexp)
     	return { query, regexp };
     }
+    
+    console.log("RRR",data.timestamp.from);
+    let fromts = (new Date(data.timestamp.from)).getTime()*1000000;
+    let tots = (new Date(data.timestamp.to)).getTime()*1000000;
+    
 
     let query = parseQuery(sData);
     //var logql =  "query="+query.query
     var logql =  "query="+data.param.search
 		+"&regexp="+query.regexp
 		+"&limit="+data.param.limit
-		+"&begin="+data.timestamp.from+"000000"
-		+"&end="+data.timestamp.to+"000000"
+		+"&begin="+fromts
+		+"&end="+tots
 
     console.log('OUT LogQL',logql);
 

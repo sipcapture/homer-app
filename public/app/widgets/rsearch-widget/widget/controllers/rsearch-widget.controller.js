@@ -26,7 +26,7 @@ class RsearchWidget {
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
-    this.newObject['server'] = "http://127.0.0.1:333";
+    this.newObject['server'] = "http://127.0.0.1:3333";
     this.newObject['limit'] = 100;
   }
 

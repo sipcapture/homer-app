@@ -11,10 +11,9 @@ export default function search(server) {
       validate: {
         payload: {
           param: {
-            transaction: Joi.object(),
             limit: Joi.number().integer().min(0),
-            location: Joi.object(),
-            search: Joi.object(),
+            search: Joi.string(),
+            server: Joi.string(),
             timezone: Joi.object(),
           },
           timestamp: {

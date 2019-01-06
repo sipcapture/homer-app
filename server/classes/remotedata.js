@@ -41,7 +41,8 @@ class RemoteData extends LivingBeing {
     }
 
     let query = parseQuery(sData);
-    var logql =  "query="+query.query
+    //var logql =  "query="+query.query
+    var logql =  "query="+data.param.search
 		+"&regexp="+query.regexp
 		+"&limit="+data.param.limit
 		+"&begin="+data.timestamp.from+"000000"
@@ -50,7 +51,8 @@ class RemoteData extends LivingBeing {
     console.log('OUT LogQL',logql);
 
     // Fetch
-    var LOKI_API = 'http://localhost/proxy/http://127.0.0.1:3100';
+    var LOKI_API = 'http://localhost/proxy/'+data.param.server;
+    //var LOKI_API = 'http://localhost/proxy/http://127.0.0.1:3100';
     const url = LOKI_API + "/api/prom/query?"+logql;
     fetch(url)
       .then(response => response.json())

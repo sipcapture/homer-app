@@ -24,92 +24,42 @@ class RemoteData extends LivingBeing {
   */
   getRemoteData(columns, table, data) {
     let sData = data.param.search;
-    let dataWhereRawKey = [];
-    let dataWhereRawValue = [];
-    let dataWhere = {};
-    
-    /* jshint -W089 */
-    
-    for (let key in sData) {
-      table = 'hep_proto_'+key;
-      if (sData.hasOwnProperty(key)) {
-        let elems = sData[key];
-        forEach(elems, function(el) {
-          if (!isEmpty(el.value)) {
-            if (el.name.indexOf('.') > -1) {
-              let elemArray = el.name.split('.');
-              if (el.type == 'integer') {
-                dataWhereRawKey.push('('+elemArray[0]+'->>?)::int = ?');
-                dataWhereRawValue.push(elemArray[1], el.value);
-              } else {
-                let eqValue = '=';
-                if (el.value.indexOf('%') > -1) eqValue=' LIKE ';
-                dataWhereRawKey.push(elemArray[0]+'->>?'+eqValue+'?');
-                dataWhereRawValue.push(elemArray[1], el.value);
-              }
-            } else if (el.value.indexOf('%') > -1 ) {
-              dataWhereRawKey.push(el.name+' LIKE ?');
-              dataWhereRawValue.push(el.value);
-            } else {
-              dataWhere[el.name] = el.value;
-            }
-          }
-        });
-      }
-    };
+    console.log('IN LogQL',sData);
 
-    let timeWhere = [];
-    
-    timeWhere.push(new Date(data.timestamp.from).toISOString());
-    timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
-    let myWhereRawString = '';
-    if (!isEmpty(dataWhereRawKey)) {
-      myWhereRawString = dataWhereRawKey.join(' AND ');
+    var parseQuery = function(input) {
+	  const selectorRegexp = /(?:^|\s){[^{]*}/g
+	  const match = input.match(selectorRegexp);
+	  let query = '';
+	  let regexp = input;
+
+	  if (match) {
+	    query = match[0].trim();
+	    regexp = input.replace(selectorRegexp, '').trim();
+	  }
+	console.log(query,regexp)
+    	return { query, regexp };
     }
-    
-    /*
-    this.dataDb.on( 'query', function( queryData ) {
-        console.log( queryData );
-    });
-    */
-      
-    return this.dataDb(table)
-      .whereRaw(myWhereRawString, dataWhereRawValue)
-      .where(dataWhere)
-      .whereBetween('create_date', timeWhere)
-      .select(columns)
-      .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
-      .then(function(rows) {
-        let dataReply = [];
-        let dataKeys = [];
-        
-        rows.forEach(function(row) {
-          let dataElement = {};
-          for (let k in row) {
-            if (k == 'protocol_header' || k == 'data_header') {
-              Object.assign(dataElement, row[k]);
-            } else {
-              dataElement[k] = row[k];
-            }
-          }
-          dataElement['table'] = table;
-          dataReply.push(dataElement);
-          let keys = Object.keys(dataElement);
-          dataKeys = dataKeys.concat(keys.filter(function(i) {
-            return dataKeys.indexOf(i) == -1;
-          }));
-        });
-        
-        let globalReply = {
-          total: size(dataReply),
-          data: dataReply,
-          keys: dataKeys,
-        };
-        
-        return globalReply;
-      });
+
+    let query = parseQuery(sData);
+    var logql =  "query="+query.query
+		+"&regexp="+query.regexp
+		+"&limit="+data.param.limit
+		+"&begin="+data.timestamp.from+"000000"
+		+"&end="+data.timestamp.to+"000000"
+
+    console.log('OUT LogQL',logql);
+
+    // Fetch
+    var LOKI_API = 'http://localhost/proxy/http://127.0.0.1:3100';
+    const url = LOKI_API + "/api/prom/query?"+logql;
+    fetch(url)
+      .then(response => response.json())
+      .then(responseJson => return responseJson )
+      .catch(function(error) { console.error(error); return [] });
+
   }
+
+
     
   async getTransactionData(table, columns, fieldKey, dataWhere, timeWhere) {
     try {
@@ -125,6 +75,7 @@ class RemoteData extends LivingBeing {
       throw new Error('fail to get data full'+err);
     }
   }
+
   
   async getTransaction(columns, table, data, correlation, doexp) {
     try {

@@ -1,6 +1,8 @@
 import LivingBeing from './living_being';
 import { forEach, isEmpty, size } from 'lodash';
 
+import fetch from 'node-fetch';
+
 /**
  * A class to handle users in DB
  */
@@ -54,6 +56,7 @@ class RemoteData extends LivingBeing {
     const url = LOKI_API + "/api/prom/query?"+logql;
     fetch(url)
       .then(response => response.json())
+      .then(responseJSON => console.log(responseJSON) )
       .catch(function(error) { console.error(error); return [] });
 
   }

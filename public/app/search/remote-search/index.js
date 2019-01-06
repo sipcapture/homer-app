@@ -6,7 +6,7 @@ export default angular.module('remoteSearch', [])
     'ngInject';
 
     $stateProvider.state(ROUTER.REMOTE.NAME, {
-      url: ROUTER.REMOTE.PATH + '/:protoID/{limit:int}/{from:int}/{to:int}/{custom}/{timezone:json}/{search:json}/{transaction:json}',
+      url: ROUTER.REMOTE.PATH + '/:protoID/{limit:int}/{from:int}/{to:int}/{custom}/{timezone:json}',
       params: {
         protoID: REMOTE.PROTO.ID,
         to: TIME.TO,
@@ -15,7 +15,7 @@ export default angular.module('remoteSearch', [])
         timezone: TIME.TIMEZONE,
         limit: REMOTE.LIMIT,
         search: REMOTE.QUERY.DEFAULT,
-        transaction: REMOTE.TRANSACTION.DEFAULT
+        server: REMOTE.SERVER.DEFAULT
       },
       component: 'remoteSearch',
     });

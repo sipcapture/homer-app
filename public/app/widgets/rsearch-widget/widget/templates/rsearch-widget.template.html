@@ -9,8 +9,18 @@
 
     <div class="box-content">
         <label style="display:block;margin-bottom:10px;line-height: 22px;">Search: </label> 
-        <input type="text" ng-model="$ctrl.widget.config.searchbutton" class="form-control ng-pristine ng-valid ng-empty ng-touched"
+        <input type="text" ng-model="$ctrl.newObject['searchvalue']" class="form-control ng-pristine ng-valid ng-empty ng-touched"
         style="height: 35px" name="rsearchvalue" /> 
+        
+        <br>
+        
+        <label style="display:block;margin-bottom:10px;line-height: 22px;">Limit: </label> 
+        <input type="text" ng-model="$ctrl.newObject['limit']" placeholder="100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="limit" /> 
+        
+        <br>
+        
+        <label style="display:block;margin-bottom:10px;line-height: 22px;">Server: </label> 
+        <input type="text" ng-model="$ctrl.newObject['server']" placeholder="http://de2.qxip.net:3333" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="remoteserver" /> 
         
         <br>
         

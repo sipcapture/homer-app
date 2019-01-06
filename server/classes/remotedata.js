@@ -63,7 +63,7 @@ class RemoteData extends LivingBeing {
     const url = LOKI_API + "/api/prom/query?"+logql;
     return fetch(url)
       .then(response => response.json())
-      .then(responseJSON => responseJSON )
+      .then(responseJSON => JSON.stringify(responseJSON) )
       .catch(function(error) { console.error(error); return [] });
 
   }

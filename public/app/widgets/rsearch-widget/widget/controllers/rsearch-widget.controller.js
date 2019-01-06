@@ -79,10 +79,7 @@ class RsearchWidget {
   searchForProtocol(protoID) {
     const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
 
-    console.log("RRRRRRRRRRRZZZZZZZZZ", this.searchObject);
-    console.log("CUSToM", custom);
-    //search: this.searchObject['searchvalue'],
-    let objSend = {
+    this.$state.go(this.ROUTER.REMOTE.NAME, {
       protoID,
       search: this.searchObject['searchvalue'],
       limit: this.searchObject['limit'],
@@ -91,23 +88,7 @@ class RsearchWidget {
       from,
       to,
       custom,
-    };
-
-    console.log("OBJ", objSend);
-    
-    this.$state.go(this.ROUTER.REMOTE.NAME, objSend);
-    
-    /*this.$state.go(this.ROUTER.REMOTE.NAME, {
-      protoID,
-      //search: this.searchObject['searchvalue'],
-      limit: this.searchObject['limit'],
-      server: this.searchObject['server'],
-      timezone: this.TimeMachine.getTimezone(),
-      from,
-      to,
-      custom,
-    });
-    */
+    });    
   }
 
 

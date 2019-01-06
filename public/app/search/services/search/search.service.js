@@ -53,6 +53,7 @@ const SearchService = function($q, $http, UserProfile, API) {
   };
 
   const searchCallByParam = function(mdata) {
+  
     const defer = $q.defer();
     $http.post(API.SEARCH.CALL.DATA, mdata, {
       handleStatus: [403, 503],
@@ -633,6 +634,27 @@ const SearchService = function($q, $http, UserProfile, API) {
   };
 
 
+  const searchRemoteByParam = function(mdata) {
+    console.log("REMOTE SEARCH");
+    const defer = $q.defer();
+    $http.post(API.SEARCH.REMOTE.DATA, mdata, {
+      handleStatus: [403, 503],
+    }).then(
+      /* good response */
+      function(results) {
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
+      },
+      /* bad response */
+      function() {
+        defer.reject('bad response combination');
+      }
+    );
+
+    return defer.promise;
+  };
+
+
   return {
     searchCallByParam,
     searchMethod,
@@ -668,6 +690,7 @@ const SearchService = function($q, $http, UserProfile, API) {
     loadNode,
     loadMappingProtocols,
     loadMappingFields,    
+    searchRemoteByParam,
   };
 };
 

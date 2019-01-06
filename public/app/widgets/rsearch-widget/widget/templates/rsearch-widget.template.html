@@ -1,0 +1,20 @@
+<div class="box rsearch-widget">
+    <div class="box-header">
+        <h3>{{ $ctrl.widget.title }}</h3>
+        <div class="box-header-btns pull-right">
+            <a title="settings" ng-click="$ctrl.openSettings(widget)"><i class="glyphicon glyphicon-cog"></i></a>
+            <a title="Remove widget" ng-click="$ctrl.delete()"><i class="glyphicon glyphicon-trash"></i></a>
+        </div>
+    </div> <!-- END box-header -->
+
+    <div class="box-content">
+        <label style="display:block;margin-bottom:10px;line-height: 22px;">Search: </label> 
+        <input type="text" ng-model="$ctrl.widget.config.searchbutton" class="form-control ng-pristine ng-valid ng-empty ng-touched"
+        style="height: 35px" name="rsearchvalue" /> 
+        
+        <br>
+        
+	<button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
+	<button type="submit" ng-click="$ctrl.processSearchForm();" class="btn btn-primary " style="float:right;margin-right: 5px;height:auto;" ng-disabled="false">Search</button>
+    </div> <!-- END box-content -->
+</div> <!-- END box -->

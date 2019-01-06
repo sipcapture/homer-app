@@ -32,6 +32,12 @@ const ROUTER = {
     DESCRIPTION: 'search',
     SECURE: true,
   },
+  REMOTE: {
+    NAME: 'hepic.remotesearch',
+    PATH: '/remotesearch',
+    DESCRIPTION: 'remotesearch',
+    SECURE: true,
+  },
   PREFERENCES: {
     NAME: 'hepic.preferences',
     PATH: '/preferences',

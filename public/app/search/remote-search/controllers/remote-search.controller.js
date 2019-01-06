@@ -7,7 +7,7 @@ import swal from 'sweetalert2';
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
 
-class SearchCall {
+class SearchRemote {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, $filter,
     $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper,
@@ -36,7 +36,7 @@ class SearchCall {
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
     this.log = log;
-    this.log.initLocation('SearchCall');
+    this.log.initLocation('SearchRemote');
     this.searchText = null; // search results, regex results filter
     this.uiGridConstants = uiGridConstants;
     this.localStorage = window.localStorage;
@@ -159,7 +159,7 @@ class SearchCall {
     const query = this.createQuery();
 
     try {
-      const response = await this.SearchService.searchCallByParam(query);
+      const response = await this.SearchService.searchRemoteByParam(query);
 
       const { data, keys } = response;
 
@@ -677,4 +677,4 @@ class SearchCall {
   }
 }
 
-export default SearchCall;
+export default SearchRemote;

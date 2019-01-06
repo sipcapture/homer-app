@@ -52,14 +52,14 @@ class RemoteData extends LivingBeing {
     var logql =  "query="+data.param.search
 		+"&regexp="+query.regexp
 		+"&limit="+data.param.limit
-		+"&begin="+fromts
+		+"&start="+fromts
 		+"&end="+tots
 
     console.log('OUT LogQL',logql);
 
     // Fetch
     //var LOKI_API = 'http://localhost/proxy/'+data.param.server;
-    var LOKI_API = 'http://localhost/proxy/http://127.0.0.1:3100';
+    var LOKI_API = 'http://127.0.0.1:3100';
     const url = LOKI_API + "/api/prom/query?"+logql;
     return fetch(url)
       .then(response => response.json())

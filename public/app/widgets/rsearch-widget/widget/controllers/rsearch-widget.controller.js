@@ -25,10 +25,9 @@ class RsearchWidget {
     this.newObject = this.UserProfile.profileScope.search;
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
-    this.newResult.restype = this.type_result[0];
-    this.newNode = this.UserProfile.profileScope.node;
-    this.newNode.node = this.db_node[0];
     this.timerange = this.UserProfile.profileScope.timerange;                                         
+    this.newObject['server'] = "http://127.0.0.1:333";
+    this.newObject['limit'] = 100;
   }
 
   get gmtOffset() {
@@ -51,57 +50,28 @@ class RsearchWidget {
   
   // process the form
   processSearchForm() {
+
+    console.log("OBJ", this.newObject);
+
     if (this.newObject instanceof Array) {
       this.newObject = {};
     }
 
     this.searchObject = {};
-
-    for (var key in this.newObject) {
-
-	console.log("K", key);
-	console.log("V", this.newObject[key]);
-
-        let myLocalObject = this._widget.fields.find(function(obj) {
-		    return obj.name == key;
-	});	
-
-	if(myLocalObject) {
-	    
-	    console.log("OBJ", myLocalObject);
-	    
-	    let subKey = myLocalObject.hepid + "_"+myLocalObject.profile;
-	
-	    let lobj = {
-	        name: myLocalObject.field_name,
-	        value: this.newObject[key],
-	        type: myLocalObject.type,
-	        hepid: myLocalObject.hepid,
-	        profile: myLocalObject.profile,	    
-	    }	
-	    if(!this.searchObject.hasOwnProperty(subKey)) this.searchObject[subKey]=[];
-
-	    this.searchObject[subKey].push(lobj);	    	    	    
-	}
-		
-	console.log("OB", myLocalObject);
-    }
+    this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
+    this.searchObject['limit'] =  this.newObject['limit'];
+    this.searchObject['server'] =  this.newObject['server'];
 
     console.log("SEARCH", this.searchObject);
-    console.log("RRR1", this.widget.config.protocol_id);
-    console.log("RRR2", this.widget.config.protocol_profile);
-    
-    console.log("FORMS1", this._widget.fields);
     console.log("FORMS2", this.newObject);
     console.log("FORMS3", this.searchObject);
     
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
-    this.UserProfile.setProfile('node', this.newNode);
-    this.UserProfile.setProfile('limit', this.newResult.limit);
+    this.UserProfile.setProfile('limit', this.searchObject['limit']);
     this.isBusy = true;
-    
-    let protoID = 'call';
+        
+    let protoID = 'loki';
     this.searchForProtocol(protoID);    
 
   }
@@ -109,16 +79,35 @@ class RsearchWidget {
   searchForProtocol(protoID) {
     const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
 
-    this.$state.go(this.ROUTER.REMOTE.NAME, {
+    console.log("RRRRRRRRRRRZZZZZZZZZ", this.searchObject);
+    console.log("CUSToM", custom);
+    //search: this.searchObject['searchvalue'],
+    let objSend = {
       protoID,
-      search: this.searchObject,
-      limit: this.newResult.limit,
-      transaction: this.newResult.transaction || {},
+      search: this.searchObject['searchvalue'],
+      limit: this.searchObject['limit'],
+      server: this.searchObject['server'],
+      timezone: this.TimeMachine.getTimezone(),
+      from,
+      to,
+      custom,
+    };
+
+    console.log("OBJ", objSend);
+    
+    this.$state.go(this.ROUTER.REMOTE.NAME, objSend);
+    
+    /*this.$state.go(this.ROUTER.REMOTE.NAME, {
+      protoID,
+      //search: this.searchObject['searchvalue'],
+      limit: this.searchObject['limit'],
+      server: this.searchObject['server'],
       timezone: this.TimeMachine.getTimezone(),
       from,
       to,
       custom,
     });
+    */
   }
 
 

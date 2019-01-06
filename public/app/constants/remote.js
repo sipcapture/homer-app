@@ -8,5 +8,8 @@ export default {
   },
   PROTO: {
     ID: 'rsearch'
+  },
+  SERVER: {
+    DEFAULT: 'http://127.0.0.1:333'
   }
 };

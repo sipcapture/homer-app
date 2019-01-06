@@ -46,6 +46,7 @@ class SearchRemote {
   }
 
   $onInit() {
+  
     this.initData();
 
     this.gridOpts.columnDefs = [];
@@ -152,6 +153,8 @@ class SearchRemote {
   }
 
   async processSearchResult() {
+  
+  
     if (isArray(this.data) && !isEmpty(this.data)) {
       this.saveUiGridState();
     }
@@ -226,7 +229,7 @@ class SearchRemote {
   }
 
   createQuery() {
-    let { search, limit, transaction, from, to, timezone } = this.$state.params;
+    let { search, limit, server, from, to, timezone } = this.$state.params;
     this.timezone = timezone;
 
     const query = {
@@ -255,14 +258,12 @@ class SearchRemote {
 
     if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
-      query.param.transaction = {};
+      //query.param.transaction = {};
+      query.param.server = server;
       query.param.limit = limit;
       query.param.search = search;
-      query.param.location = {};
+      //query.param.location = {};
       query.param.timezone = this.timezone;
-      forEach(get(transaction, 'transaction'), function(v) {
-        query.param.transaction[v.name] = true;
-      });
     } else {
       query.param.transaction = {};
 
@@ -287,18 +288,9 @@ class SearchRemote {
         this.log.debug('query', query);
       }
 
-      if (queryBody.trancall) query.param.transaction.call = true;
-      if (queryBody.tranreg) query.param.transaction.registration = true;
-      if (queryBody.tranrest) query.param.transaction.rest = true;
-
-      if (queryBody.search_callid) searchValue.callid = queryBody.search_callid;
-      if (queryBody.search_ruri_user) searchValue.ruri_user = queryBody.search_ruri_user;
-      if (queryBody.search_from_user) searchValue.from_user = queryBody.search_from_user;
-      if (queryBody.search_to_user) searchValue.to_user = queryBody.search_to_user;
-
       query.param.limit = limit;
       query.param.search = searchValue;
-      query.param.location = {};
+      //query.param.location = {};
     }
     return query;
   }

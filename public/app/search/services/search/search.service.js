@@ -635,7 +635,7 @@ const SearchService = function($q, $http, UserProfile, API) {
 
 
   const searchRemoteByParam = function(mdata) {
-    console.log("REMOTE SEARCH");
+    console.log("REMOTE SEARCH", mdata);
     const defer = $q.defer();
     $http.post(API.SEARCH.REMOTE.DATA, mdata, {
       handleStatus: [403, 503],

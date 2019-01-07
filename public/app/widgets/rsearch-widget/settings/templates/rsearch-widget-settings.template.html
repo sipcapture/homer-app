@@ -11,6 +11,19 @@
                 <div class="col-lg-9 col-md-9">
                     <input name="name" type="text" ng-model="$ctrl.widget.title" class="form-control" />
                 </div>
+
+		<label style="display:block;margin-bottom:10px;line-height: 22px;">Query Limit: </label>
+                <div class="col-lg-9 col-md-9">
+        	    <input type="text" ng-model="$ctrl.newObject['limit']" placeholder="100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="limit" />
+                </div>
+
+        	<label style="display:block;margin-bottom:10px;line-height: 22px;">Loki Server: </label>
+                <div class="col-lg-9 col-md-9">
+        	   <input type="text" ng-model="$ctrl.newObject['server']" placeholder="http://loki:3100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="remoteserver" />
+                </div>
+
+
+
             </div> <!-- END Title -->
 
             <div class="row">

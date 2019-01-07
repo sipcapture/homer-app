@@ -5,7 +5,7 @@ import settings from './settings/rsearch-widget-settings.component';
 export default angular.module('hepicApp.rsearchWidget', [])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
     DashboardWidgetStateProvider.set('visualize', 'rsearch-widget', {
-      title: 'Remote Search',
+      title: 'Loki Search',
       group: 'Tools',
       name: 'rsearch',
       description: 'Display date and time',
@@ -13,7 +13,7 @@ export default angular.module('hepicApp.rsearchWidget', [])
       sizeY: 1,
       refresh: false,
       config: {
-        title: 'Remote Search',
+        title: 'Loki Search',
         timePattern: 'HH:mm:ss',
         datePattern: 'YYYY-MM-DD',
         location: {

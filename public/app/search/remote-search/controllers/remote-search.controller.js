@@ -246,7 +246,7 @@ class SearchRemote {
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
 
     /* query manipulation functions & store */
-    this.searchParams = search['query'];
+    this.searchParams = search;
 
     /* preference processing */
     const queryBody = {};

@@ -166,7 +166,7 @@ class SearchRemote {
 
       console.log("RESPONSE", response);
 
-      const { data, keys } = response;
+      const { data, keys } = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
         this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);

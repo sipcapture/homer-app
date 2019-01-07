@@ -68,7 +68,7 @@ class RemoteData extends LivingBeing {
       .then(function(responseJSON){
 	   responseJSON.streams.forEach(function(stream){
 		console.log(stream.labels);
-		entries.forEach(function(entry){
+		stream.entries.forEach(function(entry){
 			out.total++;
 			out.data.push({ id: out.total, micro_ts: entry.ts, custom_1: ts.line });
 		});

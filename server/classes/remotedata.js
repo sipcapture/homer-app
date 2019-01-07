@@ -70,7 +70,7 @@ class RemoteData extends LivingBeing {
 		console.log(stream.labels);
 		stream.entries.forEach(function(entry){
 			out.total++;
-			out.data.push({ id: out.total, micro_ts: entry.ts, custom_1: ts.line });
+			out.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line });
 		});
 	   });
 	  return out;

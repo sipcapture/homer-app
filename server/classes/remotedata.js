@@ -57,7 +57,7 @@ class RemoteData extends LivingBeing {
 
     // Fetch
     var LOKI_API = data.param.server;
-    const url = LOKI_API + "/api/prom/query?"+logql;
+    const url = LOKI_API + "/api/prom/query?"+encodeURI(logql);
 
     var dataset = { "data": [], "keys": [], "total": 0 };
     // dataset.keys = ["id","micro_ts","custom_1","custom_2"];

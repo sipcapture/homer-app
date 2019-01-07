@@ -164,6 +164,8 @@ class SearchRemote {
     try {
       const response = await this.SearchService.searchRemoteByParam(query);
 
+      console.log("RESPONSE", reposne);
+
       const { data, keys } = response;
 
       if (isArray(keys) && !isEmpty(keys)) {

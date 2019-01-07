@@ -162,6 +162,9 @@ class SearchRemote {
     const query = this.createQuery();
 
     try {
+
+      this.gridOpts.data = [];                   
+
       const response = await this.SearchService.searchRemoteByParam(query);
 
       console.log("RESPONSE", response);

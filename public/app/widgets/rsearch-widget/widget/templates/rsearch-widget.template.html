@@ -19,19 +19,14 @@
             <span class="fa  form-control-search" title="search type"></span>
 	</div>
 
-<!--
-        <br>
-        
-        <label style="display:block;margin-bottom:10px;line-height: 22px;">Limit: </label> 
-        <input type="text" ng-model="$ctrl.newObject['limit']" placeholder="100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="limit" /> 
-        
-        <br>
-        
-        <label style="display:block;margin-bottom:10px;line-height: 22px;">Server: </label> 
-        <input type="text" ng-model="$ctrl.newObject['server']" placeholder="http://de2.qxip.net:3333" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="remoteserver" /> 
-        
-        <br>
--->
+	<div class="input-group">
+            <div class="input-group-addon">
+                <label for="limit" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;" class="ng-binding">Limit</label>
+            </div> 
+            <input title="" type="text" name="limit" id="limit" ng-enter="$ctrl.processSearchForm();" class="form-control ng-pristine ng-untouched ng-valid ng-empty" 
+			ng-model="$ctrl.newObject['limit']" style="height:35px !important;" aria-invalid="false" placeholder='Max Results, Integer (default: 1000)' >
+            <span class="fa  form-control-search" title="search type"></span>
+	</div>
         
 	<button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
 	<button type="submit" ng-click="$ctrl.processSearchForm();" class="btn btn-primary " style="float:right;margin-right: 5px;height:auto;" ng-disabled="false">Search</button>

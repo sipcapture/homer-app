@@ -6,41 +6,22 @@
         </div> <!-- END modal-header -->
 
         <div class="modal-body">
+
             <div class="form-group" ng-class="{error: _form.title.$error && _form.submitted}">
                 <label class="control-label col-lg-3 col-md-3">Title</label>
                 <div class="col-lg-9 col-md-9">
                     <input name="name" type="text" ng-model="$ctrl.widget.title" class="form-control" />
                 </div>
-
-		<label style="display:block;margin-bottom:10px;line-height: 22px;">Query Limit: </label>
-                <div class="col-lg-9 col-md-9">
-        	    <input type="text" ng-model="$ctrl.newObject['limit']" placeholder="100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="limit" />
-                </div>
-
-        	<label style="display:block;margin-bottom:10px;line-height: 22px;">Loki Server: </label>
-                <div class="col-lg-9 col-md-9">
-        	   <input type="text" ng-model="$ctrl.newObject['server']" placeholder="http://loki:3100" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="height: 35px" name="remoteserver" />
-                </div>
-
-
-
             </div> <!-- END Title -->
 
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <label class="control-label col-lg-6 col-md-6">Timezone</label>
-                    <div class="col-lg-6 col-md-6" uib-dropdown is-open="status.isopen">
-                        <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle>
-                            {{$ctrl.locationName}} <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                            <li ng-repeat="zone in $ctrl.timezones">
-                                <a href ng-click="$ctrl.setTimezone(zone)">{{zone.desc}}</a>
-                            </li>
-                        </ul> 
-                    </div> <!-- END dropdown -->
-                </div> <!-- END Timezone -->
-            </div> <!-- END row -->
+            <div class="form-group" ng-class="{error: _form.title.$error && _form.submitted}">
+                <label class="control-label col-lg-3 col-md-3">Loki Server</label>
+                <div class="col-lg-9 col-md-9">
+                    <input name="remoteserver" type="text" ng-model="$ctrl.widget.server" class="form-control" placeholder="http://loki:3100" value="http://127.0.0.1:3100" />
+                </div>
+            </div> <!-- END Server -->
+
+
         </div> <!-- END modal-body-->
 
         <div class="modal-footer">

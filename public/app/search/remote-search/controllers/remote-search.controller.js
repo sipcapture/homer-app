@@ -163,7 +163,8 @@ class SearchRemote {
 
     try {
 
-      this.gridOpts.data = [];                   
+      this.gridOpts.data = [];             
+      this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);      
 
       const response = await this.SearchService.searchRemoteByParam(query);
 
@@ -172,7 +173,8 @@ class SearchRemote {
       const { data, keys } = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
-        this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        //this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        this.gridOpts.columnDefs = keys;
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 

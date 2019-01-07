@@ -26,12 +26,7 @@ class RsearchWidget {
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
-    this.newObject['server'] = "http://127.0.0.1:3100";
     this.newObject['limit'] = 100;
-  }
-
-  get gmtOffset() {
-    return this._widget.config.location.offset || '+1';
   }
 
   get locationName() {
@@ -44,6 +39,7 @@ class RsearchWidget {
 
   update(widget) {
     this._widget = widget;
+    console.log("WIDGTET", this._widget);
     this.onUpdate({uuid: this._widget.uuid, widget});
   }
   
@@ -60,7 +56,6 @@ class RsearchWidget {
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
     this.nsObject['query'] =  this.newObject['searchvalue'];    
     this.searchObject['limit'] =  this.newObject['limit'];
-    this.searchObject['server'] =  this.newObject['server'];
 
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
@@ -79,7 +74,7 @@ class RsearchWidget {
       protoID,
       search: this.nsObject,
       limit: this.searchObject['limit'],
-      server: this.searchObject['server'],
+      server: this._widget.server,
       timezone: this.TimeMachine.getTimezone(),
       from,
       to,

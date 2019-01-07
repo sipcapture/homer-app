@@ -8,15 +8,10 @@ class RsearchWidgetSettings {
   $onInit() {
     this.digitalRsearch = false;
     this.widget = this.resolve.widget;
-    this.timezones = this.resolve.timezones;
   }
 
   get locationName() {
     return this.widget.config.location.desc || 'unknown';
-  }
-
-  setTimezone(zone) {
-    this.widget.config.location = zone;
   }
 
   dismiss() {

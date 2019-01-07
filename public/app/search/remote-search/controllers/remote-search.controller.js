@@ -7,7 +7,7 @@ import swal from 'sweetalert2';
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
 
-class SearchCall {
+class SearchRemote {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, $filter,
     $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper,
@@ -36,7 +36,7 @@ class SearchCall {
     this.fileOneUploaded = true;
     this.fileTwoUploaded = false;
     this.log = log;
-    this.log.initLocation('SearchCall');
+    this.log.initLocation('SearchRemote');
     this.searchText = null; // search results, regex results filter
     this.uiGridConstants = uiGridConstants;
     this.localStorage = window.localStorage;
@@ -46,6 +46,7 @@ class SearchCall {
   }
 
   $onInit() {
+  
     this.initData();
 
     this.gridOpts.columnDefs = [];
@@ -152,6 +153,8 @@ class SearchCall {
   }
 
   async processSearchResult() {
+  
+  
     if (isArray(this.data) && !isEmpty(this.data)) {
       this.saveUiGridState();
     }
@@ -159,12 +162,19 @@ class SearchCall {
     const query = this.createQuery();
 
     try {
-      const response = await this.SearchService.searchCallByParam(query);
 
-      const { data, keys } = response;
+      this.gridOpts.data = [];             
+      this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);      
+
+      const response = await this.SearchService.searchRemoteByParam(query);
+
+      console.log("RESPONSE", response);
+
+      const { data, keys } = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
-        this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        //this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        this.gridOpts.columnDefs = keys;
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 
@@ -226,7 +236,7 @@ class SearchCall {
   }
 
   createQuery() {
-    let { search, limit, transaction, from, to, timezone } = this.$state.params;
+    let { search, limit, server, from, to, timezone } = this.$state.params;
     this.timezone = timezone;
 
     const query = {
@@ -255,14 +265,12 @@ class SearchCall {
 
     if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
-      query.param.transaction = {};
+      //query.param.transaction = {};
+      query.param.server = server;
       query.param.limit = limit;
-      query.param.search = search;
-      query.param.location = {};
+      query.param.search = search['query'];
+      //query.param.location = {};
       query.param.timezone = this.timezone;
-      forEach(get(transaction, 'transaction'), function(v) {
-        query.param.transaction[v.name] = true;
-      });
     } else {
       query.param.transaction = {};
 
@@ -287,18 +295,9 @@ class SearchCall {
         this.log.debug('query', query);
       }
 
-      if (queryBody.trancall) query.param.transaction.call = true;
-      if (queryBody.tranreg) query.param.transaction.registration = true;
-      if (queryBody.tranrest) query.param.transaction.rest = true;
-
-      if (queryBody.search_callid) searchValue.callid = queryBody.search_callid;
-      if (queryBody.search_ruri_user) searchValue.ruri_user = queryBody.search_ruri_user;
-      if (queryBody.search_from_user) searchValue.from_user = queryBody.search_from_user;
-      if (queryBody.search_to_user) searchValue.to_user = queryBody.search_to_user;
-
       query.param.limit = limit;
-      query.param.search = searchValue;
-      query.param.location = {};
+      query.param.search = search['query'];
+      //query.param.location = {};
     }
     return query;
   }
@@ -677,4 +676,4 @@ class SearchCall {
   }
 }
 
-export default SearchCall;
+export default SearchRemote;

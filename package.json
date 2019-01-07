@@ -82,6 +82,7 @@
     "ng-annotate-loader": "0.6.1",
     "ng-fittext": "4.2.3",
     "ngstorage": "0.3.11",
+    "node-fetch": "^2.3.0",
     "node-sass": "4.9.0",
     "nvd3": "1.8.6",
     "pem": "1.12.3",

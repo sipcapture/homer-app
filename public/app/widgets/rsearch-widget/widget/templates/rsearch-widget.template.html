@@ -1,0 +1,34 @@
+<div class="box rsearch-widget">
+    <div class="box-header">
+        <h3>{{ $ctrl.widget.title }}</h3>
+        <div class="box-header-btns pull-right">
+            <a title="settings" ng-click="$ctrl.openSettings(widget)"><i class="glyphicon glyphicon-cog"></i></a>
+            <a title="Remove widget" ng-click="$ctrl.delete()"><i class="glyphicon glyphicon-trash"></i></a>
+        </div>
+    </div> <!-- END box-header -->
+
+    <div class="box-content">
+
+
+	<div class="input-group">
+            <div class="input-group-addon">
+                <label for="LogQL" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;" class="ng-binding">LogQL</label>
+            </div> 
+            <input title="" type="text" name="LogQL" id="LogQL" ng-enter="$ctrl.processSearchForm();" class="form-control ng-pristine ng-untouched ng-valid ng-empty" 
+			ng-model="$ctrl.newObject['searchvalue']" style="height:35px !important;" aria-invalid="false" placeholder='{tag="value"} regex' >
+            <span class="fa  form-control-search" title="search type"></span>
+	</div>
+
+	<div class="input-group">
+            <div class="input-group-addon">
+                <label for="limit" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;" class="ng-binding">Limit</label>
+            </div> 
+            <input title="" type="text" name="limit" id="limit" ng-enter="$ctrl.processSearchForm();" class="form-control ng-pristine ng-untouched ng-valid ng-empty" 
+			ng-model="$ctrl.newObject['limit']" style="height:35px !important;" aria-invalid="false" placeholder='Max Results, Integer (default: 1000)' >
+            <span class="fa  form-control-search" title="search type"></span>
+	</div>
+        
+	<button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
+	<button type="submit" ng-click="$ctrl.processSearchForm();" class="btn btn-primary " style="float:right;margin-right: 5px;height:auto;" ng-disabled="false">Search</button>
+    </div> <!-- END box-content -->
+</div> <!-- END box -->

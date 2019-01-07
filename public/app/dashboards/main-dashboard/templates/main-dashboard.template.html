@@ -32,6 +32,11 @@
                 <clock-widget ng-if="widget.name==='clock'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </clock-widget>
+                
+                <rsearch-widget ng-if="widget.name==='rsearch'" widget=widget
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </rsearch-widget>
+                
 		<!--
                 <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">

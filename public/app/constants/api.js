@@ -76,6 +76,10 @@ const API = {
       DATA: 'api/v3/search/proto/data',
       MESSAGE: 'api/v3/search/proto/message',
     },
+    REMOTE: {
+      DATA: 'api/v3/search/remote/data',
+      MESSAGE: 'api/v3/search/remote/message',
+    },
     REGISTRATION: {
       DATA: 'api/v3/search/registration/data',
       MESSAGE: 'api/v3/search/registration/message',

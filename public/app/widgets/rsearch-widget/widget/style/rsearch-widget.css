@@ -1,0 +1,16 @@
+.rsearch-widget .widget-rsearch {
+    height: 50%;
+    width: 70%;
+    text-align: center;
+    display: block;
+    margin: auto;
+}
+
+.rsearch-widget .box-content {
+    color: grey;
+    text-align: center;
+}
+
+.modal .modal-dialog .modal-content {
+    overflow: visible;
+}

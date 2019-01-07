@@ -73,7 +73,7 @@ class RemoteData extends LivingBeing {
 			out.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line });
 		});
 	   });
-	  return out;
+	  return JSON.stringify(out);
 	   // JSON.stringify(responseJSON);
       })
       .catch(function(error) { console.error(error); return [] });

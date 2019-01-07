@@ -164,7 +164,7 @@ class SearchRemote {
     try {
       const response = await this.SearchService.searchRemoteByParam(query);
 
-      console.log("RESPONSE", reposne);
+      console.log("RESPONSE", response);
 
       const { data, keys } = response;
 
@@ -243,7 +243,7 @@ class SearchRemote {
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
 
     /* query manipulation functions & store */
-    this.searchParams = search;
+    this.searchParams = search['query'];
 
     /* preference processing */
     const queryBody = {};
@@ -263,7 +263,7 @@ class SearchRemote {
       //query.param.transaction = {};
       query.param.server = server;
       query.param.limit = limit;
-      query.param.search = search;
+      query.param.search = search['query'];
       //query.param.location = {};
       query.param.timezone = this.timezone;
     } else {
@@ -291,7 +291,7 @@ class SearchRemote {
       }
 
       query.param.limit = limit;
-      query.param.search = searchValue;
+      query.param.search = search['query'];
       //query.param.location = {};
     }
     return query;

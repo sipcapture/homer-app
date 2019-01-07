@@ -42,11 +42,9 @@ class RemoteData extends LivingBeing {
     	return { query, regexp };
     }
     
-    console.log("RRR",data.timestamp.from);
     let fromts = (new Date(data.timestamp.from)).getTime()*1000000;
     let tots = (new Date(data.timestamp.to)).getTime()*1000000;
     
-
     let query = parseQuery(sData);
     //var logql =  "query="+query.query
     var logql =  "query="+data.param.search
@@ -59,10 +57,13 @@ class RemoteData extends LivingBeing {
 
     // Fetch
     //var LOKI_API = 'http://localhost/proxy/'+data.param.server;
-    var LOKI_API = 'http://127.0.0.1:3100';
+    //var LOKI_API = 'http://127.0.0.1:3100';
+    var LOKI_API = data.param.server;
     const url = LOKI_API + "/api/prom/query?"+logql;
 
-    var out = {"total":0, "data":[], "auth":"ok", "status":"ok"};
+    var out = {"total":0, "data":{"data": [], "key": []},"auth":"ok", "status":"ok"};
+    out.data.key = ["id", "micro_ts", "custom_1"];
+    
     return fetch(url)
       .then(response => response.json())
       .then(function(responseJSON){
@@ -70,10 +71,11 @@ class RemoteData extends LivingBeing {
 		console.log(stream.labels);
 		stream.entries.forEach(function(entry){
 			out.total++;
-			out.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line });
+			out.data.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line });
 		});
 	   });
-	  return JSON.stringify(out);
+
+  	  return JSON.stringify(out);
 	   // JSON.stringify(responseJSON);
       })
       .catch(function(error) { console.error(error); return [] });

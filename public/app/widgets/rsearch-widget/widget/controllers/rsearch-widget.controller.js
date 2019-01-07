@@ -26,7 +26,7 @@ class RsearchWidget {
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
-    this.newObject['server'] = "http://127.0.0.1:3333";
+    this.newObject['server'] = "http://127.0.0.1:3100";
     this.newObject['limit'] = 100;
   }
 
@@ -51,21 +51,17 @@ class RsearchWidget {
   // process the form
   processSearchForm() {
 
-    console.log("OBJ", this.newObject);
-
     if (this.newObject instanceof Array) {
       this.newObject = {};
     }
 
     this.searchObject = {};
+    this.nsObject = {};
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
+    this.nsObject['query'] =  this.newObject['searchvalue'];    
     this.searchObject['limit'] =  this.newObject['limit'];
     this.searchObject['server'] =  this.newObject['server'];
 
-    console.log("SEARCH", this.searchObject);
-    console.log("FORMS2", this.newObject);
-    console.log("FORMS3", this.searchObject);
-    
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('limit', this.searchObject['limit']);
@@ -81,7 +77,7 @@ class RsearchWidget {
 
     this.$state.go(this.ROUTER.REMOTE.NAME, {
       protoID,
-      search: this.searchObject['searchvalue'],
+      search: this.nsObject,
       limit: this.searchObject['limit'],
       server: this.searchObject['server'],
       timezone: this.TimeMachine.getTimezone(),

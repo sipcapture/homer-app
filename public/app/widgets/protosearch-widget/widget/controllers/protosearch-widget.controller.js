@@ -139,14 +139,6 @@ class ProtosearchWidget {
         this.searchObject[subKey]=[];
     }
     
-    console.log("SEARCH", this.searchObject);
-    console.log("RRR1", this.widget.config.protocol_id);
-    console.log("RRR2", this.widget.config.protocol_profile);
-    
-    console.log("FORMS1", this._widget.fields);
-    console.log("FORMS2", this.newObject);
-    console.log("FORMS3", this.searchObject);
-    
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('node', this.newNode);

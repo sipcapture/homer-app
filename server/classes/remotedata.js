@@ -61,8 +61,8 @@ class RemoteData extends LivingBeing {
     var LOKI_API = data.param.server;
     const url = LOKI_API + "/api/prom/query?"+logql;
 
-    var dataset = { "data": [], "key": [], "total": 0 };
-    dataset.key = ["id","micro_ts","custom_1","custom_2"];
+    var dataset = { "data": [], "keys": [], "total": 0 };
+    dataset.keys = ["id","micro_ts","custom_1","custom_2"];
     return fetch(url)
       .then(response => response.json())
       .then(function(responseJSON){

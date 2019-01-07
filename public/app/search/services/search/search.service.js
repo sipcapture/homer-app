@@ -643,7 +643,7 @@ const SearchService = function($q, $http, UserProfile, API) {
       /* good response */
       function(results) {
         console.log("RESPONSE SEARCH",results);
-        //results = has(results, 'data.data') ? results.data.data : results.data || [];
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
         defer.resolve(results);
       },
       /* bad response */

@@ -61,21 +61,34 @@ class RemoteData extends LivingBeing {
     var LOKI_API = data.param.server;
     const url = LOKI_API + "/api/prom/query?"+logql;
 
+<<<<<<< HEAD
     var out = {"total":0, "data":{"data": [], "key": []},"auth":"ok", "status":"ok"};
     out.data.key = ["id", "micro_ts", "custom_1"];
     
+=======
+    var dataset = { "data": [], "key": [], "total": 0 };
+>>>>>>> c2a60e8578aec95ae5ce0a51b6b6fb83b3cdfe7b
     return fetch(url)
       .then(response => response.json())
       .then(function(responseJSON){
 	   responseJSON.streams.forEach(function(stream){
-		console.log(stream.labels);
+		// console.log(stream.labels);
+		dataset.key = ["id","micro_ts","custom_1","custom_2"];
 		stream.entries.forEach(function(entry){
+<<<<<<< HEAD
 			out.total++;
 			out.data.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line });
 		});
 	   });
 
   	  return JSON.stringify(out);
+=======
+			dataset.total++;
+			dataset.data.push({ id: out.total, micro_ts: entry.ts, custom_1: entry.line, custom_2: stream.labels });
+		});
+	   });
+	  return JSON.stringify(dataset);
+>>>>>>> c2a60e8578aec95ae5ce0a51b6b6fb83b3cdfe7b
 	   // JSON.stringify(responseJSON);
       })
       .catch(function(error) { console.error(error); return [] });

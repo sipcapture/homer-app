@@ -2,7 +2,9 @@
 FROM node:8
 
 # BUILD FORCE
-ENV BUILD 703011
+ENV BUILD 703013
+
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 # Requires HOMER7-UI Git
 RUN git clone https://github.com/sipcapture/homer-app /app

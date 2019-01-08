@@ -268,7 +268,7 @@ class SearchRemote {
       //query.param.transaction = {};
       query.param.server = server;
       query.param.limit = limit;
-      query.param.search = search['query'];
+      query.param.search = decodeURIComponent(search['query']);
       //query.param.location = {};
       query.param.timezone = this.timezone;
     } else {
@@ -296,7 +296,7 @@ class SearchRemote {
       }
 
       query.param.limit = limit;
-      query.param.search = search['query'];
+      query.param.search = decodeURIComponent(search['query']);
       //query.param.location = {};
     }
     return query;

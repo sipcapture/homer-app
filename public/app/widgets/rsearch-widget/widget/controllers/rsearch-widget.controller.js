@@ -54,13 +54,14 @@ class RsearchWidget {
     this.searchObject = {};
     this.nsObject = {};
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
-    this.nsObject['query'] =  this.newObject['searchvalue'];    
+    this.nsObject['query'] =  encodeURIComponent(this.newObject['searchvalue']);    
     this.searchObject['limit'] =  this.newObject['limit'];
 
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('limit', this.searchObject['limit']);
     this.isBusy = true;
+
         
     let protoID = 'loki';
     this.searchForProtocol(protoID);    

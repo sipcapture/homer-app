@@ -47,7 +47,7 @@ class RemoteData extends LivingBeing {
     
     let query = parseQuery(sData);
     //var logql =  "query="+query.query
-    var logql =  "query="+data.param.search
+    var logql =  "query="+query.query
 		+"&regexp="+query.regexp
 		+"&limit="+data.param.limit
 		+"&start="+fromts

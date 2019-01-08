@@ -2,11 +2,15 @@ import angular from 'angular';
 import component from './remote-search.component';
 
 export default angular.module('remoteSearch', [])
-  .config(function($stateProvider, ROUTER, REMOTE, TIME) {
+  .config(function($stateProvider, $urlMatcherFactoryProvider, ROUTER, REMOTE, TIME) {
     'ngInject';
+    
+    $urlMatcherFactoryProvider.type('SlashFix', {
+          raw: true,
+    });                            
 
     $stateProvider.state(ROUTER.REMOTE.NAME, {
-      url: ROUTER.REMOTE.PATH + '/:protoID/{limit:int}/{from:int}/{to:int}/{server}/{search:json}/{custom}/{timezone:json}',
+      url: ROUTER.REMOTE.PATH + '/:protoID/{limit:int}/{from:int}/{to:int}/{server}/{search:SlashFix}/{custom}/{timezone:json}',
       params: {
         protoID: REMOTE.PROTO.ID,
         to: TIME.TO,

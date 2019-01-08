@@ -54,7 +54,8 @@ class RsearchWidget {
     this.searchObject = {};
     this.nsObject = {};
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
-    this.nsObject['query'] =  encodeURIComponent(encodeURIComponent(this.newObject['searchvalue']));    
+    //this.nsObject['query'] =  encodeURIComponent(encodeURIComponent(this.newObject['searchvalue']));    
+    this.nsObject['query'] =  this.newObject['searchvalue'];    
     this.searchObject['limit'] =  this.newObject['limit'];
 
     this.UserProfile.setProfile('search', this.searchObject);
@@ -73,7 +74,7 @@ class RsearchWidget {
 
     this.$state.go(this.ROUTER.REMOTE.NAME, {
       protoID,
-      search: this.nsObject,
+      search: this.nsObject['query'],
       limit: this.searchObject['limit'],
       server: this._widget.server,
       timezone: this.TimeMachine.getTimezone(),

@@ -246,11 +246,9 @@ class SearchRemote {
 
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
-
-    search['query'] = decodeURIComponent(decodeURIComponent(search['query']));    
-
-    /* query manipulation functions & store */
-    this.searchParams = search;
+    
+    this.searchParams = {};
+    this.searchParams['query'] = search;
 
     /* preference processing */
     const queryBody = {};
@@ -270,7 +268,7 @@ class SearchRemote {
       //query.param.transaction = {};
       query.param.server = server;
       query.param.limit = limit;
-      query.param.search = search['query'];
+      query.param.search = search;
       //query.param.location = {};
       query.param.timezone = this.timezone;
     } else {
@@ -298,7 +296,7 @@ class SearchRemote {
       }
 
       query.param.limit = limit;
-      query.param.search = search['query'];
+      query.param.search = search;
       //query.param.location = {};
     }
     return query;

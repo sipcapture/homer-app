@@ -10,7 +10,7 @@
   "treeRowHeaderAlwaysVisible": false,
   "enableSorting": true,
   "enableRowSelection": false,
-  "enableGridMenu": true,
+  "enableGridMenu": false,
   "enableRowHeaderSelection": true,
   "showGridFooter": true,
   "noUnselect": false,

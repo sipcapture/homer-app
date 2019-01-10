@@ -2758,7 +2758,8 @@ body, html, main {
 }
 .gridStyle {
   border: none;
-  height: 490px !important;
+  height: 80vh;
+  /*height: 490px !important;*/
 }
 /*.ui-grid-render-container:after {
 	position: relative;
@@ -2780,7 +2781,8 @@ body, html, main {
 	height: 100%;
 }
 .ui-grid-viewport {
-	height: calc(100% - 90px) !important;
+	height: 60vh !important;
+	/* height: calc(100% - 90px) !important; */
 }
 .ui-grid-pinned-container.ui-grid-pinned-container-left {
 	height: 100% !important;

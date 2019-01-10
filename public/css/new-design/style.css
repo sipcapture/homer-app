@@ -1106,7 +1106,7 @@ html, body {
 
 main {
   /*min-height: 100%;*/
-  height: 95%;
+  /*height: 95%; */
   position: relative;
   font: 14px/16px "Roboto", sans-serif;
   color: #000000;
@@ -2484,7 +2484,7 @@ span.navText {
 /* debug: force grid size */
 .ui-grid-contents-wrapper {
   height: auto;
-  top: 15%;
+  top: 80px;
 }
 
 .header-action-area {

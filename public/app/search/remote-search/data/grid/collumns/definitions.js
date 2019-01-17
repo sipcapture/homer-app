@@ -4,14 +4,14 @@ export default [
     field: 'id',
     displayName: 'Id',
     type: 'number',
-    cellTemplate: '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>',
+    cellTemplate: '<div  ng-click="grid.appScope.$ctrl.showTransaction(row, $event)" class="ui-grid-cell-contents-large"><span>{{COL_FIELD}}</span></div>',
     width: '*'
   },
   {
     _hepic_translation: 'hepic.pages.results.date',
     field: 'micro_ts',
     displayName: 'Date',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateConvert(row.entity.micro_ts)}}</div>',
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="date">{{grid.appScope.$ctrl.dateConvert(row.entity.micro_ts)}}</div>',
     resizable: true,
     type: 'date',
     width: '*',
@@ -25,7 +25,7 @@ export default [
     width: '*',
     minWidth: 180,
     type: 'string',
-    cellTemplate: '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)"><span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.callid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)"><span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.callid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.fromuser',
@@ -59,7 +59,7 @@ export default [
     type: 'string',
     width: '*',
     maxWidth: 50,
-    cellTemplate: '<div ng-show="COL_FIELD" class="ui-grid-cell-contents" title="{{COL_FIELD}}" alt="{{COL_FIELD}}"><span style="font-size:7px;"><img ng-src="{{grid.appScope.$ctrl.getCountryFlag(row.entity.geo_cc)}}" lazy-src border="0"></span></div>'
+    cellTemplate: '<div ng-show="COL_FIELD" class="ui-grid-cell-contents-large" title="{{COL_FIELD}}" alt="{{COL_FIELD}}"><span style="font-size:7px;"><img ng-src="{{grid.appScope.$ctrl.getCountryFlag(row.entity.geo_cc)}}" lazy-src border="0"></span></div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.useragent',
@@ -76,7 +76,7 @@ export default [
     resizable: true,
     type: 'string',
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents"><span ng-style="grid.appScope.$ctrl.getCallStatusColor(row.entity.status, row.isSelected, row.entity.transaction)" title="status" translate="{{grid.appScope.$ctrl.getCallStatus(row.entity.status, row.entity.transaction)}}"></span></div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large"><span ng-style="grid.appScope.$ctrl.getCallStatusColor(row.entity.status, row.isSelected, row.entity.transaction)" title="status" translate="{{grid.appScope.$ctrl.getCallStatus(row.entity.status, row.entity.transaction)}}"></span></div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.srcip',
@@ -87,7 +87,7 @@ export default [
     type: 'string',
     width: '*',
     displayName: 'Source Host',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.srcport',
@@ -105,7 +105,7 @@ export default [
     minWidth: 120,
     width: '*',
     type: 'string',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="{{ grid.appScope.$ctrl.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.dstport',
@@ -122,7 +122,7 @@ export default [
     type: 'date',
     minWidth: 80,
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.getCallDuration(row.entity.cdr_start, row.entity.cdr_stop)}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="date">{{grid.appScope.$ctrl.getCallDuration(row.entity.cdr_start, row.entity.cdr_stop)}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.reserved',
@@ -131,7 +131,7 @@ export default [
     type: 'string',
     minWidth: 40,
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents"><span ng-style="grid.appScope.$ctrl.getMosColor(row.entity.reserve)">{{ row.entity.reserve ? (row.entity.reserve / 100) : "" }}</span></div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large"><span ng-style="grid.appScope.$ctrl.getMosColor(row.entity.reserve)">{{ row.entity.reserve ? (row.entity.reserve / 100) : "" }}</span></div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.cdrstart',
@@ -140,7 +140,7 @@ export default [
     displayName: 'Start',
     type: 'date',
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_start)}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_start)}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.cdrstop',
@@ -149,7 +149,7 @@ export default [
     displayName: 'Stop',
     type: 'date',
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_stop)}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="date">{{grid.appScope.$ctrl.dateSecondsConvert(row.entity.cdr_stop)}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.proto',
@@ -158,7 +158,7 @@ export default [
     type: 'number',
     resizable: true,
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="proto">{{grid.appScope.$ctrl.protoCheck(row, col)}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="proto">{{grid.appScope.$ctrl.protoCheck(row, col)}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.event',
@@ -167,7 +167,7 @@ export default [
     type: 'string',
     resizable: true,
     width: '*',
-    cellTemplate: '<div class="ui-grid-cell-contents" title="proto">{{grid.appScope.$ctrl.eventCheck(row, col)}}</div>'
+    cellTemplate: '<div class="ui-grid-cell-contents-large" title="proto">{{grid.appScope.$ctrl.eventCheck(row, col)}}</div>'
   },
   {
     _hepic_translation: 'hepic.pages.results.node',

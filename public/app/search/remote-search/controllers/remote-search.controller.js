@@ -125,14 +125,14 @@ class SearchRemote {
       const enrichedColumns = [];
       columnDefs.forEach(col => {
         if (col.name === 'sid' || col.field === 'sid') {
-          col.cellTemplate = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
+          col.cellTemplate = '<div class="ui-grid-cell-contents-large" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
             +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
           col.width = '10%';
         } else if (col.name === 'id' || col.field === 'id') {
           col.cellTemplate = '<div  ng-click="grid.appScope.$ctrl.showMessage(row, $event)" '
-            +'class="ui-grid-cell-contents"><span>{{COL_FIELD}}</span></div>';
+            +'class="ui-grid-cell-contents-large"><span>{{COL_FIELD}}</span></div>';
         } else if (col.name === 'create_date' || col.field === 'create_date') {
-          col.cellTemplate = '<div class="ui-grid-cell-contents" title="date">'
+          col.cellTemplate = '<div class="ui-grid-cell-contents-large" title="date">'
             +'{{grid.appScope.$ctrl.dateConvert(row.entity.create_date)}}</div>';
           col.type = 'date';
           col.width = '12%';

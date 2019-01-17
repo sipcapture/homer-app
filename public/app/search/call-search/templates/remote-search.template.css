@@ -1,0 +1,4 @@
+.ui-grid-viewport .ui-grid-cell-contents {
+    word-wrap: inherit;
+    white-space: nowrap;
+}

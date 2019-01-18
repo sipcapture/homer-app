@@ -20,9 +20,63 @@ class RemoteData extends LivingBeing {
   }
 
   /*
-  select * from hep where (hep_header->>'payloadType')::int = 1 limit 1;
-  return knex('books').select(knex.raw("data->'author' as author"))
-    .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
+  Fetch Loki Labels + Values into a tree array
+  */
+  getRemoteLabelsValues() {
+    var LOKI_API = data.param.server;
+    const url = LOKI_API + "/api/prom/label";
+    var labels = [];
+    return fetch(url)
+      .then(response => response.json())
+      .then(function(responseJSON){
+	   if(!responseJSON.values) return JSON.stringify(dataset);
+	   responseJSON.values.forEach(function(label,i){
+		if (!labels[label]) labels[label] = [];
+		var valUrl = LOKI_API + "/api/prom/label/"+label+"/values";
+	    	return fetch(valUrl)
+	    	  .then(response => response.json())
+	    	  .then(function(responseValues){
+			labels[label] = responseValues.values;
+		  })
+		});
+	   });
+	  return JSON.stringify(labels);
+      })
+      .catch(function(error) { console.error(error); return JSON.stringify(labels) });
+  }
+
+  /*
+  Fetch Loki Labels to array
+  */
+  getRemoteLabels() {
+    var LOKI_API = data.param.server;
+    const url = LOKI_API + "/api/prom/label";
+    return fetch(url)
+      .then(response => response.json())
+      .then(function(responseJSON){
+	   if(!responseJSON.values) return JSON.stringify([]);
+	   return JSON.stringify(responseJSON.values);
+      })
+      .catch(function(error) { console.error(error); return JSON.stringify([]) });
+  }
+
+  /*
+  Fetch Loki Labels + Values into a tree array
+  */
+  getRemoteValues(label) {
+    var LOKI_API = data.param.server;
+    const url = LOKI_API + "/api/prom/label/"+label+"/values";
+    return fetch(url)
+      .then(response => response.json())
+      .then(function(responseJSON){
+	   if(!responseJSON.values) return JSON.stringify([]);
+	   return JSON.stringify(responseJSON.values);
+      })
+      .catch(function(error) { console.error(error); return JSON.stringify([]) });
+  }
+
+  /*
+  Fetch Loki PromQL Results
   */
   getRemoteData(columns, table, data) {
     let sData = data.param.search;

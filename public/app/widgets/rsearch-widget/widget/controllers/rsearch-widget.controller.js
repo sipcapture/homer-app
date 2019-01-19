@@ -39,12 +39,11 @@ class RsearchWidget {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
 	            //if (prefix.length === 0) { callback(null, []); return }
 
-		    // INSECURE: THIS MUST BE REMOVED IN FAVOUR OF THE LOCAL API!
-		    var cors = "https://cors-anywhere.herokuapp.com/";
-        	    $.getJSON( cors + "http://de2.qxip.net:3100/api/prom/label", // + prefix,
+		    var api = "/api/v3/search/remote/label";
+        	    $.getJSON( api,
 		    function(wordList) {
                     	var labels = [];
-	                    wordList.values.forEach(val => labels.push({word: val, score: 1 }))
+	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
         	            console.log('got labels',labels);
 	                    callback(null, labels.map(function(ea) {
         	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}

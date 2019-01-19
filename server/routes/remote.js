@@ -37,4 +37,24 @@ export default function search(server) {
         });
     },
   });  
+
+  server.route({
+    path: '/api/v3/search/remote/label',
+    method: 'GET',
+    handler: function(request, reply) {
+      const remotedata = new RemoteData(server, request.payload);
+      const searchTable = 'hep_proto_1_default';
+      remotedata.getRemoteLabels(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload)
+        .then(function(data) {
+          if (!data) {
+            return reply(Boom.notFound('data was not found'));
+          }
+          return reply(data);
+        }).catch(function(error) {
+          return reply(Boom.serverUnavailable(error));
+        });
+    },
+  });  
+
+
 };

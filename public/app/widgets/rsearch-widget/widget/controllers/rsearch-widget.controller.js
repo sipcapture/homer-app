@@ -2,6 +2,10 @@ import 'angular-clock';
 import 'angular-clock/dist/angular-clock.css';
 import '../style/rsearch-widget.css';
 
+import 'ace-builds/src-min-noconflict/ace' // Load Ace Editor
+import 'ace-builds/src-min-noconflict/theme-chrome'
+import 'ace-builds/src-min-noconflict/ext-language_tools'
+
 import {cloneDeep} from 'lodash';
 
 class RsearchWidget {
@@ -20,18 +24,15 @@ class RsearchWidget {
     this.TimeMachine = TimeMachine;
     
     $scope.aceOptions = {
-	//method: 'sql',
-	//theme: 'sqlserver',
-	require: ["ace/ext/language_tools"],
         advanced:{
         	enableBasicAutocompletion: true,
                 enableSnippets: true,
-                enableLiveAutocompletion: false,
+                enableLiveAutocompletion: true,
                 autoScrollEditorIntoView: true,
         },
-        onLoad: function(editor, session, ace){
-        	$scope.langTools = ace.require("ace/ext/language_tools");
-                console.log("TEST LOAD", ace);		
+        onLoad: function(editor, session){
+        	var langTools = ace.require("ace/ext/language_tools");  
+                console.log("TEST LOAD", ace, langTools);		
 		console.log("TEST SESSION", session);		
 	
 		var labelCompleter = {
@@ -42,16 +43,14 @@ class RsearchWidget {
                     	var labels = [];
 	                    wordList.values.forEach(val => labels.push({word: val, score: 1 }))
         	            console.log('got labels',labels);
-                	    // wordList like [{"word":"flow","freq":24,"score":300,"flags":"bc","syllables":"1"}]
 	                    callback(null, labels.map(function(ea) {
         	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
                 	    }));
 	                })
         	    }
 		};
+		langTools.addCompleter(labelCompleter);		
 		
-                console.log("A", $scope.langTools);
-		$scope.langTools.addCompleter(labelCompleter);		
         }
     }
   }

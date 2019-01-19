@@ -40,11 +40,11 @@ export default function search(server) {
 
   server.route({
     path: '/api/v3/search/remote/label',
-    method: 'GET',
+    method: 'POST',
     handler: function(request, reply) {
       const remotedata = new RemoteData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      remotedata.getRemoteLabels(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload)
+      remotedata.getRemoteLabels(request.payload)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));

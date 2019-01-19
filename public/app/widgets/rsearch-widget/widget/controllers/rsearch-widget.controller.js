@@ -38,7 +38,10 @@ class RsearchWidget {
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
 	            //if (prefix.length === 0) { callback(null, []); return }
-        	    $.getJSON( "http://de2.qxip.net:3100/api/prom/label", // + prefix,
+
+		    // INSECURE: THIS MUST BE REMOVED IN FAVOUR OF THE LOCAL API!
+		    var cors = "https://cors-anywhere.herokuapp.com/";
+        	    $.getJSON( cors + "http://de2.qxip.net:3100/api/prom/label", // + prefix,
 		    function(wordList) {
                     	var labels = [];
 	                    wordList.values.forEach(val => labels.push({word: val, score: 1 }))

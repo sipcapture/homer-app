@@ -3,6 +3,9 @@ import { forEach, isEmpty, size } from 'lodash';
 
 import fetch from 'node-fetch';
 
+var LOKI_SERVER = 'http://127.0.0.1:3100';
+
+
 /**
  * A class to handle users in DB
  */
@@ -30,7 +33,7 @@ class RemoteData extends LivingBeing {
       .then(response => response.json())
       .then(function(responseJSON){
 	   if(!responseJSON.values) return JSON.stringify(dataset);
-	   responseJSON.values.forEach(function(label,i){
+	   responseJSON.values.forEach(function(label){
 		if (!labels[label]) labels[label] = [];
 		var valUrl = LOKI_API + "/api/prom/label/"+label+"/values";
 	    	return fetch(valUrl)
@@ -38,7 +41,7 @@ class RemoteData extends LivingBeing {
 	    	  .then(function(responseValues){
 			labels[label] = responseValues.values;
 		  })
-		});
+		
 	   });
 	  return JSON.stringify(labels);
       })
@@ -48,8 +51,8 @@ class RemoteData extends LivingBeing {
   /*
   Fetch Loki Labels to array
   */
-  getRemoteLabels() {
-    var LOKI_API = data.param.server;
+  getRemoteLabels(data) {
+    var LOKI_API = data.param.search || LOKI_SERVER;
     const url = LOKI_API + "/api/prom/label";
     return fetch(url)
       .then(response => response.json())
@@ -63,8 +66,8 @@ class RemoteData extends LivingBeing {
   /*
   Fetch Loki Labels + Values into a tree array
   */
-  getRemoteValues(label) {
-    var LOKI_API = data.param.server;
+  getRemoteValues(data) {
+    var LOKI_API = data.param.search || LOKI_SERVER;
     const url = LOKI_API + "/api/prom/label/"+label+"/values";
     return fetch(url)
       .then(response => response.json())
@@ -79,7 +82,7 @@ class RemoteData extends LivingBeing {
   Fetch Loki PromQL Results
   */
   getRemoteData(columns, table, data) {
-    let sData = data.param.search;
+    let sData = data.param.search || LOKI_SERVER;
     console.log('IN LogQL',sData);
 
     var parseQuery = function(input) {

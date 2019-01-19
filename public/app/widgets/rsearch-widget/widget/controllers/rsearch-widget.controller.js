@@ -20,12 +20,42 @@ class RsearchWidget {
     this.TimeMachine = TimeMachine;
     
     $scope.aceOptions = {
-	method: 'sql',
-	theme: 'sqlserver',
-	onLoad: function(editor, session, ace){
-        	// do anythig
-        	//console.log("TEST LOAD");
-	}
+	//method: 'sql',
+	//theme: 'sqlserver',
+	require: ["ace/ext/language_tools"],
+        advanced:{
+        	enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: false,
+                autoScrollEditorIntoView: true,
+        },
+        onLoad: function(editor, session, ace){
+        	$scope.langTools = ace.require("ace/ext/language_tools");
+		console.log("TEST LOAD");		
+		
+		var langTools = ace.require("ace/ext/language_tools"); 
+		    
+	
+		var labelCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+	            //if (prefix.length === 0) { callback(null, []); return }
+        	    $.getJSON( "http://de2.qxip.net:3100/api/prom/label", // + prefix,
+		    function(wordList) {
+                    	var labels = [];
+	                    wordList.values.forEach(val => labels.push({word: val, score: 1 }))
+        	            console.log('got labels',labels);
+                	    // wordList like [{"word":"flow","freq":24,"score":300,"flags":"bc","syllables":"1"}]
+	                    callback(null, labels.map(function(ea) {
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
+                	    }));
+	                })
+        	    }
+		};
+		
+                console.log("A", $scope.langTools);
+                console.log("B", langTools);
+		$scope.langTools.addCompleter(labelCompleter);		
+        }
     }
   }
 
@@ -40,7 +70,10 @@ class RsearchWidget {
     
   }
   
-
+  aceChange() {
+    console.log("CHANGE");
+  }
+  
 
   get locationName() {
     return this._widget.config.location.desc.toUpperCase() || 'unknown';

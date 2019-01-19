@@ -18,6 +18,15 @@ class RsearchWidget {
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
     this.TimeMachine = TimeMachine;
+    
+    $scope.aceOptions = {
+	method: 'sql',
+	theme: 'sqlserver',
+	onLoad: function(editor, session, ace){
+        	// do anythig
+        	//console.log("TEST LOAD");
+	}
+    }
   }
 
   $onInit() {
@@ -28,14 +37,10 @@ class RsearchWidget {
     this.timerange = this.UserProfile.profileScope.timerange;                                         
     this.newObject['limit'] = 100;
 
-    this.$scope.aceOptions = {
-	method: 'sql',
-	theme: 'sqlserver',
-	onLoad: function(editor, session, ace){
-        	// do anythig
-	}
-    }
+    
   }
+  
+
 
   get locationName() {
     return this._widget.config.location.desc.toUpperCase() || 'unknown';

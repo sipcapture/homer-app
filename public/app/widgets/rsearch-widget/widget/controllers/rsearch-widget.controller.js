@@ -31,10 +31,8 @@ class RsearchWidget {
         },
         onLoad: function(editor, session, ace){
         	$scope.langTools = ace.require("ace/ext/language_tools");
-		console.log("TEST LOAD");		
-		
-		var langTools = ace.require("ace/ext/language_tools"); 
-		    
+                console.log("TEST LOAD", ace);		
+		console.log("TEST SESSION", session);		
 	
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
@@ -53,7 +51,6 @@ class RsearchWidget {
 		};
 		
                 console.log("A", $scope.langTools);
-                console.log("B", langTools);
 		$scope.langTools.addCompleter(labelCompleter);		
         }
     }

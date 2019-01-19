@@ -35,6 +35,7 @@ import 'ngstorage';
 import 'angular-filter';
 import 'font-awesome-webpack';
 import 'angular-json-tree';
+import 'ace-angular';
 
 // style
 import 'font-awesome/css/font-awesome.css';

@@ -27,6 +27,14 @@ class RsearchWidget {
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
     this.newObject['limit'] = 100;
+
+    this.$scope.aceOptions = {
+	method: 'sql',
+	theme: 'sqlserver',
+	onLoad: function(editor, session, ace){
+        	// do anythig
+	}
+    }
   }
 
   get locationName() {

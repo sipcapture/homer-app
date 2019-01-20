@@ -2,6 +2,10 @@ import 'angular-clock';
 import 'angular-clock/dist/angular-clock.css';
 import '../style/rsearch-widget.css';
 
+import 'ace-builds/src-min-noconflict/ace' // Load Ace Editor
+import 'ace-builds/src-min-noconflict/theme-chrome'
+import 'ace-builds/src-min-noconflict/ext-language_tools'
+
 import {cloneDeep} from 'lodash';
 
 class RsearchWidget {
@@ -18,6 +22,95 @@ class RsearchWidget {
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
     this.TimeMachine = TimeMachine;
+    
+    $scope.aceOptions = {
+        advanced:{
+		maxLines: 1,
+		minLines: 1,
+		showLineNumbers: false,
+	 	showGutter: false,
+		fontSize: 13,
+        	enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true,
+                autoScrollEditorIntoView: true,
+        },
+        onLoad: function(editor, session){
+        	var langTools = ace.require("ace/ext/language_tools");  
+	
+		var labelCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+	            //if (prefix.length === 0) { callback(null, []); return }
+
+		    var api = "/api/v3/search/remote/label";
+        	    $.getJSON( api,
+		    function(wordList) {
+                    	var labels = [];
+	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
+        	            // console.log('got labels',labels);
+	                    callback(null, labels.map(function(ea) {
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
+                	    }));
+	                })
+        	    }
+		};
+		langTools.addCompleter(labelCompleter);		
+		var allCompleters = editor.completers;
+
+		var valueCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+		    var myprefix = "method";
+	            if (prefix.length === 0) { 
+	                console.log("NULL return ");
+	                // callback(null, []); return 
+	            }
+	            else {
+	                myprefix = prefix;
+	            }
+
+	            if (myprefix.length === 0) { callback(null, []); return }
+		    var api = "/api/v3/search/remote/values?label="+myprefix;
+        	    $.getJSON( api,
+		    function(wordList) {
+                    	var values = [];
+	                    wordList.forEach(val => values.push({word: val, score: 1 }))
+        	            // console.log('got values',values);
+	                    callback(null, values.map(function(ea) {
+        	                return {name: ea.word, value: '= "'+ea.word+'"', score: ea.score, meta: "value"}
+                	    }));
+	                })
+        	    }
+		};
+
+	    	editor.commands.addCommand({
+	                name: "getValues",
+	                bindKey: { win: "=", mac: "=" },                
+	                exec: function(editor,command) {
+	                    console.log('Lookup values',editor.getValue(),command )
+	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
+	                    editor.completers = [valueCompleter];                  
+	                    editor.execCommand("startAutocomplete");
+	                    //editor.completer.showPopup(editor); 
+	                }
+	    	});   
+    
+	    
+	    	editor.commands.on('afterExec', event => {
+	    	   const { editor, command } = event;
+	    	   // console.log('AFTER!',command)
+	    	   if (event.command.name == "insertstring") {
+	    	     editor.execCommand("startAutocomplete");
+	    	     editor.completers = allCompleters; 
+	    	   }
+	    	   if (event.command.name == "insertMatch") {
+			 editor.completers = allCompleters;
+		   }
+		});
+
+
+		
+        }
+    }
   }
 
   $onInit() {
@@ -27,7 +120,14 @@ class RsearchWidget {
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
     this.newObject['limit'] = 100;
+
+    
   }
+  
+  aceChange() {
+    console.log("CHANGE");
+  }
+  
 
   get locationName() {
     return this._widget.config.location.desc.toUpperCase() || 'unknown';

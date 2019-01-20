@@ -37,6 +37,7 @@ class RsearchWidget {
         },
         onLoad: function(editor, session){
         	var langTools = ace.require("ace/ext/language_tools");  
+        	var gprefix = "test";
 	
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
@@ -59,24 +60,17 @@ class RsearchWidget {
 
 		var valueCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
-		    var myprefix = "method";
-	            if (prefix.length === 0) { 
-	                console.log("NULL return ");
-	                // callback(null, []); return 
-	            }
-	            else {
-	                myprefix = prefix;
-	            }
-
-	            if (myprefix.length === 0) { callback(null, []); return }
-		    var api = "/api/v3/search/remote/values?label="+myprefix;
+     		    
+     		    console.log("PREIFX 0: ", gprefix);
+	            if (gprefix.length === 0) { callback(null, []); return }
+		    var api = "/api/v3/search/remote/values?label="+gprefix;
         	    $.getJSON( api,
 		    function(wordList) {
                     	var values = [];
 	                    wordList.forEach(val => values.push({word: val, score: 1 }))
         	            // console.log('got values',values);
 	                    callback(null, values.map(function(ea) {
-        	                return {name: ea.word, value: '= "'+ea.word+'"', score: ea.score, meta: "value"}
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "value"}
                 	    }));
 	                })
         	    }
@@ -86,7 +80,21 @@ class RsearchWidget {
 	                name: "getValues",
 	                bindKey: { win: "=", mac: "=" },                
 	                exec: function(editor,command) {
-	                    console.log('Lookup values',editor.getValue(),command )
+	                    var position = editor.getCursorPosition();
+	                    var token = editor.session.getTokenAt(position.row, position.column);
+	                    var valueData = token.value.substring(0, position.column);	                	                    	                    
+	                    var arrStr = valueData.split(/[=\ {}]/).reverse();
+	                    console.log("ARR", arrStr);
+	                    for (var i = 0; i < arrStr.length; i++) {	                              
+                                    console.log("XX", arrStr[i]);
+                                    if(arrStr[i].length != 0 ) {
+                                        gprefix = arrStr[i];
+                                        break;
+                                    }	                            
+	                    };	                    
+	                    editor.insert(" = ");
+	                    //console.log('Lookup values 1',editor.getValue());	                    
+	                    //console.log('Lookup values 2',command);	                    
 	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
 	                    editor.completers = [valueCompleter];                  
 	                    editor.execCommand("startAutocomplete");

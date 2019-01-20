@@ -52,6 +52,62 @@ class RsearchWidget {
         	    }
 		};
 		langTools.addCompleter(labelCompleter);		
+		var allCompleters = editor.completers;
+
+		var valueCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+		    var myprefix = "method";
+	            if (prefix.length === 0) { 
+	                console.log("NULL return ");
+	                // callback(null, []); return 
+	            }
+	            else {
+	                myprefix = prefix;
+	            }
+
+	            if (myprefix.length === 0) { callback(null, []); return }
+		    var api = "/api/v3/search/remote/values?label="+myprefix;
+        	    $.getJSON( api,
+		    function(wordList) {
+                    	var values = [];
+	                    wordList.forEach(val => values.push({word: val, score: 1 }))
+        	            console.log('got values',values);
+	                    callback(null, values.map(function(ea) {
+        	                return {name: ea.word, value: '= "'+ea.word+'"', score: ea.score, meta: "value"}
+                	    }));
+	                })
+        	    }
+		};
+
+
+	// TEST
+	    editor.commands.addCommand({
+	                name: "getValues",
+	                bindKey: { win: "=", mac: "=" },                
+	                exec: function(editor) {
+	                    console.log('Lookup values',editor.getValue() )
+	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
+	                    editor.completers = [valueCompleter];                  
+	                    editor.execCommand("startAutocomplete");
+	                    //editor.completer.showPopup(editor); 
+	                    //editor.completers = all; 
+	                }
+	    });   
+    
+	    
+	    editor.commands.on('afterExec', event => {
+	      const { editor, command } = event;
+	      console.log('AFTER!',command)
+	       if (event.command.name == "insertstring") {
+	         editor.execCommand("startAutocomplete");
+	         // editor.completers = allCompleters; 
+	       }
+	       if (event.command.name == "insertMatch") {
+		 editor.completers = allCompleters;
+	       }
+	    });
+
+
 		
         }
     }

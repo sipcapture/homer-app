@@ -66,8 +66,8 @@ class RemoteData extends LivingBeing {
   /*
   Fetch Loki Labels + Values into a tree array
   */
-  getRemoteValues(data) {
-    var LOKI_API = data.param.search || LOKI_SERVER;
+  getRemoteValues(server,label) {
+    var LOKI_API = server || LOKI_SERVER;
     const url = LOKI_API + "/api/prom/label/"+label+"/values";
     return fetch(url)
       .then(response => response.json())

@@ -12,7 +12,7 @@ export default function any(server) {
         return reply(Boom.notFound('The resource isn’t available on this server.'));
       }
 
-      return reply.view('404').code(404);
+      return reply({ error: 'Not found' });
     },
   });
 };

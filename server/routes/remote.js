@@ -56,5 +56,22 @@ export default function search(server) {
     },
   });  
 
+  server.route({
+    path: '/api/v3/search/remote/values',
+    method: 'GET',
+    handler: function(request, reply) {
+      const remotedata = new RemoteData(server, request.payload);
+      remotedata.getRemoteValues(false,request.query.label)
+        .then(function(data) {
+          if (!data) {
+            return reply(Boom.notFound('data was not found'));
+          }
+          return reply(data);
+        }).catch(function(error) {
+          return reply(Boom.serverUnavailable(error));
+        });
+    },
+  });  
+
 
 };

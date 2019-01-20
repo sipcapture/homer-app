@@ -9,7 +9,7 @@
 
     <div class="box-content">
 
-
+<!--
 	<div class="input-group">
             <div class="input-group-addon">
                 <label for="LogQL" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;" class="ng-binding">LogQL</label>
@@ -17,6 +17,17 @@
             <input title="" type="text" name="LogQL" id="LogQL" ng-enter="$ctrl.processSearchForm();" class="form-control ng-pristine ng-untouched ng-valid ng-empty" 
 			ng-model="$ctrl.newObject['searchvalue']" style="height:35px !important;" aria-invalid="false" placeholder='{tag="value"} regex' >
             <span class="fa  form-control-search" title="search type"></span>
+	</div>
+-->
+
+	<div class="input-group">
+            <div class="input-group-addon">
+                <label for="LogQL" style="min-width:100px; margin:0px; margin-left:5px;margin-right:5px;" class="ng-binding">LogQL</label>
+            </div> 
+   	    <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()" style="min-height: 30px !important" 
+			class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+			ng-model="$ctrl.newObject['searchvalue']" ></div>	
+	            <span class="fa  form-control-search" title="search type"></span>
 	</div>
 
 	<div class="input-group">
@@ -27,7 +38,7 @@
 			ng-model="$ctrl.newObject['limit']" style="height:35px !important;" aria-invalid="false" placeholder='Max Results, Integer (default: 1000)' >
             <span class="fa  form-control-search" title="search type"></span>
 	</div>
-        
+        	                
 	<div class="form-group form-group-custom-3" style="padding-right:0px;height:30px;" aria-hidden="false">  
 		<button type="submit" ng-click="$ctrl.clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px;height:auto;" ng-disabled="false"> Clear </button>
 		<button type="submit" ng-click="$ctrl.processSearchForm();" class="btn btn-primary " style="float:right;margin-right: 5px;height:auto;" ng-disabled="false">Search</button>

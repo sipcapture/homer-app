@@ -29,7 +29,7 @@ class RsearchWidget {
 		minLines: 1,
 		showLineNumbers: false,
 	 	showGutter: false,
-		fontSize: 14,
+		fontSize: 13,
         	enableBasicAutocompletion: true,
                 enableSnippets: true,
                 enableLiveAutocompletion: true,
@@ -82,33 +82,30 @@ class RsearchWidget {
         	    }
 		};
 
-
-	// TEST
-	    editor.commands.addCommand({
+	    	editor.commands.addCommand({
 	                name: "getValues",
 	                bindKey: { win: "=", mac: "=" },                
-	                exec: function(editor) {
-	                    // console.log('Lookup values',editor.getValue() )
+	                exec: function(editor,command) {
+	                    console.log('Lookup values',editor.getValue(),command )
 	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
 	                    editor.completers = [valueCompleter];                  
 	                    editor.execCommand("startAutocomplete");
 	                    //editor.completer.showPopup(editor); 
-	                    //editor.completers = all; 
 	                }
-	    });   
+	    	});   
     
 	    
-	    editor.commands.on('afterExec', event => {
-	      const { editor, command } = event;
-	      // console.log('AFTER!',command)
-	       if (event.command.name == "insertstring") {
-	         editor.execCommand("startAutocomplete");
-	         editor.completers = allCompleters; 
-	       }
-	       if (event.command.name == "insertMatch") {
-		 editor.completers = allCompleters;
-	       }
-	    });
+	    	editor.commands.on('afterExec', event => {
+	    	   const { editor, command } = event;
+	    	   // console.log('AFTER!',command)
+	    	   if (event.command.name == "insertstring") {
+	    	     editor.execCommand("startAutocomplete");
+	    	     editor.completers = allCompleters; 
+	    	   }
+	    	   if (event.command.name == "insertMatch") {
+			 editor.completers = allCompleters;
+		   }
+		});
 
 
 		

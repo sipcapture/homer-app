@@ -82,9 +82,7 @@ class RsearchWidget {
 	                    var token = editor.session.getTokenAt(position.row, position.column);
 	                    var valueData = token.value.substring(0, position.column);	                	                    	                    
 	                    var arrStr = valueData.split(/[=\ {}]/).reverse();
-	                    console.log("ARR", arrStr);
 	                    for (var i = 0; i < arrStr.length; i++) {	                              
-                                    console.log("XX", arrStr[i]);
                                     if(arrStr[i].length != 0 ) {
                                         gprefix = arrStr[i];
                                         break;
@@ -101,13 +99,21 @@ class RsearchWidget {
 	    
 	    	editor.commands.on('afterExec', event => {
 	    	   const { editor, command } = event;
-	    	   // console.log('AFTER!',command)
-	    	   if (event.command.name == "insertstring") {
-	    	     editor.execCommand("startAutocomplete");
-	    	     editor.completers = allCompleters; 
+	    	   //console.log('AFTER!',command);
+	    	   //console.log('AFTER 2!',event);
+	    	   if (event.command.name == "insertstring")
+	    	   {
+	    	           if (event.args != "}" && event.args != " ") 
+	    	           {
+	    	               editor.execCommand("startAutocomplete");
+	    	               //editor.completers = allCompleters; 
+	    	               editor.completers = [labelCompleter];
+                           }
 	    	   }
 	    	   if (event.command.name == "insertMatch") {
-			 editor.completers = allCompleters;
+			 //editor.completers = allCompleters;
+			 editor.completers = [labelCompleter];
+			                                
 		   }
 		});
 

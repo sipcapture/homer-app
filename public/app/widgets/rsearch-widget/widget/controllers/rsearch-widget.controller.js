@@ -25,6 +25,11 @@ class RsearchWidget {
     
     $scope.aceOptions = {
         advanced:{
+		maxLines: 1,
+		minLines: 1,
+		showLineNumbers: false,
+	 	showGutter: false,
+		fontSize: 14,
         	enableBasicAutocompletion: true,
                 enableSnippets: true,
                 enableLiveAutocompletion: true,

@@ -37,8 +37,6 @@ class RsearchWidget {
         },
         onLoad: function(editor, session){
         	var langTools = ace.require("ace/ext/language_tools");  
-                console.log("TEST LOAD", ace, langTools);		
-		console.log("TEST SESSION", session);		
 	
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
@@ -49,7 +47,7 @@ class RsearchWidget {
 		    function(wordList) {
                     	var labels = [];
 	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
-        	            console.log('got labels',labels);
+        	            // console.log('got labels',labels);
 	                    callback(null, labels.map(function(ea) {
         	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
                 	    }));
@@ -76,7 +74,7 @@ class RsearchWidget {
 		    function(wordList) {
                     	var values = [];
 	                    wordList.forEach(val => values.push({word: val, score: 1 }))
-        	            console.log('got values',values);
+        	            // console.log('got values',values);
 	                    callback(null, values.map(function(ea) {
         	                return {name: ea.word, value: '= "'+ea.word+'"', score: ea.score, meta: "value"}
                 	    }));
@@ -90,7 +88,7 @@ class RsearchWidget {
 	                name: "getValues",
 	                bindKey: { win: "=", mac: "=" },                
 	                exec: function(editor) {
-	                    console.log('Lookup values',editor.getValue() )
+	                    // console.log('Lookup values',editor.getValue() )
 	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
 	                    editor.completers = [valueCompleter];                  
 	                    editor.execCommand("startAutocomplete");
@@ -102,10 +100,10 @@ class RsearchWidget {
 	    
 	    editor.commands.on('afterExec', event => {
 	      const { editor, command } = event;
-	      console.log('AFTER!',command)
+	      // console.log('AFTER!',command)
 	       if (event.command.name == "insertstring") {
 	         editor.execCommand("startAutocomplete");
-	         // editor.completers = allCompleters; 
+	         editor.completers = allCompleters; 
 	       }
 	       if (event.command.name == "insertMatch") {
 		 editor.completers = allCompleters;

@@ -59,9 +59,7 @@ class RsearchWidget {
 		var allCompleters = editor.completers;
 
 		var valueCompleter = {
-     		   getCompletions: function(editor, session, pos, prefix, callback) {
-     		    
-     		    console.log("PREIFX 0: ", gprefix);
+     		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
 	            if (gprefix.length === 0) { callback(null, []); return }
 		    var api = "/api/v3/search/remote/values?label="+gprefix;
         	    $.getJSON( api,
@@ -93,8 +91,6 @@ class RsearchWidget {
                                     }	                            
 	                    };	                    
 	                    editor.insert(" = ");
-	                    //console.log('Lookup values 1',editor.getValue());	                    
-	                    //console.log('Lookup values 2',command);	                    
 	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
 	                    editor.completers = [valueCompleter];                  
 	                    editor.execCommand("startAutocomplete");

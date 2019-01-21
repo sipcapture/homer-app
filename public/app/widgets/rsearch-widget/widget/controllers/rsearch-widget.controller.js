@@ -76,7 +76,7 @@ class RsearchWidget {
 		var valueCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
 	            if (gprefix.length === 0) { callback(null, []); return }
-		    var api = "/api/v3/search/remote/values?label="+gprefix+"+&server="+wServer;
+		    var api = "/api/v3/search/remote/values?label="+gprefix+"&server="+wServer;
         	    $.getJSON( api,
 		    function(wordList) {
                     	var values = [];

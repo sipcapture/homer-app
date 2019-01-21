@@ -1,0 +1,64 @@
+<div class="modal-body" style="padding-left: 40px; padding-bottom: 40px;">
+  <form role="form" name="myForm">
+    <div class="row">
+      <div class="col-lg-2 col-sm-2">
+        <h3 class="setting__main-title">
+          <button type="button" ng-click="$ctrl.addAlias();" class="btn btn-primary " ng-disabled="false">
+          <i class="fa fa-plus"></i> Add
+          </button>  
+        </h3>
+      </div>
+      <div class="col-lg-10 col-sm-10">
+        <h3 class="setting__main-title">Alias</h3>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+      </div>
+      <div class="row nd-row-bord">
+        <table st-table="$ctrl.alias" class="table table-striped ng-isolate-scope">
+          <thead>
+            <tr>
+              <th width="18%" st-sort-default="true" st-sort="alias">Alias</th>
+              <th width="18%" st-sort-default="true" st-sort="ip">IP Address</th>
+              <th width="18%" st-sort-default="true" st-sort="port">Port</th>
+              <th width="18%" st-sort-default="true" st-sort="mask">Mask</th>
+              <th width="18%" st-sort-default="true" st-sort="captureID">CaptureID</th>
+              <th width="18%" st-sort-default="true" st-sort="status">Status</th>
+              <th width="10%">Action</th>
+            </tr>
+            <tr>
+              <th colspan="10"><input st-search="" class="form-control" placeholder="account search ..." type="text"/></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="alias in $ctrl.alias">
+              <td width="18%">{{alias.alias}}</td>
+              <td width="18%">{{alias.ip}}</td>
+              <td width="18%">{{alias.port}}</td>
+              <td width="18%">{{alias.mask}}</td>
+              <td width="18%">{{alias.captureID}}</td>
+              <td width="18%">{{alias.status}}</td>
+              <td width="10%">
+                <button type="button" ng-click="$ctrl.editAlias(alias, $event)" class="btn-sm btn-info">
+                <i class="glyphicon glyphicon-wrench"></i>
+                </button>
+                <button type="button" ng-click="$ctrl.deleteAlias(alias)" class="btn-sm btn-danger">
+                <i class="glyphicon glyphicon-remove"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-center">
+                <div
+                  st-pagination="$ctrl.smartTable.options.pagination"
+                  st-items-by-page="$ctrl.smartTable.options.items_by_page"
+                  st-displayed-pages="$ctrl.smartTable.displayed_pages"
+                ></div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>

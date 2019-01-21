@@ -6,6 +6,7 @@ import EventBus from './event-bus';
 import Log from './log';
 import UserService from './user-service';
 import UserSettingsService from './user-settings-service';
+import AliasService from './alias-service';
 import HomerHelper from './homer-helper';
 
 export default angular.module('hepicApp.services', [
@@ -16,5 +17,6 @@ export default angular.module('hepicApp.services', [
   Log.name,
   UserService.name,
   UserSettingsService.name,
+  AliasService.name,
   HomerHelper.name,
 ]);

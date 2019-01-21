@@ -22,10 +22,10 @@ export default function alias(server) {
       },
     },
     handler: async function(request, reply) {
-      const alias = new Alias({server});
+      const settings = new Alias({server});
 
       try {
-        const data = await alias.getAll(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+        const data = await settings.getAll(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
         if (!data || !data.length) {
           return reply(Boom.notFound('no alias found'));
         }
@@ -64,10 +64,10 @@ export default function alias(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const alias = new Alias({server, guid});
+      const settings = new Alias({server, guid});
 
       try {
-        const data = await alias.get(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+        const data = await settings.get(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
         if (!data || !Object.keys(data).length) {
           return reply(Boom.notFound('no alias found for guid ' + guid));
         }
@@ -117,10 +117,10 @@ export default function alias(server) {
     handler: async function(request, reply) {
       const {ip, port, mask, captureID, alias, status} = request.payload;
       const guid = uuid();
-      const alias = new Alias({server});
+      const settings = new Alias({server});
 
       try {
-        await alias.add({guid, ip, port, mask, captureID, alias, status});
+        await settings.add({guid, ip, port, mask, captureID, alias, status});
         return reply({
           data: guid,
           message: 'successfully created alias',
@@ -171,10 +171,10 @@ export default function alias(server) {
         {
           method: async function(request, reply) {
             const {guid} = request.params;
-            const alias = new Alias({server, guid});
+            const settings = new Alias({server, guid});
 
             try {
-              const res = await alias.get(['guid']);
+              const res = await settings.get(['guid']);
               if (!res || !res.guid || res.guid !== guid) {
                 return reply(Boom.notFound(`the alias with id ${guid} was not found`));
               }
@@ -191,10 +191,10 @@ export default function alias(server) {
       const {guid} = request.params;
       const updates = pick(request.payload, ['ip', 'port', 'mask', 'captureID', 'alias', 'status']);
 
-      const alias = new Alias({server, guid});
+      const settings = new Alias({server, guid});
 
       try {
-        await alias.update(updates);
+        await settings.update(updates);
         return reply({
           data: guid,
           message: 'successfully updated alias',
@@ -230,10 +230,10 @@ export default function alias(server) {
         {
           method: async function(request, reply) {
             const {guid} = request.params;
-            const alias = new Alias({server, guid});
+            const settings = new Alias({server, guid});
 
             try {
-              const res = await alias.get(['guid']);
+              const res = await settings.get(['guid']);
               if (!res || !res.guid || res.guid !== guid) {
                 return reply(Boom.notFound(`the alias with id ${guid} were not found`));
               }
@@ -248,10 +248,10 @@ export default function alias(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const alias = new Alias({server, guid});
+      const settings = new Alias({server, guid});
 
       try {
-        await alias.delete();
+        await settings.delete();
         return reply({
           data: guid,
           message: 'successfully deleted alias',

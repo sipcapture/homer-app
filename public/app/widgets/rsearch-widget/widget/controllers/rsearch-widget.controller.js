@@ -29,16 +29,23 @@ class RsearchWidget {
 		minLines: 1,
 		showLineNumbers: false,
 	 	showGutter: false,
-		fontSize: 13,
+		fontSize: 15,
         	enableBasicAutocompletion: true,
-                enableSnippets: true,
+                enableSnippets: false,
                 enableLiveAutocompletion: true,
                 autoScrollEditorIntoView: true,
         },
         onLoad: function(editor, session){
         	var langTools = ace.require("ace/ext/language_tools");  
         	var gprefix = "test";
-	
+
+        	/*text rules for the feature*/
+        	//var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
+        	
+                /* change line height */
+        	editor.container.style.lineHeight = 2;
+        	editor.renderer.updateFontSize();
+        	
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
 	            //if (prefix.length === 0) { callback(null, []); return }
@@ -56,7 +63,7 @@ class RsearchWidget {
         	    }
 		};
 		langTools.addCompleter(labelCompleter);		
-		var allCompleters = editor.completers;
+		//var allCompleters = editor.completers;
 
 		var valueCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
@@ -101,6 +108,7 @@ class RsearchWidget {
 	    	   const { editor, command } = event;
 	    	   //console.log('AFTER!',command);
 	    	   //console.log('AFTER 2!',event);
+	    	   	    	                    
 	    	   if (event.command.name == "insertstring")
 	    	   {
 	    	           if (event.args != "}" && event.args != " ") 
@@ -108,6 +116,14 @@ class RsearchWidget {
 	    	               editor.execCommand("startAutocomplete");
 	    	               //editor.completers = allCompleters; 
 	    	               editor.completers = [labelCompleter];
+	    	               /* high light */
+	    	               /*
+	    	               var position = editor.getCursorPosition();
+	    	               var Range = ace.require('ace/range').Range;	    	               
+	    	               var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
+	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");	    	               
+	    	               */
+	    	               
                            }
 	    	   }
 	    	   if (event.command.name == "insertMatch") {

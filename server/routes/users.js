@@ -66,11 +66,11 @@ export default function users(server) {
       },
       validate: {
         payload: {
-          firstname: Joi.string().min(3).max(50).required(),
-          lastname: Joi.string().min(3).max(50).required(),
-          username: Joi.string().min(3).max(50).required(),
+          firstname: Joi.string().min(2).max(50).required(),
+          lastname: Joi.string().min(2).max(50).required(),
+          username: Joi.string().min(2).max(50).required(),
           email: Joi.string().min(6).max(250).required(),
-          password: Joi.string().min(8).max(250).required(),
+          password: Joi.string().min(2).max(250).required(),
           partid: Joi.number(),
           usergroup: Joi.string().min(2).max(250),
           department: Joi.string().min(2).max(250),
@@ -123,14 +123,14 @@ export default function users(server) {
       },
       validate: {
         params: {
-          userGuid: Joi.string().min(12).max(46).required(),
+          userGuid: Joi.string().min(2).max(46).required(),
         },
         payload: {
-          firstname: Joi.string().min(3).max(50),
-          lastname: Joi.string().min(3).max(50),
-          username: Joi.string().min(3).max(50),
+          firstname: Joi.string().min(2).max(50),
+          lastname: Joi.string().min(2).max(50),
+          username: Joi.string().min(2).max(50),
           email: Joi.string().min(6).max(250),
-          password: Joi.string().min(6).max(250),
+          password: Joi.string().min(2).max(250),
           partid: Joi.number(),
           usergroup: Joi.string().min(2).max(250),
           department: Joi.string().min(2).max(250),

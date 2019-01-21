@@ -27,15 +27,8 @@ class AliasService {
   */
   async add({alias, ip, port, mask, captureID, status}) {
     try {
-      const settings = {alias, ip, port, mask, captureID, status};
-
-      try {
-        settings.data = JSON.stringify(settings.data);
-      } catch (err) {
-        throw new Error(`fail to stringify data: ${err.message}`);
-      }
-
-      const resp = await this.$http.post(this.API.ADD, settings);
+      const a = {alias, ip, port, mask, captureID, status};
+      const resp = await this.$http.post(this.API.ADD, a);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
       }
@@ -51,15 +44,8 @@ class AliasService {
   */
   async update({guid, alias, ip, port, mask, captureID, status}) {
     try {
-      const settings = {alias, ip, port, mask, captureID, status};
-
-      try {
-        settings.data = JSON.stringify(settings.data);
-      } catch (err) {
-        throw new Error(`fail to stringify data: ${err.message}`);
-      }
-
-      const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), settings);
+      const a = {alias, ip, port, mask, captureID, status};
+      const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), a);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
       }

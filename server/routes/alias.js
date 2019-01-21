@@ -110,7 +110,7 @@ export default function alias(server) {
           port: Joi.number(),
           mask: Joi.number(),
           captureID: Joi.string().min(1).max(20),
-          status: Joi.string(),
+          status: Joi.boolean(),
         },
       },
     },
@@ -164,7 +164,7 @@ export default function alias(server) {
           port: Joi.number(),
           mask: Joi.number(),
           captureID: Joi.string().min(1).max(20),
-          status: Joi.string(),
+          status: Joi.boolean(),
         },
       },
       pre: [

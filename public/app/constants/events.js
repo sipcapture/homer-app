@@ -27,6 +27,7 @@ const EVENTS = {
   GRID_STATE_RESET: 'resetGridState',
   SHOW_USER_PROFILE: 'showUserProfile',
   SHOW_USER_SETTINGS: 'showSettings',
+  SHOW_ALIAS: 'showAlias',
   SHOW_USER_MESSAGES: 'showUserMessages',
   SHOW_NEW_MESSAGE: 'showNewMessage',
   WEBSOCKET_OPEN: 'websocketOpen',

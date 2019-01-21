@@ -44,7 +44,7 @@ export default function search(server) {
     handler: function(request, reply) {
       const remotedata = new RemoteData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      remotedata.getRemoteLabels(query.server||false)
+      remotedata.getRemoteLabels(request.query.server||false)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -61,7 +61,7 @@ export default function search(server) {
     method: 'GET',
     handler: function(request, reply) {
       const remotedata = new RemoteData(server, request.payload);
-      remotedata.getRemoteValues(query.server||false,request.query.label)
+      remotedata.getRemoteValues(request.query.server||false,request.query.label)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));

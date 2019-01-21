@@ -83,7 +83,7 @@ class RsearchWidget {
 	                    wordList.forEach(val => values.push({word: val, score: 1 }))
         	            // console.log('got values',values);
 	                    callback(null, values.map(function(ea) {
-        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "value"}
+        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: "value"}
                 	    }));
 	                })
         	    }

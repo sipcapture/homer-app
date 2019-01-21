@@ -4,13 +4,13 @@
 	<div class="col-md-8 col-md-offset-2">
 		<form name="form" ng-submit="form.$valid && $ctrl.login()" novalidate>
 		  <div class="form-group" ng-class="{ 'has-error': form.$submitted && form.username.$invalid }">
-		    <input type="text" name="username" class="form-control" ng-model="$ctrl.username" required placeholder="Username" />
+		    <input type="text" name="username" class="form-control" ng-model="$ctrl.username" required placeholder="Username" auto-fill-sync/>
 		    <div ng-messages="form.$submitted && form.username.$error" class="help-block">
 		     	<div ng-message="required" class="alert alert-info" ng-show="!$ctrl.username">Username is required</div>
 		    </div>
 		  </div>
 		  <div class="form-group" ng-class="{ 'has-error': form.$submitted && form.password.$invalid }">
-		    <input type="password" name="password" class="form-control" ng-model="$ctrl.password" required placeholder="Password" />
+		    <input type="password" name="password" class="form-control" ng-model="$ctrl.password" required placeholder="Password" auto-fill-sync/>
 		    <div ng-messages="form.$submitted && form.password.$error" class="help-block">
 		    	<div ng-message="required" class="alert alert-info" ng-show="!$ctrl.password">Password is required</div>
 		    </div>

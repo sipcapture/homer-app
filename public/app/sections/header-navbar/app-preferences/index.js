@@ -48,7 +48,7 @@ export default angular.module('hepicApp.appPreferences', [])
         url: ROUTER.PREFERENCES_ALIAS.PATH,
         component: 'appPreferencesAlias',
         resolve: {
-          alias: function(AliasService, log) {
+          aliases: function(AliasService, log) {
             'ngInject';
             log.initLocation('appPreferences');
 

@@ -68,7 +68,7 @@ class AppPreferencesAlias {
     }
 
     try {
-      const data = pick(alias, ['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+      const data = pick(alias, ['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
       await this.AliasService.update(data);
       this._tableAliasUpdate();
     } catch (err) {
@@ -83,7 +83,7 @@ class AppPreferencesAlias {
     }
 
     try {
-      const data = pick(alias, ['ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+      const data = pick(alias, ['alias', 'ip', 'port', 'mask', 'captureID', 'status']);
       await this.AliasService.add(data);
       this._tableAliasAdd(alias);
     } catch (err) {
@@ -92,12 +92,12 @@ class AppPreferencesAlias {
   }
 
   _tableAliasDelete(alias) {
-    this.alias.splice(this.alias.findIndex((u) => u.guid === alias.guid), 1);
+    this.aliases.splice(this.aliases.findIndex((u) => u.guid === alias.guid), 1);
     this._reloadThisState();
   }
 
   _tableAliasAdd(alias) {
-    this.alias.push(alias);
+    this.aliases.push(alias);
     this._reloadThisState();
   }
 

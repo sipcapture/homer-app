@@ -25,9 +25,9 @@ class AliasService {
   /*
   * @return {object} API confirm
   */
-  async add({ip, port, mask, captureID, alias, status}) {
+  async add({alias, ip, port, mask, captureID, status}) {
     try {
-      const settings = {ip, port, mask, captureID, alias, status};
+      const settings = {alias, ip, port, mask, captureID, status};
 
       try {
         settings.data = JSON.stringify(settings.data);
@@ -49,9 +49,9 @@ class AliasService {
   /*
   * @return {object} API confirm
   */
-  async update({guid, ip, port, mask, captureID, alias, status}) {
+  async update({guid, alias, ip, port, mask, captureID, status}) {
     try {
-      const settings = {ip, port, mask, captureID, alias, status};
+      const settings = {alias, ip, port, mask, captureID, status};
 
       try {
         settings.data = JSON.stringify(settings.data);

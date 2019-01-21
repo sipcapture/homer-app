@@ -55,11 +55,11 @@ exports.up = function(knex) {
       aliasTable.increments();
       // Data
       aliasTable.uuid('guid');
-      aliasTable.string('ip', 100);
+      aliasTable.string('alias', 40);
+      aliasTable.string('ip', 60);
       aliasTable.integer('port');
       aliasTable.integer('mask');
-      aliasTable.string('captureID', 100);
-      aliasTable.string('alias', 100).notNullable();
+      aliasTable.string('captureID', 20);
       aliasTable.boolean('status');
       aliasTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     });

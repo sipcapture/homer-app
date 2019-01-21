@@ -27,16 +27,6 @@ class AppPreferencesAliasAddEdit {
       this.Alias = {};
     }
     this.Alias = this.resolve.Alias || {};
-
-    try {
-      this.data = JSON.stringify(this.Alias.data, null, 2);
-    } catch (err) {
-      this.log.error(`fail to stringify Alias data: ${err.message}`);
-    }
-  }
-
-  get passwordNotSet() {
-    return this.areNewAlias && (!this.Alias.password || !this.Alias.password.length);
   }
 
   dismiss() {
@@ -44,11 +34,6 @@ class AppPreferencesAliasAddEdit {
   }
 
   submit() {
-    try {
-      this.Alias.data = JSON.parse(this.data);
-    } catch (err) {
-      this.log.error(`fail to parse Alias data: ${err.message}`);
-    }
     this.modalInstance.close(this.Alias);
   }
 }

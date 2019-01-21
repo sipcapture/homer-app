@@ -5,7 +5,7 @@ const appPreferencesAlias = {
   controller,
   template,
   bindings: {
-    alias: '<',
+    aliases: '<',
   },
 };
 

@@ -11,7 +11,7 @@ export default function alias(server) {
      * GET all alias
      *
      * @header
-     *  @param {string} JWT token for authentication
+     * @param {string} JWT token for authentication
      * @return {array} list of alias data
      */
     path: '/api/v3/alias',
@@ -25,7 +25,7 @@ export default function alias(server) {
       const settings = new Alias({server});
 
       try {
-        const data = await settings.getAll(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+        const data = await settings.getAll(['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
         if (!data || !data.length) {
           return reply(Boom.notFound('no alias found'));
         }
@@ -45,9 +45,9 @@ export default function alias(server) {
      * GET alias by guid
      *
      * @header
-     *  @param {string} JWT token for authentication
+     * @param {string} JWT token for authentication
      * @request
-     *  @param {string} guid
+     * @param {string} guid
      * @return {array} list of alias data
      */
     path: '/api/v3/alias/{guid}',
@@ -67,7 +67,7 @@ export default function alias(server) {
       const settings = new Alias({server, guid});
 
       try {
-        const data = await settings.get(['guid', 'ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+        const data = await settings.get(['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
         if (!data || !Object.keys(data).length) {
           return reply(Boom.notFound('no alias found for guid ' + guid));
         }
@@ -87,14 +87,14 @@ export default function alias(server) {
      * Create (POST) a new alias
      *
      * @header
-     *  @param {string} JWT token for authentication
+     * @param {string} JWT token for authentication
      * @payload
-     *  @param {string} ip
-     *  @param {number} port
-     *  @param {number} mask
-     *  @param {string} captureID
-     *  @param {string} alias
-     *  @param {boolean} status
+     * @param {string} alias
+     * @param {string} ip
+     * @param {number} port
+     * @param {number} mask
+     * @param {string} captureID
+     * @param {boolean} status
      * @return alias guid and success message
      */
     path: '/api/v3/alias',
@@ -105,22 +105,22 @@ export default function alias(server) {
       },
       validate: {
         payload: {
-          ip: Joi.string().min(3).max(50).required(),
-          port: Joi.number().required(),
-          mask: Joi.number().required(),
-          captureID: Joi.string().min(3).max(50).required(),
-          alias: Joi.string().min(3).max(50).required(),
-          status: Joi.string().required(),
+          alias: Joi.string().min(1).max(40),
+          ip: Joi.string().min(6).max(60),
+          port: Joi.number(),
+          mask: Joi.number(),
+          captureID: Joi.string().min(1).max(20),
+          status: Joi.string(),
         },
       },
     },
     handler: async function(request, reply) {
-      const {ip, port, mask, captureID, alias, status} = request.payload;
+      const {alias, ip, port, mask, captureID, status} = request.payload;
       const guid = uuid();
       const settings = new Alias({server});
 
       try {
-        await settings.add({guid, ip, port, mask, captureID, alias, status});
+        await settings.add({guid, alias, ip, port, mask, captureID, status});
         return reply({
           data: guid,
           message: 'successfully created alias',
@@ -136,16 +136,16 @@ export default function alias(server) {
      * Update (PUT) an alias
      *
      * @header
-     *  @param {string} JWT token for authentication
+     * @param {string} JWT token for authentication
      * @request
-     *  @param {string} guid
+     * @param {string} guid
      * @payload
-     *  @param {string} ip
-     *  @param {number} port
-     *  @param {number} mask
-     *  @param {string} captureID
-     *  @param {string} alias
-     *  @param {boolean} status
+     * @param {string} alias
+     * @param {string} ip
+     * @param {number} port
+     * @param {number} mask
+     * @param {string} captureID
+     * @param {boolean} status
      * @return alias guid and success message
      */
     path: '/api/v3/alias/{guid}',
@@ -159,11 +159,11 @@ export default function alias(server) {
           guid: Joi.string().min(12).max(46).required(),
         },
         payload: {
-          ip: Joi.string().min(3).max(50),
+          alias: Joi.string().min(1).max(40),
+          ip: Joi.string().min(6).max(60),
           port: Joi.number(),
           mask: Joi.number(),
-          captureID: Joi.string().min(3).max(50),
-          alias: Joi.string().min(3).max(50),
+          captureID: Joi.string().min(1).max(20),
           status: Joi.string(),
         },
       },
@@ -189,7 +189,7 @@ export default function alias(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const updates = pick(request.payload, ['ip', 'port', 'mask', 'captureID', 'alias', 'status']);
+      const updates = pick(request.payload, ['alias', 'ip', 'port', 'mask', 'captureID', 'status']);
 
       const settings = new Alias({server, guid});
 
@@ -210,9 +210,9 @@ export default function alias(server) {
      * DELETE an alias
      *
      * @header
-     *  @param {string} JWT token for authentication
+     * @param {string} JWT token for authentication
      * @request
-     *  @param {string} guid
+     * @param {string} guid
      * @return alias guid and success message
      */
     path: '/api/v3/alias/{guid}',

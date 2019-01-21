@@ -13,7 +13,7 @@
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
       </div>
       <div class="row nd-row-bord">
-        <table st-table="$ctrl.alias" class="table table-striped ng-isolate-scope">
+        <table st-table="$ctrl.aliases" class="table table-striped ng-isolate-scope">
           <thead>
             <tr>
               <th width="18%" st-sort-default="true" st-sort="alias">Alias</th>
@@ -29,7 +29,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="alias in $ctrl.alias">
+            <tr ng-repeat="alias in $ctrl.aliases">
               <td width="18%">{{alias.alias}}</td>
               <td width="18%">{{alias.ip}}</td>
               <td width="18%">{{alias.port}}</td>

@@ -1,45 +1,80 @@
 <div>
-  <div class="modal-header">
-    <h4 class="modal-title">{{$ctrl.alias.alias}}</h4>
-    <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
-  </div>
-  <div class="modal-body">
-    <form role="form" name="form" ng-model-options="{ getterSetter: true }">
-      <div class="row">
-        <h3 class="setting__main-title">Alias</h3>
-        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
-        <div class="col-lg-4 col-sm-4 col_margin-r">
-          <div class="form-group">
-            <label class="label-sett" for="profileAlias">Alias</label>
-            <input
-              type="text"
-              ng-readonly="false"
-              class="form-control
-              form-control-settings"
-              id="profileAlias"
-              ng-model="$ctrl.alias.alias"
-              ng-required="$ctrl.areNewAlias"
-            >
-          </div>
-          <div class="form-group">
-            <label class="label-sett" for="profileIP">IP Address</label>
-            <input
-              type="text"
-              ng-readonly="false"
-              class="form-control form-control-settings"
-              id="profileIP"
-              ng-model="$ctrl.alias.ip"
-              ng-required="$ctrl.areNewAlias"
-            >
+    <div class="modal-header">
+      <h4 class="modal-title">{{$ctrl.alias.alias}}</h4>
+      <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form role="form" name="form">
+        <div class="row">
+          <h3 class="setting__main-title">Alias Settings</h3>
+          <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+          <div class="col-lg-4 col-sm-4 col_margin-r">
+            <div class="form-group">
+              <label class="label-sett" for="profileAlias">Alias</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="profileAlias"
+                ng-model="$ctrl.alias.alias"
+                ng-required="$ctrl.isNewAlias"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="profileIP">IP Address</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control form-control-settings"
+                id="profileIP"
+                ng-model="$ctrl.alias.ip"
+                ng-required="$ctrl.isNewAlias"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="profilePort">Port</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control form-control-settings"
+                id="profilePort"
+                ng-model="$ctrl.alias.port"
+                ng-required="$ctrl.isNewAlias"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="profileMask">Mask</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="profileMask"
+                ng-model="$ctrl.alias.mask"
+                ng-required="$ctrl.isNewAlias"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="profileCaptureID">CaptureID</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="profileCaptureID"
+                ng-model="$ctrl.alias.captureID"
+                ng-required="$ctrl.isNewAlias"
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
-      <button ng-click="$ctrl.submit()" ng-disabled="form.$pristine && form.$invalid || form.$dirty && form.$invalid" class="btn btn-primary btn-lg">
-        <i class="glyphicon glyphicon-ok"></i>Save
-      </button>
-    </div>
-  </form>
+      <div class="modal-footer">
+        <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+        <button ng-click="$ctrl.submit()" ng-disabled="form.$pristine && form.$invalid || form.$dirty && form.$invalid" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+      </div>
+    </form>
+  </div>
 </div>
+  

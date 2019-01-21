@@ -19,14 +19,14 @@ class AppPreferencesAliasAddEdit {
 
   $onInit() {
     this._initAlias();
-    this.areNewAlias = !Object.keys(this.Alias).length;
+    this.isNewAlias = !Object.keys(this.alias).length;
   }
 
   _initAlias() {
     if (!this.resolve) {
-      this.Alias = {};
+      this.alias = {};
     }
-    this.Alias = this.resolve.Alias || {};
+    this.alias = this.resolve.alias || {};
   }
 
   dismiss() {
@@ -34,7 +34,7 @@ class AppPreferencesAliasAddEdit {
   }
 
   submit() {
-    this.modalInstance.close(this.Alias);
+    this.modalInstance.close(this.alias);
   }
 }
 

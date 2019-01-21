@@ -82,7 +82,7 @@ class RemoteData extends LivingBeing {
   Fetch Loki PromQL Results
   */
   getRemoteData(columns, table, data) {
-    let sData = data.param.search || LOKI_SERVER;
+    let sData = data.param.search;
     console.log('IN LogQL',sData);
 
     var parseQuery = function(input) {
@@ -113,7 +113,7 @@ class RemoteData extends LivingBeing {
     console.log('OUT LogQL',logql);
 
     // Fetch
-    var LOKI_API = data.param.server;
+    var LOKI_API = data.param.server || LOKI_SERVER;
     const url = LOKI_API + "/api/prom/query?"+encodeURI(logql);
 
     var dataset = { "data": [], "keys": [], "total": 0 };

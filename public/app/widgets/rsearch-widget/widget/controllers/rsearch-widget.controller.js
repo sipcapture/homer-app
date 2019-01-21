@@ -46,11 +46,14 @@ class RsearchWidget {
         	editor.container.style.lineHeight = 2;
         	editor.renderer.updateFontSize();
         	
+		var wServer = this._widget.server; // fetch widget server configuration
+
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
 	            //if (prefix.length === 0) { callback(null, []); return }
 
-		    var api = "/api/v3/search/remote/label";
+		    var api = "/api/v3/search/remote/label?server="+wServer;
+
         	    $.getJSON( api,
 		    function(wordList) {
                     	var labels = [];
@@ -68,7 +71,7 @@ class RsearchWidget {
 		var valueCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
 	            if (gprefix.length === 0) { callback(null, []); return }
-		    var api = "/api/v3/search/remote/values?label="+gprefix;
+		    var api = "/api/v3/search/remote/values?label="+gprefix+"+&server="+wServer;
         	    $.getJSON( api,
 		    function(wordList) {
                     	var values = [];

@@ -20,8 +20,8 @@ export default function auth(server) {
     config: {
       validate: {
         payload: {
-          username: Joi.string().min(4).max(50).required(),
-          password: Joi.string().min(8).max(80).required(),
+          username: Joi.string().min(2).max(50).required(),
+          password: Joi.string().min(2).max(250).required(),
         },
       },
     },

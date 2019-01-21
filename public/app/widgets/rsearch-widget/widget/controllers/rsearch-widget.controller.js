@@ -46,7 +46,7 @@ class RsearchWidget {
         	editor.container.style.lineHeight = 2;
         	editor.renderer.updateFontSize();
         	
-		var wServer = this._widget.server; // fetch widget server configuration
+		var wServer = getLokiServer(); // fetch widget server configuration
 
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
@@ -156,7 +156,10 @@ class RsearchWidget {
   aceChange() {
     console.log("CHANGE");
   }
-  
+
+  getLokiServer() {
+    return this._widget.server || 'http://loki:3100';
+  }  
 
   get locationName() {
     return this._widget.config.location.desc.toUpperCase() || 'unknown';

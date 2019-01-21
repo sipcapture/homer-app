@@ -22,7 +22,12 @@ class RsearchWidget {
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
     this.TimeMachine = TimeMachine;
-    
+           
+    this.getLokiServer = function() {
+        return this._widget.server || 'http://loki:3100';
+    };
+                   
+    var that = this;
     $scope.aceOptions = {
         advanced:{
 		maxLines: 1,
@@ -45,8 +50,8 @@ class RsearchWidget {
                 /* change line height */
         	editor.container.style.lineHeight = 2;
         	editor.renderer.updateFontSize();
-        	
-		var wServer = getLokiServer(); // fetch widget server configuration
+
+		var wServer = that.getLokiServer(); // fetch widget server configuration		
 
 		var labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
@@ -148,18 +153,18 @@ class RsearchWidget {
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
     this.timerange = this.UserProfile.profileScope.timerange;                                         
-    this.newObject['limit'] = 100;
-
-    
+    this.newObject['limit'] = 100;    
   }
   
   aceChange() {
     console.log("CHANGE");
   }
 
+  /*
   getLokiServer() {
     return this._widget.server || 'http://loki:3100';
   }  
+  */
 
   get locationName() {
     return this._widget.config.location.desc.toUpperCase() || 'unknown';

@@ -3,7 +3,12 @@
   white-space: normal !important;
 }
 
-.ui-grid-row, .ui-grid-cell {
+#gridloki .ui-grid-viewport .ui-grid-cell-contents {
+  word-wrap: break-word;
+  white-space: normal !important;
+}
+
+#gridloki .ui-grid-row, .ui-grid-cell {
   height: auto !important;
   min-height: 40px;
 }

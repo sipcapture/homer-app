@@ -5,6 +5,7 @@
 
 .ui-grid-row, .ui-grid-cell {
   height: auto !important;
+  min-height: 40px;
 }
 
 .ui-grid-row div[role=row] {

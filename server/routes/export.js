@@ -2,6 +2,8 @@ import Joi from 'joi';
 import Boom from 'boom';
 import SearchData from '../classes/searchdata';
 import Settings from '../classes/settings';
+import PcapBuffer from '../classes/pcap/index';
+
 
 export default function search(server) {
   server.route({
@@ -41,9 +43,19 @@ export default function search(server) {
                     
         if (!data) {
           return reply(Boom.notFound('data was not found'));
-        }
-                           
-        return reply(data)
+        }        
+        
+        var pcapBuffer = new PcapBuffer(1500, 105);
+        
+        data.forEach(function(row) {
+               //for (let k in row) { 
+               //console.log("RRRRRRRRRR", k, row);        
+               //};
+               pcapBuffer.writePacket(row.raw, (row.timeSeconds * 1000 + row.timeUseconds*10));
+       });
+        
+                                   
+        return reply(pcapBuffer.getPacketsAndClose())
                 .encoding('binary')
                 .type('application/cap')
                 .header('content-disposition', `attachment; filename=export-${new Date().toISOString()}.pcap;`);

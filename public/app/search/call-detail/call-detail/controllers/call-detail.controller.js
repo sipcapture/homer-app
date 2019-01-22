@@ -263,8 +263,8 @@ class CallDetail {
         try {
           console.log('Scanning for Aliases...');
           this.ip_alias = [];
-          if (msg.alias) {;
-            angular.forEach(msg.alias, function(v, k) {
+          if (data && data.alias) {;
+            angular.forEach(data.alias, function(v, k) {
               this.ip_alias[k.split(':')[0]] = v.split(':')[0];
               this.ip_alias[k] = v;
             });

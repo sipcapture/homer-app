@@ -43,6 +43,7 @@ class SearchCall {
     this.uiGridState = this.getUiGridState();
     this.ROUTER = ROUTER;
     this.homerHelper = homerHelper;
+    this.selectedRows = [];
   }
 
   $onInit() {
@@ -62,6 +63,7 @@ class SearchCall {
       this.gridApi.core.on.columnVisibilityChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
       this.gridApi.core.on.filterChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
       this.gridApi.core.on.sortChanged(this.$scope, () => this.saveUiGridState(this.gridApi));
+      this.gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => this.rowSelectionChanged(row));
     };
 
     this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
@@ -160,6 +162,9 @@ class SearchCall {
 
     try {
       const response = await this.SearchService.searchCallByParam(query);
+
+      this.gridOpts.data = [];
+      this.selectedRows = [];
 
       const { data, keys } = response;
 
@@ -490,14 +495,11 @@ class SearchCall {
   }
 
   showTransaction(localrow, event) {
-    const rows = this.gridApi.selection.getSelectedRows();
     const sids = [];
     const uuids = [];
     let nodes = [];
     
     let protoTable = localrow.entity.table.replace('hep_proto_', '');
-    
-    this.log.debug(localrow);
 
     sids.push(localrow.entity.sid);
     if (localrow.entity.uuid && localrow.entity.uuid.length > 1) uuids.push(localrow.entity.uuid);
@@ -506,7 +508,7 @@ class SearchCall {
       sids.push(localrow.entity.correlation_id);
     }
 
-    forEach(rows, function(row) {
+    forEach(this.selectedRows, function(row) {
       if (sids.indexOf(row.sid) == -1) {
         sids.push(row.sid);
       }
@@ -519,7 +521,7 @@ class SearchCall {
         uuids.push(row.uuid);
       }
     });
-
+    
     let stop;
     if (localrow.entity.cdr_stop && (localrow.entity.cdr_stop > (localrow.entity.create_date / 1000))) {
       stop = (localrow.entity.cdr_stop * 1000);
@@ -651,6 +653,11 @@ class SearchCall {
 
   getUiGridState() {
     return this.localStorage.getItem('hepic.localStorageGrid');
+  }
+  
+  rowSelectionChanged(row) {        
+    if(row.isSelected) this.selectedRows.push(row.entity);    
+    else this.selectedRows.splice(this.selectedRows.findIndex(item => item.id === row.entity.id), 1)              
   }
 
   saveUiGridState(state) {

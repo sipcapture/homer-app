@@ -49,6 +49,19 @@ exports.up = function(knex) {
       userSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');
       userSettingsTable.json('data');
+    })
+    .createTable('alias', function(aliasTable) {
+      // Primary Key
+      aliasTable.increments();
+      // Data
+      aliasTable.uuid('guid');
+      aliasTable.string('alias', 40);
+      aliasTable.string('ip', 60);
+      aliasTable.integer('port');
+      aliasTable.integer('mask');
+      aliasTable.string('captureID', 20);
+      aliasTable.boolean('status');
+      aliasTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     });
 };
 
@@ -57,5 +70,6 @@ exports.down = function(knex) {
     .schema
     .dropTableIfExists( 'mapping_schema' )
     .dropTableIfExists( 'user_settings' )
+    .dropTableIfExists( 'alias' )
     .dropTableIfExists( 'users' );
 };

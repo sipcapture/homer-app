@@ -4775,11 +4775,12 @@ main:before {
 	}
 
 	.nav.nav-tabs > li > a {
-		font-weight: bold;
+		font-weight: normal;
 	}
 	
 	.nav.nav-tabs > .active > a {
 		color: #1dc27c;
+		font-weight: 500;
 	}
 
 	.nav.nav-tabs > li > a:hover {

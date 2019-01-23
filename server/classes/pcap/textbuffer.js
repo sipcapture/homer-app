@@ -29,6 +29,7 @@ TextBuffer.prototype.writePacket = function(packet) {
     packet.ts = (new Date()).getTime() * 1000;
   }
 
+ //proto: UDP; datetime: 2019-01-23 14:59:33.531+0000; time: 1548255573.529784; hosts: 10.0.1.50:5080 ----> 10.9.5.7:5060 TOS:96 VLAN:0
   this.buffer.write(new Buffer(packet.ts + "  "+packet.sourceIp+":"+packet.sourcePort+" ---> "+packet.destinationIp + ":" + packet.destinationPort+"\r\n\r\n"));
   this.buffer.write(packet.data+"\r\n");
 };

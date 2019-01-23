@@ -26,5 +26,16 @@ module.exports = {
     SIGNED_LONG: 'i',
     CHAR_ARRAY: 'A',
     CHAR: 'c'
+  },
+  PROTOCOL: {
+    0: "None",
+    1: "ICMP",
+    6: "TCP",
+    17: "UDP",
+    58: "ICMPv6"
+  },
+  ADDRESSFAMILY: {
+    1: "IPv4",
+    2: "IPv6"
   }
 };

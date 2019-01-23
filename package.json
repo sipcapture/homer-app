@@ -66,6 +66,7 @@
     "html2canvas": "1.0.0-alpha.9",
     "inert": "4.2.1",
     "influx": "5.0.7",
+    "ip": "^1.1.5",
     "javascript-detect-element-resize": "0.5.3",
     "joi": "11.4.0",
     "jquery": "3.0.0",

@@ -3959,7 +3959,8 @@ input.btn.btn-warning.btn-warning:focus {
 }
 
 .btn.btn-primary.btn-primary {
-	background: #1dc27c;
+	 background-color: #28a745;
+         background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
 }
 
 .btn.btn-primary.btn-primary:focus {

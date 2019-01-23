@@ -10,62 +10,81 @@
           <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
           <div class="col-lg-4 col-sm-4 col_margin-r">
             <div class="form-group">
-              <label class="label-sett" for="profileAlias">Alias</label>
+              <label class="label-sett" for="aliasName">Alias Name</label>
               <input
                 type="text"
+                pattern=".{1,40}"
                 ng-readonly="false"
                 class="form-control
                 form-control-settings"
-                id="profileAlias"
+                id="aliasName"
                 ng-model="$ctrl.alias.alias"
                 ng-required="$ctrl.isNewAlias"
               >
             </div>
             <div class="form-group">
-              <label class="label-sett" for="profileIP">IP Address</label>
+              <label class="label-sett" for="aliasIP">IP Address</label>
               <input
                 type="text"
+                pattern=".{6,60}"
                 ng-readonly="false"
                 class="form-control form-control-settings"
-                id="profileIP"
+                id="aliasIP"
                 ng-model="$ctrl.alias.ip"
                 ng-required="$ctrl.isNewAlias"
               >
             </div>
             <div class="form-group">
-              <label class="label-sett" for="profilePort">Port</label>
+              <label class="label-sett" for="aliasesPort">Port</label>
               <input
-                type="text"
+                type="number"
+                max="65356"
+                step="1"
                 ng-readonly="false"
                 class="form-control form-control-settings"
-                id="profilePort"
+                id="aliasesPort"
                 ng-model="$ctrl.alias.port"
                 ng-required="$ctrl.isNewAlias"
               >
             </div>
             <div class="form-group">
-              <label class="label-sett" for="profileMask">Mask</label>
+              <label class="label-sett" for="aliasMask">Mask</label>
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="32"
+                step="1"
                 ng-readonly="false"
                 class="form-control
                 form-control-settings"
-                id="profileMask"
+                id="aliasMask"
                 ng-model="$ctrl.alias.mask"
                 ng-required="$ctrl.isNewAlias"
               >
             </div>
             <div class="form-group">
-              <label class="label-sett" for="profileCaptureID">CaptureID</label>
+              <label class="label-sett" for="aliasCaptureID">CaptureID</label>
               <input
                 type="text"
                 ng-readonly="false"
                 class="form-control
                 form-control-settings"
-                id="profileCaptureID"
+                id="aliasCaptureID"
                 ng-model="$ctrl.alias.captureID"
                 ng-required="$ctrl.isNewAlias"
               >
+            </div>
+            <div class="form-group">
+              <label for="aliasesStatus" class="checkbox-label">
+              <input 
+                type="checkbox"
+                id="aliasesStatus"
+                name="aliasesStatus"
+                ng-model="$ctrl.alias.status"
+                ng-required="$ctrl.isNewAlias"
+              >
+              <span><i class="fa fa-check"></i></span>
+              Status</label>                		
             </div>
           </div>
         </div>

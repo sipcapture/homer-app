@@ -1,0 +1,99 @@
+<div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{$ctrl.advanced.alias}}</h4>
+      <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form role="form" name="form">
+        <div class="row">
+          <h3 class="setting__main-title">Advanced Settings</h3>
+          <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+          <div class="col-lg-4 col-sm-4 col_margin-r">
+            <div class="form-group">
+              <label class="label-sett" for="aliasName">Advanced Name</label>
+              <input
+                type="text"
+                pattern=".{1,40}"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="aliasName"
+                ng-model="$ctrl.advanced.alias"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="aliasIP">IP Address</label>
+              <input
+                type="text"
+                pattern=".{6,60}"
+                ng-readonly="false"
+                class="form-control form-control-settings"
+                id="aliasIP"
+                ng-model="$ctrl.advanced.ip"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="aliasesPort">Port</label>
+              <input
+                type="number"
+                max="65356"
+                step="1"
+                ng-readonly="false"
+                class="form-control form-control-settings"
+                id="aliasesPort"
+                ng-model="$ctrl.advanced.port"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="aliasMask">Mask</label>
+              <input
+                type="number"
+                min="1"
+                max="32"
+                step="1"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="aliasMask"
+                ng-model="$ctrl.advanced.mask"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+            </div>
+            <div class="form-group">
+              <label class="label-sett" for="aliasCaptureID">CaptureID</label>
+              <input
+                type="text"
+                ng-readonly="false"
+                class="form-control
+                form-control-settings"
+                id="aliasCaptureID"
+                ng-model="$ctrl.advanced.captureID"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+            </div>
+            <div class="form-group">
+              <label for="aliasesStatus" class="checkbox-label">
+              <input 
+                type="checkbox"
+                id="aliasesStatus"
+                name="aliasesStatus"
+                ng-model="$ctrl.advanced.status"
+                ng-required="$ctrl.isNewAdvanced"
+              >
+              <span><i class="fa fa-check"></i></span>
+              Status</label>                		
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+        <button ng-click="$ctrl.submit()" ng-disabled="form.$pristine && form.$invalid || form.$dirty && form.$invalid" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+  

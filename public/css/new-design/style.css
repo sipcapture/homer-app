@@ -3563,6 +3563,10 @@ table.table.table-striped>tbody>tr:last-child {
 	display: flex;
 	width: 100%;
 	justify-content: flex-end;
+	    position: absolute;
+	    bottom: 0;
+	    background: #ffffffc4;
+	    left: -4px;
 }
 .form-group-custom-3 .btn.btn-primary {
 	margin-right: 20px;

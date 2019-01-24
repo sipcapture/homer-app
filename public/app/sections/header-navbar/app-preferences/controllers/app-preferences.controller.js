@@ -25,6 +25,10 @@ class AppPreferences {
           name: ROUTER.PREFERENCES_ALIAS.CHILDNAME,
           path: ROUTER.PREFERENCES_ALIAS.CHILDPATH,
         },
+        {
+          name: ROUTER.PREFERENCES_ADVANCED.CHILDNAME,
+          path: ROUTER.PREFERENCES_ADVANCED.CHILDPATH,
+        },
       ],
     };
   }

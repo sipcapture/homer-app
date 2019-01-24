@@ -6,6 +6,9 @@ import appPreferencesUserSettings from './components/app-preferences-user-settin
 import appPreferencesUserSettingsAddEdit from './components/app-preferences-user-settings/components/app-preferences-user-settings-add-edit';
 import appPreferencesAlias from './components/app-preferences-alias';
 import appPreferencesAliasAddEdit from './components/app-preferences-alias/components/app-preferences-alias-add-edit';
+import appPreferencesAdvanced from './components/app-preferences-advanced';
+import appPreferencesAdvancedAddEdit from './components/app-preferences-advanced/components/app-preferences-advanced-add-edit';
+
 
 export default angular.module('hepicApp.appPreferences', [])
   .config(function($stateProvider, ROUTER) {
@@ -57,6 +60,20 @@ export default angular.module('hepicApp.appPreferences', [])
             });
           },
         },
+      })
+      .state(ROUTER.PREFERENCES_ADVANCED.NAME, {
+        url: ROUTER.PREFERENCES_ADVANCED.PATH,
+        component: 'appPreferencesAdvanced',
+        resolve: {
+          aliases: function(AdvancedService, log) {
+            'ngInject';
+            log.initLocation('appPreferences');
+
+            return AdvancedService.getAll().catch(function(err) {
+              log.error(err.message);
+            });
+          },
+        },
       });
   })
   .component('appPreferencesUsers', appPreferencesUsers)
@@ -65,4 +82,6 @@ export default angular.module('hepicApp.appPreferences', [])
   .component('appPreferencesUserSettingsAddEdit', appPreferencesUserSettingsAddEdit)
   .component('appPreferencesAlias', appPreferencesAlias)
   .component('appPreferencesAliasAddEdit', appPreferencesAliasAddEdit)
+  .component('appPreferencesAdvanced', appPreferencesAdvanced)
+  .component('appPreferencesAdvancedAddEdit', appPreferencesAdvancedAddEdit)
   .component('appPreferences', appPreferences);

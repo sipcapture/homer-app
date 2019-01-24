@@ -20,6 +20,12 @@ const API = {
       UPDATE: `${base}/alias`,
       DELETE: `${base}/alias`,
     },
+    ADVANCED: {
+      GETALL: `${base}/advanced`,
+      ADD: `${base}/advanced`,
+      UPDATE: `${base}/advanced`,
+      DELETE: `${base}/advanced`,
+    },
   },
   PROFILE: {
     STORE: 'api/v3/profile/store',

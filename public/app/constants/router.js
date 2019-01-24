@@ -68,6 +68,14 @@ const ROUTER = {
     DESCRIPTION: 'alias preferences',
     SECURE: true,
   },
+  PREFERENCES_ADVANCED: {
+    NAME: 'hepic.preferences.advanced',
+    CHILDNAME: 'advanced',
+    CHILDPATH: 'advanced',
+    PATH: '/advanced',
+    DESCRIPTION: 'advanced preferences',
+    SECURE: true,
+  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

@@ -7,6 +7,7 @@ import Log from './log';
 import UserService from './user-service';
 import UserSettingsService from './user-settings-service';
 import AliasService from './alias-service';
+import AdvancedService from './advanced-service';
 import HomerHelper from './homer-helper';
 
 export default angular.module('hepicApp.services', [
@@ -18,5 +19,6 @@ export default angular.module('hepicApp.services', [
   UserService.name,
   UserSettingsService.name,
   AliasService.name,
+  AdvancedService.name,
   HomerHelper.name,
 ]);

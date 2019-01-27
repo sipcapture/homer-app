@@ -1,32 +1,42 @@
 <!-- INCLUDE: LOGS TAB -->
 
-<div id="no-reports" ng-hide="!!$ctrl.lokidata.length" class="alert alert-warning alert-dismissible" role="alert"> 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="/img/Close.svg" alt=""></button>
-  <strong>Oops!</strong> No Loki logs available for this session
-</div>
-
- <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()"
- 	style="width: 80%;top: 7px;left: 10%;font-size: 15px;position: absolute;border-radius: 3px;max-height: 30px;"
+<div style="margin: 10px;">
+  <div class="col-lg-9 col-sm-9">
+      <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()"
+ 	style="width: 99%;font-size: 15px;border-radius: 3px;max-height: 30px;"
         class="form-control ng-pristine ng-untouched ng-valid ng-empty"
         ng-model="$ctrl.searchParams" ></div>
-
+  </div>
+  <div class="col-lg-2 col-sm-2">
       <button id="mainSipSearch"
         class="btn btn-primary"
-        style="margin-top: 6px;height: 29px;float: right;top: 1px;position: absolute;right: 10px;"
+        style="height: 29px;"
         ng-class="searchClass"
         type="submit"
         ng-click="$ctrl.processRefreshSearchResult();"
         ng-disabled="false" style="margin-top:6px;height:25px;" onclick="this.blur();" >
-        <span translate="hepic.buttons.refresh">&nbsp; Refresh Results &nbsp;</span>
+        <span translate="hepic.buttons.refresh">&nbsp; Refresh Logs &nbsp;</span>
         <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
       </button> <!--END button mainSipSearch -->
+  </div>
+</div>
 
-       <span class="fa  form-control-search" title="search type"></span>
- </div>
- 
-<div id="loki-root" ng-if="!!$ctrl.lokidata.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
-  <section class="json-tree-out" ng-repeat="log in $ctrl.lokidata | filter:$ctrl.onMatchJson">
-    <span style="font-size:12px;">{{ log }}</span>
-    <json-tree object="loki" start-expanded="false" root-name="'payload'"></json-tree>
-  </section>
+<span class="fa  form-control-search" title="search type"></span>
+
+<div style="clear:both"></div>
+<div class="col-lg-12 col-sm-12"> 
+
+	<div id="loki-empty" ng-hide="!!$ctrl.lokidata.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+	  <section class="json-tree-out">
+	    <strong>Ready to Search Logs!</strong> Fine tune your query and hit Refresh
+	  </section>
+	</div>				
+
+
+	<div id="loki-root" ng-if="!!$ctrl.lokidata.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+	  <section class="json-tree-out" ng-repeat="log in $ctrl.lokidata | filter:$ctrl.onMatchJson">
+	    <span style="font-size:12px;">{{ log }}</span>
+	    <json-tree object="loki" start-expanded="false" root-name="'payload'"></json-tree>
+	  </section>
+	</div>				
 </div>				

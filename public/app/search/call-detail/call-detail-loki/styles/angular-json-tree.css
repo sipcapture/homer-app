@@ -5,8 +5,8 @@
   overflow-y: scroll;
   padding: 1em;
   font-size: 14px;
-  background: #FFA562;
-  box-shadow: -0.33em 0.33em 0 rgba(58, 166, 230, 0.5);
+  background: #CACACA;
+  box-shadow: -0.33em 0.33em 0 rgb(29, 194, 124);
 }
 /* Json Tree Looks */
 json-tree ul {

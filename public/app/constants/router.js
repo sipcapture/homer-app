@@ -76,6 +76,14 @@ const ROUTER = {
     DESCRIPTION: 'advanced preferences',
     SECURE: true,
   },
+  PREFERENCES_MAPPING: {
+    NAME: 'hepic.preferences.mapping',
+    CHILDNAME: 'mapping',
+    CHILDPATH: 'mapping',
+    PATH: '/mapping/protocol',
+    DESCRIPTION: 'mapping preferences',
+    SECURE: true,
+  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

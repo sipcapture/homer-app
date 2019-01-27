@@ -1,5 +1,7 @@
 import LivingBeing from './living_being';
 
+const table = 'mapping_schema';
+
 /**
  * A class to handle users in DB
  */
@@ -10,10 +12,11 @@ class MappingData extends LivingBeing {
    * @param {object} server of hapi
    * @param {object} param of search
    */
-  constructor(server, param) {
-    super({db: server.databases.config, param});
-    this.param = 1;
-    this.dataDb = server.databases.config;
+
+  constructor({server, guid}) {
+    super({db: server.databases.config, table, guid});
+    this.configDb = server.databases.config;
+    this.guid = guid;
   }
 
   /*
@@ -53,6 +56,75 @@ class MappingData extends LivingBeing {
         return dataReply;
       });
   }
+  
+  /**
+   * Get mapping data
+   *
+   * @param {array} columns of mapping table
+   * @return {object} mapping data
+   */
+  async get(columns) {
+    try {
+      return await super.get(columns);
+    } catch (err) {
+      throw new Error(`get mapping: ${err.message}`);
+    }
+  }
+
+  /**
+   * Get all mapping
+   *
+   * @param {array} columns of table
+   * @return {array} mapping data
+   */
+  async getAll(columns) {
+    try {
+      return await super.getAll(columns);
+    } catch (err) {
+      throw new Error(`get all mapping: ${err.message}`);
+    }
+  }
+
+  /**
+   * Add mapping
+   *
+   * @param {object} properties of mapping
+   * @return {object} confirm
+   */
+  async add(properties) {
+    try {
+      return await super.add(properties);
+    } catch (err) {
+      throw new Error(`add new mapping: ${err.message}`);
+    }
+  }
+
+  /**
+   * Update mapping
+   *
+   * @param {object} properties of mapping
+   * @return {object} confirm
+   */
+  async update(properties) {
+    try {
+      return await super.update(properties);
+    } catch (err) {
+      throw new Error(`update mapping: ${err.message}`);
+    }
+  }
+
+  /**
+   * Delete mapping
+   *
+   * @return {object} confirm
+   */
+  async delete() {
+    try {
+      return await super.delete();
+    } catch (err) {
+      throw new Error(`delete mapping: ${err.message}`);
+    }
+  }  
 }
 
 export default MappingData;

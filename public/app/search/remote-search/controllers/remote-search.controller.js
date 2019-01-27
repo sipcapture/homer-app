@@ -124,6 +124,7 @@ class SearchRemote {
     function getEnrichedDefs(columnDefs) {
       const enrichedColumns = [];
       columnDefs.forEach(col => {
+
         if (col.name === 'sid' || col.field === 'sid') {
           col.cellTemplate = '<div class="ui-grid-cell-contents-large" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
             +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
@@ -149,7 +150,7 @@ class SearchRemote {
       return enrichedColumns; 
     }
 
-    return getEnrichedDefs(getDefaultDefs(colNames));
+    return getEnrichedDefs(colNames);
   }
 
   async processSearchResult() {
@@ -173,8 +174,8 @@ class SearchRemote {
       const { data, keys } = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
-        //this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
-        this.gridOpts.columnDefs = keys;
+        this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
+        //this.gridOpts.columnDefs = keys;        
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 
@@ -314,7 +315,10 @@ class SearchRemote {
   }
 
   showMessage(localrow, event) {
-    let proto = localrow.entity.table.replace('hep_proto_', '');
+  
+    console.log("RR", localrow);
+    //let proto = localrow.entity.table.replace('hep_proto_', '');
+    let proto = 'hep_proto_100';
     
     const searchData = {
       timestamp: {
@@ -337,12 +341,22 @@ class SearchRemote {
     
     searchData.param.search[proto] = {
       id: parseInt(localrow.entity.id),
-      sid: localrow.entity.sid,
     };
 
+    var sdata = {
+        id: localrow.entity.id,
+        sid: localrow.entity.id,
+        srcIp: '127.0.0.1',
+        dstIp: '127.0.0.2',
+        srcPort: 1,
+        dstPort: 2,
+        raw: localrow.entity.custom_1,
+        create_data: new Date(localrow.entity.micro_ts),  
+    }
+    
+    
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
-    searchData['param']['transaction'][localrow.entity.trans] = true;
-    const messagewindowId = '' + localrow.entity.id + '_' + localrow.entity.trans;
+    const messagewindowId = '' + localrow.entity.id + '_' + 'remotelog';
 
     this.$homerModal.open({
       template: '<call-message-detail></call-message-detail>',
@@ -351,6 +365,8 @@ class SearchRemote {
       id: 'message' + this.SearchHelper.hashCode(messagewindowId),
       divLeft: event.clientX.toString() + 'px',
       divTop: event.clientY.toString() + 'px',
+      internal: true,
+      sdata: sdata,
       params: searchData,
       onOpen: () => {
         this.log.debug('modal1 message opened from url ' + this.id);

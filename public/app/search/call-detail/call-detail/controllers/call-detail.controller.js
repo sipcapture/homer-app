@@ -5,7 +5,7 @@ import {forEach} from 'lodash';
 
 class CallDetail {
   constructor($scope, $log, SearchService, $homerModal, $homerCflow, $timeout,
-    UserProfile, EventBus, SearchHelper, StyleHelper) {
+    UserProfile, EventBus, SearchHelper, StyleHelper, GlobalProfile) {
     'ngInject';
     this.$scope = $scope;
     this.$log = $log;
@@ -180,6 +180,15 @@ class CallDetail {
         'icon': 'fa fa-file-text-o',
       },
       {
+        'heading': 'Loki',
+        'active': true,
+        'ngshow': '$ctrl.enable.report.loki',
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'icon': 'fa fa-file-text-o',
+      },
+      {
         'heading': 'Recording',
         'active': true,
         'ngshow': '$ctrl.enable.report.recording',
@@ -258,6 +267,10 @@ class CallDetail {
 
         this.qosData = await this.SearchService.searchQOSReport(data);
         await this.showLogReport(data);
+
+        /* LOKI */
+        await this.showLokiReport(data);
+        
         this.dataLoading = false;
 
         try {
@@ -590,6 +603,12 @@ class CallDetail {
       this.$log.error(['CallDetail'], 'show log report', err);
     });
   }
+  
+  showLokiReport(rdata) {
+        console.log("LOKI", rdata);
+        this.enable.report.loki = true;
+        this.lokireport = rdata;
+  }  
 
   showRemoteLogReport(rdata) {
     this.SearchService.searchRemoteLog(rdata).then((msg) => {

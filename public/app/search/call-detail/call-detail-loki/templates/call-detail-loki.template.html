@@ -1,0 +1,13 @@
+<!-- INCLUDE: LOGS TAB -->
+
+<div id="no-reports" ng-hide="!!$ctrl.logreport.length" class="alert alert-warning alert-dismissible" role="alert"> 
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="/img/Close.svg" alt=""></button>
+  <strong>Oops!</strong> No Logs available for this session
+</div>
+
+<div id="log-root" ng-if="!!$ctrl.logreport.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+  <section class="json-tree-out" ng-repeat="log in $ctrl.logreport | filter:$ctrl.onMatchJson">
+    <span style="font-size:12px;">{{ log.type || log.labels }}</span>
+    <json-tree object="log" start-expanded="false" root-name="'payload'"></json-tree>
+  </section>
+</div>				

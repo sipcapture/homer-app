@@ -24,28 +24,28 @@ class AppPreferencesAdvanced {
   addAdvanced() {
     this.$uibModal.open({
       component: 'appPreferencesAdvancedAddEdit',
-    }).result.then((alias) => {
-      this.addAdvancedToStorage(alias);
+    }).result.then((advanced) => {
+      this.addAdvancedToStorage(advanced);
     });
   }
 
-  editAdvanced(alias) {
+  editAdvanced(advanced) {
     this.$uibModal.open({
       component: 'appPreferencesAdvancedAddEdit',
       resolve: {
-        alias: () => {
-          return cloneDeep(alias);
+        advanced: () => {
+          return cloneDeep(advanced);
         },
       },
-    }).result.then((alias) => {
-      this.updateAdvancedInStorage(alias);
+    }).result.then((advanced) => {
+      this.updateAdvancedInStorage(advanced);
     });
   }
 
-  async deleteAdvanced(alias) {
+  async deleteAdvanced(advanced) {
     const mustDelete = await swal({
       icon: 'warning',
-      title: 'Delete alias?',
+      title: 'Delete advanced?',
       text: 'Once deleted, you will not be able to recover this!',
       buttons: true,
       dangerMode: true,
@@ -53,22 +53,22 @@ class AppPreferencesAdvanced {
 
     if (mustDelete) {
       try {
-        await this.AdvancedService.delete(alias.guid);
-        this._tableAdvancedDelete(alias);
+        await this.AdvancedService.delete(advanced.guid);
+        this._tableAdvancedDelete(advanced);
       } catch (err) {
         this.log.error(err.message);
       }
     }
   }
 
-  async updateAdvancedInStorage(alias) {
-    if (!alias) {
-      this.log.warn('no alias was updated by modal');
+  async updateAdvancedInStorage(advanced) {
+    if (!advanced) {
+      this.log.warn('no advanced was updated by modal');
       return;
     }
 
     try {
-      const data = pick(alias, ['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
+      const data = pick(settings, ['guid', 'partid', 'category', 'param', 'data']);            
       await this.AdvancedService.update(data);
       this._tableAdvancedUpdate();
     } catch (err) {
@@ -76,28 +76,28 @@ class AppPreferencesAdvanced {
     }
   }
 
-  async addAdvancedToStorage(alias) {
-    if (!alias) {
-      this.log.warn('no alias was added by modal');
+  async addAdvancedToStorage(advanced) {
+    if (!advanced) {
+      this.log.warn('no advanced was added by modal');
       return;
     }
 
     try {
-      const data = pick(alias, ['alias', 'ip', 'port', 'mask', 'captureID', 'status']);
+      const data = pick(advanced, ['guid', 'partid', 'category', 'param', 'data']);            
       await this.AdvancedService.add(data);
-      this._tableAdvancedAdd(alias);
+      this._tableAdvancedAdd(advanced);
     } catch (err) {
       this.log.error(err.message);
     }
   }
 
-  _tableAdvancedDelete(alias) {
-    this.aliases.splice(this.aliases.findIndex((u) => u.guid === alias.guid), 1);
+  _tableAdvancedDelete(advanced) {
+    this.globasettings.splice(this.globasettings.findIndex((u) => u.guid === advanced.guid), 1);
     this._reloadThisState();
   }
 
-  _tableAdvancedAdd(alias) {
-    this.aliases.push(alias);
+  _tableAdvancedAdd(advanced) {
+    this.globasettings.push(advanced);
     this._reloadThisState();
   }
 

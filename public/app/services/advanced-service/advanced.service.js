@@ -15,44 +15,57 @@ class AdvancedService {
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
       }
-
       return resp.data.data;
     } catch (err) {
-      throw new Error(`fail to get all alias: ${err.message}`);
+      throw new Error(`fail to get all advanced settings: ${err.message}`);
     }
   }
 
   /*
   * @return {object} API confirm
   */
-  async add({alias, ip, port, mask, captureID, status}) {
+  async add({partid, category, param, data}) {
     try {
-      const a = {alias, ip, port, mask, captureID, status};
-      const resp = await this.$http.post(this.API.ADD, a);
+
+      const settings = {partid, category, param, data};
+      try {
+        settings.data = JSON.stringify(settings.data);
+      } catch (err) {
+        throw new Error(`fail to stringify data: ${err.message}`);
+      }
+
+      const resp = await this.$http.post(this.API.ADD, settings);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
       }
     
       return resp;
     } catch (err) {
-      throw new Error(`fail to add alias: ${err.message}`);
+      throw new Error(`fail to add advanced settings: ${err.message}`);
     }
   }
 
   /*
   * @return {object} API confirm
   */
-  async update({guid, alias, ip, port, mask, captureID, status}) {
+  async update({guid, partid, category, param, data}) {
     try {
-      const a = {alias, ip, port, mask, captureID, status};
-      const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), a);
+      const settings = {partid, category, param, data};
+
+      try {
+        settings.data = JSON.stringify(settings.data);
+      } catch (err) {
+        throw new Error(`fail to stringify data: ${err.message}`);
+      }
+
+      const resp = await this.$http.put([this.API.UPDATE, guid].join('/'), settings);
       if (resp.status >= 400) {
         throw new Error(resp.data.message || resp.data.error);
       }
     
       return resp;
     } catch (err) {
-      throw new Error(`fail to update alias: ${err.message}`);
+      throw new Error(`fail to update advanced settings: ${err.message}`);
     }
   }
 
@@ -68,7 +81,7 @@ class AdvancedService {
     
       return resp;
     } catch (err) {
-      throw new Error(`fail to delete alias: ${err.message}`);
+      throw new Error(`fail to delete advanced settings: ${err.message}`);
     }
   }
 }

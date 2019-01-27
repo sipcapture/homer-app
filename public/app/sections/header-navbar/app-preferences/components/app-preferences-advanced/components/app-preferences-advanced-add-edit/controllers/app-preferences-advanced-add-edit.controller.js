@@ -19,14 +19,14 @@ class AppPreferencesAdvancedAddEdit {
 
   $onInit() {
     this._initAdvanced();
-    this.isNewAdvanced = !Object.keys(this.alias).length;
+    this.isNewAdvanced = !Object.keys(this.advanced).length;
   }
 
   _initAdvanced() {
     if (!this.resolve) {
-      this.alias = {};
+      this.advanced = {};
     }
-    this.alias = this.resolve.alias || {};
+    this.advanced = this.resolve.advanced || {};
   }
 
   dismiss() {
@@ -34,7 +34,7 @@ class AppPreferencesAdvancedAddEdit {
   }
 
   submit() {
-    this.modalInstance.close(this.alias);
+    this.modalInstance.close(this.advanced);
   }
 }
 

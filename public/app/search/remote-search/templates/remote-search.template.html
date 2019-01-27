@@ -1,16 +1,17 @@
-<div class="search-results  Refresh Results  " access="users" access-permission-type="AtLeastOne">
+<div class="search-results" access="users" access-permission-type="AtLeastOne">
   <div id="resultheader" class="header-action-area">
     <h1 class="lath">
       <small class="text-header-sip" translate="hepic.pages.search.results"></small>
-      <input ng-class="searchClass"
-        class="searchForm"
-        type="text"
-        ng-model="$ctrl.searchText"
-        ng-change="$ctrl.searchData()"
-        placeholder="Regex Results Filter" /> 
+
+       <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()" 
+	    		style="width: 80%;top: 7px;left: 10%;font-size: 15px;position: absolute;border-radius: 3px;max-height: 30px;"
+                        class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                        ng-model="$ctrl.searchParams" ></div>
+
 
       <button id="mainSipSearch"
         class="btn btn-primary"
+   	style="margin-top: 6px;height: 29px;float: right;top: 1px;position: absolute;right: 10px;" 
         ng-class="searchClass"
         type="submit"
         ng-click="$ctrl.processRefreshSearchResult();"
@@ -19,12 +20,7 @@
         <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
       </button> <!--END button mainSipSearch -->
 
-
-       <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()" 
-	    		style="width: 66%;float: right;top: 10px;font-size: 15px;height: 24px;border-radius: 3px;line-height: 1.6;"
-                        class="form-control ng-pristine ng-untouched ng-valid ng-empty"
-                        ng-model="$ctrl.searchParams" ></div>
-                    <span class="fa  form-control-search" title="search type"></span>
+       <span class="fa  form-control-search" title="search type"></span>
        </div>
        <!--    
       <small ng-repeat="(key, value) in $ctrl.searchParams" ng-dblClick="$ctrl.editParam(key);">

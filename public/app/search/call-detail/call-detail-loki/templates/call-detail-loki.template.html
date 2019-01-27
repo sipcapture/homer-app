@@ -1,13 +1,32 @@
 <!-- INCLUDE: LOGS TAB -->
 
-<div id="no-reports" ng-hide="!!$ctrl.logreport.length" class="alert alert-warning alert-dismissible" role="alert"> 
+<div id="no-reports" ng-hide="!!$ctrl.lokidata.length" class="alert alert-warning alert-dismissible" role="alert"> 
   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="/img/Close.svg" alt=""></button>
-  <strong>Oops!</strong> No Logs available for this session
+  <strong>Oops!</strong> No Loki logs available for this session
 </div>
 
-<div id="log-root" ng-if="!!$ctrl.logreport.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
-  <section class="json-tree-out" ng-repeat="log in $ctrl.logreport | filter:$ctrl.onMatchJson">
-    <span style="font-size:12px;">{{ log.type || log.labels }}</span>
-    <json-tree object="log" start-expanded="false" root-name="'payload'"></json-tree>
+ <div name="LogQL" id="LogQL"  ace-editor="aceOptions" ng-change="change()"
+ 	style="width: 80%;top: 7px;left: 10%;font-size: 15px;position: absolute;border-radius: 3px;max-height: 30px;"
+        class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+        ng-model="$ctrl.searchParams" ></div>
+
+      <button id="mainSipSearch"
+        class="btn btn-primary"
+        style="margin-top: 6px;height: 29px;float: right;top: 1px;position: absolute;right: 10px;"
+        ng-class="searchClass"
+        type="submit"
+        ng-click="$ctrl.processRefreshSearchResult();"
+        ng-disabled="false" style="margin-top:6px;height:25px;" onclick="this.blur();" >
+        <span translate="hepic.buttons.refresh">&nbsp; Refresh Results &nbsp;</span>
+        <i class="fa fa-asterisk bump" style="color:orange;" ng-hide="!$ctrl.bump"></i>
+      </button> <!--END button mainSipSearch -->
+
+       <span class="fa  form-control-search" title="search type"></span>
+ </div>
+ 
+<div id="loki-root" ng-if="!!$ctrl.lokidata.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+  <section class="json-tree-out" ng-repeat="log in $ctrl.lokidata | filter:$ctrl.onMatchJson">
+    <span style="font-size:12px;">{{ log }}</span>
+    <json-tree object="loki" start-expanded="false" root-name="'payload'"></json-tree>
   </section>
 </div>				

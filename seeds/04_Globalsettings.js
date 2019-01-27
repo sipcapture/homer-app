@@ -11,7 +11,7 @@ exports.seed = function seed(knex) {
       guid: uuidv4(),
       param: 'lokiserver',
       partid: 1,
-      category: 'test',
+      category: 'search',
       data: lokiHome,
       create_date: new Date(),
     },

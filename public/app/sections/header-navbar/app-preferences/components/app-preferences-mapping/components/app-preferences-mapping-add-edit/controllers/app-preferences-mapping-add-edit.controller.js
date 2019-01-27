@@ -6,7 +6,7 @@ class AppPreferencesMappingAddEdit {
     this.aceOptions = {
       mode: 'json',
       useWrapMode: true,
-      showGutter: true,
+      showGutter: false,
       rendererOptions: {
         maxLines: 32,
         minLines: 5,

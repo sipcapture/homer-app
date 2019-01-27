@@ -31,8 +31,8 @@ class AppPreferencesMapping {
 
   editMapping(mapping) {
     
-    mapping.correlation_mapping_source = JSON.stringify(mapping.correlation_mapping);
-    mapping.fields_mapping_source = JSON.stringify(mapping.fields_mapping);
+    mapping.correlation_mapping_source = JSON.stringify(mapping.correlation_mapping, null, 2);
+    mapping.fields_mapping_source = JSON.stringify(mapping.fields_mapping, null, 2);
   
     this.$uibModal.open({
       component: 'appPreferencesMappingAddEdit',

@@ -190,9 +190,8 @@ class RsearchWidget {
       this.newObject = {};
     }
 
-    var LokiData = GlobalProfile.getProfileCategory("test","lokiserver");
-    console.log("LOKIDATA", LokiData);
-
+    var LokiData = this.GlobalProfile.getProfileCategory("search","lokiserver");
+    
     this.searchObject = {};
     this.nsObject = {};
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];

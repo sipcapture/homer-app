@@ -6,10 +6,10 @@ class AppPreferencesAdvancedAddEdit {
     this.aceOptions = {
       mode: 'json',
       useWrapMode: true,
-      showGutter: true,
+      showGutter: false,
       rendererOptions: {
         maxLines: 32,
-        minLines: 5,
+        minLines: 1,
       },
       editorOptions: {
         autoScrollEditorIntoView: false,

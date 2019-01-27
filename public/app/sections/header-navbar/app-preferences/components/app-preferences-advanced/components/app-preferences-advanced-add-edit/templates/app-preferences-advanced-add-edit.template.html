@@ -1,14 +1,14 @@
 <div>
   <div class="modal-header">
-    <h4 class="modal-title">Account of {{$ctrl.advanced.username}}</h4>
+    <h4 class="modal-title">Advanced Settings</h4>
     <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
   </div>
   <div class="modal-body">
     <form role="form" name="form" ng-model-options="{ getterSetter: true }">
       <div class="row">
-        <h3 class="setting__main-title">User Settings</h3>
+        <h3 class="setting__main-title">Advanced Settings</h3>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
-        <div class="col-lg-4 col-sm-4 col_margin-r">
+        <div class="col-lg-4 col-sm-4">
           <div class="form-group">
             <label class="label-sett" for="profileGroup">Partition ID</label>
             <input
@@ -34,6 +34,8 @@
               ng-required="$ctrl.areNewSettings"
             >
           </div>
+	</div>
+        <div class="col-lg-4 col-sm-4">
           <div class="form-group">
             <label class="label-sett" for="profileParam">Param</label>
             <input

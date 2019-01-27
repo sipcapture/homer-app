@@ -50,6 +50,17 @@ exports.up = function(knex) {
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');
       userSettingsTable.json('data');
     })
+    .createTable('global_settings', function(userSettingsTable) {
+      // Primary Key
+      globalSettingsTable.increments();
+      // Data
+      globalSettingsTable.uuid('guid');
+      globalSettingsTable.integer('partid').notNullable();
+      globalSettingsTable.string('category', 100).notNullable().defaultTo('settings');
+      globalSettingsTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
+      globalSettingsTable.string('param', 100).notNullable().defaultTo('default');
+      globalSettingsTable.json('data');
+    })
     .createTable('alias', function(aliasTable) {
       // Primary Key
       aliasTable.increments();
@@ -70,6 +81,7 @@ exports.down = function(knex) {
     .schema
     .dropTableIfExists( 'mapping_schema' )
     .dropTableIfExists( 'user_settings' )
+    .dropTableIfExists( 'global_settings' )
     .dropTableIfExists( 'alias' )
     .dropTableIfExists( 'users' );
 };

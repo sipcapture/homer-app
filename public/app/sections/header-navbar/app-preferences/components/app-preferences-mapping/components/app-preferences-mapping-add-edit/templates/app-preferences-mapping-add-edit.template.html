@@ -1,14 +1,15 @@
 <div>
   <div class="modal-header">
-    <h4 class="modal-title">Account of {{$ctrl.mapping.username}}</h4>
+    <h4 class="modal-title">Protocol Mapping</h4>
     <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
   </div>
   <div class="modal-body">
     <form role="form" name="form" ng-model-options="{ getterSetter: true }">
       <div class="row">
-        <h3 class="setting__main-title">Mapping Settings</h3>
+        <h4 class="setting__main-title">Mapping Settings</h4>
+	<p>Defines the identifier, format and lifetime of protocol data</p>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
-        <div class="col-lg-4 col-sm-4 col_margin-r">
+        <div class="col-lg-3 col-sm-3">
           <div class="form-group">
             <label class="label-sett" for="profileGroup">Partition ID</label>
             <input
@@ -21,7 +22,7 @@
             >
           </div>
         </div>
-        <div class="col-lg-4 col-sm-4">
+        <div class="col-lg-3 col-sm-3">
           <div class="form-group">
             <label class="label-sett" for="profileCategory">HEP Alias</label>
             <input
@@ -34,6 +35,8 @@
               ng-required="$ctrl.areNewSettings"
             >
           </div>
+	</div>
+        <div class="col-lg-3 col-sm-3">
           <div class="form-group">
             <label class="label-sett" for="profileHepId">HEP ID</label>
             <input
@@ -47,7 +50,21 @@
             >
           </div>
         </div>
-        <div class="col-lg-4 col-sm-4">
+        <div class="col-lg-3 col-sm-3">
+          <div class="form-group">
+            <label class="label-sett" for="profileHepId">Profile</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-mapping"
+              id="profileParam"
+              ng-model="$ctrl.mapping.profile"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-2">
           <div class="form-group">
             <label class="label-sett" for="profilePartitionStep">Partition Step</label>
             <input
@@ -61,7 +78,7 @@
             >
           </div>
           <div class="form-group">
-            <label class="label-sett" for="profileRetention">Retetaion</label>
+            <label class="label-sett" for="profileRetention">Retention</label>
             <input
               type="text"
               ng-readonly="false"
@@ -73,7 +90,7 @@
             >
           </div>
         </div>
-        <div class="col-lg-4 col-sm-4">
+        <div class="col-lg-10 col-sm-10">
           <div class="form-group">
             <label class="label-sett" for="profileCreatTable">Create table</label>
             <input
@@ -101,7 +118,8 @@
         </div>
       </div>
       <div class="row">
-        <h3 class="setting__main-title">Correlation Mapping</h3>
+        <h4 class="setting__main-title">Correlation Mapping</h4>
+	<p>Defines any cross-protocol correlation mechanism</p>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
         <div class="col-lg-12 col-sm-12 col_margin-r">
           <div class="form-group">
@@ -110,7 +128,8 @@
         </div>
       </div>
       <div class="row">
-        <h3 class="setting__main-title">Fields Mapping</h3>
+        <h4 class="setting__main-title">Fields Mapping</h4>
+	<p>Defines schema and mapping for protocol fields</p>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
         <div class="col-lg-12 col-sm-12 col_margin-r">
           <div class="form-group">

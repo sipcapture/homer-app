@@ -3,15 +3,19 @@
 import { get, forEach, isArray, isEmpty } from 'lodash';
 import Promise from 'bluebird';
 import swal from 'sweetalert2';
-
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
+import 'ace-builds/src-min-noconflict/ace' // Load Ace Editor
+import 'ace-builds/src-min-noconflict/theme-chrome'
+import 'ace-builds/src-min-noconflict/ext-language_tools'
+
+
 
 class SearchRemote {
   constructor($scope, EventBus, $location, SearchService,
     $timeout, $window, $homerModal, UserProfile, $filter,
     $state, EVENTS, log, CONFIGURATION, SearchHelper, StyleHelper,
-    TimeMachine, uiGridConstants, ROUTER, homerHelper) {
+    TimeMachine, uiGridConstants, ROUTER, homerHelper, GlobalProfile) {
     'ngInject';
     this.$scope = $scope;
     this.EventBus = EventBus;
@@ -43,6 +47,129 @@ class SearchRemote {
     this.uiGridState = this.getUiGridState();
     this.ROUTER = ROUTER;
     this.homerHelper = homerHelper;
+    this.GlobalProfile = GlobalProfile;
+        
+    var that = this;
+
+    this.getLokiServer = function() {
+          var lokiServer = this.GlobalProfile.getProfileCategory("search","lokiserver");
+          return (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
+    };
+                            
+    $scope.aceOptions = {
+        advanced:{
+		maxLines: 1,
+		minLines: 1,
+		showLineNumbers: false,
+	 	showGutter: false,
+		fontSize: 15,
+        	enableBasicAutocompletion: true,
+                enableSnippets: false,
+                enableLiveAutocompletion: true,
+                autoScrollEditorIntoView: true,
+        },
+        onLoad: function(editor, session){
+        	var langTools = ace.require("ace/ext/language_tools");  
+        	var gprefix = "test";
+
+        	/*text rules for the feature*/
+        	//var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
+        	
+                /* change line height */
+        	editor.container.style.lineHeight = 2;
+        	editor.renderer.updateFontSize();
+
+		var wServer = that.getLokiServer(); // fetch widget server configuration		
+
+		var labelCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+	            //if (prefix.length === 0) { callback(null, []); return }
+
+		    var api = "/api/v3/search/remote/label?server="+wServer;
+
+        	    $.getJSON( api,
+		    function(wordList) {
+                    	var labels = [];
+	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
+        	            // console.log('got labels',labels);
+	                    callback(null, labels.map(function(ea) {
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
+                	    }));
+	                })
+        	    }
+		};
+		langTools.addCompleter(labelCompleter);		
+		//var allCompleters = editor.completers;
+
+		var valueCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
+	            if (gprefix.length === 0) { callback(null, []); return }
+		    var api = "/api/v3/search/remote/values?label="+gprefix+"&server="+wServer;
+        	    $.getJSON( api,
+		    function(wordList) {
+                    	var values = [];
+	                    wordList.forEach(val => values.push({word: val, score: 1 }))
+        	            // console.log('got values',values);
+	                    callback(null, values.map(function(ea) {
+        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: "value"}
+                	    }));
+	                })
+        	    }
+		};
+
+	    	editor.commands.addCommand({
+	                name: "getValues",
+	                bindKey: { win: "=", mac: "=" },                
+	                exec: function(editor,command) {
+	                    var position = editor.getCursorPosition();
+	                    var token = editor.session.getTokenAt(position.row, position.column);
+	                    var valueData = token.value.substring(0, position.column);	                	                    	                    
+	                    var arrStr = valueData.split(/[=\ {}]/).reverse();
+	                    for (var i = 0; i < arrStr.length; i++) {	                              
+                                    if(arrStr[i].length != 0 ) {
+                                        gprefix = arrStr[i];
+                                        break;
+                                    }	                            
+	                    };	                    
+	                    editor.insert(" = ");
+	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
+	                    editor.completers = [valueCompleter];                  
+	                    editor.execCommand("startAutocomplete");
+	                    //editor.completer.showPopup(editor); 
+	                }
+	    	});   
+    
+	    
+	    	editor.commands.on('afterExec', event => {
+	    	   const { editor, command } = event;
+	    	   //console.log('AFTER!',command);
+	    	   //console.log('AFTER 2!',event);
+	    	   	    	                    
+	    	   if (event.command.name == "insertstring")
+	    	   {
+	    	           if (event.args != "}" && event.args != " ") 
+	    	           {
+	    	               editor.execCommand("startAutocomplete");
+	    	               //editor.completers = allCompleters; 
+	    	               editor.completers = [labelCompleter];
+	    	               /* high light */
+	    	               /*
+	    	               var position = editor.getCursorPosition();
+	    	               var Range = ace.require('ace/range').Range;	    	               
+	    	               var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
+	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");	    	               
+	    	               */
+	    	               
+                           }
+	    	   }
+	    	   if (event.command.name == "insertMatch") {
+			 //editor.completers = allCompleters;
+			 editor.completers = [labelCompleter];
+			                                
+		   }
+		});
+        }
+    }        
   }
 
   $onInit() {
@@ -70,7 +197,7 @@ class SearchRemote {
     });
 
     this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
-      if (this.homerHelper.isCurrentUiRouterState(this.$state, this.ROUTER.SEARCH.NAME)) {
+      if (this.homerHelper.isCurrentUiRouterState(this.$state, this.ROUTER.REMOTE.NAME)) {
         this._updateUiRouterState();
         this.processSearchResult();
       }
@@ -100,7 +227,7 @@ class SearchRemote {
     this.$state.params.custom = timerange.custom;
     this.$state.params.timezone = this.TimeMachine.getTimezone();
 
-    this.$state.go(this.ROUTER.SEARCH.NAME, this.$state.params, { notify });
+    this.$state.go(this.ROUTER.REMOTE.NAME, this.$state.params, { notify });
   }
 
   getUiGridColumnDefs(colNames = []) {
@@ -169,8 +296,6 @@ class SearchRemote {
 
       const response = await this.SearchService.searchRemoteByParam(query);
 
-      console.log("RESPONSE", response);
-
       const { data, keys } = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
@@ -190,6 +315,13 @@ class SearchRemote {
     } catch (err) {
       this.log.error(err);
     }
+  }
+  
+  async processRefreshSearchResult() {
+  
+  
+	this.$state.params.search = this.searchParams;
+	this.processSearchResult();
   }
   
   killParam(param) {
@@ -248,8 +380,7 @@ class SearchRemote {
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
     
-    this.searchParams = {};
-    this.searchParams['query'] = search;
+    this.searchParams = search;
 
     /* preference processing */
     const queryBody = {};
@@ -316,7 +447,6 @@ class SearchRemote {
 
   showMessage(localrow, event) {
   
-    console.log("RR", localrow);
     //let proto = localrow.entity.table.replace('hep_proto_', '');
     let proto = 'hep_proto_100';
     

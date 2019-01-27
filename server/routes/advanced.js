@@ -141,7 +141,7 @@ export default function advanced(server) {
      *  @param {string} data
      * @return advanced settings guid and success message
      */
-    path: '/api/v3/advacned/{guid}',
+    path: '/api/v3/advanced/{guid}',
     method: 'PUT',
     config: {
       auth: {
@@ -206,7 +206,7 @@ export default function advanced(server) {
      *  @param {string} guid
      * @return advanced settings guid and success message
      */
-    path: '/api/v3/advacned/{guid}',
+    path: '/api/v3/advanced/{guid}',
     method: 'DELETE',
     config: {
       auth: {

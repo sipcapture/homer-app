@@ -5,7 +5,7 @@ const appPreferencesAdvanced = {
   controller,
   template,
   bindings: {
-    globasettings: '<',
+    globalsettings: '<',
   },
 };
 

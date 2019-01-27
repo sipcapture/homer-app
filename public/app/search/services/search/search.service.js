@@ -1,9 +1,10 @@
 import {has} from 'lodash';
 
-const SearchService = function($q, $http, UserProfile, API) {
+const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
   'ngInject';
 
   UserProfile.getAllServerRemoteProfile();
+  GlobalProfile.getAllRemoteProfile();
 
   let searchValue = {};
 

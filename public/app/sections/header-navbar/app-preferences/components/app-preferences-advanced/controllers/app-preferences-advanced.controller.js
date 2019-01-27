@@ -68,7 +68,7 @@ class AppPreferencesAdvanced {
     }
 
     try {
-      const data = pick(settings, ['guid', 'partid', 'category', 'param', 'data']);            
+      const data = pick(advanced, ['guid', 'partid', 'category', 'param', 'data']);            
       await this.AdvancedService.update(data);
       this._tableAdvancedUpdate();
     } catch (err) {
@@ -92,12 +92,12 @@ class AppPreferencesAdvanced {
   }
 
   _tableAdvancedDelete(advanced) {
-    this.globasettings.splice(this.globasettings.findIndex((u) => u.guid === advanced.guid), 1);
+    this.globalsettings.splice(this.globalsettings.findIndex((u) => u.guid === advanced.guid), 1);
     this._reloadThisState();
   }
 
   _tableAdvancedAdd(advanced) {
-    this.globasettings.push(advanced);
+    this.globalsettings.push(advanced);
     this._reloadThisState();
   }
 

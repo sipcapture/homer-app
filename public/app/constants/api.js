@@ -30,6 +30,9 @@ const API = {
   PROFILE: {
     STORE: 'api/v3/profile/store',
   },
+  GLOBALPROFILE: {
+    STORE: 'api/v3/advanced',
+  },
   ADMIN: {
     PROFILES: 'api/v3/admin/profiles',
   },

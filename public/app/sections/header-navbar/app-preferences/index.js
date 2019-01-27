@@ -65,7 +65,7 @@ export default angular.module('hepicApp.appPreferences', [])
         url: ROUTER.PREFERENCES_ADVANCED.PATH,
         component: 'appPreferencesAdvanced',
         resolve: {
-          aliases: function(AdvancedService, log) {
+          globalsettings: function(AdvancedService, log) {
             'ngInject';
             log.initLocation('appPreferences');
 

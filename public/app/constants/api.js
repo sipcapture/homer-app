@@ -26,6 +26,12 @@ const API = {
       UPDATE: `${base}/advanced`,
       DELETE: `${base}/advanced`,
     },
+    MAPPING: {
+      GETALL: `${base}/mapping/protocol`,
+      ADD: `${base}/mapping/protocol`,
+      UPDATE: `${base}/mapping/protocol`,
+      DELETE: `${base}/mapping/protocol`,
+    },
   },
   PROFILE: {
     STORE: 'api/v3/profile/store',

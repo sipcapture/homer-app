@@ -29,6 +29,7 @@ const EVENTS = {
   SHOW_USER_SETTINGS: 'showSettings',
   SHOW_ALIAS: 'showAlias',
   SHOW_ADVANCED: 'showAdvanced',
+  SHOW_MAPPING: 'showMapping',
   SHOW_USER_MESSAGES: 'showUserMessages',
   SHOW_NEW_MESSAGE: 'showNewMessage',
   WEBSOCKET_OPEN: 'websocketOpen',

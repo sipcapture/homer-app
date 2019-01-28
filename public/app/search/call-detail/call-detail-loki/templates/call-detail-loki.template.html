@@ -32,11 +32,11 @@
 	  </section>
 	</div>				
 
-
 	<div id="loki-root" ng-if="!!$ctrl.lokidata.length" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
-	  <section class="json-tree-out" ng-repeat="log in $ctrl.lokidata | filter:$ctrl.onMatchJson">
-	    <span style="font-size:12px;">{{ log }}</span>
-	    <json-tree object="loki" start-expanded="false" root-name="'payload'"></json-tree>
+	  <section class="json-tree-out" ng-repeat="log in $ctrl.lokidata">
+	    <span style="font-size:14px;">{{ log.micro_ts }}</span>
+	    <!--<json-tree object="log.custom_1" start-expanded="true" root-name="'payload'"></json-tree>-->
+	    <json-tree object="log.custom_1" start-expanded="true" root-name="log.custom_2"></json-tree>
 	  </section>
 	</div>				
 </div>				

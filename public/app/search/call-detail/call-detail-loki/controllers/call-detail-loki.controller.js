@@ -122,9 +122,8 @@ class CallDetailLoki {
   $onInit() {
 
       /* has to be fixed as forEach */
-      var callId = this.$scope.$ctrl.lokireport.param.search['1_call']['callid'][0];
+      var callId = this.$scope.$ctrl.lokireport.param.search['1_call']['callid'].join('|');
       this.searchParams = '{job = "heplify-server"} ' +callId;
-      console.log("INIT LOKI: "+callId);
   }
 
   createQuery() {

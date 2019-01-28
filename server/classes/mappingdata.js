@@ -17,6 +17,7 @@ class MappingData extends LivingBeing {
     super({db: server.databases.config, table, guid});
     this.configDb = server.databases.config;
     this.guid = guid;
+        
   }
 
   /*
@@ -24,8 +25,8 @@ class MappingData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  getProtocols(table) {
-    return this.dataDb(table)
+  getProtocols() {
+    return this.configDb(this.table)
       .where('partid', 10)
       .select(['hepid','hep_alias','partid','profile'])
       .then(function(rows) {
@@ -39,8 +40,8 @@ class MappingData extends LivingBeing {
       });
   }
   
-  getFields(table, id, transaction) {
-    return this.dataDb(table)
+  getFields(id, transaction) {
+    return this.configDb(this.table)
       .where({
           hepid: id,
           profile: transaction

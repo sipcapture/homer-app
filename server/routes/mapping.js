@@ -9,10 +9,9 @@ export default function search(server) {
     path: '/api/v3/mapping/protocols',
     method: 'GET',
     handler: function(request, reply) {
-      const mappingdata = new MappingData(server, request.payload);
-      const searchTable = "mapping_schema";
-      
-      mappingdata.getProtocols(searchTable).then(function(data) {
+      const mappingdata = new MappingData({server});
+     
+      mappingdata.getProtocols().then(function(data) {
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }
@@ -31,10 +30,9 @@ export default function search(server) {
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
       
-      const mappingdata = new MappingData(server, request.payload);
-      const searchTable = "mapping_schema";
-      
-      mappingdata.getFields(searchTable, id, transaction).then(function(data) {
+      const mappingdata = new MappingData({server});
+
+      mappingdata.getFields(id, transaction).then(function(data) {
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }

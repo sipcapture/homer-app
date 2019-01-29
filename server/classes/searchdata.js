@@ -379,6 +379,7 @@ class SearchData extends LivingBeing {
           /* looping over correlation object and extraction keys */
           correlation.forEach(function(corrs) {
             let sf = corrs['source_field'];
+
             let nKey = null;
             if (sf.indexOf('.') > -1) {
               let elemArray = sf.split('.', 2);
@@ -414,26 +415,25 @@ class SearchData extends LivingBeing {
         let lookupRange = corrs['lookup_range'];
         let newDataWhere=[];
         timeWhere = [];
-              
+
+        /* continue if lookup == 0 */        
+        if(lookupId == 0) continue;
         newDataWhere = newDataWhere.concat(dataWhere);
-        newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
-              
+        newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);              
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
 
         let tFrom = new Date(data.timestamp.from);
         let tTo = new Date(data.timestamp.to);
         
         if (!isEmpty(lookupRange)) {
-          tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
-          tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
+                tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
+                tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
         }
         
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-        
         const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-        
-        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
+        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
       }
 
       /* sort it by create data */

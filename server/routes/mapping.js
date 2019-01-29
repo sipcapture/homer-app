@@ -187,19 +187,19 @@ export default function search(server) {
       auth: {
         strategy: 'token',
       },
-      /*
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
         },
+        /*
         payload: {
           partid: Joi.number(),
           category: Joi.string().min(3).max(50),
           param: Joi.string().min(3).max(50),
           data: Joi.string(),
         },
-      },
-      */
+        */
+      },      
       pre: [
         {
           method: async function(request, reply) {

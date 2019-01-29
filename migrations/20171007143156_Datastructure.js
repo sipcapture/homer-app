@@ -50,7 +50,7 @@ exports.up = function(knex) {
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');
       userSettingsTable.json('data');
     })
-    .createTable('global_settings', function(userSettingsTable) {
+    .createTable('global_settings', function(globalSettingsTable) {
       // Primary Key
       globalSettingsTable.increments();
       // Data

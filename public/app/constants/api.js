@@ -14,9 +14,30 @@ const API = {
       UPDATE: `${base}/user/settings`,
       DELETE: `${base}/user/settings`,
     },
+    ALIAS: {
+      GETALL: `${base}/alias`,
+      ADD: `${base}/alias`,
+      UPDATE: `${base}/alias`,
+      DELETE: `${base}/alias`,
+    },
+    ADVANCED: {
+      GETALL: `${base}/advanced`,
+      ADD: `${base}/advanced`,
+      UPDATE: `${base}/advanced`,
+      DELETE: `${base}/advanced`,
+    },
+    MAPPING: {
+      GETALL: `${base}/mapping/protocol`,
+      ADD: `${base}/mapping/protocol`,
+      UPDATE: `${base}/mapping/protocol`,
+      DELETE: `${base}/mapping/protocol`,
+    },
   },
   PROFILE: {
     STORE: 'api/v3/profile/store',
+  },
+  GLOBALPROFILE: {
+    STORE: 'api/v3/advanced',
   },
   ADMIN: {
     PROFILES: 'api/v3/admin/profiles',

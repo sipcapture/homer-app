@@ -1,0 +1,24 @@
+/* Page Styling */
+.json-tree-out {
+  left: 52%;
+  right: 2%;
+  overflow-y: scroll;
+  padding: 1em;
+  font-size: 14px;
+  background: #CACACA;
+  box-shadow: -0.33em 0.33em 0 rgb(29, 194, 124);
+}
+/* Json Tree Looks */
+json-tree ul {
+  margin: 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+json-tree .key {
+  color: #cb4e7f;
+}
+json-tree .branch-preview {
+  max-width: 60%;
+}
+json-tree .branch-preview::after {
+  content: '...';
+}

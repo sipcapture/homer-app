@@ -3563,6 +3563,10 @@ table.table.table-striped>tbody>tr:last-child {
 	display: flex;
 	width: 100%;
 	justify-content: flex-end;
+	    position: absolute;
+	    bottom: 0;
+	    background: #ffffffc4;
+	    left: -4px;
 }
 .form-group-custom-3 .btn.btn-primary {
 	margin-right: 20px;
@@ -3959,7 +3963,8 @@ input.btn.btn-warning.btn-warning:focus {
 }
 
 .btn.btn-primary.btn-primary {
-	background: #1dc27c;
+	 background-color: #28a745;
+         background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
 }
 
 .btn.btn-primary.btn-primary:focus {
@@ -4774,11 +4779,12 @@ main:before {
 	}
 
 	.nav.nav-tabs > li > a {
-		font-weight: bold;
+		font-weight: normal;
 	}
 	
 	.nav.nav-tabs > .active > a {
 		color: #1dc27c;
+		font-weight: 500;
 	}
 
 	.nav.nav-tabs > li > a:hover {

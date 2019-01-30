@@ -10,11 +10,12 @@ import {cloneDeep} from 'lodash';
 
 class RsearchWidget {
   constructor($scope, $state, UserProfile, $log, SearchService, $uibModal,
-  CONFIGURATION, ModalHelper, ROUTER, TimeMachine) {
+  CONFIGURATION, ModalHelper, ROUTER, TimeMachine, GlobalProfile) {
     'ngInject';
     this.$scope = $scope;
     this.$state = $state;
     this.UserProfile = UserProfile;
+    this.GlobalProfile = GlobalProfile;
     this.$log = $log;
     this.SearchService = SearchService;
     this.$uibModal = $uibModal;
@@ -28,6 +29,7 @@ class RsearchWidget {
     };
                    
     var that = this;
+    
     $scope.aceOptions = {
         advanced:{
 		maxLines: 1,
@@ -188,6 +190,8 @@ class RsearchWidget {
       this.newObject = {};
     }
 
+    var LokiData = this.GlobalProfile.getProfileCategory("search","lokiserver");
+    
     this.searchObject = {};
     this.nsObject = {};
     this.searchObject['searchvalue'] =  this.newObject['searchvalue'];

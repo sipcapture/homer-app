@@ -16,6 +16,8 @@ const routes = {
   any: require('./routes/any'),
   users: require('./routes/users'),
   user_settings: require('./routes/user_settings'),
+  alias: require('./routes/alias'),
+  advanced: require('./routes/advanced'),
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
 };

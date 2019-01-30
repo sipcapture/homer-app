@@ -9,6 +9,7 @@ import CallDetailBlacklist from './call-detail-blacklist';
 import CallDetailDtmf from './call-detail-dtmf';
 import CallDetailGraph from './call-detail-graph';
 import CallDetailLogs from './call-detail-logs';
+import CallDetailLoki from './call-detail-loki';
 import CallDetailLogsRemote from './call-detail-logs-remote';
 import CallDetailRecording from './call-detail-recording';
 import CallDetailTimeline from './call-detail-timeline';
@@ -26,6 +27,7 @@ export default angular.module('hepicApp.call-detail-components', [
   CallDetailDtmf.name,
   CallDetailGraph.name,
   CallDetailLogs.name,
+  CallDetailLoki.name,
   CallDetailLogsRemote.name,
   CallDetailRecording.name,
   CallDetailTimeline.name,

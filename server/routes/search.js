@@ -105,7 +105,35 @@ export default function search(server) {
             
       try {
         const correlation = await settings.getCorrelationMap(request.payload);
-                
+        
+        /*        
+        for (let corrs of correlation) {             
+              let sourceField = corrs['source_field'];
+              let lookupId = corrs['lookup_id'];
+              let lookupProfile = corrs['lookup_profile'];
+              let lookupField = corrs['lookup_field'];
+              let lookupRange = corrs['lookup_range'];
+              let newDataWhere=[];
+              timeWhere = [];
+              if(lookupId != 0) continue;
+              newDataWhere = newDataWhere.concat(dataWhere);
+              newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);              
+              table = 'hep_proto_'+lookupId+'_'+lookupProfile;
+              let tFrom = new Date(data.timestamp.from);
+              let tTo = new Date(data.timestamp.to);
+        
+              if (!isEmpty(lookupRange)) {
+                  tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
+                  tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
+              }
+        
+              timeWhere.push(tFrom.toISOString());
+              timeWhere.push(tTo.toISOString());
+              const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+              if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
+        }
+        */
+
         const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
           searchTable, request.payload, correlation, false);
                     

@@ -88,6 +88,14 @@
           on-match-json="$ctrl.matchJSON"
         >
         </call-detail-logs>
+        
+        <call-detail-loki
+          ng-if="tab.heading === 'Loki'"
+          lokireport="$ctrl.lokireport"
+          enable="$ctrl.enable.report.loki"
+          on-match-json="$ctrl.matchJSON"
+        >
+        </call-detail-loki>
 
         <call-detail-logs-remote
           ng-if="tab.heading === 'Remote Logs'">

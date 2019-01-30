@@ -3,14 +3,14 @@
  */
 'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var ip = require('ip');
+let _ = require('lodash');
+let fs = require('fs');
+let ip = require('ip');
 
-var streamBuffers = require('stream-buffers');
-var GlobalHeader = require('./header/globalhdr');
-var PacketHeader = require('./header/packethdr');
-var Constants = require('./constants');
+let streamBuffers = require('stream-buffers');
+let GlobalHeader = require('./header/globalhdr');
+let PacketHeader = require('./header/packethdr');
+let Constants = require('./constants');
 
 /**
  * Initialize new pcap writer.
@@ -19,13 +19,17 @@ var Constants = require('./constants');
  */
 function PcapBuffer(snaplen, linktype) {
   this.buffer = new streamBuffers.WritableStreamBuffer({
-        initialSize: (10 * 1024),   // start at 100 kilobytes.
-        incrementAmount: (3 * 1024) // grow by 10 kilobytes each time buffer overflows.
+    initialSize: (10 * 1024), // start at 100 kilobytes.
+    incrementAmount: (3 * 1024), // grow by 10 kilobytes each time buffer overflows.
   });
   
-  var options = {};
-  if (snaplen) { options.snaplen = snaplen; }
-  if (linktype) { options.linktype = linktype; }
+  let options = {};
+  if (snaplen) {
+options.snaplen = snaplen;
+}
+  if (linktype) {
+options.linktype = linktype;
+}
   // write global header.
   this.buffer.write(new Buffer((new GlobalHeader(options)).toString(), Constants.HEADER_ENCODING));
 }
@@ -40,26 +44,26 @@ PcapBuffer.prototype.writePacket = function(packet) {
     packet.ts = (new Date()).getTime() * 1000;
   }
 
-  var ethernetBuffer = new Buffer([
+  let ethernetBuffer = new Buffer([
     // ETHERNET
-    0x01, 0x01, 0x01, 0x01, 0x01,0x01,                  // 0    = Destination MAC
-    0x02, 0x02, 0x02, 0x02, 0x02, 0x02,                 // 6    = Source MAC
-    0x08, 0x00                                         // 12   = EtherType = IPv4
+    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, // 0    = Destination MAC
+    0x02, 0x02, 0x02, 0x02, 0x02, 0x02, // 6    = Source MAC
+    0x08, 0x00, // 12   = EtherType = IPv4
   ]);
 
-  var ipBuffer = new Buffer([
-        0x45,                   // IP: Version (0x45 is IPv4)
-        0x00,                   // IP: Differentiated Services Field
-        0x00,0x2c,              // IP: Total Length
-        0x00,0x00,              // IP: Identification
-        0x00,                   // IP: Flags (0x20 Don't Fragment)
-        0x00,                   // IP: Fragment Offset
-        0x80,                   // IP: TTL (0x80 is 124)
-        0x11,                   // IP: protocol (ICMP=1, IGMP=2, TCP=6, UDP=17, static value)
-        0x0a,0x15,              // IP: checksum for IP part of this packet
-        0x00,0x00,0x00,0x00,    // IP: ip src
-        0x00,0x00,0x00,0x00,    // IP: ip dst
-    ]);
+  let ipBuffer = new Buffer([
+    0x45, // IP: Version (0x45 is IPv4)
+    0x00, // IP: Differentiated Services Field
+    0x00, 0x2c, // IP: Total Length
+    0x00, 0x00, // IP: Identification
+    0x00, // IP: Flags (0x20 Don't Fragment)
+    0x00, // IP: Fragment Offset
+    0x80, // IP: TTL (0x80 is 124)
+    0x11, // IP: protocol (ICMP=1, IGMP=2, TCP=6, UDP=17, static value)
+    0x0a, 0x15, // IP: checksum for IP part of this packet
+    0x00, 0x00, 0x00, 0x00, // IP: ip src
+    0x00, 0x00, 0x00, 0x00, // IP: ip dst
+  ]);
 
 
   ipBuffer.writeUInt16BE(parseInt(Math.random()*0xffff), 4); // IP: set identification
@@ -93,23 +97,23 @@ PcapBuffer.prototype.writePacket = function(packet) {
    tcpBuffer.writeUInt16BE(dst_port, 2); // TCP: save dst port (port var) into the buffer
    */
    
-   /* DO UDP HERE */
+  /* DO UDP HERE */
    
-   var udpBuffer = new Buffer(8)
-   udpBuffer.writeUInt16BE(packet.sourcePort, 0)
-   udpBuffer.writeUInt16BE(packet.destinationPort, 2)
-   udpBuffer.writeUInt16BE((udpBuffer.length+packet.data.length), 4)
+  let udpBuffer = new Buffer(8);
+  udpBuffer.writeUInt16BE(packet.sourcePort, 0);
+  udpBuffer.writeUInt16BE(packet.destinationPort, 2);
+  udpBuffer.writeUInt16BE((udpBuffer.length+packet.data.length), 4);
 
-   //udpBuffer.writeUInt16BE(checkSum(packet), 6)
-   ipBuffer.writeUInt16BE(udpBuffer.length+ipBuffer.length+packet.data.length, 2); // IP: set identification   
+  // udpBuffer.writeUInt16BE(checkSum(packet), 6)
+  ipBuffer.writeUInt16BE(udpBuffer.length+ipBuffer.length+packet.data.length, 2); // IP: set identification
 
-   var n = packet.data.length + ethernetBuffer.length + ipBuffer.length + udpBuffer.length;
-   var ph = new PacketHeader({
+  let n = packet.data.length + ethernetBuffer.length + ipBuffer.length + udpBuffer.length;
+  let ph = new PacketHeader({
    	tv_sec: parseInt(parseInt(packet.ts, Constants.INT_BASE) / Constants.M_SEC, Constants.INT_BASE),
-	tv_usec: parseInt(((packet.ts / Constants.M_SEC) - parseInt(packet.ts/Constants.M_SEC, Constants.INT_BASE)) *
+    tv_usec: parseInt(((packet.ts / Constants.M_SEC) - parseInt(packet.ts/Constants.M_SEC, Constants.INT_BASE)) *
 	Constants.M_SEC_F, Constants.INT_BASE),
-	caplen: n,
-	len: n
+    caplen: n,
+    len: n,
   });
   // write packet header
   this.buffer.write(new Buffer(ph.toString(), Constants.HEADER_ENCODING));
@@ -124,33 +128,33 @@ PcapBuffer.prototype.writePacket = function(packet) {
 };
 
 
-PcapBuffer.checkSum = function (packet) {
+PcapBuffer.checkSum = function(packet) {
   // pseudo header: srcip (16), dstip (16), 0 (8), proto (8), udp len (16)
-  var data = packet.data, len = data.length
-  var srcport = packet.sourcePort, srcip = packet.sourceIp
-  var dstport = packet.destinationPort, dstip = packet.destinationIp
-  if (!srcip || !dstip) return 0xffff
-  var protocol = packet.protocol == 17 ? 0x11 : packet.protocol
-  var sum = 0xffff
+  let data = packet.data, len = data.length;
+  let srcport = packet.sourcePort, srcip = packet.sourceIp;
+  let dstport = packet.destinationPort, dstip = packet.destinationIp;
+  if (!srcip || !dstip) return 0xffff;
+  let protocol = packet.protocol == 17 ? 0x11 : packet.protocol;
+  let sum = 0xffff;
   // pseudo header: srcip (16), dstip (16), 0 (8), proto (8), udp len (16)
   if (srcip && dstip) {
-    if (typeof srcip === 'string') srcip = Buffer(srcip.split('.'))
-    if (typeof dstip === 'string') dstip = Buffer(dstip.split('.'))
-    sum = 0
-    var pad = len % 2
+    if (typeof srcip === 'string') srcip = Buffer(srcip.split('.'));
+    if (typeof dstip === 'string') dstip = Buffer(dstip.split('.'));
+    sum = 0;
+    let pad = len % 2;
     for (var i = 0; i < len + pad; i += 2) {
-      sum += ((data[i]<<8)&0xff00) + ((data[i+1])&0xff)
+      sum += ((data[i]<<8)&0xff00) + ((data[i+1])&0xff);
     }
     for (var i = 0; i < 4; i += 2) {
-      sum += ((dstip[i]<<8)&0xff00) + (dstip[i+1]&0xff)
+      sum += ((dstip[i]<<8)&0xff00) + (dstip[i+1]&0xff);
     }
-    sum += protocol + len
+    sum += protocol + len;
     while (sum>>16) {
-      sum = (sum & 0xffff) + (sum >> 16)
+      sum = (sum & 0xffff) + (sum >> 16);
     }
-    sum = 0xffff ^ sum
+    sum = 0xffff ^ sum;
   }
-  return sum
+  return sum;
 };
 
 

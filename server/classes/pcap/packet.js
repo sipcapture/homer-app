@@ -1,11 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var struct = require('bufferpack');
-var os = require('os');
+let _ = require('lodash');
+let struct = require('bufferpack');
+let os = require('os');
 
-var PacketError = require('./packeterr');
-var Constants = require('./constants');
+let PacketError = require('./packeterr');
+let Constants = require('./constants');
 
 // Packet class.
 function Packet(options) {
@@ -33,7 +33,7 @@ Packet.prototype.setup = function() {
 
 // override self values that are passed as options.
 Packet.prototype.setValuesFromOpts = function() {
-  var self = this;
+  let self = this;
   if (self.options) {
     _.forOwn(self.options, function(val, key) {
       self[key] = val;
@@ -44,7 +44,7 @@ Packet.prototype.setValuesFromOpts = function() {
 // set header format based on byte order of system.
 Packet.prototype.setFormat = function() {
   this._hdrFmt = Constants.BYTE_ORDER[os.endianness()];
-  var self = this;
+  let self = this;
   _.forEach(this._headers, function(h) {
     self._hdrFmt += h[1] + '';
   });
@@ -52,7 +52,7 @@ Packet.prototype.setFormat = function() {
 
 // set header fileds.
 Packet.prototype.setFields = function() {
-  var self = this;
+  let self = this;
   self._hdrFields = [];
   _.forEach(this._headers, function(h) {
     self._hdrFields.push(h[0]);
@@ -61,7 +61,7 @@ Packet.prototype.setFields = function() {
 
 // set default values.
 Packet.prototype.setDefaults = function() {
-  var self = this;
+  let self = this;
   self._hdrDefaults = {};
   _.forEach(this._headers, function(h) {
     self._hdrDefaults[h[0]] = h[2];
@@ -72,14 +72,14 @@ Packet.prototype.setDefaults = function() {
  * Unpack packet header fields from buf, and set self.data.
  */
 Packet.prototype.unpack = function(buf) {
-    var self = this;
+  let self = this;
   try {
-    var up = struct.unpack(this._hdrFmt, buf.slice(0, this._hdrLen));
+    let up = struct.unpack(this._hdrFmt, buf.slice(0, this._hdrLen));
     _.forEach(self._hdrFields, function(h, i) {
       self[h] = up[i];
     });
     self.data = buf.slice(self._hdrLen);
-  } catch(e) { // if error in struct unpack
+  } catch (e) { // if error in struct unpack
     if (buf.length < self._hdrLen) {
       throw new PacketError('Need more data');
     }
@@ -91,7 +91,7 @@ Packet.prototype.unpack = function(buf) {
  * Populate packet with values.
  */
 Packet.prototype.populatePacket = function() {
-  var self = this;
+  let self = this;
   _.forEach(self._hdrFields, function(h, i) {
     self[h] = self._hdrDefaults[h];
   });
@@ -109,10 +109,10 @@ Packet.prototype.len = function() {
  * Collect and display protocol fields in order:
  */
 Packet.prototype.print = function() {
-  var self = this;
-  var collector = [];
+  let self = this;
+  let collector = [];
   _.forEach(this._hdrFields, function(fieldName) {
-    var fieldValue = self[fieldName];
+    let fieldValue = self[fieldName];
     // add public fields defined in _hdrFields, unless their value is default
     if (fieldValue !== self._hdrDefaults[fieldName]) {
       if (fieldValue[0] !== '_') {
@@ -121,7 +121,7 @@ Packet.prototype.print = function() {
         // properties derived from _private fields defined in _hdrFields
         // interpret private fields as name of properties joined by underscores
         _.forEach(fieldValue.split('_'), function(propName) {
-          var val = self[propName];
+          let val = self[propName];
           if (_.isObject(val)) {
             if (!_.isArray(val)) {
               collector.push(propName + '=' + val);
@@ -149,7 +149,7 @@ Packet.prototype.print = function() {
   if (self.data) {
     collector.push('data=' + self.data);
   }
-  return  self.name + '(' + collector.join(', ') + ')';
+  return self.name + '(' + collector.join(', ') + ')';
 };
 
 /**
@@ -165,16 +165,16 @@ Packet.prototype.toString = function() {
  * Return packed header string.
  */
 Packet.prototype.pack = function() {
-  var dp = [], self = this;
+  let dp = [], self = this;
   _.forEach(this._hdrFields, function(hf) {
     dp.push(self[hf]);
   });
   try {
     return struct.pack(this._hdrFmt, dp).toString(Constants.HEADER_ENCODING);
-  } catch(e) { // first error, do fallback mechanism.
-    var vals = [];
+  } catch (e) { // first error, do fallback mechanism.
+    let vals = [];
     _.forEach(self._hdrFields, function(hf) {
-      var val = self[hf];
+      let val = self[hf];
       if (_.isArray(val)) {
         vals = _.extend(vals, val);
       } else {
@@ -183,7 +183,7 @@ Packet.prototype.pack = function() {
     });
     try {
       return struct.pack(this._hdrFmt, vals).toString(Constants.HEADER_ENCODING);
-    } catch(se) { // second error, throw error to user this time.
+    } catch (se) { // second error, throw error to user this time.
       throw new PacketError(se.toString());
     }
   }

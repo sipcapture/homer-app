@@ -2,15 +2,15 @@ import 'angular-clock';
 import 'angular-clock/dist/angular-clock.css';
 import '../style/rsearch-widget.css';
 
-import 'ace-builds/src-min-noconflict/ace' // Load Ace Editor
-import 'ace-builds/src-min-noconflict/theme-chrome'
-import 'ace-builds/src-min-noconflict/ext-language_tools'
+import 'ace-builds/src-min-noconflict/ace'; // Load Ace Editor
+import 'ace-builds/src-min-noconflict/theme-chrome';
+import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 import {cloneDeep} from 'lodash';
 
 class RsearchWidget {
   constructor($scope, $state, UserProfile, $log, SearchService, $uibModal,
-  CONFIGURATION, ModalHelper, ROUTER, TimeMachine, GlobalProfile) {
+    CONFIGURATION, ModalHelper, ROUTER, TimeMachine, GlobalProfile) {
     'ngInject';
     this.$scope = $scope;
     this.$state = $state;
@@ -25,128 +25,123 @@ class RsearchWidget {
     this.TimeMachine = TimeMachine;
            
     this.getLokiServer = function() {
-        return this._widget.server || 'http://loki:3100';
+      return this._widget.server || 'http://loki:3100';
     };
                    
-    var that = this;
+    let that = this;
     
     $scope.aceOptions = {
-        advanced:{
-		maxLines: 1,
-		minLines: 1,
-		showLineNumbers: false,
+      advanced: {
+        maxLines: 1,
+        minLines: 1,
+        showLineNumbers: false,
 	 	showGutter: false,
-		fontSize: 15,
+        fontSize: 15,
         	enableBasicAutocompletion: true,
-                enableSnippets: false,
-                enableLiveAutocompletion: true,
-                autoScrollEditorIntoView: true,
-        },
-        onLoad: function(editor, session){
-        	var langTools = ace.require("ace/ext/language_tools");  
-        	var gprefix = "test";
+        enableSnippets: false,
+        enableLiveAutocompletion: true,
+        autoScrollEditorIntoView: true,
+      },
+      onLoad: function(editor, session) {
+        	let langTools = ace.require('ace/ext/language_tools');
+        	let gprefix = 'test';
 
-        	/*text rules for the feature*/
-        	//var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
+        	/* text rules for the feature*/
+        	// var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
         	
-                /* change line height */
+        /* change line height */
         	editor.container.style.lineHeight = 2;
         	editor.renderer.updateFontSize();
 
-		var wServer = that.getLokiServer(); // fetch widget server configuration		
+        let wServer = that.getLokiServer(); // fetch widget server configuration
 
-		var labelCompleter = {
+        let labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
-	            //if (prefix.length === 0) { callback(null, []); return }
+	            // if (prefix.length === 0) { callback(null, []); return }
 
-		    var api = "/api/v3/search/remote/label?server="+wServer;
+		    let api = '/api/v3/search/remote/label?server='+wServer;
 
         	    $.getJSON( api,
 		    function(wordList) {
-                    	var labels = [];
-	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
+                    	let labels = [];
+	                    wordList.forEach((val) => labels.push({word: val, score: 1}));
         	            // console.log('got labels',labels);
 	                    callback(null, labels.map(function(ea) {
-        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: 'label'};
                 	    }));
-	                })
-        	    }
-		};
-		langTools.addCompleter(labelCompleter);		
-		//var allCompleters = editor.completers;
+	                });
+        	    },
+        };
+        langTools.addCompleter(labelCompleter);
+        // var allCompleters = editor.completers;
 
-		var valueCompleter = {
-     		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
-	            if (gprefix.length === 0) { callback(null, []); return }
-		    var api = "/api/v3/search/remote/values?label="+gprefix+"&server="+wServer;
+        let valueCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+	            if (gprefix.length === 0) {
+              callback(null, []); return;
+            }
+		    let api = '/api/v3/search/remote/values?label='+gprefix+'&server='+wServer;
         	    $.getJSON( api,
 		    function(wordList) {
-                    	var values = [];
-	                    wordList.forEach(val => values.push({word: val, score: 1 }))
+                    	let values = [];
+	                    wordList.forEach((val) => values.push({word: val, score: 1}));
         	            // console.log('got values',values);
 	                    callback(null, values.map(function(ea) {
-        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: "value"}
+        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: 'value'};
                 	    }));
-	                })
-        	    }
-		};
+	                });
+        	    },
+        };
 
 	    	editor.commands.addCommand({
-	                name: "getValues",
-	                bindKey: { win: "=", mac: "=" },                
-	                exec: function(editor,command) {
-	                    var position = editor.getCursorPosition();
-	                    var token = editor.session.getTokenAt(position.row, position.column);
-	                    var valueData = token.value.substring(0, position.column);	                	                    	                    
-	                    var arrStr = valueData.split(/[=\ {}]/).reverse();
-	                    for (var i = 0; i < arrStr.length; i++) {	                              
-                                    if(arrStr[i].length != 0 ) {
-                                        gprefix = arrStr[i];
-                                        break;
-                                    }	                            
-	                    };	                    
-	                    editor.insert(" = ");
-	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
-	                    editor.completers = [valueCompleter];                  
-	                    editor.execCommand("startAutocomplete");
-	                    //editor.completer.showPopup(editor); 
-	                }
-	    	});   
+	                name: 'getValues',
+	                bindKey: {win: '=', mac: '='},
+	                exec: function(editor, command) {
+	                    let position = editor.getCursorPosition();
+	                    let token = editor.session.getTokenAt(position.row, position.column);
+	                    let valueData = token.value.substring(0, position.column);
+	                    let arrStr = valueData.split(/[=\ {}]/).reverse();
+	                    for (let i = 0; i < arrStr.length; i++) {
+              if (arrStr[i].length != 0 ) {
+                gprefix = arrStr[i];
+                break;
+              }
+	                    };
+	                    editor.insert(' = ');
+	                    if (!editor.completer) editor.completer = new Autocomplete(editor);
+	                    editor.completers = [valueCompleter];
+	                    editor.execCommand('startAutocomplete');
+	                    // editor.completer.showPopup(editor);
+	                },
+	    	});
     
 	    
-	    	editor.commands.on('afterExec', event => {
-	    	   const { editor, command } = event;
-	    	   //console.log('AFTER!',command);
-	    	   //console.log('AFTER 2!',event);
+	    	editor.commands.on('afterExec', (event) => {
+	    	   const {editor, command} = event;
+	    	   // console.log('AFTER!',command);
+	    	   // console.log('AFTER 2!',event);
 	    	   	    	                    
-	    	   if (event.command.name == "insertstring")
-	    	   {
-	    	           if (event.args != "}" && event.args != " ") 
-	    	           {
-	    	               editor.execCommand("startAutocomplete");
-	    	               //editor.completers = allCompleters; 
+	    	   if (event.command.name == 'insertstring') {
+	    	           if (event.args != '}' && event.args != ' ') {
+	    	               editor.execCommand('startAutocomplete');
+	    	               // editor.completers = allCompleters;
 	    	               editor.completers = [labelCompleter];
 	    	               /* high light */
 	    	               /*
 	    	               var position = editor.getCursorPosition();
-	    	               var Range = ace.require('ace/range').Range;	    	               
+	    	               var Range = ace.require('ace/range').Range;
 	    	               var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
-	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");	    	               
+	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
 	    	               */
-	    	               
-                           }
+            }
 	    	   }
-	    	   if (event.command.name == "insertMatch") {
-			 //editor.completers = allCompleters;
+	    	   if (event.command.name == 'insertMatch') {
+			 // editor.completers = allCompleters;
 			 editor.completers = [labelCompleter];
-			                                
 		   }
-		});
-
-
-		
-        }
-    }
+        });
+      },
+    };
   }
 
   $onInit() {
@@ -154,18 +149,18 @@ class RsearchWidget {
     this.newObject = this.UserProfile.profileScope.search;
     this.newResult = this.UserProfile.profileScope.result;
     this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
-    this.timerange = this.UserProfile.profileScope.timerange;                                         
-    this.newObject['limit'] = 100;    
+    this.timerange = this.UserProfile.profileScope.timerange;
+    this.newObject['limit'] = 100;
   }
   
   aceChange() {
-    console.log("CHANGE");
+    console.log('CHANGE');
   }
 
   /*
   getLokiServer() {
     return this._widget.server || 'http://loki:3100';
-  }  
+  }
   */
 
   get locationName() {
@@ -178,26 +173,25 @@ class RsearchWidget {
 
   update(widget) {
     this._widget = widget;
-    console.log("WIDGTET", this._widget);
+    console.log('WIDGTET', this._widget);
     this.onUpdate({uuid: this._widget.uuid, widget});
   }
   
   
   // process the form
   processSearchForm() {
-
     if (this.newObject instanceof Array) {
       this.newObject = {};
     }
 
-    var LokiData = this.GlobalProfile.getProfileCategory("search","lokiserver");
+    let LokiData = this.GlobalProfile.getProfileCategory('search', 'lokiserver');
     
     this.searchObject = {};
     this.nsObject = {};
-    this.searchObject['searchvalue'] =  this.newObject['searchvalue'];
-    //this.nsObject['query'] =  encodeURIComponent(encodeURIComponent(this.newObject['searchvalue']));    
-    this.nsObject['query'] =  this.newObject['searchvalue'];    
-    this.searchObject['limit'] =  this.newObject['limit'];
+    this.searchObject['searchvalue'] = this.newObject['searchvalue'];
+    // this.nsObject['query'] =  encodeURIComponent(encodeURIComponent(this.newObject['searchvalue']));
+    this.nsObject['query'] = this.newObject['searchvalue'];
+    this.searchObject['limit'] = this.newObject['limit'];
 
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
@@ -206,12 +200,11 @@ class RsearchWidget {
 
         
     let protoID = 'loki';
-    this.searchForProtocol(protoID);    
-
+    this.searchForProtocol(protoID);
   }
 
   searchForProtocol(protoID) {
-    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
+    const {from, to, custom} = this.TimeMachine.getTimerangeUnix();
 
     this.$state.go(this.ROUTER.REMOTE.NAME, {
       protoID,
@@ -222,7 +215,7 @@ class RsearchWidget {
       from,
       to,
       custom,
-    });    
+    });
   }
 
 

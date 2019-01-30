@@ -26,7 +26,6 @@ export default function search(server) {
     path: '/api/v3/mapping/fields/{id}/{transaction}',
     method: 'GET',
     handler: function(request, reply) {
-
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
       
@@ -41,7 +40,7 @@ export default function search(server) {
         return reply(Boom.serverUnavailable(error));
       });
     },
-  });  
+  });
   
   server.route({
     /**
@@ -62,7 +61,7 @@ export default function search(server) {
       const settings = new MappingData({server});
 
       try {
-        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid','version','retention','partition_step','create_index','create_table','correlation_mapping','fields_mapping','mapping_settings','schema_mapping','schema_settings']);
+        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_mapping', 'fields_mapping', 'mapping_settings', 'schema_mapping', 'schema_settings']);
         if (!data || !data.length) {
           return reply(Boom.notFound('no mapping settings found'));
         }
@@ -104,7 +103,7 @@ export default function search(server) {
       const settings = new MappingData({server, guid});
 
       try {
-        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid','version','retention','partition_step','create_index','create_table','correlation_mapping','fields_mapping','mapping_settings','schema_mapping','schema_settings']);
+        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_mapping', 'fields_mapping', 'mapping_settings', 'schema_mapping', 'schema_settings']);
         if (!data || !Object.keys(data).length) {
           return reply(Boom.notFound('no advacned settings found for guid ' + guid));
         }
@@ -150,12 +149,12 @@ export default function search(server) {
       */
     },
     handler: async function(request, reply) {
-      const {profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings} = request.payload;
+      const {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
       const guid = uuid();
       const settings = new MappingData({server});
 
       try {
-        await settings.add({profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings});
+        await settings.add({profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings});
         return reply({
           data: guid,
           message: 'successfully created mapping settings',
@@ -199,7 +198,7 @@ export default function search(server) {
           data: Joi.string(),
         },
         */
-      },      
+      },
       pre: [
         {
           method: async function(request, reply) {
@@ -222,7 +221,7 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const updates = pick(request.payload, ['guid', 'profile', 'hepid', 'hep_alias', 'partid','version','retention','partition_step','create_index','create_table','correlation_mapping','fields_mapping','mapping_settings','schema_mapping','schema_settings']);
+      const updates = pick(request.payload, ['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_mapping', 'fields_mapping', 'mapping_settings', 'schema_mapping', 'schema_settings']);
 
       const settings = new MappingData({server, guid});
 
@@ -294,5 +293,4 @@ export default function search(server) {
       }
     },
   });
-  
 };

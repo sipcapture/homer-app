@@ -1,14 +1,13 @@
 /* global angular, window */
 
-import { get, forEach, isArray, isEmpty } from 'lodash';
+import {get, forEach, isArray, isEmpty} from 'lodash';
 import Promise from 'bluebird';
 import swal from 'sweetalert2';
 import gridOptions from '../data/grid/options';
 import gridRowTemplate from '../data/grid/row_template.html';
-import 'ace-builds/src-min-noconflict/ace' // Load Ace Editor
-import 'ace-builds/src-min-noconflict/theme-chrome'
-import 'ace-builds/src-min-noconflict/ext-language_tools'
-
+import 'ace-builds/src-min-noconflict/ace'; // Load Ace Editor
+import 'ace-builds/src-min-noconflict/theme-chrome';
+import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 
 class SearchRemote {
@@ -49,131 +48,128 @@ class SearchRemote {
     this.homerHelper = homerHelper;
     this.GlobalProfile = GlobalProfile;
         
-    var that = this;
+    let that = this;
 
     this.getLokiServer = function() {
-          var lokiServer = this.GlobalProfile.getProfileCategory("search","lokiserver");
-          return (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
+      let lokiServer = this.GlobalProfile.getProfileCategory('search', 'lokiserver');
+      return (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
     };
                             
     $scope.aceOptions = {
-        advanced:{
-		maxLines: 1,
-		minLines: 1,
-		showLineNumbers: false,
+      advanced: {
+        maxLines: 1,
+        minLines: 1,
+        showLineNumbers: false,
 	 	showGutter: false,
-		fontSize: 15,
+        fontSize: 15,
         	enableBasicAutocompletion: true,
-                enableSnippets: false,
-                enableLiveAutocompletion: true,
-                autoScrollEditorIntoView: true,
-        },
-        onLoad: function(editor, session){
-        	var langTools = ace.require("ace/ext/language_tools");  
-        	var gprefix = "test";
+        enableSnippets: false,
+        enableLiveAutocompletion: true,
+        autoScrollEditorIntoView: true,
+      },
+      onLoad: function(editor, session) {
+        	let langTools = ace.require('ace/ext/language_tools');
+        	let gprefix = 'test';
 
-        	/*text rules for the feature*/
-        	//var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
+        	/* text rules for the feature*/
+        	// var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
         	
-                /* change line height */
+        /* change line height */
         	editor.container.style.lineHeight = 2;
         	editor.renderer.updateFontSize();
 
-		var wServer = that.getLokiServer(); // fetch widget server configuration		
+        let wServer = that.getLokiServer(); // fetch widget server configuration
 
-		var labelCompleter = {
+        let labelCompleter = {
      		   getCompletions: function(editor, session, pos, prefix, callback) {
-	            //if (prefix.length === 0) { callback(null, []); return }
+	            // if (prefix.length === 0) { callback(null, []); return }
 
-		    var api = "/api/v3/search/remote/label?server="+wServer;
+		    let api = '/api/v3/search/remote/label?server='+wServer;
 
         	    $.getJSON( api,
 		    function(wordList) {
-                    	var labels = [];
-	                    wordList.forEach(val => labels.push({word: val, score: 1 }))
+                    	let labels = [];
+	                    wordList.forEach((val) => labels.push({word: val, score: 1}));
         	            // console.log('got labels',labels);
 	                    callback(null, labels.map(function(ea) {
-        	                return {name: ea.word, value: ea.word, score: ea.score, meta: "label"}
+        	                return {name: ea.word, value: ea.word, score: ea.score, meta: 'label'};
                 	    }));
-	                })
-        	    }
-		};
-		langTools.addCompleter(labelCompleter);		
-		//var allCompleters = editor.completers;
+	                });
+        	    },
+        };
+        langTools.addCompleter(labelCompleter);
+        // var allCompleters = editor.completers;
 
-		var valueCompleter = {
-     		   getCompletions: function(editor, session, pos, prefix, callback) {     		    
-	            if (gprefix.length === 0) { callback(null, []); return }
-		    var api = "/api/v3/search/remote/values?label="+gprefix+"&server="+wServer;
+        let valueCompleter = {
+     		   getCompletions: function(editor, session, pos, prefix, callback) {
+	            if (gprefix.length === 0) {
+              callback(null, []); return;
+            }
+		    let api = '/api/v3/search/remote/values?label='+gprefix+'&server='+wServer;
         	    $.getJSON( api,
 		    function(wordList) {
-                    	var values = [];
-	                    wordList.forEach(val => values.push({word: val, score: 1 }))
+                    	let values = [];
+	                    wordList.forEach((val) => values.push({word: val, score: 1}));
         	            // console.log('got values',values);
 	                    callback(null, values.map(function(ea) {
-        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: "value"}
+        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: 'value'};
                 	    }));
-	                })
-        	    }
-		};
+	                });
+        	    },
+        };
 
 	    	editor.commands.addCommand({
-	                name: "getValues",
-	                bindKey: { win: "=", mac: "=" },                
-	                exec: function(editor,command) {
-	                    var position = editor.getCursorPosition();
-	                    var token = editor.session.getTokenAt(position.row, position.column);
-	                    var valueData = token.value.substring(0, position.column);	                	                    	                    
-	                    var arrStr = valueData.split(/[=\ {}]/).reverse();
-	                    for (var i = 0; i < arrStr.length; i++) {	                              
-                                    if(arrStr[i].length != 0 ) {
-                                        gprefix = arrStr[i];
-                                        break;
-                                    }	                            
-	                    };	                    
-	                    editor.insert(" = ");
-	                    if (!editor.completer) editor.completer = new Autocomplete(editor); 
-	                    editor.completers = [valueCompleter];                  
-	                    editor.execCommand("startAutocomplete");
-	                    //editor.completer.showPopup(editor); 
-	                }
-	    	});   
+	                name: 'getValues',
+	                bindKey: {win: '=', mac: '='},
+	                exec: function(editor, command) {
+	                    let position = editor.getCursorPosition();
+	                    let token = editor.session.getTokenAt(position.row, position.column);
+	                    let valueData = token.value.substring(0, position.column);
+	                    let arrStr = valueData.split(/[=\ {}]/).reverse();
+	                    for (let i = 0; i < arrStr.length; i++) {
+              if (arrStr[i].length != 0 ) {
+                gprefix = arrStr[i];
+                break;
+              }
+	                    };
+	                    editor.insert(' = ');
+	                    if (!editor.completer) editor.completer = new Autocomplete(editor);
+	                    editor.completers = [valueCompleter];
+	                    editor.execCommand('startAutocomplete');
+	                    // editor.completer.showPopup(editor);
+	                },
+	    	});
     
 	    
-	    	editor.commands.on('afterExec', event => {
-	    	   const { editor, command } = event;
-	    	   //console.log('AFTER!',command);
-	    	   //console.log('AFTER 2!',event);
+	    	editor.commands.on('afterExec', (event) => {
+	    	   const {editor, command} = event;
+	    	   // console.log('AFTER!',command);
+	    	   // console.log('AFTER 2!',event);
 	    	   	    	                    
-	    	   if (event.command.name == "insertstring")
-	    	   {
-	    	           if (event.args != "}" && event.args != " ") 
-	    	           {
-	    	               editor.execCommand("startAutocomplete");
-	    	               //editor.completers = allCompleters; 
+	    	   if (event.command.name == 'insertstring') {
+	    	           if (event.args != '}' && event.args != ' ') {
+	    	               editor.execCommand('startAutocomplete');
+	    	               // editor.completers = allCompleters;
 	    	               editor.completers = [labelCompleter];
 	    	               /* high light */
 	    	               /*
 	    	               var position = editor.getCursorPosition();
-	    	               var Range = ace.require('ace/range').Range;	    	               
+	    	               var Range = ace.require('ace/range').Range;
 	    	               var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
-	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");	    	               
+	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
 	    	               */
-	    	               
-                           }
+            }
 	    	   }
-	    	   if (event.command.name == "insertMatch") {
-			 //editor.completers = allCompleters;
+	    	   if (event.command.name == 'insertMatch') {
+			 // editor.completers = allCompleters;
 			 editor.completers = [labelCompleter];
-			                                
 		   }
-		});
-        }
-    }        
+        });
+      },
+    };
   }
 
   $onInit() {
-  
     this.initData();
 
     this.gridOpts.columnDefs = [];
@@ -201,7 +197,7 @@ class SearchRemote {
         this._updateUiRouterState();
         this.processSearchResult();
       }
-    });    
+    });
   }
 
   $onDestroy() {
@@ -227,7 +223,7 @@ class SearchRemote {
     this.$state.params.custom = timerange.custom;
     this.$state.params.timezone = this.TimeMachine.getTimezone();
 
-    this.$state.go(this.ROUTER.REMOTE.NAME, this.$state.params, { notify });
+    this.$state.go(this.ROUTER.REMOTE.NAME, this.$state.params, {notify});
   }
 
   getUiGridColumnDefs(colNames = []) {
@@ -236,7 +232,7 @@ class SearchRemote {
     }
 
     function getDefaultDefs(colNames) {
-      return colNames.map(name => {
+      return colNames.map((name) => {
         return {
           field: name,
           displayName: name,
@@ -250,8 +246,7 @@ class SearchRemote {
 
     function getEnrichedDefs(columnDefs) {
       const enrichedColumns = [];
-      columnDefs.forEach(col => {
-
+      columnDefs.forEach((col) => {
         if (col.name === 'sid' || col.field === 'sid') {
           col.cellTemplate = '<div class="ui-grid-cell-contents-large" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
             +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
@@ -274,15 +269,13 @@ class SearchRemote {
           enrichedColumns.push(col);
         }
       });
-      return enrichedColumns; 
+      return enrichedColumns;
     }
 
     return getEnrichedDefs(colNames);
   }
 
   async processSearchResult() {
-  
-  
     if (isArray(this.data) && !isEmpty(this.data)) {
       this.saveUiGridState();
     }
@@ -290,17 +283,16 @@ class SearchRemote {
     const query = this.createQuery();
 
     try {
-
-      this.gridOpts.data = [];             
-      this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);      
+      this.gridOpts.data = [];
+      this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
 
       const response = await this.SearchService.searchRemoteByParam(query);
 
-      const { data, keys } = response.data;
+      const {data, keys} = response.data;
 
       if (isArray(keys) && !isEmpty(keys)) {
         this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
-        //this.gridOpts.columnDefs = keys;        
+        // this.gridOpts.columnDefs = keys;
         this.gridApi.core.notifyDataChange(this.uiGridConstants.dataChange.ALL);
       }
 
@@ -318,10 +310,8 @@ class SearchRemote {
   }
   
   async processRefreshSearchResult() {
-  
-  
-	this.$state.params.search = this.searchParams;
-	this.processSearchResult();
+    this.$state.params.search = this.searchParams;
+    this.processSearchResult();
   }
   
   killParam(param) {
@@ -369,12 +359,12 @@ class SearchRemote {
   }
 
   createQuery() {
-    let { search, limit, server, from, to, timezone } = this.$state.params;
+    let {search, limit, server, from, to, timezone} = this.$state.params;
     this.timezone = timezone;
 
     const query = {
       param: {},
-      timestamp: { from, to },
+      timestamp: {from, to},
     };
 
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
@@ -397,11 +387,11 @@ class SearchRemote {
 
     if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
-      //query.param.transaction = {};
+      // query.param.transaction = {};
       query.param.server = server;
       query.param.limit = limit;
       query.param.search = search;
-      //query.param.location = {};
+      // query.param.location = {};
       query.param.timezone = this.timezone;
     } else {
       query.param.transaction = {};
@@ -429,7 +419,7 @@ class SearchRemote {
 
       query.param.limit = limit;
       query.param.search = search;
-      //query.param.location = {};
+      // query.param.location = {};
     }
     return query;
   }
@@ -446,8 +436,7 @@ class SearchRemote {
   }
 
   showMessage(localrow, event) {
-  
-    //let proto = localrow.entity.table.replace('hep_proto_', '');
+    // let proto = localrow.entity.table.replace('hep_proto_', '');
     let proto = 'hep_proto_100';
     
     const searchData = {
@@ -473,16 +462,16 @@ class SearchRemote {
       id: parseInt(localrow.entity.id),
     };
 
-    var sdata = {
-        id: localrow.entity.id,
-        sid: localrow.entity.id,
-        srcIp: '127.0.0.1',
-        dstIp: '127.0.0.2',
-        srcPort: 1,
-        dstPort: 2,
-        raw: localrow.entity.custom_1,
-        create_data: new Date(localrow.entity.micro_ts),  
-    }
+    let sdata = {
+      id: localrow.entity.id,
+      sid: localrow.entity.id,
+      srcIp: '127.0.0.1',
+      dstIp: '127.0.0.2',
+      srcPort: 1,
+      dstPort: 2,
+      raw: localrow.entity.custom_1,
+      create_data: new Date(localrow.entity.micro_ts),
+    };
     
     
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
@@ -731,7 +720,7 @@ class SearchRemote {
       divTop,
       bindings: {
         searchText: this.searchText,
-        matchJSON: this.matchJSON
+        matchJSON: this.matchJSON,
       },
       onOpen: () => {
         this.log.debug('modal1 transaction opened from url', this.id);
@@ -746,18 +735,18 @@ class SearchRemote {
 
     function splitTerms(text) {
       if (text == null) return [];
-      return text.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+      return text.toLowerCase().split(/\s+/).filter((term) => term.length > 0);
     }
 
     function walkTerms(obj, ignored, terms) {
-      console.log('Walking',obj,ignored,terms);
+      console.log('Walking', obj, ignored, terms);
       if (ignored == null) {
         ignored = [];
       }
       if (terms == null) {
         terms = [];
       }
-      for (var key in obj) {
+      for (let key in obj) {
         // Ignore specified keys
         if (ignored.indexOf(key) !== -1) continue;
         // Ignore properties added by Angular
@@ -779,11 +768,11 @@ class SearchRemote {
     }
 
     // Match if all terms are matched
-    console.log('Filtering',project);
-    var searchTerms = splitTerms(this.searchText);
-    var projectTerms = walkTerms(project.data);
-    var unmatchedTerms = searchTerms.filter(function (searchTerm) {
-      return projectTerms.filter(function (projectTerm) {
+    console.log('Filtering', project);
+    let searchTerms = splitTerms(this.searchText);
+    let projectTerms = walkTerms(project.data);
+    let unmatchedTerms = searchTerms.filter(function(searchTerm) {
+      return projectTerms.filter(function(projectTerm) {
         return projectTerm.indexOf(searchTerm) !== -1;
       }).length === 0;
     });

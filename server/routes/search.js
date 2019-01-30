@@ -96,18 +96,18 @@ export default function search(server) {
       },
     },
     handler: async function(request, reply) {
-      let userObject = request.auth.credentials;
+      // let userObject = request.auth.credentials;
       const searchTable = 'hep_proto_1_default';
       
       const searchdata = new SearchData(server, request.payload.param);
-      //const settings = new Settings(server, userObject.username);            
-      const settings = new Settings(server, "null");            
+      // const settings = new Settings(server, userObject.username);
+      const settings = new Settings(server, 'null');
             
       try {
         const correlation = await settings.getCorrelationMap(request.payload);
         
-        /*        
-        for (let corrs of correlation) {             
+        /*
+        for (let corrs of correlation) {
               let sourceField = corrs['source_field'];
               let lookupId = corrs['lookup_id'];
               let lookupProfile = corrs['lookup_profile'];
@@ -117,7 +117,7 @@ export default function search(server) {
               timeWhere = [];
               if(lookupId != 0) continue;
               newDataWhere = newDataWhere.concat(dataWhere);
-              newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);              
+              newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
               table = 'hep_proto_'+lookupId+'_'+lookupProfile;
               let tFrom = new Date(data.timestamp.from);
               let tTo = new Date(data.timestamp.to);
@@ -130,7 +130,7 @@ export default function search(server) {
               timeWhere.push(tFrom.toISOString());
               timeWhere.push(tTo.toISOString());
               const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-              if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
+              if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
         }
         */
 

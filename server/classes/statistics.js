@@ -194,7 +194,6 @@ class Statistics extends LivingBeing {
   }
   
   getData(payload) {
-
     let param = payload.param;
     let query = param.query[0];
 
@@ -223,19 +222,19 @@ class Statistics extends LivingBeing {
     };
 
     let diff = (stopTs-startTs)/1000/60/60;
-    let indexRange = "60s";
-    if(diff <= 2) indexRange = "60s";
-    else if(diff >= 2 && diff <= 8) indexRange = "300s";
-    else if(diff >= 8 && diff <= 50) indexRange = "3600s";
-    else indexRange = "86400s";
+    let indexRange = '60s';
+    if (diff <= 2) indexRange = '60s';
+    else if (diff >= 2 && diff <= 8) indexRange = '300s';
+    else if (diff >= 8 && diff <= 50) indexRange = '3600s';
+    else indexRange = '86400s';
     
     let tagName = '';
     let myPrefix = '';
     let newCountArray = [];
 
-    if(database == "hepic") { 
-        retention = indexRange;
-        if(indexRange != "60s" && indexRange != "autogen") myPrefix="mean_";
+    if (database == 'hepic') {
+      retention = indexRange;
+      if (indexRange != '60s' && indexRange != 'autogen') myPrefix='mean_';
     }
 
     let queryDB = database+'.'+retention;
@@ -250,27 +249,25 @@ class Statistics extends LivingBeing {
     let influxQuery = 'SELECT '+counterName+' FROM '+queryDB+'."'+main+'" WHERE '
 		+'time > '+fromTs+' AND '+toTs+' > time '+tagName+' GROUP BY time('+indexRange+') FILL(null) LIMIT '+localLimit;
 		
-    if (query.hasOwnProperty("rawquery") && query.rawquery && query.rawquery.length > 0) {
-          rawQuery =  query.rawquery;
-          influxQuery = rawQuery.replace(":database:", database)
-                      .replace(":retention:", retention)
-                      .replace(":measurement:", main)
-                      .replace(":from:", fromTs)
-                      .replace(":to:", toTs)
-                      .replace(":interval:", indexRange)
-                      .replace(":limit:", localLimit);                      
+    if (query.hasOwnProperty('rawquery') && query.rawquery && query.rawquery.length > 0) {
+      rawQuery = query.rawquery;
+      influxQuery = rawQuery.replace(':database:', database)
+        .replace(':retention:', retention)
+        .replace(':measurement:', main)
+        .replace(':from:', fromTs)
+        .replace(':to:', toTs)
+        .replace(':interval:', indexRange)
+        .replace(':limit:', localLimit);
     }
  				    
     
     return this.statsDb.query(influxQuery, options).then((mses) => {
       let mesNames = [];
 
-      let values = mses;      
+      let values = mses;
       values.forEach((value) => {
-
         let reporttime = 0;
         for (let v in value) {
-
           if (v == 'time') {
             reporttime = value[v].getNanoTime()/1000000000;
           } else {

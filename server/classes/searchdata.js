@@ -1,5 +1,6 @@
 import LivingBeing from './living_being';
 import { forEach, isEmpty, size } from 'lodash';
+import RemoteData from './remotedata';
 
 /**
  * A class to handle users in DB
@@ -13,7 +14,8 @@ class SearchData extends LivingBeing {
    */
   constructor(server, param) {
     super({db: server.databases.data, param});
-    this.param = 1;
+    this.param = param;
+    this.server = server;
     this.dataDb = server.databases.data;
   }
 
@@ -223,6 +225,10 @@ class SearchData extends LivingBeing {
             callElement.method = "Report RTP";
             callElement.method_text = "Report RTP";
           }
+           else if(dataElement['payloadType'] == 200) {
+            callElement.method = "Loki Data";
+            callElement.method_text = "Loki Data";
+          }
           else if(dataElement['payloadType'] == 35) {
             callElement.method = "Report RTP";
             callElement.method_text = "Report RTP";
@@ -406,6 +412,7 @@ class SearchData extends LivingBeing {
     */
     
       /* correlation requests */
+      const remotedata = new RemoteData(this.server, this.param);
 
       for (let corrs of correlation) {             
         let sourceField = corrs['source_field'];
@@ -413,11 +420,10 @@ class SearchData extends LivingBeing {
         let lookupProfile = corrs['lookup_profile'];
         let lookupField = corrs['lookup_field'];
         let lookupRange = corrs['lookup_range'];
-        let newDataWhere=[];
+        const newDataWhere=[];
         timeWhere = [];
-
-        /* continue if lookup == 0 */        
-        if(lookupId == 0) continue;
+        let newDataRow=[];
+                
         newDataWhere = newDataWhere.concat(dataWhere);
         newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);              
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
@@ -432,7 +438,47 @@ class SearchData extends LivingBeing {
         
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-        const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+                
+        /* continue if lookup == 0 */        
+        if(lookupId == 0) 
+        {
+
+	      let searchPayload = {
+                    param: {},
+                    timestamp: {}
+              }
+
+              searchPayload.param['server'] = lookupProfile;
+              searchPayload.param['limit'] = 100;
+              searchPayload.param['search'] = lookupField;
+              searchPayload.timestamp['from'] = tFrom.getTime();
+              searchPayload.timestamp['to'] = tTo.getTime();
+
+              if(corrs.hasOwnProperty("callid_function"))
+              {                
+                    var callIdFunction = eval("("+corrs.callid_function+")");
+                    var callIdArray = callIdFunction(dataWhere);
+                    searchPayload.param['search'] = lookupField.replace("$source_field", callIdArray.join("|"));
+              }              
+                             
+              //console.log("CORR Payload", searchPayload);
+              //console.log("CORR LOOP", corrs);
+
+              const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
+              newDataRow = JSON.parse(dataJson);
+              //console.log(" REMOTE DATA", newDataRow);                                         
+                                                                                    
+              if(!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty("output_function"))
+              {                
+                    var outFunction = eval("("+corrs.output_function+")");
+                    newDataRow = outFunction(newDataRow.data);
+                    //console.log("OUT DATA WHERE", newDataRow);                    
+              }              
+        }
+        else {        
+              newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+        }
+        
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
       }
 

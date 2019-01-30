@@ -57,7 +57,6 @@ import Widgets from './widgets';
 import Search from './search';
 import Filters from './filters';
 import Mock from './mock';
-import Components from './components';
 
 // register modules and components
 const app = angular.module('hepicApp', [
@@ -110,7 +109,6 @@ const app = angular.module('hepicApp', [
   Widgets.name,
   Filters.name,
   Mock.name,
-  Components.name
 ]);
 
 export default app;

@@ -1,4 +1,5 @@
-import { pick, cloneDeep, isEmpty } from 'lodash';
+import {pick, cloneDeep} from 'lodash';
+import swal from 'sweetalert';
 
 class AppPreferencesUsers {
   constructor($uibModal, $state, UserService, log) {
@@ -18,11 +19,6 @@ class AppPreferencesUsers {
   }
 
   $onInit() {
-    this.userCols = Object.keys(this.users[0]).slice(0, 4);
-    
-    this.users.forEach(user => {
-      user.password = undefined;
-    });
   }
 
   addUser() {
@@ -47,11 +43,21 @@ class AppPreferencesUsers {
   }
 
   async deleteUser(user) {
-    try {
-      await this.UserService.delete(user.guid);
-      this._tableUserDelete(user);
-    } catch (err) {
-      this.log.error(err.message);
+    const mustDelete = await swal({
+      icon: 'warning',
+      title: 'Delete user?',
+      text: 'Once deleted, you will not be able to recover this!',
+      buttons: true,
+      dangerMode: true,
+    });
+
+    if (mustDelete) {
+      try {
+        await this.UserService.delete(user.guid);
+        this._tableUserDelete(user);
+      } catch (err) {
+        this.log.error(err.message);
+      }
     }
   }
 
@@ -101,24 +107,6 @@ class AppPreferencesUsers {
 
   _reloadThisState() {
     this.$state.reload(this.$state.$current.name);
-  }
-
-  onAddUser({ row }) {
-    if (!isEmpty(row)) {
-      this.addUserToStorage(row);
-    }
-  }
-
-  onDeleteUser({ row }) {
-    if (!isEmpty(row)) {
-      this.deleteUser(row);
-    }
-  }
-
-  onEditUser({ row }) {
-    if (!isEmpty(row)) {
-      this.updateUserInStorage(row);
-    }
   }
 }
 

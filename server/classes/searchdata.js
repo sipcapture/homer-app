@@ -456,23 +456,18 @@ class SearchData extends LivingBeing {
 
               if(corrs.hasOwnProperty("callid_function"))
               {                
-                    var callIdFunction = eval("("+corrs.callid_function+")");
+                    var callIdFunction = new Function('data', corrs.callid_function);
                     var callIdArray = callIdFunction(dataWhere);
                     searchPayload.param['search'] = lookupField.replace("$source_field", callIdArray.join("|"));
               }              
                              
-              //console.log("CORR Payload", searchPayload);
-              //console.log("CORR LOOP", corrs);
-
               const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
               newDataRow = JSON.parse(dataJson);
-              //console.log(" REMOTE DATA", newDataRow);                                         
                                                                                     
               if(!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty("output_function"))
               {                
-                    var outFunction = eval("("+corrs.output_function+")");
+                    var outFunction = new Function('data', corrs.output_function);
                     newDataRow = outFunction(newDataRow.data);
-                    //console.log("OUT DATA WHERE", newDataRow);                    
               }              
         }
         else {        

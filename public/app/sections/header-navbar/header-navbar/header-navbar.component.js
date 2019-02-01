@@ -6,6 +6,11 @@ const headerNavbar = {
   template,
   bindings: {
     dashboardsMenu: '<',
+    globalsettings: '<',
+    users: '<',
+    userSettings: '<',
+    aliases: '<',
+    mappings: '<'
   },
 };
 

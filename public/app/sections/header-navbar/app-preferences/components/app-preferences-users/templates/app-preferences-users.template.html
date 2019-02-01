@@ -1,59 +1,20 @@
 <div class="modal-body" style="padding-left: 40px; padding-bottom: 40px;">
   <form role="form" name="myForm">
     <div class="row">
-      <div class="col-lg-2 col-sm-2">
-        <h3 class="setting__main-title">
-          <button type="button" ng-click="$ctrl.addUser();" class="btn btn-primary " ng-disabled="false">
-          <i class="fa fa-plus"></i> Add
-          </button>  
-        </h3>
-      </div>
       <div class="col-lg-10 col-sm-10">
         <h3 class="setting__main-title">Users</h3>
         <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
       </div>
+    </div>
+    <div class="row">
       <div class="row nd-row-bord">
-        <table st-table="$ctrl.users" class="table table-striped ng-isolate-scope">
-          <thead>
-            <tr>
-              <th width="30%" st-sort-default="true" st-sort="name">Firstname</th>
-              <th width="30%" st-sort-default="true" st-sort="name">Lastname</th>
-              <th width="30%" st-sort-default="true" st-sort="username">Username</th>
-              <th width="30%" st-sort="email">Email</th>
-              <th width="10%">Action</th>
-            </tr>
-            <tr>
-              <th colspan="10"><input st-search="" class="form-control" placeholder="account search ..." type="text"/></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="user in $ctrl.users">
-              <td width="30%" >{{user.firstname}}</td>
-              <td width="30%" >{{user.lastname}}</td>
-              <td width="30%" >{{user.username}}</td>
-              <td width="30%">{{user.email}}</td>
-              <td width="10%">
-                <button type="button" ng-click="$ctrl.editUser(user, $event)" class="btn-sm btn-info">
-                <i class="glyphicon glyphicon-wrench"></i>
-                </button>
-                <button type="button" ng-click="$ctrl.deleteUser(user)" class="btn-sm btn-danger">
-                <i class="glyphicon glyphicon-remove"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5" class="text-center">
-                <div
-                  st-pagination="$ctrl.smartTable.options.pagination"
-                  st-items-by-page="$ctrl.smartTable.options.items_by_page"
-                  st-displayed-pages="$ctrl.smartTable.displayed_pages"
-                ></div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+        <smart-table-with-dynamic-options
+          table-data="$ctrl.users"
+          visible-cols-names="$ctrl.userCols"
+          on-add-row="$ctrl.onAddUser({ row, guid })"
+          on-delete-row="$ctrl.onDeleteUser({ row, guid })"
+          on-edit-row="$ctrl.onEditUser({ row, guid })"
+        ></smart-table-with-dynamic-options>
       </div>
     </div>
   </form>

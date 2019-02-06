@@ -9,17 +9,17 @@
       <div style="display: inline-block;">
         <ul class=add-widget-list ng-repeat="(category, widgets) in $ctrl.widgets"> 
           <p class="group-add-widget">{{category}}</p>
-          <dt class="dt-add-widget" ng-repeat-start="(name, widget) in widgets"> 
-            <a href ng-click='$ctrl.addWidget(widget)'>{{widget.title}}</a> 
+          <dt class="dt-add-widget" ng-repeat-start="(name, widget) in widgets">
+            <a href ng-click='$ctrl.addWidget(widget)'>{{widget.title}}</a>
           </dt>
           <dd class="dd-add-widget" ng-repeat-end="">{{widget.description}}</dd>
           <div style="clear:both;"> </div>
-        </ul> 
+        </ul>
       </div>
     </div> <!-- END modal-body -->
-    
+
     <div class="modal-footer">
       <button ng-click="$ctrl.dismiss()" class="btn btn-lg"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
     </div> <!-- END modal-footer -->
-  </form> 
+  </form>
 </div>

@@ -1,3 +1,5 @@
+import '../style/prometheuschart-widget.settings.css';
+
 export default class prometheuschartWidgetSettings {
   constructor($scope, $http, UserProfile, HEPICSOURCES, CONFIGURATION, EventBus, EVENTS, log) {
     'ngInject';

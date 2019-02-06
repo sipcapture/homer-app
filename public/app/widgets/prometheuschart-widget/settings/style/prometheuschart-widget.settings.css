@@ -1,0 +1,8 @@
+.metrics-select label {
+    display: flex;
+    align-items: center;
+}
+
+.metrics-select span {
+    margin-left: 6px;
+}

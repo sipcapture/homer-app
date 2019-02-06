@@ -11,7 +11,7 @@
             </button>
             <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.deleteBoard()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverC=true" ng-mouseout="hoverC=false" onclick="this.blur();">
-                <i title="Delete Dashboard" class="fa fa-trash"></i> 
+                <i title="Delete Dashboard" class="fa fa-trash"></i>
             </button>
             <button ng-disabled="dashboardEditDisable" ng-click="$ctrl.editBoard()" class="btn btn-whiter btn-greener btn-primary"
                 type="submit" ng-mouseover="hoverD=true" ng-mouseout="hoverD=false" onclick="this.blur();">
@@ -32,11 +32,11 @@
                 <clock-widget ng-if="widget.name==='clock'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </clock-widget>
-                
+
                 <rsearch-widget ng-if="widget.name==='rsearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </rsearch-widget>
-                
+
 		<!--
                 <quicksearch-widget ng-if="widget.name==='quicksearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
@@ -48,6 +48,9 @@
                 <protosearch-widget ng-if="widget.name==='protosearch'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </protosearch-widget>
+                <prometheuschart-widget ng-if="widget.name==='prometheuschart'" widget=widget
+                  on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </prometheuschart-widget>
             </li> <!-- END gridster-item, widget -->
         </ul>
     </div> <!-- END gridsterOptions -->

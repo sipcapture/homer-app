@@ -75,22 +75,30 @@ export default class prometheuschartWidget {
     this.createListeners();
   }
 
+  ISODateString(d){
+    function pad(n){return n<10 ? '0'+n : n}
+    return d.getUTCFullYear()+'-'
+      + pad(d.getUTCMonth()+1)+'-'
+      + pad(d.getUTCDate())+'T'
+      + pad(d.getUTCHours())+':'
+      + pad(d.getUTCMinutes())+':'
+      + pad(d.getUTCSeconds())+'Z'}
+
   updateMetricDatabase() {
-    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
+    const { from, to } = this.TimeMachine.getTimerange();
 
     if (!this.config.selectedMetrics.length) {
       this.data = [];
       return;
     }
-
+    
     const prometheusMetrics = this.CONFIGURATION.APIURL + 'prometheus/value';
 
     const payload = {
       metrics: this.config.selectedMetrics,
       datetime: {
-        from,
-        to,
-        custom
+        from: this.ISODateString(from),
+        to: this.ISODateString(to),
       }
     };
 

@@ -24,14 +24,14 @@ export default function statistics(server) {
     handler: function(request, reply) {
       let metricsQueries = [];
 
-      const {from, to} = request.payload.datetime;
+      let {from, to} = request.payload.datetime;
 
       request.payload.metrics.forEach((metricName) => {
-        console.log(`query_range?query=${metricName}&start=${from}&end=${to}&step=60&_=1549639431879`);
+        console.log(`query_range?query=${metricName}&start=${from}&end=${to}&step=15s`);
         metricsQueries.push(
           GetGlobalDataPrometeus
-            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=60&_=1549639431879`),
-        );Q
+            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=15s`),
+        );
       });
 
       Promise

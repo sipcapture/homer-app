@@ -39,7 +39,6 @@ export default function statistics(server) {
           let resposeBody = [];
 
           responses.forEach((metric) => {
-            console.log(metric);
             resposeBody.push({
               name: metric.data.result[0].metric.__name__,
               values: metric.data.result[0].values,

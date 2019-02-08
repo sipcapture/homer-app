@@ -41,10 +41,10 @@ export default class prometheuschartWidgetSettings {
         this.metrics = resp.data;
         // this.log.debug('popuplate metric database', this.metricdatabases);
       } else {
-        this.log.error('popuplate metric database', 'fail to get data');
+        this.log.error('Prometheus Chart Settings', 'fail to get data');
       }
     }).catch((err) => {
-      this.log.error('popuplate metric database', err);
+      this.log.error('Prometheus Chart Settings', err);
     });
   }
 

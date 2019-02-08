@@ -50,7 +50,7 @@ export default class prometheuschartWidget {
         xAxis: {
           axisLabel: 'Time (ms)',
           tickFormat: function(d) {
-            return new Date(d).toLocaleTimeString();
+            return new Date(d * 1000).toLocaleTimeString();
           },
         },
         yAxis: {
@@ -61,7 +61,7 @@ export default class prometheuschartWidget {
           axisLabelDistance: 10,
         },
         callback: function(chart) {
-          console.log('!!! lineChart callback !!!');
+
         },
       },
     };
@@ -121,7 +121,6 @@ export default class prometheuschartWidget {
     this.data = [];
 
     newData.forEach((metric) => {
-
       this.data.push({
         classed: 'dashed',
         key: metric.name,

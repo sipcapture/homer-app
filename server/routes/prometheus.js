@@ -1,12 +1,10 @@
 import Joi from 'joi';
 
-const client = require('prom-client');
+let RequestClient = require('reqclient').RequestClient;
 
-const collectDefaultMetrics = client.collectDefaultMetrics;
-const Registry = client.Registry;
-const register = new Registry();
-
-collectDefaultMetrics({register, timeout: 1000});
+let GetGlobalDataPrometeus = new RequestClient({
+  baseUrl: 'http://de7.sipcapture.io:9090/api/v1/',
+});
 
 export default function statistics(server) {
   server.route({
@@ -19,35 +17,40 @@ export default function statistics(server) {
       validate: {
         payload: {
           metrics: Joi.array(),
+          datetime: Joi.object(),
         },
       },
     },
     handler: function(request, reply) {
-      let metricData = [];
-      let metricsValues = request.payload.metrics;
-      const timestampMetrics = register.getMetricsAsJSON();
-      const prometheusMetrics = {};
+      let metricsQueries = [];
 
-      timestampMetrics.map(function({name, values}) {
-        if (!values[0].timestamp) {
-          return;
-        }
+      const {from, to} = request.payload.datetime;
 
-        prometheusMetrics[name] = {
-          name: name,
-          values: [values[0]],
-        };
+      request.payload.metrics.forEach((metricName) => {
+        console.log(`query_range?query=${metricName}&start=${from}&end=${to}&step=60&_=1549639431879`);
+        metricsQueries.push(
+          GetGlobalDataPrometeus
+            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=60&_=1549639431879`),
+        );Q
       });
 
-      metricsValues.forEach((metric) => {
-        for (let key in prometheusMetrics) {
-          if (key === metric) {
-            metricData.push(prometheusMetrics[key]);
-          }
-        }
-      });
+      Promise
+        .all(metricsQueries)
+        .then((responses) => {
+          let resposeBody = [];
 
-      return reply(metricData);
+          responses.forEach((metric) => {
+            resposeBody.push({
+              name: metric.data.result[0].metric.__name__,
+              values: metric.data.result[0].values,
+            });
+          });
+
+          return reply(resposeBody);
+        })
+        .catch((err) => {
+          reply(err);
+        });
     },
   });
 
@@ -60,18 +63,13 @@ export default function statistics(server) {
       },
     },
     handler: function(request, reply) {
-      let metricsArr = [];
-      const metrics = register.getMetricsAsJSON();
-
-      metrics.forEach(({name, values}) => {
-        if (!values[0].timestamp) {
-          return;
-        }
-
-        metricsArr.push(name);
-      });
-
-      return reply(metricsArr);
+      GetGlobalDataPrometeus.get(`/label/__name__/values?_=1549632301527`)
+        .then((response) => {
+          reply(response.data);
+        })
+        .catch((err) => {
+          reply(err);
+        });
     },
   });
 };

@@ -9,47 +9,40 @@
       <uib-tabset>
         <uib-tab heading="Data Metrics">
           <div class="row">
-            <div class="input-group" style="width:50%">
+            <div class="input-group" style="width:100%">
               <div
-                  ng-repeat="metric in $ctrl.metrics"
-                  class="form-group metrics-select">
-                <label>
-                  {{metric}}
-                  <input
-                      type="checkbox"
-                      ng-checked="$ctrl.config.selectedMetrics.indexOf(metric) > -1"
-                      value="{{metric}}"
-                      name="selectedMetrics[]"
-                      ng-click="$ctrl.toggleSelection(metric)">
-                  <span>
-                    <i class="fa fa-check">
-                    </i>
-                  </span>
-                </label>
+                ng-dropdown-multiselect=""
+                options="$ctrl.metrics"
+                selected-model="$ctrl.config.selectedMetrics"
+                extra-settings="$ctrl.stringSettings">
               </div>
+              <!--<div-->
+              <!--ng-repeat="metric in $ctrl.metrics"-->
+              <!--class="form-group metrics-select">-->
+              <!--<label>-->
+              <!--{{metric}}-->
+              <!--<input-->
+              <!--type="checkbox"-->
+              <!--ng-checked="$ctrl.config.selectedMetrics.indexOf(metric) > -1"-->
+              <!--value="{{metric}}"-->
+              <!--name="selectedMetrics[]"-->
+              <!--ng-click="$ctrl.toggleSelection(metric)">-->
+              <!--<span>-->
+              <!--<i class="fa fa-check">-->
+              <!--</i>-->
+              <!--</span>-->
+              <!--</label>-->
+              <!--</div>-->
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="Chart settings">
-          <div class="row">
-            <div class="input-group" style="width:50%">
-              <label for="max_chart_length">
-                Maximum chart length
-              </label>
-              <input
-                  ng-model="$ctrl.config.maxChartLength"
-                  id="max_chart_length"
-                  type="number">
-            </div>
-          </div>
-        </uib-tab>
-
       </uib-tabset>
 
     </div> <!-- END modal-body-->
 
     <div class="modal-footer">
-      <button ng-click="$ctrl.dismiss()" class="btn btn-lg"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+      <button ng-click="$ctrl.dismiss()" class="btn btn-lg"><i class="glyphicon glyphicon-remove"></i>Cancel
+      </button>
       <button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i>Save</button>
     </div> <!-- END modal-footer -->
   </form>

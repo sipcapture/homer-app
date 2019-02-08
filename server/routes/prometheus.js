@@ -27,10 +27,9 @@ export default function statistics(server) {
       let {from, to} = request.payload.datetime;
 
       request.payload.metrics.forEach((metricName) => {
-        console.log(`query_range?query=${metricName}&start=${from}&end=${to}&step=15s`);
         metricsQueries.push(
           GetGlobalDataPrometeus
-            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=15s`),
+            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=60s`),
         );
       });
 
@@ -40,6 +39,7 @@ export default function statistics(server) {
           let resposeBody = [];
 
           responses.forEach((metric) => {
+            console.log(metric);
             resposeBody.push({
               name: metric.data.result[0].metric.__name__,
               values: metric.data.result[0].values,

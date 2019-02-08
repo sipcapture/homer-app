@@ -75,23 +75,27 @@ export default class prometheuschartWidget {
     this.createListeners();
   }
 
-  ISODateString(d){
-    function pad(n){return n<10 ? '0'+n : n}
-    return d.getUTCFullYear()+'-'
-      + pad(d.getUTCMonth()+1)+'-'
-      + pad(d.getUTCDate())+'T'
-      + pad(d.getUTCHours())+':'
-      + pad(d.getUTCMinutes())+':'
-      + pad(d.getUTCSeconds())+'Z'}
+  ISODateString(d) {
+    function pad(n) {
+      return n < 10 ? '0' + n : n;
+    }
+
+    return d.getUTCFullYear() + '-'
+      + pad(d.getUTCMonth() + 1) + '-'
+      + pad(d.getUTCDate()) + 'T'
+      + pad(d.getUTCHours()) + ':'
+      + pad(d.getUTCMinutes()) + ':'
+      + pad(d.getUTCSeconds()) + 'Z';
+  }
 
   updateMetricDatabase() {
-    const { from, to } = this.TimeMachine.getTimerange();
+    const {from, to} = this.TimeMachine.getTimerange();
 
     if (!this.config.selectedMetrics.length) {
       this.data = [];
       return;
     }
-    
+
     const prometheusMetrics = this.CONFIGURATION.APIURL + 'prometheus/value';
 
     const payload = {
@@ -99,7 +103,7 @@ export default class prometheuschartWidget {
       datetime: {
         from: this.ISODateString(from),
         to: this.ISODateString(to),
-      }
+      },
     };
 
     this.$http.post(prometheusMetrics, payload).then((resp) => {
@@ -114,7 +118,17 @@ export default class prometheuschartWidget {
   };
 
   updateChartData(newData) {
-    this.data = newData;
+    this.data = [];
+
+    newData.forEach((metric) => {
+
+      this.data.push({
+        classed: 'dashed',
+        key: metric.name,
+        strokeWidth: 2,
+        values: metric.values,
+      });
+    });
   }
 
   createListeners() {

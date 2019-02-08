@@ -10,12 +10,17 @@
         <uib-tab heading="Data Metrics">
           <div class="row">
             <div class="input-group" style="width:100%">
-              <div
-                ng-dropdown-multiselect=""
-                options="$ctrl.metrics"
-                selected-model="$ctrl.config.selectedMetrics"
-                extra-settings="$ctrl.stringSettings">
-              </div>
+              <label for="select-metric-dropdown">
+                Select prometheus metric
+                <div
+                  id="select-metric-dropdown"
+                  ng-dropdown-multiselect=""
+                  options="$ctrl.metrics"
+                  selected-model="$ctrl.widget.config.selectedMetrics"
+                  extra-settings="$ctrl.stringSettings">
+                </div>
+              </label>
+
               <!--<div-->
               <!--ng-repeat="metric in $ctrl.metrics"-->
               <!--class="form-group metrics-select">-->

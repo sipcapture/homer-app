@@ -12,10 +12,6 @@ export default class prometheuschartWidget {
     this.EVENTS = EVENTS;
     this.log = log;
     this.TimeMachine = TimeMachine;
-    this.config = {
-      selectedMetrics: [],
-      maxChartLength: 10,
-    };
     this.options = {
       chart: {
         type: 'lineChart',
@@ -54,7 +50,6 @@ export default class prometheuschartWidget {
           },
         },
         yAxis: {
-          axisLabel: this.config.metric,
           tickFormat: function(d) {
             return d3.format('.02f')(d);
           },
@@ -91,7 +86,7 @@ export default class prometheuschartWidget {
   updateMetricDatabase() {
     const {from, to} = this.TimeMachine.getTimerange();
 
-    if (!this.config.selectedMetrics.length) {
+    if (!this._widget.config.selectedMetrics.length) {
       this.data = [];
       return;
     }
@@ -99,7 +94,7 @@ export default class prometheuschartWidget {
     const prometheusMetrics = this.CONFIGURATION.APIURL + 'prometheus/value';
 
     const payload = {
-      metrics: this.config.selectedMetrics,
+      metrics: this._widget.config.selectedMetrics,
       datetime: {
         from: this.ISODateString(from),
         to: this.ISODateString(to),
@@ -137,14 +132,6 @@ export default class prometheuschartWidget {
     });
   }
 
-  destroyEventListeners() {
-    this.EventBus.off(this.EVENTS.TIME_CHANGE, this.timeChangeListener);
-  }
-
-  $onDestroy() {
-    this.destroyEventListeners();
-  }
-
   delete() {
     this.onDelete({uuid: this._widget.uuid});
   }
@@ -159,8 +146,8 @@ export default class prometheuschartWidget {
     this.$uibModal.open({
       component: 'prometheuschartWidgetSettings',
       resolve: {
-        config: () => {
-          return this.config;
+        widget: () => {
+          return this._widget;
         },
       },
     }).result.then((widget) => {

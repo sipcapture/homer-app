@@ -11,10 +11,6 @@ export default class prometheuschartWidgetSettings {
     this.EVENTS = EVENTS;
     this.log = log;
     this.log.initLocation('prometheuschartWidgetSettings');
-    this.config = {
-      selectedMetrics: [],
-      maxChartLength: 10,
-    };
     this.metrics = [];
     this.stringSettings = {
       template: '{{option}}', smartButtonTextConverter(skip, option) {
@@ -30,17 +26,17 @@ export default class prometheuschartWidgetSettings {
   }
 
   $onInit() {
-    this.config = this.resolve.config;
+    this.widget = this.resolve.widget;
     this.getMetrics();
   }
 
   toggleSelection(metricName) {
-    var idx = this.config.selectedMetrics.indexOf(metricName);
+    var idx = this.widget.config.selectedMetrics.indexOf(metricName);
 
     if (idx > -1) {
-      this.config.selectedMetrics.splice(idx, 1);
+      this.widget.config.selectedMetrics.splice(idx, 1);
     } else {
-      this.config.selectedMetrics.push(metricName);
+      this.widget.config.selectedMetrics.push(metricName);
     }
   };
 
@@ -64,6 +60,6 @@ export default class prometheuschartWidgetSettings {
   }
 
   submit() { // submit settings update
-    this.modalInstance.close(this.config);
+    this.modalInstance.close(this.widget);
   }
 }

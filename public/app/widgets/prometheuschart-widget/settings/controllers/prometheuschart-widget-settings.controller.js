@@ -16,6 +16,17 @@ export default class prometheuschartWidgetSettings {
       maxChartLength: 10,
     };
     this.metrics = [];
+    this.stringSettings = {
+      template: '{{option}}', smartButtonTextConverter(skip, option) {
+        return option;
+      },
+      scrollableHeight: '300px',
+      buttonDefaultText: 'Select Metrics',
+      scrollable: true,
+      enableSearch: true,
+      showSelectAll: true,
+      keyboardControls: true,
+    };
   }
 
   $onInit() {

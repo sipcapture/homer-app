@@ -1,7 +1,7 @@
 import {cloneDeep} from 'lodash';
 
 export default class prometheuschartWidget {
-  constructor($log, $uibModal, $http, ModalHelper, EVENTS, CONFIGURATION, log, EventBus) {
+  constructor($log, $uibModal, $http, ModalHelper, EVENTS, CONFIGURATION, log, EventBus, TimeMachine) {
     'ngInject'; // inject all modules above
     this.$log = $log; // log service
     this.$uibModal = $uibModal; // boostrap modal component
@@ -11,6 +11,7 @@ export default class prometheuschartWidget {
     this.EventBus = EventBus;
     this.EVENTS = EVENTS;
     this.log = log;
+    this.TimeMachine = TimeMachine;
     this.config = {
       selectedMetrics: [],
       maxChartLength: 10,
@@ -26,14 +27,10 @@ export default class prometheuschartWidget {
           left: 100,
         },
         x: function(d) {
-          if (d.timestamp) {
-            return d.timestamp;
-          }
-
-          return '';
+          return d[0];
         },
         y: function(d) {
-          return d.value;
+          return parseInt(d[1]);
         },
         useInteractiveGuideline: true,
         dispatch: {
@@ -79,6 +76,8 @@ export default class prometheuschartWidget {
   }
 
   updateMetricDatabase() {
+    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
+
     if (!this.config.selectedMetrics.length) {
       this.data = [];
       return;
@@ -88,6 +87,11 @@ export default class prometheuschartWidget {
 
     const payload = {
       metrics: this.config.selectedMetrics,
+      datetime: {
+        from,
+        to,
+        custom
+      }
     };
 
     this.$http.post(prometheusMetrics, payload).then((resp) => {
@@ -102,30 +106,7 @@ export default class prometheuschartWidget {
   };
 
   updateChartData(newData) {
-    newData.forEach((metricData) => {
-      let alreadyCreated = false;
-
-      this.data.forEach((oldMetric) => {
-        if (oldMetric.key === metricData.name) {
-          alreadyCreated = true;
-          metricData.values.forEach((metric) => {
-            oldMetric.values.push(metric);
-          });
-          if (oldMetric.values.length > this.config.maxChartLength) {
-            oldMetric.values.shift();
-          }
-        }
-      });
-
-      if (!alreadyCreated) {
-        this.data.push({
-          classed: 'dashed',
-          key: metricData.name,
-          strokeWidth: 2,
-          values: metricData.values,
-        });
-      }
-    });
+    this.data = newData;
   }
 
   createListeners() {

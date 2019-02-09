@@ -9,3 +9,6 @@ experiments
 *.swp
 server/config/server_config.js
 server/config.js
+*.iml
+.idea
+out

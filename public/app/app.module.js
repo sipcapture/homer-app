@@ -36,6 +36,7 @@ import 'angular-filter';
 import 'font-awesome-webpack';
 import 'angular-json-tree';
 import 'ace-angular';
+import 'angularjs-dropdown-multiselect';
 
 // style
 import 'font-awesome/css/font-awesome.css';
@@ -98,6 +99,7 @@ const app = angular.module('hepicApp', [
   'homer.modal', // to-do: delete this modules when the homer modal refactored
   'homer.cflow',
   'angular-json-tree',
+  'angularjs-dropdown-multiselect',
   Directives.name,
   Controllers.name,
   Constants.name,

@@ -1,5 +1,6 @@
 import LivingBeing from './living_being';
-import {forEach, isEmpty, size} from 'lodash';
+import { forEach, isEmpty, size } from 'lodash';
+import RemoteData from './remotedata';
 
 /**
  * A class to handle users in DB
@@ -13,7 +14,8 @@ class SearchData extends LivingBeing {
    */
   constructor(server, param) {
     super({db: server.databases.data, param});
-    this.param = 1;
+    this.param = param;
+    this.server = server;
     this.dataDb = server.databases.data;
   }
 
@@ -205,22 +207,31 @@ class SearchData extends LivingBeing {
           destination: 0,
         };
 
-        if (dataElement.hasOwnProperty('payloadType')) {
-          if (dataElement['payloadType'] == 81) {
-            callElement.method = 'CDR';
-            callElement.method_text = 'CDR';
-          } else if (dataElement['payloadType'] == 100) {
-            callElement.method = 'LOG';
-            callElement.method_text = 'LOG';
-          } else if (dataElement['payloadType'] == 5) {
-            callElement.method = 'RTCP';
-            callElement.method_text = 'RTCP';
-          } else if (dataElement['payloadType'] == 34) {
-            callElement.method = 'Report RTP';
-            callElement.method_text = 'Report RTP';
-          } else if (dataElement['payloadType'] == 35) {
-            callElement.method = 'Report RTP';
-            callElement.method_text = 'Report RTP';
+	if (dataElement.hasOwnProperty('payloadType')) {
+
+          if(dataElement['payloadType'] == 81) {
+            callElement.method = "CDR";
+            callElement.method_text = "CDR";
+          }
+          else if(dataElement['payloadType'] == 100) {
+            callElement.method = "LOG";
+            callElement.method_text = "LOG";
+          }
+          else if(dataElement['payloadType'] == 5) {
+            callElement.method = "RTCP";
+            callElement.method_text = "RTCP";
+          }
+          else if(dataElement['payloadType'] == 34) {
+            callElement.method = "Report RTP";
+            callElement.method_text = "Report RTP";
+          }
+           else if(dataElement['payloadType'] == 200) {
+            callElement.method = "Loki Data";
+            callElement.method_text = "Loki Data";
+          }
+          else if(dataElement['payloadType'] == 35) {
+            callElement.method = "Report RTP";
+            callElement.method_text = "Report RTP";
           }
         }
           
@@ -401,6 +412,7 @@ class SearchData extends LivingBeing {
     */
     
       /* correlation requests */
+      const remotedata = new RemoteData(this.server, this.param);
 
       for (let corrs of correlation) {
         let sourceField = corrs['source_field'];
@@ -408,11 +420,10 @@ class SearchData extends LivingBeing {
         let lookupProfile = corrs['lookup_profile'];
         let lookupField = corrs['lookup_field'];
         let lookupRange = corrs['lookup_range'];
-        let newDataWhere=[];
+        const newDataWhere=[];
         timeWhere = [];
 
-        /* continue if lookup == 0 */
-        if (lookupId == 0) continue;
+        let newDataRow=[];                
         newDataWhere = newDataWhere.concat(dataWhere);
         newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
@@ -427,8 +438,43 @@ class SearchData extends LivingBeing {
         
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-        const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
+                
+        /* continue if lookup == 0 */        
+        if(lookupId == 0) 
+        {
+
+	      let searchPayload = {
+                    param: {},
+                    timestamp: {}
+              }
+
+              searchPayload.param['server'] = lookupProfile;
+              searchPayload.param['limit'] = 100;
+              searchPayload.param['search'] = lookupField;
+              searchPayload.timestamp['from'] = tFrom.getTime();
+              searchPayload.timestamp['to'] = tTo.getTime();
+
+              if(corrs.hasOwnProperty("callid_function"))
+              {                
+                    var callIdFunction = new Function('data', corrs.callid_function);
+                    var callIdArray = callIdFunction(dataWhere);
+                    searchPayload.param['search'] = lookupField.replace("$source_field", callIdArray.join("|"));
+              }              
+                             
+              const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
+              newDataRow = JSON.parse(dataJson);
+                                                                                    
+              if(!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty("output_function"))
+              {                
+                    var outFunction = new Function('data', corrs.output_function);
+                    newDataRow = outFunction(newDataRow.data);
+              }              
+        }
+        else {        
+              newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+        }
+        
+        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
       }
 
       /* sort it by create data */

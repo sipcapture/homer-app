@@ -1,21 +1,20 @@
 <img src="https://github.com/sipcapture/homer-app/raw/master/public/img/homerseven.png" width=200 />
 
-# homer-app
+# HOMER-APP
 ![ezgif com-optimize 10](https://user-images.githubusercontent.com/1423657/46264200-211a6680-c51a-11e8-8477-3b7a53f9aa0b.gif)
 
-This projects provides the Front-End and Back-End components of Homer 7.x and higher
 
-## WARNING
-This is a beta release mostly intended for developers. 
+## About
+`Homer-App` provides the Front-End and Back-End components of HOMER 7.x and higher, featuring native integration with all the core supported backend components for search and analytics including `pgsql`,`influxdb`,`prometheus`,`loki`
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
 ## Docker Bundles
-Getting started with HOMER Seven? <br>
-The following H7 `docker-compose` bundles are available in multiple flavours with the following backends:
-* [H7 + InfluxDB](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-influx)
-* [H7 + Prometheus](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-prom-graf)
-* [H7 + Elastic](https://github.com/sipcapture/homer-docker/tree/master/heplify-server/hom7-hep-elastic)
+##### Getting started with HOMER Seven?
+Pick one of our ready-to-use [Docker images](https://github.com/sipcapture/homer7-docker) available in many flavours using multiple backends:
+* [H7 + InfluxDB](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-influx)
+* [H7 + Prometheus](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-prom-graf)
+* [H7 + Elastic](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-elastic)
 
 
 ## Developement Build

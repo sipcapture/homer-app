@@ -4,7 +4,8 @@ exports.seed = function seed(knex) {
   const tableName = 'global_settings';
 
   let empty = {};
-  let lokiHome='{"host":"http://127.0.0.1:3100"}'
+  let lokiURL='{"host":"http://127.0.0.1:3100"}'
+  let promURL='{"host":"http://127.0.0.1:9090/api/v1/"}'
   
   const rows = [
     {
@@ -12,7 +13,15 @@ exports.seed = function seed(knex) {
       param: 'lokiserver',
       partid: 1,
       category: 'search',
-      data: lokiHome,
+      data: lokiURL,
+      create_date: new Date(),
+    },
+    {
+      guid: uuidv4(),
+      param: 'promserver',
+      partid: 1,
+      category: 'search',
+      data: promURL,
       create_date: new Date(),
     },
   ];

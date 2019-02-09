@@ -45,6 +45,7 @@
     "angular-ui-sortable": "0.17.2",
     "angular-visjs": "4.16.0",
     "angular-websocket": "2.0.1",
+    "angularjs-dropdown-multiselect": "^2.0.0-beta.10",
     "bcryptjs": "2.4.3",
     "bluebird": "3.5.0",
     "boom": "6.0.0",

@@ -25,70 +25,30 @@ export default angular.module('hepicApp.appPreferences', [])
         url: ROUTER.PREFERENCES_USERS.PATH,
         component: 'appPreferencesUsers',
         resolve: {
-          users: function(UserService, log) {
-            'ngInject';
-            log.initLocation('appPreferences');
-
-            return UserService.getAll().catch(function(err) {
-              log.error(err.message);
-            });
-          },
         },
       })
       .state(ROUTER.PREFERENCES_USER_SETTINGS.NAME, {
         url: ROUTER.PREFERENCES_USER_SETTINGS.PATH,
         component: 'appPreferencesUserSettings',
         resolve: {
-          userSettings: function(UserSettingsService, log) {
-            'ngInject';
-            log.initLocation('appPreferences');
-
-            return UserSettingsService.getAll().catch(function(err) {
-              log.error(err.message);
-            });
-          },
         },
       })
       .state(ROUTER.PREFERENCES_ALIAS.NAME, {
         url: ROUTER.PREFERENCES_ALIAS.PATH,
         component: 'appPreferencesAlias',
         resolve: {
-          aliases: function(AliasService, log) {
-            'ngInject';
-            log.initLocation('appPreferences');
-
-            return AliasService.getAll().catch(function(err) {
-              log.error(err.message);
-            });
-          },
         },
       })
       .state(ROUTER.PREFERENCES_ADVANCED.NAME, {
         url: ROUTER.PREFERENCES_ADVANCED.PATH,
         component: 'appPreferencesAdvanced',
         resolve: {
-          globalsettings: function(AdvancedService, log) {
-            'ngInject';
-            log.initLocation('appPreferences');
-
-            return AdvancedService.getAll().catch(function(err) {
-              log.error(err.message);
-            });
-          },
         },
       })
       .state(ROUTER.PREFERENCES_MAPPING.NAME, {
         url: ROUTER.PREFERENCES_MAPPING.PATH,
         component: 'appPreferencesMapping',
         resolve: {
-          mappings: function(MappingService, log) {
-            'ngInject';
-            log.initLocation('appPreferences');
-
-            return MappingService.getAll().catch(function(err) {
-              log.error(err.message);
-            });
-          },
         },
       });
   })

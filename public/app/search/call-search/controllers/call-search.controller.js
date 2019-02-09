@@ -1,6 +1,6 @@
 /* global angular, window */
 
-import { get, forEach, isArray, isEmpty } from 'lodash';
+import {get, forEach, isArray, isEmpty} from 'lodash';
 import Promise from 'bluebird';
 import swal from 'sweetalert2';
 
@@ -75,7 +75,7 @@ class SearchCall {
         this._updateUiRouterState();
         this.processSearchResult();
       }
-    });    
+    });
   }
 
   $onDestroy() {
@@ -101,7 +101,7 @@ class SearchCall {
     this.$state.params.custom = timerange.custom;
     this.$state.params.timezone = this.TimeMachine.getTimezone();
 
-    this.$state.go(this.ROUTER.SEARCH.NAME, this.$state.params, { notify });
+    this.$state.target(this.ROUTER.SEARCH.NAME, this.$state.params, {notify});
   }
 
   getUiGridColumnDefs(colNames = []) {
@@ -110,7 +110,7 @@ class SearchCall {
     }
 
     function getDefaultDefs(colNames) {
-      return colNames.map(name => {
+      return colNames.map((name) => {
         return {
           field: name,
           displayName: name,
@@ -124,7 +124,7 @@ class SearchCall {
 
     function getEnrichedDefs(columnDefs) {
       const enrichedColumns = [];
-      columnDefs.forEach(col => {
+      columnDefs.forEach((col) => {
         if (col.name === 'sid' || col.field === 'sid') {
           col.cellTemplate = '<div class="ui-grid-cell-contents" ng-click="grid.appScope.$ctrl.showTransaction(row, $event)">'
             +'<span ng-style="grid.appScope.$ctrl.getCallIDColor(row.entity.sid)" title="{{COL_FIELD}}">{{COL_FIELD}}</span></div>';
@@ -147,7 +147,7 @@ class SearchCall {
           enrichedColumns.push(col);
         }
       });
-      return enrichedColumns; 
+      return enrichedColumns;
     }
 
     return getEnrichedDefs(getDefaultDefs(colNames));
@@ -166,7 +166,7 @@ class SearchCall {
       this.gridOpts.data = [];
       this.selectedRows = [];
 
-      const { data, keys } = response;
+      const {data, keys} = response;
 
       if (isArray(keys) && !isEmpty(keys)) {
         this.gridOpts.columnDefs = this.getUiGridColumnDefs(keys);
@@ -231,12 +231,12 @@ class SearchCall {
   }
 
   createQuery() {
-    let { search, limit, transaction, from, to, timezone } = this.$state.params;
+    let {search, limit, transaction, from, to, timezone} = this.$state.params;
     this.timezone = timezone;
 
     const query = {
       param: {},
-      timestamp: { from, to },
+      timestamp: {from, to},
     };
 
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
@@ -588,7 +588,7 @@ class SearchCall {
       divTop,
       bindings: {
         searchText: this.searchText,
-        matchJSON: this.matchJSON
+        matchJSON: this.matchJSON,
       },
       onOpen: () => {
         this.log.debug('modal1 transaction opened from url', this.id);
@@ -603,18 +603,18 @@ class SearchCall {
 
     function splitTerms(text) {
       if (text == null) return [];
-      return text.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+      return text.toLowerCase().split(/\s+/).filter((term) => term.length > 0);
     }
 
     function walkTerms(obj, ignored, terms) {
-      console.log('Walking',obj,ignored,terms);
+      console.log('Walking', obj, ignored, terms);
       if (ignored == null) {
         ignored = [];
       }
       if (terms == null) {
         terms = [];
       }
-      for (var key in obj) {
+      for (let key in obj) {
         // Ignore specified keys
         if (ignored.indexOf(key) !== -1) continue;
         // Ignore properties added by Angular
@@ -636,11 +636,11 @@ class SearchCall {
     }
 
     // Match if all terms are matched
-    console.log('Filtering',project);
-    var searchTerms = splitTerms(this.searchText);
-    var projectTerms = walkTerms(project.data);
-    var unmatchedTerms = searchTerms.filter(function (searchTerm) {
-      return projectTerms.filter(function (projectTerm) {
+    console.log('Filtering', project);
+    let searchTerms = splitTerms(this.searchText);
+    let projectTerms = walkTerms(project.data);
+    let unmatchedTerms = searchTerms.filter(function(searchTerm) {
+      return projectTerms.filter(function(projectTerm) {
         return projectTerm.indexOf(searchTerm) !== -1;
       }).length === 0;
     });
@@ -655,9 +655,9 @@ class SearchCall {
     return this.localStorage.getItem('hepic.localStorageGrid');
   }
   
-  rowSelectionChanged(row) {        
-    if(row.isSelected) this.selectedRows.push(row.entity);    
-    else this.selectedRows.splice(this.selectedRows.findIndex(item => item.id === row.entity.id), 1)              
+  rowSelectionChanged(row) {
+    if (row.isSelected) this.selectedRows.push(row.entity);
+    else this.selectedRows.splice(this.selectedRows.findIndex((item) => item.id === row.entity.id), 1);
   }
 
   saveUiGridState(state) {

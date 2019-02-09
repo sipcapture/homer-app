@@ -15,7 +15,7 @@ import dataDbNode from '../data/db_node';
 
 class ProtosearchWidget {
   constructor($scope, $state, UserProfile, $log, SearchService, $uibModal,
-  CONFIGURATION, ModalHelper, ROUTER, TimeMachine) {
+    CONFIGURATION, ModalHelper, ROUTER, TimeMachine) {
     'ngInject';
     this.$scope = $scope;
     this.$state = $state;
@@ -76,7 +76,6 @@ class ProtosearchWidget {
   }
 
   openSettings() {
-  
     console.log(this._widget.fields);
   
     this.$uibModal.open({
@@ -104,39 +103,36 @@ class ProtosearchWidget {
     this.searchObject = {};
 
     for (var key in this.newObject) {
+      console.log('K', key);
+      console.log('V', this.newObject[key]);
 
-	console.log("K", key);
-	console.log("V", this.newObject[key]);
-
-        let myLocalObject = this._widget.fields.find(function(obj) {
+      let myLocalObject = this._widget.fields.find(function(obj) {
 		    return obj.name == key;
-	});	
+      });
 
-	if(myLocalObject) {
+      if (myLocalObject) {
+	    console.log('OBJ', myLocalObject);
 	    
-	    console.log("OBJ", myLocalObject);
-	    
-	    let subKey = myLocalObject.hepid + "_"+myLocalObject.profile;
+	    let subKey = myLocalObject.hepid + '_'+myLocalObject.profile;
 	
 	    let lobj = {
 	        name: myLocalObject.field_name,
 	        value: this.newObject[key],
 	        type: myLocalObject.type,
 	        hepid: myLocalObject.hepid,
-	        profile: myLocalObject.profile,	    
-	    }	
-	    if(!this.searchObject.hasOwnProperty(subKey)) this.searchObject[subKey]=[];
+	        profile: myLocalObject.profile,
+	    };
+	    if (!this.searchObject.hasOwnProperty(subKey)) this.searchObject[subKey]=[];
 
-	    this.searchObject[subKey].push(lobj);	    	    	    
-	}
+	    this.searchObject[subKey].push(lobj);
+      }
 		
-	console.log("OB", myLocalObject);
+      console.log('OB', myLocalObject);
     }
 
-    if(Object.getOwnPropertyNames(this.searchObject).length === 0)
-    {
-        let subKey = this.widget.config.protocol_id.value + "_"+this.widget.config.protocol_profile.value;                    
-        this.searchObject[subKey]=[];
+    if (Object.getOwnPropertyNames(this.searchObject).length === 0) {
+      let subKey = this.widget.config.protocol_id.value + '_'+this.widget.config.protocol_profile.value;
+      this.searchObject[subKey]=[];
     }
     
     this.UserProfile.setProfile('search', this.searchObject);
@@ -167,7 +163,7 @@ class ProtosearchWidget {
   }
 
   searchForProtocol(protoID) {
-    const { from, to, custom } = this.TimeMachine.getTimerangeUnix();
+    const {from, to, custom} = this.TimeMachine.getTimerangeUnix();
 
     this.$state.go(this.ROUTER.SEARCH.NAME, {
       protoID,
@@ -188,7 +184,7 @@ class ProtosearchWidget {
   }
 
   _nullifyObjectKeys(obj) {
-    Object.keys(obj).forEach(key => obj[key] = null);
+    Object.keys(obj).forEach((key) => obj[key] = null);
   }
 
   processSearchResult(type) {
@@ -201,7 +197,7 @@ class ProtosearchWidget {
     let node = this.UserProfile.getProfile('node').dbnode;
 
 
-    console.log("VALUE",value);
+    console.log('VALUE', value);
     
     /* make construct of query */
     data.param.transaction = {};

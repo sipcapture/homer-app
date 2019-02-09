@@ -414,7 +414,7 @@ class SearchData extends LivingBeing {
       /* correlation requests */
       const remotedata = new RemoteData(this.server, this.param);
 
-      for (let corrs of correlation) {             
+      for (let corrs of correlation) {
         let sourceField = corrs['source_field'];
         let lookupId = corrs['lookup_id'];
         let lookupProfile = corrs['lookup_profile'];
@@ -422,18 +422,18 @@ class SearchData extends LivingBeing {
         let lookupRange = corrs['lookup_range'];
         const newDataWhere=[];
         timeWhere = [];
-        let newDataRow=[];
-                
+
+        let newDataRow=[];                
         newDataWhere = newDataWhere.concat(dataWhere);
-        newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);              
+        newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
 
         let tFrom = new Date(data.timestamp.from);
         let tTo = new Date(data.timestamp.to);
         
         if (!isEmpty(lookupRange)) {
-                tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
-                tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
+          tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
+          tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
         }
         
         timeWhere.push(tFrom.toISOString());
@@ -483,7 +483,7 @@ class SearchData extends LivingBeing {
       });
       
       
-      if(doexp) return dataRow;
+      if (doexp) return dataRow;
             
       const globalReply = await this.getTransactionSummary(dataRow);
       

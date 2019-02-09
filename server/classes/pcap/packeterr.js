@@ -4,9 +4,9 @@
  * New packet error, extends default error class.
  */
 function PacketError(message, extra) {
-	if (Error.captureStackTrace) {
-		Error.captureStackTrace(this, this.constructor);
-	}
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, this.constructor);
+  }
   this.name = this.constructor.name;
   this.level = 'Critical';
   this.message = message;

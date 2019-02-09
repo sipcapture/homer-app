@@ -1,8 +1,8 @@
 'use strict';
 
-var util = require('util');
-var Packet = require('../packet');
-var Constants = require('../constants');
+let util = require('util');
+let Packet = require('../packet');
+let Constants = require('../constants');
 
 /**
  * Packet header class.

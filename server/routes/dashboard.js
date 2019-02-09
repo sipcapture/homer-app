@@ -3,7 +3,6 @@ import Boom from 'boom';
 import Settings from '../classes/settings';
 
 export default function dashboards(server) {
-
   server.route({
     /**
      * GET all dashboards
@@ -20,8 +19,7 @@ export default function dashboards(server) {
       },
     },
     handler: function(request, reply) {
-
-      let userObject = request.auth.credentials;      
+      let userObject = request.auth.credentials;
       const settings = new Settings(server, userObject.username);
 
       let table = 'user_settings';
@@ -55,8 +53,7 @@ export default function dashboards(server) {
       },
     },
     handler: function(request, reply) {
-    
-      let userObject = request.auth.credentials;      
+      let userObject = request.auth.credentials;
       const settings = new Settings(server, userObject.username);
 
       let table = 'user_settings';
@@ -83,7 +80,7 @@ export default function dashboards(server) {
       },
     },
     handler: function(request, reply) {
-      let userObject = request.auth.credentials;      
+      let userObject = request.auth.credentials;
       const settings = new Settings(server, userObject.username);
 
       let dashboardId = encodeURIComponent(request.params.dashboardId);
@@ -120,7 +117,7 @@ export default function dashboards(server) {
       },
     },
     handler: function(request, reply) {
-      let userObject = request.auth.credentials;      
+      let userObject = request.auth.credentials;
       const settings = new Settings(server, userObject.username);
       let dashboardId = encodeURIComponent(request.params.dashboardId);
         
@@ -147,9 +144,9 @@ export default function dashboards(server) {
       },
     },
     handler: function(request, reply) {
-      let userObject = request.auth.credentials;      
+      let userObject = request.auth.credentials;
       const settings = new Settings(server, userObject.username);
-      let dashboardId = encodeURIComponent(request.params.dashboardId);
+      // let dashboardId = encodeURIComponent(request.params.dashboardId);
         
       let table = 'user_settings';
       settings.getDashboardList(table, ['id', 'username', 'partid', 'category', 'param', 'create_date', 'data'])
@@ -160,7 +157,7 @@ export default function dashboards(server) {
           return reply(data);
         }).catch(function(error) {
           return reply(Boom.serverUnavailable(error));
-      });
+        });
     },
-  });  
+  });
 };

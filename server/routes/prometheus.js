@@ -3,7 +3,7 @@ import Joi from 'joi';
 let RequestClient = require('reqclient').RequestClient;
 
 let GetGlobalDataPrometeus = new RequestClient({
-  baseUrl: 'http://de7.sipcapture.io:9090/api/v1/',
+  baseUrl: 'http://localhost:9090/api/v1/',
 });
 
 export default function statistics(server) {

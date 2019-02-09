@@ -36,14 +36,14 @@ export default function search(server) {
           return reply(Boom.serverUnavailable(error));
         });
     },
-  });  
+  });
 
   server.route({
     path: '/api/v3/search/remote/label',
     method: 'GET',
     handler: function(request, reply) {
       const remotedata = new RemoteData(server, request.payload);
-      const searchTable = 'hep_proto_1_default';
+      // const searchTable = 'hep_proto_1_default';
       remotedata.getRemoteLabels(request.query.server||false)
         .then(function(data) {
           if (!data) {
@@ -54,14 +54,14 @@ export default function search(server) {
           return reply(Boom.serverUnavailable(error));
         });
     },
-  });  
+  });
 
   server.route({
     path: '/api/v3/search/remote/values',
     method: 'GET',
     handler: function(request, reply) {
       const remotedata = new RemoteData(server, request.payload);
-      remotedata.getRemoteValues(request.query.server||false,request.query.label)
+      remotedata.getRemoteValues(request.query.server||false, request.query.label)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -71,7 +71,5 @@ export default function search(server) {
           return reply(Boom.serverUnavailable(error));
         });
     },
-  });  
-
-
+  });
 };

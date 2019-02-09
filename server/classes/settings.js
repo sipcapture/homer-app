@@ -153,13 +153,12 @@ class Settings extends LivingBeing {
   }
         
   async getCorrelationMap(data) {
-
     try {
       let sData = data.param.search;
       let dataWhere = {};
-      let columns = ["correlation_mapping"];
-      let profileKey = "";
-      let table = "mapping_schema";
+      let columns = ['correlation_mapping'];
+      let profileKey = '';
+      let table = 'mapping_schema';
       let resultMap = {};
     
       /* jshint -W089 */
@@ -170,8 +169,8 @@ class Settings extends LivingBeing {
 
       let dataParse = profileKey.split('_', 2);
       dataWhere = {
-          hepid: dataParse[0],
-          profile: dataParse[1]
+        hepid: dataParse[0],
+        profile: dataParse[1],
       };
       
       /*
@@ -184,18 +183,17 @@ class Settings extends LivingBeing {
         .where(dataWhere)
         .select(columns)
         .then(function(rows) {
-
           rows.forEach(function(row) {
             let dataElement = {};
-            resultMap = row["correlation_mapping"];
-          });        
+            resultMap = row['correlation_mapping'];
+          });
           
           return resultMap;
         });
     } catch (err) {
       throw new Error('fail to get data map:'+err);
     }
-  }  
+  }
 }
 
 export default Settings;

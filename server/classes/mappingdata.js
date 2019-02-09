@@ -17,7 +17,6 @@ class MappingData extends LivingBeing {
     super({db: server.databases.config, table, guid});
     this.configDb = server.databases.config;
     this.guid = guid;
-        
   }
 
   /*
@@ -28,10 +27,9 @@ class MappingData extends LivingBeing {
   getProtocols() {
     return this.configDb(this.table)
       .where('partid', 10)
-      .select(['hepid','hep_alias','partid','profile'])
+      .select(['hepid', 'hep_alias', 'partid', 'profile'])
       .then(function(rows) {
-      
-       let dataReply = {
+        let dataReply = {
           total: rows.length,
           data: rows,
         };
@@ -43,13 +41,12 @@ class MappingData extends LivingBeing {
   getFields(id, transaction) {
     return this.configDb(this.table)
       .where({
-          hepid: id,
-          profile: transaction
+        hepid: id,
+        profile: transaction,
       })
-      .select(['id','partid','profile','fields_mapping'])
+      .select(['id', 'partid', 'profile', 'fields_mapping'])
       .then(function(rows) {
-      
-       let dataReply = {
+        let dataReply = {
           total: rows[0] ? rows[0].length : 0,
           data: rows[0] ? rows[0] : [],
         };
@@ -125,7 +122,7 @@ class MappingData extends LivingBeing {
     } catch (err) {
       throw new Error(`delete mapping: ${err.message}`);
     }
-  }  
+  }
 }
 
 export default MappingData;

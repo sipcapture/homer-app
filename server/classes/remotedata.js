@@ -1,9 +1,9 @@
 import LivingBeing from './living_being';
-import { forEach, isEmpty, size } from 'lodash';
+import {forEach, isEmpty, size} from 'lodash';
 
 import fetch from 'node-fetch';
 
-var LOKI_SERVER = 'http://127.0.0.1:3100';
+let LOKI_SERVER = 'http://127.0.0.1:3100';
 
 
 /**
@@ -26,56 +26,61 @@ class RemoteData extends LivingBeing {
   Fetch Loki Labels + Values into a tree array
   */
   getRemoteLabelsValues() {
-    var LOKI_API = data.param.server;
-    const url = LOKI_API + "/api/prom/label";
-    var labels = [];
+    let LOKI_API = data.param.server;
+    const url = LOKI_API + '/api/prom/label';
+    let labels = [];
     return fetch(url)
-      .then(response => response.json())
-      .then(function(responseJSON){
-	   if(!responseJSON.values) return JSON.stringify(dataset);
-	   responseJSON.values.forEach(function(label){
-		if (!labels[label]) labels[label] = [];
-		var valUrl = LOKI_API + "/api/prom/label/"+label+"/values";
+      .then((response) => response.json())
+      .then(function(responseJSON) {
+	   if (!responseJSON.values) return JSON.stringify(dataset);
+	   responseJSON.values.forEach(function(label) {
+          if (!labels[label]) labels[label] = [];
+          let valUrl = LOKI_API + '/api/prom/label/'+label+'/values';
 	    	return fetch(valUrl)
-	    	  .then(response => response.json())
-	    	  .then(function(responseValues){
-			labels[label] = responseValues.values;
-		  })
-		
+	    	  .then((response) => response.json())
+	    	  .then(function(responseValues) {
+              labels[label] = responseValues.values;
+		  });
 	   });
 	  return JSON.stringify(labels);
       })
-      .catch(function(error) { console.error(error); return JSON.stringify(labels) });
+      .catch(function(error) {
+console.error(error); return JSON.stringify(labels);
+});
   }
 
   /*
   Fetch Loki Labels to array
   */
   getRemoteLabels(server) {
-    var LOKI_API = server || LOKI_SERVER;
-    const url = LOKI_API + "/api/prom/label";
+    let LOKI_API = server || LOKI_SERVER;
+    const url = LOKI_API + '/api/prom/label';
     return fetch(url)
-      .then(response => response.json())
-      .then(function(responseJSON){
-	   if(!responseJSON.values) return JSON.stringify([]);
+      .then((response) => response.json())
+      .then(function(responseJSON) {
+	   if (!responseJSON.values) return JSON.stringify([]);
 	   return JSON.stringify(responseJSON.values);
       })
-      .catch(function(error) { console.error(error); return JSON.stringify([]) });
+      .catch(function(error) {
+console.error(error); return JSON.stringify([]);
+});
   }
 
   /*
   Fetch Loki Labels + Values into a tree array
   */
-  getRemoteValues(server,label) {
-    var LOKI_API = server || LOKI_SERVER;
-    const url = LOKI_API + "/api/prom/label/"+label+"/values";
+  getRemoteValues(server, label) {
+    let LOKI_API = server || LOKI_SERVER;
+    const url = LOKI_API + '/api/prom/label/'+label+'/values';
     return fetch(url)
-      .then(response => response.json())
-      .then(function(responseJSON){
-	   if(!responseJSON.values) return JSON.stringify([]);
+      .then((response) => response.json())
+      .then(function(responseJSON) {
+	   if (!responseJSON.values) return JSON.stringify([]);
 	   return JSON.stringify(responseJSON.values);
       })
-      .catch(function(error) { console.error(error); return JSON.stringify([]) });
+      .catch(function(error) {
+console.error(error); return JSON.stringify([]);
+});
   }
 
   /*
@@ -83,10 +88,10 @@ class RemoteData extends LivingBeing {
   */
   getRemoteData(columns, table, data) {
     let sData = data.param.search;
-    console.log('IN LogQL',sData);
+    console.log('IN LogQL', sData);
 
-    var parseQuery = function(input) {
-	  const selectorRegexp = /(?:^|\s){[^{]*}/g
+    let parseQuery = function(input) {
+	  const selectorRegexp = /(?:^|\s){[^{]*}/g;
 	  const match = input.match(selectorRegexp);
 	  let query = '';
 	  let regexp = input;
@@ -95,53 +100,53 @@ class RemoteData extends LivingBeing {
 	    query = match[0].trim();
 	    regexp = input.replace(selectorRegexp, '').trim();
 	  }
-	console.log(query,regexp)
-    	return { query, regexp };
-    }
+      console.log(query, regexp);
+    	return {query, regexp};
+    };
     
     let fromts = (new Date(data.timestamp.from)).getTime()*1000000;
     let tots = (new Date(data.timestamp.to)).getTime()*1000000;
 
     let query = parseQuery(sData);
-    //var logql =  "query="+query.query
-    var logql =  "query="+query.query
-		+"&regexp="+query.regexp
-		+"&limit="+data.param.limit
-		+"&start="+fromts
-		+"&end="+tots
+    // var logql =  "query="+query.query
+    let logql = 'query='+query.query
+		+'&regexp='+query.regexp
+		+'&limit='+data.param.limit
+		+'&start='+fromts
+		+'&end='+tots;
 
-    console.log('OUT LogQL',logql);
+    console.log('OUT LogQL', logql);
 
     // Fetch
-    var LOKI_API = data.param.server || LOKI_SERVER;
-    const url = LOKI_API + "/api/prom/query?"+encodeURI(logql);
+    let LOKI_API = data.param.server || LOKI_SERVER;
+    const url = LOKI_API + '/api/prom/query?'+encodeURI(logql);
 
-    var dataset = { "data": [], "keys": [], "total": 0 };
+    let dataset = {'data': [], 'keys': [], 'total': 0};
     dataset.keys = [
-	{ field: 'id', displayName: 'ID', maxWidth:50 }, 
-	{ field:'micro_ts', displayName:'Timestamp', maxWidth:150 },
-	{ field:'custom_1', displayName:'Message' },
-	{ field:'custom_2', displayName:'Labels' }
+      {field: 'id', displayName: 'ID', maxWidth: 50},
+      {field: 'micro_ts', displayName: 'Timestamp', maxWidth: 150},
+      {field: 'custom_1', displayName: 'Message'},
+      {field: 'custom_2', displayName: 'Labels'},
     ];
 
     return fetch(url)
-      .then(response => response.json())
-      .then(function(responseJSON){
-	   if(!responseJSON.streams) return JSON.stringify(dataset);
-	   responseJSON.streams.forEach(function(stream){
-		// console.log(stream.labels);		
-		stream.entries.forEach(function(entry){
-			dataset.total++;
-			dataset.data.push({ id: dataset.total, micro_ts: entry.ts, custom_1: entry.line, custom_2: stream.labels });
-		});
+      .then((response) => response.json())
+      .then(function(responseJSON) {
+	   if (!responseJSON.streams) return JSON.stringify(dataset);
+	   responseJSON.streams.forEach(function(stream) {
+          // console.log(stream.labels);
+          stream.entries.forEach(function(entry) {
+            dataset.total++;
+            dataset.data.push({id: dataset.total, micro_ts: entry.ts, custom_1: entry.line, custom_2: stream.labels});
+          });
 	   });
 
 	  return JSON.stringify(dataset);
       })
-      .catch(function(error) { console.error(error); return JSON.stringify(dataset) });
-
+      .catch(function(error) {
+console.error(error); return JSON.stringify(dataset);
+});
   }
-
 
     
   async getTransactionData(table, columns, fieldKey, dataWhere, timeWhere) {
@@ -222,7 +227,7 @@ class RemoteData extends LivingBeing {
     
       /* correlation requests */
 
-      for (let corrs of correlation) {             
+      for (let corrs of correlation) {
         let sourceField = corrs['source_field'];
         let lookupId = corrs['lookup_id'];
         let lookupProfile = corrs['lookup_profile'];
@@ -258,7 +263,7 @@ class RemoteData extends LivingBeing {
       });
       
       
-      if(doexp) return dataRow;
+      if (doexp) return dataRow;
             
       const globalReply = await this.getTransactionSummary(dataRow);
       
@@ -266,7 +271,7 @@ class RemoteData extends LivingBeing {
     } catch (err) {
       throw new Error('fail to get data main:'+err);
     }
-  }  
+  }
 }
 
 export default RemoteData;

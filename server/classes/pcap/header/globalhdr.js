@@ -1,10 +1,10 @@
 'use strict';
 
-var util = require('util');
-var _ = require('lodash');
+let util = require('util');
+let _ = require('lodash');
 
-var Packet = require('../packet');
-var Constants = require('../constants');
+let Packet = require('../packet');
+let Constants = require('../constants');
 
 /**
  * Global header packet for pcap file.

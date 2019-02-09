@@ -32,6 +32,46 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           $log.error(['app.config', 'dashboardsMenu'], err);
         });
       },
+      globalsettings: function(AdvancedService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return AdvancedService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
+      users: function(UserService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return UserService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
+      userSettings: function(UserSettingsService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return UserSettingsService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
+      aliases: function(AliasService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return AliasService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
+      mappings: function(MappingService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return MappingService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
     },
   });
 

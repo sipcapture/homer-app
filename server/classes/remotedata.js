@@ -101,7 +101,7 @@ class RemoteData extends LivingBeing {
     
     let fromts = (new Date(data.timestamp.from)).getTime()*1000000;
     let tots = (new Date(data.timestamp.to)).getTime()*1000000;
-    
+
     let query = parseQuery(sData);
     //var logql =  "query="+query.query
     var logql =  "query="+query.query

@@ -71,7 +71,7 @@
     "jsonwebtoken": "8.1.0",
     "knex": "0.13.0",
     "leaflet": "1.2.0",
-    "lodash": "4.17.10",
+    "lodash": "4.17.11",
     "loglevel": "1.5.0",
     "modernizr": "3.6.0",
     "moment": "2.22.1",

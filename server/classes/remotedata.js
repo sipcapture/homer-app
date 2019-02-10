@@ -32,21 +32,21 @@ class RemoteData extends LivingBeing {
     return fetch(url)
       .then((response) => response.json())
       .then(function(responseJSON) {
-	   if (!responseJSON.values) return JSON.stringify(dataset);
-	   responseJSON.values.forEach(function(label) {
+        if (!responseJSON.values) return JSON.stringify(dataset);
+        responseJSON.values.forEach(function(label) {
           if (!labels[label]) labels[label] = [];
           let valUrl = LOKI_API + '/api/prom/label/'+label+'/values';
-	    	return fetch(valUrl)
-	    	  .then((response) => response.json())
-	    	  .then(function(responseValues) {
+          return fetch(valUrl)
+            .then((response) => response.json())
+            .then(function(responseValues) {
               labels[label] = responseValues.values;
-		  });
-	   });
-	  return JSON.stringify(labels);
+            });
+        });
+        return JSON.stringify(labels);
       })
       .catch(function(error) {
-console.error(error); return JSON.stringify(labels);
-});
+        console.error(error); return JSON.stringify(labels);
+      });
   }
 
   /*
@@ -58,12 +58,12 @@ console.error(error); return JSON.stringify(labels);
     return fetch(url)
       .then((response) => response.json())
       .then(function(responseJSON) {
-	   if (!responseJSON.values) return JSON.stringify([]);
-	   return JSON.stringify(responseJSON.values);
+        if (!responseJSON.values) return JSON.stringify([]);
+        return JSON.stringify(responseJSON.values);
       })
       .catch(function(error) {
-console.error(error); return JSON.stringify([]);
-});
+        console.error(error); return JSON.stringify([]);
+      });
   }
 
   /*
@@ -75,12 +75,12 @@ console.error(error); return JSON.stringify([]);
     return fetch(url)
       .then((response) => response.json())
       .then(function(responseJSON) {
-	   if (!responseJSON.values) return JSON.stringify([]);
-	   return JSON.stringify(responseJSON.values);
+        if (!responseJSON.values) return JSON.stringify([]);
+        return JSON.stringify(responseJSON.values);
       })
       .catch(function(error) {
-console.error(error); return JSON.stringify([]);
-});
+        console.error(error); return JSON.stringify([]);
+      });
   }
 
   /*
@@ -91,29 +91,29 @@ console.error(error); return JSON.stringify([]);
     console.log('IN LogQL', sData);
 
     let parseQuery = function(input) {
-	  const selectorRegexp = /(?:^|\s){[^{]*}/g;
-	  const match = input.match(selectorRegexp);
-	  let query = '';
-	  let regexp = input;
+      const selectorRegexp = /(?:^|\s){[^{]*}/g;
+      const match = input.match(selectorRegexp);
+      let query = '';
+      let regexp = input;
 
-	  if (match) {
-	    query = match[0].trim();
-	    regexp = input.replace(selectorRegexp, '').trim();
-	  }
+      if (match) {
+        query = match[0].trim();
+        regexp = input.replace(selectorRegexp, '').trim();
+      }
       console.log(query, regexp);
-    	return {query, regexp};
+      return {query, regexp};
     };
-    
+
     let fromts = (new Date(data.timestamp.from)).getTime()*1000000;
     let tots = (new Date(data.timestamp.to)).getTime()*1000000;
 
     let query = parseQuery(sData);
     // var logql =  "query="+query.query
     let logql = 'query='+query.query
-		+'&regexp='+query.regexp
-		+'&limit='+data.param.limit
-		+'&start='+fromts
-		+'&end='+tots;
+    +'&regexp='+query.regexp
+    +'&limit='+data.param.limit
+    +'&start='+fromts
+    +'&end='+tots;
 
     console.log('OUT LogQL', logql);
 
@@ -131,23 +131,23 @@ console.error(error); return JSON.stringify([]);
     return fetch(url)
       .then((response) => response.json())
       .then(function(responseJSON) {
-	   if (!responseJSON.streams) return JSON.stringify(dataset);
-	   responseJSON.streams.forEach(function(stream) {
+        if (!responseJSON.streams) return JSON.stringify(dataset);
+        responseJSON.streams.forEach(function(stream) {
           // console.log(stream.labels);
           stream.entries.forEach(function(entry) {
             dataset.total++;
             dataset.data.push({id: dataset.total, micro_ts: entry.ts, custom_1: entry.line, custom_2: stream.labels});
           });
-	   });
+        });
 
-	  return JSON.stringify(dataset);
+        return JSON.stringify(dataset);
       })
       .catch(function(error) {
-console.error(error); return JSON.stringify(dataset);
-});
+        console.error(error); return JSON.stringify(dataset);
+      });
   }
 
-    
+
   async getTransactionData(table, columns, fieldKey, dataWhere, timeWhere) {
     try {
       return await this.dataDb(table)
@@ -163,16 +163,16 @@ console.error(error); return JSON.stringify(dataset);
     }
   }
 
-  
+
   async getTransaction(columns, table, data, correlation, doexp) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
       let dataSrcField = {};
-                    
+
       /* jshint -W089 */
-  
-  
+
+
       for (let key in sData) {
         table = 'hep_proto_'+key;
         if (sData.hasOwnProperty(key)) {
@@ -183,17 +183,17 @@ console.error(error); return JSON.stringify(dataset);
       let timeWhere = [];
       timeWhere.push(new Date(data.timestamp.from).toISOString());
       timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
+
       /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
-    
+
    */
       /* MAIN REQUEST */
       let dataRow = await this.getTransactionData(table, columns, 'sid', dataWhere, timeWhere);
       // let dataRow = []
-   
+
       if (!isEmpty(correlation)) {
         dataRow.forEach(function(row) {
           /* looping over correlation object and extraction keys */
@@ -215,7 +215,7 @@ console.error(error); return JSON.stringify(dataset);
           });
         });
       }
-    
+
       /*
     correlation [ { source_field: 'data_header.callid',
     lookup_id: 100,
@@ -223,7 +223,7 @@ console.error(error); return JSON.stringify(dataset);
     lookup_field: 'sid',
     lookup_range: [ -300, 200 ] } ]
     */
-    
+
       /* correlation requests */
 
       for (let corrs of correlation) {
@@ -234,38 +234,38 @@ console.error(error); return JSON.stringify(dataset);
         let lookupRange = corrs['lookup_range'];
         let newDataWhere=[];
         timeWhere = [];
-              
+
         newDataWhere = newDataWhere.concat(dataWhere);
         newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
-              
+
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
 
         let tFrom = new Date(data.timestamp.from);
         let tTo = new Date(data.timestamp.to);
-        
+
         if (!isEmpty(lookupRange)) {
           tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
           tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
         }
-        
+
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-        
+
         const newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-        
+
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
 
       /* sort it by create data */
       dataRow.sort(function(a, b) {
-	    return a.create_date - b.create_date;
+        return a.create_date - b.create_date;
       });
-      
-      
+
+
       if (doexp) return dataRow;
-            
+
       const globalReply = await this.getTransactionSummary(dataRow);
-      
+
       return globalReply;
     } catch (err) {
       throw new Error('fail to get data main:'+err);

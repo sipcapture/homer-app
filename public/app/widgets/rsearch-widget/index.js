@@ -4,11 +4,11 @@ import settings from './settings/rsearch-widget-settings.component';
 
 export default angular.module('hepicApp.rsearchWidget', ['ace.angular'])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
-    DashboardWidgetStateProvider.set('visualize', 'rsearch-widget', {
+    DashboardWidgetStateProvider.set('search', 'rsearch-widget', {
       title: 'Loki Search',
       group: 'Tools',
       name: 'rsearch',
-      description: 'Display date and time',
+      description: 'Display Loki Search Form',
       sizeX: 1,
       sizeY: 1,
       refresh: false,

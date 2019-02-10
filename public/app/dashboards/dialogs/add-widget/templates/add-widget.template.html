@@ -2,13 +2,13 @@
   <form name="_form" class="form-horizontal">
     <div class="modal-header">
       <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
-      <h3>Add new widget</h3>
+      <h3>Add Widget</h3>
     </div> <!-- END modal-header -->
 
     <div class="modal-body">
       <div style="display: inline-block;">
         <ul class=add-widget-list ng-repeat="(category, widgets) in $ctrl.widgets"> 
-          <p class="group-add-widget">{{category}}</p>
+          <p class="group-add-widget text-capitalize">{{category}}</p>
           <dt class="dt-add-widget" ng-repeat-start="(name, widget) in widgets">
             <a href ng-click='$ctrl.addWidget(widget)'>{{widget.title}}</a>
           </dt>

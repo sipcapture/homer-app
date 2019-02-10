@@ -1,6 +1,3 @@
-import 'angular-html';
-import '../style/html-widget.css';
-
 import {cloneDeep} from 'lodash';
 
 class HtmlWidget {

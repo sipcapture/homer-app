@@ -18,16 +18,16 @@ class FieldProtoDisplay {
 
   linkFunc(scope) {
     scope.selectedItem = {
-        name: scope.fieldProtoName, 
-        selection: scope.fieldProtoDisplay, 
-        form_type: scope.fieldProtoFormType, 
-        field_name: scope.fieldProtoFieldName, 
-        type: scope.fieldProtoType, 
-        hepid: scope.fieldProtoHepid,
-        profile: scope.fieldProtoHepProfile        
-    };    
+      name: scope.fieldProtoName,
+      selection: scope.fieldProtoDisplay,
+      form_type: scope.fieldProtoFormType,
+      field_name: scope.fieldProtoFieldName,
+      type: scope.fieldProtoType,
+      hepid: scope.fieldProtoHepid,
+      profile: scope.fieldProtoHepProfile,
+    };
     scope.$watch('selectedItem', function(val) {
-      console.log("JA", val);
+      console.log('JA', val);
       scope.fieldProtoDisplay = val.selection;
       scope.fieldProtoName = val.name;
       scope.fieldProtoFormType = val.form_type;

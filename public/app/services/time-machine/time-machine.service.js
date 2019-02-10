@@ -73,8 +73,8 @@ class TimeMachine {
   getTimerangeUnix(timerange) {
     timerange = timerange || this.getTimerange();
     return {
-      from: timerange.from.getTime(), 
-      to: timerange.to.getTime(), 
+      from: timerange.from.getTime(),
+      to: timerange.to.getTime(),
       custom: timerange.custom,
     };
   }

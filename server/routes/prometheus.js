@@ -62,7 +62,7 @@ export default function statistics(server) {
       },
     },
     handler: function(request, reply) {
-      GetGlobalDataPrometeus.get(`/label/__name__/values?_=1549632301527`)
+      GetGlobalDataPrometeus.get('/label/__name__/values?_=1549632301527')
         .then((response) => {
           reply(response.data);
         })

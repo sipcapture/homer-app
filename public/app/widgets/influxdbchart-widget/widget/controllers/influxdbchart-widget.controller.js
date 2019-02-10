@@ -18,7 +18,7 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
     config: {},
   };
 
-  EventBus.subscribe(EVENTS.TIME_CHANGE, function () {
+  EventBus.subscribe(EVENTS.TIME_CHANGE, function() {
     if (homerHelper.isCurrentUiRouterState($scope.$state, ROUTER.DASHBOARD.NAME, self.widget.boardID)) {
       createChart();
     }
@@ -217,11 +217,11 @@ const influxdbchartWidget = function($scope, $timeout, UserProfile, $rootScope, 
       }
 
       if (dobj.hasOwnProperty('database')) {
-          obj['database'] = "\""+dobj['database'].name+"\"";
+        obj['database'] = '"'+dobj['database'].name+'"';
       }
 
       if (dobj.hasOwnProperty('retention')) {
-        obj['retention'] = "\""+dobj['retention'].name+"\"";        
+        obj['retention'] = '"'+dobj['retention'].name+'"';
       }
 
       if (dobj.hasOwnProperty('value')) {

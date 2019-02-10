@@ -6,7 +6,7 @@ const CallDetailLoki = {
   template,
   bindings: {
     lokireport: '=',
-    onMatchJson: '&'
+    onMatchJson: '&',
   },
 };
 

@@ -26,6 +26,7 @@ class SearchData extends LivingBeing {
   */
   getSearchData(columns, table, data) {
     let sData = data.param.search;
+    let sLimit = data.param.limit;
     let dataWhereRawKey = [];
     let dataWhereRawValue = [];
     let dataWhere = {};
@@ -82,6 +83,7 @@ class SearchData extends LivingBeing {
       .whereBetween('create_date', timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];
@@ -115,6 +117,7 @@ class SearchData extends LivingBeing {
   
   getMessageById(columns, table, data) {
     let sData = data.param.search;
+    let sLimit = data.param.limit;
     let dataWhere = {};
     
     /* jshint -W089 */
@@ -134,6 +137,7 @@ class SearchData extends LivingBeing {
       .whereBetween('create_date', timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];

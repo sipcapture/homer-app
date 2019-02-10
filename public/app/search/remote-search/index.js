@@ -6,8 +6,8 @@ export default angular.module('remoteSearch', [])
     'ngInject';
     
     $urlMatcherFactoryProvider.type('SlashFix', {
-          raw: true,
-    });                            
+      raw: true,
+    });
 
     $stateProvider.state(ROUTER.REMOTE.NAME, {
       url: ROUTER.REMOTE.PATH + '/:protoID/{limit:int}/{from:int}/{to:int}/{server}/{search:SlashFix}/{custom}/{timezone:json}',
@@ -19,10 +19,9 @@ export default angular.module('remoteSearch', [])
         timezone: TIME.TIMEZONE,
         limit: REMOTE.LIMIT,
         search: REMOTE.QUERY.DEFAULT,
-        server: REMOTE.SERVER.DEFAULT
+        server: REMOTE.SERVER.DEFAULT,
       },
       component: 'remoteSearch',
     });
-    
   })
   .component('remoteSearch', component);

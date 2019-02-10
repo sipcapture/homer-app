@@ -40,12 +40,12 @@ class DatePicker {
       this.TimeMachine.setTimezone(this.timezone);
     }
   
-    const { to, from, custom } = this.$state.params;
+    const {to, from, custom} = this.$state.params;
     if (to && from && custom) {
       this.TimeMachine.setTimerange({
         to: new Date(to),
         from: new Date(from),
-        custom
+        custom,
       });
       this.timerange = this.TimeMachine.getTimerange();
     }

@@ -1,15 +1,15 @@
 export default {
   LIMIT: 200,
   QUERY: {
-    DEFAULT: { '1_remote': [] }
+    DEFAULT: {'1_remote': []},
   },
   TRANSACTION: {
-    DEFAULT: {}
+    DEFAULT: {},
   },
   PROTO: {
-    ID: 'rsearch'
+    ID: 'rsearch',
   },
   SERVER: {
-    DEFAULT: 'http://127.0.0.1:3100'
-  }
+    DEFAULT: 'http://127.0.0.1:3100',
+  },
 };

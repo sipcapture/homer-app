@@ -11,7 +11,7 @@ class ProtosearchWidgetSettings {
     this.headers = [];
     this.protoTransactions = {};
     this.addDataToProto();
-    console.log("WIDGET", this.widget.fields);    
+    console.log('WIDGET', this.widget.fields);
   }
 
   dismiss() {
@@ -27,7 +27,7 @@ class ProtosearchWidgetSettings {
     let hashLocal = [];
     this.headers = [];
     
-    console.log("ADD DATA TO PROTO");
+    console.log('ADD DATA TO PROTO');
 
     this.SearchService.loadMappingProtocols().then((data) => {
       console.log('GOT', data);
@@ -45,7 +45,7 @@ class ProtosearchWidgetSettings {
         }
       });
 
-      console.log("FINISHED");
+      console.log('FINISHED');
       this.onProtoSelect();
                   
       // END To-do
@@ -55,11 +55,10 @@ class ProtosearchWidgetSettings {
   }
 
   onProtoSelect() {
-
     this.profileData = [];
     this.headers = [];
     
-    console.log("SELECTED PROTO");
+    console.log('SELECTED PROTO');
     
     let id = this.widget.config.protocol_id.value;
     this.protoTransactions.forEach((field) => {
@@ -73,25 +72,24 @@ class ProtosearchWidgetSettings {
     });
     
     /* if element just one - select it */
-    console.log("LEN", this.profileData.length);
+    console.log('LEN', this.profileData.length);
     
-    this.onProfileSelect();    
+    this.onProfileSelect();
     
-    /*if(this.profileData.length == 1) {
+    /* if(this.profileData.length == 1) {
         console.log("LEN == 1");
-        onProfileSelect();    
+        onProfileSelect();
     }
     */
-  }  
+  }
 
   onProfileSelect() {
-  
-    console.log("SELECTED PROFILE YES");
+    console.log('SELECTED PROFILE YES');
   
     let id = this.widget.config.protocol_id.value;
     let profile = this.widget.config.protocol_profile.value;
         
-    console.log("MMM PROFILE:", this.widget.config.protocol_profile);
+    console.log('MMM PROFILE:', this.widget.config.protocol_profile);
     
     this.headers = [];
     
@@ -127,9 +125,8 @@ class ProtosearchWidgetSettings {
   }
 
 
-
   addField() {
-   this.widget.fields.push({name: 'default' + this.counter});
+    this.widget.fields.push({name: 'default' + this.counter});
   }
   
   removeField(index) {

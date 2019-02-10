@@ -4,5 +4,5 @@ import messageSearch from './message-search';
 
 export default angular.module('hepicApp.filters', [
   propsFilter.name,
-  messageSearch.name
+  messageSearch.name,
 ]);

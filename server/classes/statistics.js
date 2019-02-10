@@ -27,25 +27,25 @@ class Statistics extends LivingBeing {
   getDatabases() {
     return this.statsDb.getDatabaseNames().then((names) => {
       let dbNames = [];
-      
+
       names.forEach((name) => {
         dbNames.push({name: name, value: name});
       });
-      
+
       let globalReply = {
         total: dbNames.length,
         data: dbNames,
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getRetentions(database) {
     return this.statsDb.showRetentionPolicies(database).then((polices) => {
       let retNames = [];
@@ -59,14 +59,14 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getMeasurements(database) {
     return this.statsDb.getMeasurements(database).then((mses) => {
       let mesNames = [];
@@ -80,27 +80,27 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getMetrics(query) {
     let main = query.main;
     let database = query.database;
     let retention = query.retention;
-     
+
     let options = {
       database: database,
       precision: 's',
       retentionPolicy: retention,
     };
-    
+
     let influxQuery = 'SHOW FIELD KEYS FROM "'+main+'"';
-      
+
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
       let mesNames = [];
       let values = mses.results[0].series[0].values;
@@ -114,31 +114,31 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getTagsKeys(query) {
     let main = query.main;
     let database = query.database;
     let retention = query.retention;
-    
+
     let options = {
       database: database,
       precision: 's',
       retentionPolicy: retention,
     };
-    
+
     let influxQuery = 'SHOW TAG KEYS FROM "'+main+'"';
-    
+
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
       let mesNames = [];
       let values = mses.results[0].series[0].values;
-      
+
       values.forEach((value) => {
         mesNames.push({name: value[0], value: value[0]});
       });
@@ -149,32 +149,32 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getTagsValues(query) {
     let main = query.main;
     let database = query.database;
     let retention = query.retention;
     let key = query.tag;
-    
+
     let options = {
       database: database,
       precision: 's',
       retentionPolicy: retention,
     };
-    
+
     let influxQuery = 'SHOW TAG VALUES FROM "'+main+'" WITH KEY IN ("'+key+'")';
-    
+
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
       let mesNames = [];
       let values = mses.results[0].series[0].values;
-      
+
       values.forEach((value) => {
         mesNames.push({name: value[1], value: value[1]});
       });
@@ -185,14 +185,14 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {
         console.error('Error....');
       });
   }
-  
+
   getData(payload) {
     let param = payload.param;
     let query = param.query[0];
@@ -214,7 +214,7 @@ class Statistics extends LivingBeing {
     let fromTs = startTs*1000000;
     let toTs = stopTs*1000000;
     let precision = '60s';
-    
+
     let options = {
       database: database,
       retentionPolicy: retention,
@@ -227,7 +227,7 @@ class Statistics extends LivingBeing {
     else if (diff >= 2 && diff <= 8) indexRange = '300s';
     else if (diff >= 8 && diff <= 50) indexRange = '3600s';
     else indexRange = '86400s';
-    
+
     let tagName = '';
     let myPrefix = '';
     let newCountArray = [];
@@ -247,8 +247,8 @@ class Statistics extends LivingBeing {
     if (newCountArray.length > 0) counterName = newCountArray.join();
 
     let influxQuery = 'SELECT '+counterName+' FROM '+queryDB+'."'+main+'" WHERE '
-		+'time > '+fromTs+' AND '+toTs+' > time '+tagName+' GROUP BY time('+indexRange+') FILL(null) LIMIT '+localLimit;
-		
+    +'time > '+fromTs+' AND '+toTs+' > time '+tagName+' GROUP BY time('+indexRange+') FILL(null) LIMIT '+localLimit;
+
     if (query.hasOwnProperty('rawquery') && query.rawquery && query.rawquery.length > 0) {
       rawQuery = query.rawquery;
       influxQuery = rawQuery.replace(':database:', database)
@@ -259,8 +259,8 @@ class Statistics extends LivingBeing {
         .replace(':interval:', indexRange)
         .replace(':limit:', localLimit);
     }
- 				    
-    
+
+
     return this.statsDb.query(influxQuery, options).then((mses) => {
       let mesNames = [];
 
@@ -283,7 +283,7 @@ class Statistics extends LivingBeing {
               countername: '',
               value: 0,
             };
-            
+
             dataPoint.countername = v;
             dataPoint.value = value[v];
             dataPoint.table = main;
@@ -291,7 +291,7 @@ class Statistics extends LivingBeing {
           }
         };
       });
-      
+
       // groupsTagsKeys: [],
       // groupRows: [ { name: 'cpu', rows: [Array], tags: {} } ],
       let globalReply = {
@@ -300,7 +300,7 @@ class Statistics extends LivingBeing {
         status: 'ok',
         auth: 'ok',
       };
-        
+
       return globalReply;
     })
       .catch((err) => {

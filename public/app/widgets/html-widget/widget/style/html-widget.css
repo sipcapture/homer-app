@@ -1,0 +1,16 @@
+.html-widget .widget-html {
+    height: 50%;
+    width: 70%;
+    text-align: center;
+    display: block;
+    margin: auto;
+}
+
+.html-widget .box-content {
+    color: grey;
+    text-align: center;
+}
+
+.modal .modal-dialog .modal-content {
+    overflow: visible;
+}

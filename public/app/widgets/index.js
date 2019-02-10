@@ -11,7 +11,6 @@ import Prometheuschart from './prometheuschart-widget';
 export default angular.module('hepicApp.widgets', [
   Services.name,
   Clock.name,
-  Htmlw.name,
   Influxdbchart.name,
   Protosearch.name,
   Remotesearch.name,

@@ -6,7 +6,7 @@ const callDetailLogs = {
   template,
   bindings: {
     logreport: '=',
-    onMatchJson: '&'
+    onMatchJson: '&',
   },
 };
 

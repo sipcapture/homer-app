@@ -21,8 +21,8 @@ class GlobalProfile {
     return this.getLocalProfile(key);
   }
   
-  getProfileCategory(key1,key2) {
-    return this.getLocalProfile(key1+":"+key2);
+  getProfileCategory(key1, key2) {
+    return this.getLocalProfile(key1+':'+key2);
   }
       
   setLocalProfile(key, data) {
@@ -33,22 +33,22 @@ class GlobalProfile {
     return this.myProfile[key];
   }
   
-  getLocalProfileCategory(key1,key2) {
-    return this.myProfile[key1+":"+key2];
+  getLocalProfileCategory(key1, key2) {
+    return this.myProfile[key1+':'+key2];
   }
       
   getAllRemoteProfile() {
     return this.$http.get(this.API.GLOBALPROFILE.STORE, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data.data, (value, key) => {
-           var nkey=value.category+":"+value.param;
-           var nobj = JSON.parse(value.data);           
-           this.setLocalProfile(nkey, nobj);
-           this.profileScope[nkey] = nobj;
-           console.log("VV", nkey);
-           console.log("DD", nobj);
-           this.loadedProfile = true;
-           return 'yes';
-      });      
+        let nkey=value.category+':'+value.param;
+        let nobj = JSON.parse(value.data);
+        this.setLocalProfile(nkey, nobj);
+        this.profileScope[nkey] = nobj;
+        console.log('VV', nkey);
+        console.log('DD', nobj);
+        this.loadedProfile = true;
+        return 'yes';
+      });
     });
   }
           

@@ -1,14 +1,13 @@
-/*global $, window, document*/
+/* global $, window, document*/
 
 class Draggable {
-
   constructor() {
     this.restrict = 'EA';
   }
 
   link(scope, element) {
     $(element).bind('mouseup', function(ui) {
-      var elements = document.getElementsByClassName('opened');
+      let elements = document.getElementsByClassName('opened');
       for (let i = 0; i < elements.length; i++) {
         if (!elements[i].style.zIndex) {
           elements[i].style.zIndex = 10001;
@@ -29,7 +28,7 @@ class Draggable {
       handle: '.homer-modal-header',
       start: function(event, ui) {
         ui.helper[0].style.opacity = 0.7;
-        var elements = document.getElementsByClassName('opened');
+        let elements = document.getElementsByClassName('opened');
         for (let i = 0; i < elements.length; i++) {
           if (!elements[i].style.zIndex) {
             elements[i].style.zIndex = 10001;
@@ -58,15 +57,14 @@ class Draggable {
             ui.helper[0].style.top = (window.innerHeight - 50) + 'px';
             window.scrollTo(0, 0);
           }
-
         }
-      }
+      },
     }).resizable({
       resize: function(evt, ui) {
-        var messagebody = $(element).find('.homer-modal-body');
+        let messagebody = $(element).find('.homer-modal-body');
         $(messagebody).width(ui.size.width - 10); /* 10 */
         $(messagebody).height(ui.size.height - 80); /* 50 */
-      }
+      },
     });
   }
 }

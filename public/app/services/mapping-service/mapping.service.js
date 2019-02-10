@@ -24,15 +24,12 @@ class AdvancedService {
   /*
   * @return {object} API confirm
   */
-  async add({profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings}) {
+  async add({profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings}) {
     try {
-
-      const settings = {profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings};
+      const settings = {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings};
       try {
-
         settings.correlation_mapping = JSON.stringify(settings.correlation_mapping);
         settings.fields_mapping = JSON.stringify(settings.fields_mapping);
-        
       } catch (err) {
         throw new Error(`fail to stringify data: ${err.message}`);
       }
@@ -51,13 +48,13 @@ class AdvancedService {
   /*
   * @return {object} API confirm
   */
-  async update({guid, profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings}) {
+  async update({guid, profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings}) {
     try {
-      const settings = {profile, hepid, hep_alias, partid,version,retention,partition_step,create_index,create_table,correlation_mapping,fields_mapping,mapping_settings,schema_mapping,schema_settings};      
+      const settings = {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings};
 
       try {
         settings.correlation_mapping = JSON.stringify(settings.correlation_mapping);
-        settings.fields_mapping = JSON.stringify(settings.fields_mapping);                   
+        settings.fields_mapping = JSON.stringify(settings.fields_mapping);
         
       } catch (err) {
         throw new Error(`fail to stringify data: ${err.message}`);

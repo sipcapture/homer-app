@@ -9,11 +9,11 @@ export default angular.module('hepicApp.protosearchWidget', [
   Directives.name,
 ])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
-    DashboardWidgetStateProvider.set('visualize', 'protosearch-widget', {
+    DashboardWidgetStateProvider.set('search', 'protosearch-widget', {
       title: 'Proto Search',
       group: 'Search',
       name: 'protosearch',
-      description: 'Display Search Form component',
+      description: 'Display Protocol Search Form',
       refresh: false,
       sizeX: 1,
       sizeY: 1,

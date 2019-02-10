@@ -12,6 +12,7 @@ class ClockWidget {
     this.ModalHelper = ModalHelper;
     this.TIMEZONES = TIMEZONES;
   }
+  
 
   $onInit() {
     this._widget = cloneDeep(this.widget);

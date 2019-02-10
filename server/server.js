@@ -13,6 +13,7 @@ const routes = {
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
   profile: require('./routes/profile'),
+  prometheus: require('./routes/prometheus'),
   any: require('./routes/any'),
   users: require('./routes/users'),
   user_settings: require('./routes/user_settings'),
@@ -50,23 +51,23 @@ pem.createCertificate({
   if (error) {
     throw error;
   }
-  
+
   const tls = {
     key: keys.serviceKey,
     cert: keys.certificate,
   };
-  
+
   server.connection({
     host: config.http_host || '127.0.0.1',
     port: config.http_port || 8001,
   });
-  
+
   server.connection({
     host: config.https_host || '127.0.0.1',
     port: config.https_port || 443,
     tls,
   });
-  
+
   // JWT authentication and encryption
   server.register([
     require('h2o2'),
@@ -78,7 +79,7 @@ pem.createCertificate({
       console.log('Error was handled!');
       console.log(error);
     }
-  
+
     server.auth.strategy('token', 'jwt', {
       key: jwtSettings.key, // the JWT private key
       verifyOptions: {
@@ -87,7 +88,7 @@ pem.createCertificate({
     });
 
     server.databases = databases;
-  
+
     // Initialize routes
     forEach(routes, function(routeSet) {
       if (routeSet.default.name === 'proxy') { // temporary, to be deleted when the new API is ready
@@ -97,14 +98,14 @@ pem.createCertificate({
       }
     });
   });
-  
+
   // Server start
   server.start(function(error) {
     if (error) {
       console.log('Error was handled!');
       console.log(error);
     }
-  
+
     if (server.info) {
       console.log(`Server started at ${server.info.uri}`);
     } else {

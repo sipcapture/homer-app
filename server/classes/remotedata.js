@@ -123,8 +123,7 @@ console.error(error); return JSON.stringify([]);
 
     let dataset = {'data': [], 'keys': [], 'total': 0};
     dataset.keys = [
-      {field: 'id', displayName: 'ID', maxWidth: 50},
-      {field: 'micro_ts', displayName: 'Timestamp', maxWidth: 150},
+      {field: 'micro_ts', displayName: 'Timestamp', maxWidth: 200},
       {field: 'custom_1', displayName: 'Message'},
       {field: 'custom_2', displayName: 'Labels'},
     ];

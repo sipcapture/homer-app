@@ -51,6 +51,8 @@
                 <prometheuschart-widget ng-if="widget.name==='prometheuschart'" widget=widget
                   on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
                 </prometheuschart-widget>
+                <promchart-widget ng-if="widget.name==='promchart'" widget=widget on-delete="$ctrl.deleteWidget(uuid)" on-update="$ctrl.updateWidget(uuid, widget)">
+                </promchart-widget>                
             </li> <!-- END gridster-item, widget -->
         </ul>
     </div> <!-- END gridsterOptions -->

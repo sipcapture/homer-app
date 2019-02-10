@@ -15,14 +15,14 @@ class Prometheus extends LivingBeing {
     this.promDb = server.databases.prometheus;
   }
 
-  getValues(metrics, from, to) {
+  getValues(metrics, fromts, tots, precision) {
 
      let metricsQueries = [];
 
      /* need add check  for metrics */
      metrics.forEach((metricName) => {
         metricsQueries.push(
-          this.promDb.get(`query_range?query=${metricName}&start=${from}&end=${to}&step=60s`),
+          this.promDb.get(`query_range?query=${metricName}&start=${fromts}&end=${tots}&step=${precision}`),
         );
      });
 

@@ -1,5 +1,3 @@
-import '../style/html-widget.settings.css';
-
 class HtmlWidgetSettings {
   constructor() {
     'ngInject';

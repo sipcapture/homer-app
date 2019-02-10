@@ -44,6 +44,14 @@ const influx = new Influx.InfluxDB({
 
 databases.statistics = influx;
 
+/* prometheus */
+const RequestClient = require('reqclient').RequestClient;
+const prometheusClient = new RequestClient({
+  baseUrl: config.db.prometheus.protocol + '://' + config.db.prometheus.host + ':' + config.db.prometheus.port + config.db.prometheus.api
+});
+
+databases.prometheus = prometheusClient;
+
 pem.createCertificate({
   days: config.certificate.days,
   selfSigned: config.certificate.self_signed,

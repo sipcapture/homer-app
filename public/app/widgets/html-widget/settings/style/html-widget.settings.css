@@ -1,0 +1,13 @@
+.html-widget-settings .dropdown-toggle {
+    width: 350px;
+}
+
+.html-widget-settings .dropdown-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+.html-widget-settings .modal-body {
+    height: 180px;
+}

@@ -7,11 +7,11 @@ export default angular.module('hepicApp.quicksearchWidget', [
   Directives.name,
 ])
   .config(['DashboardWidgetStateProvider', function(DashboardWidgetStateProvider) {
-    DashboardWidgetStateProvider.set('visualize', 'quicksearch-widget', {
+    DashboardWidgetStateProvider.set('search', 'quicksearch-widget', {
       title: 'Search',
       group: 'Search',
       name: 'quicksearch',
-      description: 'Display Search Form component',
+      description: 'Display SIP Search Form',
       refresh: false,
       sizeX: 1,
       sizeY: 1,

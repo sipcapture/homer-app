@@ -15,7 +15,7 @@ class AuthenticationService {
     try {
       const resp = await this.$http.post(this.API.AUTH, {username, password});
       if (!has(resp, 'data.token') || !resp.data.token.length) {
-        throw new Error('something went wrong, no JWT token received, probably wrong credentials used to login');
+        throw new Error('Something went wrong, no JWT token received, probably wrong credentials used to login');
       }
 
       this.$localStorage.user = {

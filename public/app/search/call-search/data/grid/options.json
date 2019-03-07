@@ -22,6 +22,8 @@
   "paginationPageSize": 25,
   "enableFiltering": true,
   "exporterMenuPdf": false,
+  "exporterExcelFilename": "homer_search_result.xlsx",
+  "exporterExcelSheetName": "homerSearchResult",
   "filterOptions": {
     "filterText": "",
     "useExternalFilter": false

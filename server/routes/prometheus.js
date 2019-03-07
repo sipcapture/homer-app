@@ -1,10 +1,6 @@
+import Boom from 'boom';
 import Joi from 'joi';
-
-let RequestClient = require('reqclient').RequestClient;
-
-let GetGlobalDataPrometeus = new RequestClient({
-  baseUrl: 'http://localhost:9090/api/v1/',
-});
+import Prometheus from '../classes/prometheus';
 
 export default function statistics(server) {
   server.route({
@@ -22,34 +18,18 @@ export default function statistics(server) {
       },
     },
     handler: function(request, reply) {
-      let metricsQueries = [];
-
-      let {from, to} = request.payload.datetime;
-
-      request.payload.metrics.forEach((metricName) => {
-        metricsQueries.push(
-          GetGlobalDataPrometeus
-            .get(`query_range?query=${metricName}&start=${from}&end=${to}&step=60s`),
-        );
-      });
-
-      Promise
-        .all(metricsQueries)
-        .then((responses) => {
-          let resposeBody = [];
-
-          responses.forEach((metric) => {
-            resposeBody.push({
-              name: metric.data.result[0].metric.__name__,
-              values: metric.data.result[0].values,
-            });
-          });
-
-          return reply(resposeBody);
-        })
-        .catch((err) => {
-          reply(err);
-        });
+      const prometheus = new Prometheus(server);
+      let metrics = request.payload.metrics;
+      let {from, to} = request.payload.datetime;      
+            
+      prometheus.getValues(metrics, from, to).then(function(data) {
+        if (!data) {
+            return reply(Boom.notFound('prometheus values has been not found'));
+        }
+        return reply(data);
+     }).catch(function(error) {
+         return reply(Boom.serverUnavailable(error));
+     });
     },
   });
 
@@ -62,13 +42,15 @@ export default function statistics(server) {
       },
     },
     handler: function(request, reply) {
-      GetGlobalDataPrometeus.get('/label/__name__/values?_=1549632301527')
-        .then((response) => {
-          reply(response.data);
-        })
-        .catch((err) => {
-          reply(err);
-        });
+      const prometheus = new Prometheus(server);      
+      prometheus.getLabels().then(function(data) {
+        if (!data) {
+            return reply(Boom.notFound('prometheus labels has been not found'));
+        }
+        return reply(data);
+      }).catch(function(error) {
+         return reply(Boom.serverUnavailable(error));
+      });    
     },
   });
 };

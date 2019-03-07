@@ -8,7 +8,7 @@ export default angular.module('hepicApp.influxdbchartWidget', [])
       title: 'InfluxDB Chart',
       group: 'Charts',
       name: 'influxdbchart',
-      description: 'Display SIP Metrics',
+      description: 'Display InfluxDB Metrics',
       refresh: true,
       
       sizeX: 1,

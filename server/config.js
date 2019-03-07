@@ -35,6 +35,13 @@ const influxdb = {
   database: 'homer'
 }
 
+const prometheus = {
+  protocol: 'http',
+  host: 'prometheus',
+  port: 9090,
+  api: '/api/v1/'
+}
+
 export default {
   http_host: '0.0.0.0',
   http_port: 80,
@@ -53,6 +60,7 @@ export default {
       pgsql: true,
     },
     influxdb: influxdb,
+    prometheus: prometheus,
     pgsql: {
       homer_config: {
         client: 'pg',

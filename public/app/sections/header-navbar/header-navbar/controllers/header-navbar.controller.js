@@ -9,9 +9,9 @@ class HeaderNavbar {
     this.ROUTER = ROUTER;
     this.logoText = this.CONFIGURATION.APP_NAME;
     this.logoUrl = this.CONFIGURATION.APP_LOGO;
-    this.preferences = {
-      path: this.ROUTER.PREFERENCES.PATH,
-      name: this.ROUTER.PREFERENCES.NAME,
+    this.preferences_users = {
+      path: this.ROUTER.PREFERENCES_USERS.PATH,
+      name: this.ROUTER.PREFERENCES_USERS.NAME,
     };
   }
 

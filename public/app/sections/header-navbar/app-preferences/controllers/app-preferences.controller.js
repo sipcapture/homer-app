@@ -37,16 +37,8 @@ class AppPreferences {
     };
   }
 
-  $onInit() {
-    this._switchToDefaultView();
-  }
-
   selectMenuItem(index, sectionName) {
     this.leftMenu.selectedIndex = index;
-  }
-
-  _switchToDefaultView() {
-    this.$state.go(this.ROUTER.PREFERENCES_USERS.NAME);
   }
 }
 

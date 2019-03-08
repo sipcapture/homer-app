@@ -3385,6 +3385,7 @@ table.table.table-striped>tbody>tr:last-child {
 
 .ui-grid-menu {
 	top: -40px;
+    left: -142px;
 }
 .ui-grid-menu-button .ui-grid-menu {
 	top: -6px;

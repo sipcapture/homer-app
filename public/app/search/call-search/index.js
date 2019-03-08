@@ -15,7 +15,7 @@ export default angular.module('callSearch', [])
         timezone: TIME.TIMEZONE,
         limit: SEARCH.LIMIT,
         search: SEARCH.QUERY.DEFAULT,
-        transaction: SEARCH.TRANSACTION.DEFAULT
+        transaction: SEARCH.TRANSACTION.DEFAULT,
       },
       component: 'callSearch',
     });

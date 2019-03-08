@@ -47,123 +47,123 @@ class SearchRemote {
     this.ROUTER = ROUTER;
     this.homerHelper = homerHelper;
     this.GlobalProfile = GlobalProfile;
-        
+
     let that = this;
 
     this.getLokiServer = function() {
       let lokiServer = this.GlobalProfile.getProfileCategory('search', 'lokiserver');
       return (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
     };
-                            
+
     $scope.aceOptions = {
       advanced: {
         maxLines: 1,
         minLines: 1,
         showLineNumbers: false,
-	 	showGutter: false,
+        showGutter: false,
         fontSize: 15,
-        	enableBasicAutocompletion: true,
+        enableBasicAutocompletion: true,
         enableSnippets: false,
         enableLiveAutocompletion: true,
         autoScrollEditorIntoView: true,
       },
       onLoad: function(editor, session) {
-        	let langTools = ace.require('ace/ext/language_tools');
-        	let gprefix = 'test';
+        let langTools = ace.require('ace/ext/language_tools');
+        let gprefix = 'test';
 
-        	/* text rules for the feature*/
-        	// var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
-        	
+        /* text rules for the feature*/
+        // var TextHighlightRules = ace.require("ace/mode/text_highlight_rules").TextHighlightRules;
+
         /* change line height */
-        	editor.container.style.lineHeight = 2;
-        	editor.renderer.updateFontSize();
+        editor.container.style.lineHeight = 2;
+        editor.renderer.updateFontSize();
 
         let wServer = that.getLokiServer(); // fetch widget server configuration
 
         let labelCompleter = {
-     		   getCompletions: function(editor, session, pos, prefix, callback) {
-	            // if (prefix.length === 0) { callback(null, []); return }
+          getCompletions: function(editor, session, pos, prefix, callback) {
+            // if (prefix.length === 0) { callback(null, []); return }
 
-		    let api = '/api/v3/search/remote/label?server='+wServer;
+            let api = '/api/v3/search/remote/label?server='+wServer;
 
-        	    $.getJSON( api,
-		    function(wordList) {
-                    	let labels = [];
-	                    wordList.forEach((val) => labels.push({word: val, score: 1}));
-        	            // console.log('got labels',labels);
-	                    callback(null, labels.map(function(ea) {
-        	                return {name: ea.word, value: ea.word, score: ea.score, meta: 'label'};
-                	    }));
-	                });
-        	    },
+            $.getJSON( api,
+              function(wordList) {
+                let labels = [];
+                wordList.forEach((val) => labels.push({word: val, score: 1}));
+                // console.log('got labels',labels);
+                callback(null, labels.map(function(ea) {
+                  return {name: ea.word, value: ea.word, score: ea.score, meta: 'label'};
+                }));
+              });
+          },
         };
         langTools.addCompleter(labelCompleter);
         // var allCompleters = editor.completers;
 
         let valueCompleter = {
-     		   getCompletions: function(editor, session, pos, prefix, callback) {
-	            if (gprefix.length === 0) {
+          getCompletions: function(editor, session, pos, prefix, callback) {
+            if (gprefix.length === 0) {
               callback(null, []); return;
             }
-		    let api = '/api/v3/search/remote/values?label='+gprefix+'&server='+wServer;
-        	    $.getJSON( api,
-		    function(wordList) {
-                    	let values = [];
-	                    wordList.forEach((val) => values.push({word: val, score: 1}));
-        	            // console.log('got values',values);
-	                    callback(null, values.map(function(ea) {
-        	                return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: 'value'};
-                	    }));
-	                });
-        	    },
+            let api = '/api/v3/search/remote/values?label='+gprefix+'&server='+wServer;
+            $.getJSON( api,
+              function(wordList) {
+                let values = [];
+                wordList.forEach((val) => values.push({word: val, score: 1}));
+                // console.log('got values',values);
+                callback(null, values.map(function(ea) {
+                  return {name: ea.word, value: '"'+ea.word+'"', score: ea.score, meta: 'value'};
+                }));
+              });
+          },
         };
 
-	    	editor.commands.addCommand({
-	                name: 'getValues',
-	                bindKey: {win: '=', mac: '='},
-	                exec: function(editor, command) {
-	                    let position = editor.getCursorPosition();
-	                    let token = editor.session.getTokenAt(position.row, position.column);
-	                    let valueData = token.value.substring(0, position.column);
-	                    let arrStr = valueData.split(/[=\ {}]/).reverse();
-	                    for (let i = 0; i < arrStr.length; i++) {
+        editor.commands.addCommand({
+          name: 'getValues',
+          bindKey: {win: '=', mac: '='},
+          exec: function(editor, command) {
+            let position = editor.getCursorPosition();
+            let token = editor.session.getTokenAt(position.row, position.column);
+            let valueData = token.value.substring(0, position.column);
+            let arrStr = valueData.split(/[=\ {}]/).reverse();
+            for (let i = 0; i < arrStr.length; i++) {
               if (arrStr[i].length != 0 ) {
                 gprefix = arrStr[i];
                 break;
               }
-	                    };
-	                    editor.insert(' = ');
-	                    if (!editor.completer) editor.completer = new Autocomplete(editor);
-	                    editor.completers = [valueCompleter];
-	                    editor.execCommand('startAutocomplete');
-	                    // editor.completer.showPopup(editor);
-	                },
-	    	});
-    
-	    
-	    	editor.commands.on('afterExec', (event) => {
-	    	   const {editor, command} = event;
-	    	   // console.log('AFTER!',command);
-	    	   // console.log('AFTER 2!',event);
-	    	   	    	                    
-	    	   if (event.command.name == 'insertstring') {
-	    	           if (event.args != '}' && event.args != ' ') {
-	    	               editor.execCommand('startAutocomplete');
-	    	               // editor.completers = allCompleters;
-	    	               editor.completers = [labelCompleter];
-	    	               /* high light */
-	    	               /*
-	    	               var position = editor.getCursorPosition();
-	    	               var Range = ace.require('ace/range').Range;
-	    	               var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
-	    	               var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
-	    	               */
+            };
+            editor.insert(' = ');
+            if (!editor.completer) editor.completer = new Autocomplete(editor);
+            editor.completers = [valueCompleter];
+            editor.execCommand('startAutocomplete');
+            // editor.completer.showPopup(editor);
+          },
+        });
+
+
+        editor.commands.on('afterExec', (event) => {
+          const {editor, command} = event;
+          // console.log('AFTER!',command);
+          // console.log('AFTER 2!',event);
+
+          if (event.command.name == 'insertstring') {
+            if (event.args != '}' && event.args != ' ') {
+              editor.execCommand('startAutocomplete');
+              // editor.completers = allCompleters;
+              editor.completers = [labelCompleter];
+              /* high light */
+              /*
+                       var position = editor.getCursorPosition();
+                       var Range = ace.require('ace/range').Range;
+                       var range = new Range(position.row, position.column - event.args.length, position.row, position.column);
+                       var marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
+                       */
             }
-	    	   }
-	    	   if (event.command.name == 'insertMatch') {
-			 // editor.completers = allCompleters;
-			 editor.completers = [labelCompleter];
-		   }
+          }
+          if (event.command.name == 'insertMatch') {
+            // editor.completers = allCompleters;
+            editor.completers = [labelCompleter];
+          }
         });
       },
     };
@@ -308,12 +308,12 @@ class SearchRemote {
       this.log.error(err);
     }
   }
-  
+
   async processRefreshSearchResult() {
     this.$state.params.search = this.searchParams;
     this.processSearchResult();
   }
-  
+
   killParam(param) {
     swal({
       title: 'Remove Filter?',
@@ -369,7 +369,7 @@ class SearchRemote {
 
     this.log.debug('time from:', query.timestamp.from, new Date(query.timestamp.from));
     this.log.debug('time to:', query.timestamp.to, new Date(query.timestamp.to));
-    
+
     this.searchParams = search;
 
     /* preference processing */
@@ -438,7 +438,7 @@ class SearchRemote {
   showMessage(localrow, event) {
     // let proto = localrow.entity.table.replace('hep_proto_', '');
     let proto = 'hep_proto_100';
-    
+
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.create_date) - 300*1000,
@@ -446,7 +446,7 @@ class SearchRemote {
       },
       param: {
         search: {
-     
+
         },
         location: {
         },
@@ -457,7 +457,7 @@ class SearchRemote {
         },
       },
     };
-    
+
     searchData.param.search[proto] = {
       id: parseInt(localrow.entity.id),
     };
@@ -472,8 +472,8 @@ class SearchRemote {
       raw: localrow.entity.custom_1,
       create_data: new Date(localrow.entity.micro_ts),
     };
-    
-    
+
+
     /* here should be popup selection by transaction type. Here can trans['rtc'] == true */
     const messagewindowId = '' + localrow.entity.id + '_' + 'remotelog';
 
@@ -508,7 +508,7 @@ class SearchRemote {
     else if (parseInt(row.entity.proto) == 4) return 'sctp';
     else return 'udp';
   }
-    
+
   eventCheck(row) {
     if (parseInt(row.entity.event) == 1) return 'MOS';
     else if (parseInt(row.entity.event) == 2) return 'Rec';
@@ -628,9 +628,9 @@ class SearchRemote {
     const sids = [];
     const uuids = [];
     let nodes = [];
-    
+
     let protoTable = localrow.entity.table.replace('hep_proto_', '');
-    
+
     this.log.debug(localrow);
 
     sids.push(localrow.entity.sid);
@@ -660,7 +660,7 @@ class SearchRemote {
     } else {
       stop = parseInt(localrow.entity.create_date);
     }
-      
+
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.create_date - (300 * 1000)),
@@ -681,7 +681,7 @@ class SearchRemote {
         },
       },
     };
-    
+
     searchData.param.search[protoTable] = {
       id: parseInt(localrow.entity.id),
       callid: sids,

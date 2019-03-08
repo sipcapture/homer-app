@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import Boom from 'boom';
-import { forEach, isEmpty, size } from 'lodash';
+import {forEach, isEmpty, size} from 'lodash';
 import SearchData from '../classes/searchdata';
 import RemoteData from '../classes/remotedata';
 import Settings from '../classes/settings';
@@ -106,7 +106,6 @@ export default function search(server) {
       const settings = new Settings(server, 'null');
             
       try {
-      
         const correlation = await settings.getCorrelationMap(request.payload);
         const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
           searchTable, request.payload, correlation, false);

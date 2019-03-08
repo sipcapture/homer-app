@@ -35,7 +35,7 @@ class InfluxdbchartWidgetSettings {
     this.displayExpertMode = false;
     this.expertMode = 'Switch to expert mode';
     this.expertClass = 'glyphicon glyphicon-chevron-down';
-    //this.updateDebugUrl(0);
+    // this.updateDebugUrl(0);
   
     if (!this._config.dataquery) {
       this._config.dataquery = {};

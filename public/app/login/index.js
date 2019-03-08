@@ -4,5 +4,5 @@ import Services from './services';
 
 export default angular.module('hepicApp.login', [
   LoginUser.name,
-  Services.name
+  Services.name,
 ]);

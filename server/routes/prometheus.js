@@ -42,7 +42,6 @@ export default function statistics(server) {
       },
     },
     handler: function(request, reply) {
-
       const prometheus = new Prometheus(server);      
       prometheus.getLabels().then(function(data) {
         if (!data) {

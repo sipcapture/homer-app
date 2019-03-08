@@ -1,5 +1,5 @@
 import LivingBeing from './living_being';
-import { forEach, isEmpty, size } from 'lodash';
+import {forEach, isEmpty, size} from 'lodash';
 import RemoteData from './remotedata';
 
 /**
@@ -26,12 +26,13 @@ class SearchData extends LivingBeing {
   */
   getSearchData(columns, table, data) {
     let sData = data.param.search;
+    let sLimit = data.param.limit;
     let dataWhereRawKey = [];
     let dataWhereRawValue = [];
     let dataWhere = {};
-    
+
     /* jshint -W089 */
-    
+
     for (let key in sData) {
       table = 'hep_proto_'+key;
       if (sData.hasOwnProperty(key)) {
@@ -61,31 +62,32 @@ class SearchData extends LivingBeing {
     };
 
     let timeWhere = [];
-    
+
     timeWhere.push(new Date(data.timestamp.from).toISOString());
     timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
+
     let myWhereRawString = '';
     if (!isEmpty(dataWhereRawKey)) {
       myWhereRawString = dataWhereRawKey.join(' AND ');
     }
-    
+
     /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
     */
-      
+
     return this.dataDb(table)
       .whereRaw(myWhereRawString, dataWhereRawValue)
       .where(dataWhere)
       .whereBetween('create_date', timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];
-        
+
         rows.forEach(function(row) {
           let dataElement = {};
           for (let k in row) {
@@ -102,21 +104,22 @@ class SearchData extends LivingBeing {
             return dataKeys.indexOf(i) == -1;
           }));
         });
-        
+
         let globalReply = {
           total: size(dataReply),
           data: dataReply,
           keys: dataKeys,
         };
-        
+
         return globalReply;
       });
   }
-  
+
   getMessageById(columns, table, data) {
     let sData = data.param.search;
+    let sLimit = data.param.limit;
     let dataWhere = {};
-    
+
     /* jshint -W089 */
     for (let key in sData) {
       table = 'hep_proto_'+key;
@@ -128,16 +131,17 @@ class SearchData extends LivingBeing {
     let timeWhere = [];
     timeWhere.push(new Date(data.timestamp.from).toISOString());
     timeWhere.push(new Date(data.timestamp.to).toISOString());
-              
+
     return this.dataDb(table)
       .where(dataWhere)
       .whereBetween('create_date', timeWhere)
       .select(columns)
       .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];
-        
+
         rows.forEach(function(row) {
           let dataElement = {};
           for (let k in row) {
@@ -153,13 +157,13 @@ class SearchData extends LivingBeing {
             return dataKeys.indexOf(i) == -1;
           }));
         });
-        
+
         let globalReply = {
           total: size(dataReply),
           data: dataReply,
           keys: dataKeys,
         };
-        
+
         return globalReply;
       });
   }
@@ -173,7 +177,7 @@ class SearchData extends LivingBeing {
       let alias = {};
       let callData = [];
       let position = 0;
-          
+
       data.forEach(function(row) {
         let dataElement = {};
         for (let k in row) {
@@ -186,7 +190,7 @@ class SearchData extends LivingBeing {
             dataElement[k] = row[k];
           }
         }
-                        
+
         let callElement = {
           id: 0,
           sid: '12345',
@@ -207,39 +211,33 @@ class SearchData extends LivingBeing {
           destination: 0,
         };
 
-	if (dataElement.hasOwnProperty('payloadType')) {
-
-          if(dataElement['payloadType'] == 81) {
-            callElement.method = "CDR";
-            callElement.method_text = "CDR";
-          }
-          else if(dataElement['payloadType'] == 100) {
-            callElement.method = "LOG";
-            callElement.method_text = "LOG";
-          }
-          else if(dataElement['payloadType'] == 5) {
-            callElement.method = "RTCP";
-            callElement.method_text = "RTCP";
-          }
-          else if(dataElement['payloadType'] == 34) {
-            callElement.method = "Report RTP";
-            callElement.method_text = "Report RTP";
-          }
-           else if(dataElement['payloadType'] == 200) {
-            callElement.method = "Loki Data";
-            callElement.method_text = "Loki Data";
-          }
-          else if(dataElement['payloadType'] == 35) {
-            callElement.method = "Report RTP";
-            callElement.method_text = "Report RTP";
+        if (dataElement.hasOwnProperty('payloadType')) {
+          if (dataElement['payloadType'] == 81) {
+            callElement.method = 'CDR';
+            callElement.method_text = 'CDR';
+          } else if (dataElement['payloadType'] == 100) {
+            callElement.method = 'LOG';
+            callElement.method_text = 'LOG';
+          } else if (dataElement['payloadType'] == 5) {
+            callElement.method = 'RTCP';
+            callElement.method_text = 'RTCP';
+          } else if (dataElement['payloadType'] == 34) {
+            callElement.method = 'Report RTP';
+            callElement.method_text = 'Report RTP';
+          } else if (dataElement['payloadType'] == 200) {
+            callElement.method = 'Loki Data';
+            callElement.method_text = 'Loki Data';
+          } else if (dataElement['payloadType'] == 35) {
+            callElement.method = 'Report RTP';
+            callElement.method_text = 'Report RTP';
           }
         }
-          
+
         if (!dataElement.hasOwnProperty('srcIp')) {
           dataElement['srcIp'] = '127.0.0.1';
           dataElement['srcPort'] = 0;
         }
-          
+
         if (!dataElement.hasOwnProperty('dstIp')) {
           dataElement['dstIp'] = '127.0.0.2';
           dataElement['dstPort'] = 0;
@@ -250,8 +248,8 @@ class SearchData extends LivingBeing {
           callElement.srcIp = dataElement['srcIp'];
           callElement.srcHost = dataElement['srcIp'];
         }
-          
-          
+
+
         if (dataElement.hasOwnProperty('dstIp')) {
           callElement.dstIp = dataElement['dstIp'];
           callElement.dstHost = dataElement['dstIp'];
@@ -284,7 +282,7 @@ class SearchData extends LivingBeing {
         callElement.dstId = callElement.dstHost+':'+callElement.dstPort;
         let srcIpPort = callElement.srcIp+':'+callElement.srcPort;
         let dstIpPort= callElement.dstIp+':'+callElement.dstPort;
-                    
+
         if (!hosts.hasOwnProperty(callElement.srcId)) {
           let hostElement = {
             hosts: [callElement.srcId],
@@ -293,21 +291,21 @@ class SearchData extends LivingBeing {
 
           hosts[callElement.srcId] = hostElement;
         }
-          
+
         if (!hosts.hasOwnProperty(callElement.dstId)) {
           let hostElement = {
             hosts: [callElement.dstId],
             position: position++,
           };
-                
+
           hosts[callElement.dstId] = hostElement;
         }
-          
+
         if (!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = callElement.srcId;
         if (!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = callElement.dstId;
 
         callElement.destination = hosts[callElement.dstId].position;
-          
+
         callData.push(callElement);
         dataReply.push(dataElement);
         let keys = Object.keys(dataElement);
@@ -315,9 +313,9 @@ class SearchData extends LivingBeing {
           return dataKeys.indexOf(i) == -1;
         }));
       });
-        
+
       let globalReply = {
-          
+
         total: size(dataReply),
         data: {
           messages: dataReply,
@@ -328,13 +326,13 @@ class SearchData extends LivingBeing {
         },
         keys: dataKeys,
       };
-                  
+
       return globalReply;
     } catch (err) {
       throw new Error('fail to get data full'+err);
     }
   }
-  
+
   async getTransactionData(table, columns, fieldKey, dataWhere, timeWhere) {
     try {
       return await this.dataDb(table)
@@ -349,16 +347,16 @@ class SearchData extends LivingBeing {
       throw new Error('fail to get data full'+err);
     }
   }
-  
+
   async getTransaction(columns, table, data, correlation, doexp) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
       let dataSrcField = {};
-                    
+
       /* jshint -W089 */
-  
-  
+
+
       for (let key in sData) {
         table = 'hep_proto_'+key;
         if (sData.hasOwnProperty(key)) {
@@ -369,17 +367,17 @@ class SearchData extends LivingBeing {
       let timeWhere = [];
       timeWhere.push(new Date(data.timestamp.from).toISOString());
       timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
+
       /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
-    
+
    */
       /* MAIN REQUEST */
       let dataRow = await this.getTransactionData(table, columns, 'sid', dataWhere, timeWhere);
       // let dataRow = []
-   
+
       if (!isEmpty(correlation)) {
         dataRow.forEach(function(row) {
           /* looping over correlation object and extraction keys */
@@ -402,7 +400,7 @@ class SearchData extends LivingBeing {
           });
         });
       }
-    
+
       /*
     correlation [ { source_field: 'data_header.callid',
     lookup_id: 100,
@@ -410,7 +408,7 @@ class SearchData extends LivingBeing {
     lookup_field: 'sid',
     lookup_range: [ -300, 200 ] } ]
     */
-    
+
       /* correlation requests */
       const remotedata = new RemoteData(this.server, this.param);
 
@@ -423,83 +421,78 @@ class SearchData extends LivingBeing {
         const newDataWhere=[];
         timeWhere = [];
 
-        let newDataRow=[];                
+        let newDataRow=[];
         newDataWhere = newDataWhere.concat(dataWhere);
         newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
 
         let tFrom = new Date(data.timestamp.from);
         let tTo = new Date(data.timestamp.to);
-        
+
         if (!isEmpty(lookupRange)) {
           tFrom.setSeconds(tFrom.getSeconds() + lookupRange[0]);
           tTo.setSeconds(tTo.getSeconds() + lookupRange[1]);
         }
-        
+
         timeWhere.push(tFrom.toISOString());
         timeWhere.push(tTo.toISOString());
-                
-        /* continue if lookup == 0 */        
-        if(lookupId == 0) 
-        {
 
-	      let searchPayload = {
-                    param: {},
-                    timestamp: {}
-              }
+        /* continue if lookup == 0 */
+        if (lookupId == 0) {
+          let searchPayload = {
+            param: {},
+            timestamp: {},
+          };
 
-              searchPayload.param['server'] = lookupProfile;
-              searchPayload.param['limit'] = 100;
-              searchPayload.param['search'] = lookupField;
-              searchPayload.timestamp['from'] = tFrom.getTime();
-              searchPayload.timestamp['to'] = tTo.getTime();
+          searchPayload.param['server'] = lookupProfile;
+          searchPayload.param['limit'] = 100;
+          searchPayload.param['search'] = lookupField;
+          searchPayload.timestamp['from'] = tFrom.getTime();
+          searchPayload.timestamp['to'] = tTo.getTime();
 
-              if(corrs.hasOwnProperty("callid_function"))
-              {                
-                    var callIdFunction = new Function('data', corrs.callid_function);
-                    var callIdArray = callIdFunction(dataWhere);
-                    searchPayload.param['search'] = lookupField.replace("$source_field", callIdArray.join("|"));
-              }              
-                             
-              const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
-              newDataRow = JSON.parse(dataJson);
-                                                                                    
-              if(!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty("output_function"))
-              {                
-                    var outFunction = new Function('data', corrs.output_function);
-                    newDataRow = outFunction(newDataRow.data);
-              }              
+          if (corrs.hasOwnProperty('callid_function')) {
+            let callIdFunction = new Function('data', corrs.callid_function);
+            let callIdArray = callIdFunction(dataWhere);
+            searchPayload.param['search'] = lookupField.replace('$source_field', callIdArray.join('|'));
+          }
+
+          const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
+          newDataRow = JSON.parse(dataJson);
+
+          if (!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty('output_function')) {
+            let outFunction = new Function('data', corrs.output_function);
+            newDataRow = outFunction(newDataRow.data);
+          }
+        } else {
+          newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
         }
-        else {        
-              newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-        }
-        
-        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);                      
+
+        if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
 
       /* sort it by create data */
       dataRow.sort(function(a, b) {
-	    return a.create_date - b.create_date;
+        return a.create_date - b.create_date;
       });
-      
-      
+
+
       if (doexp) return dataRow;
-            
+
       const globalReply = await this.getTransactionSummary(dataRow);
-      
+
       return globalReply;
     } catch (err) {
       throw new Error('fail to get data main:'+err);
     }
   }
-  
+
   async getTransactionQos(columns, table, data) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
-    
+
       /* jshint -W089 */
-  
+
       for (let key in sData) {
         table = 'hep_proto_5_default';
         if (sData.hasOwnProperty(key)) {
@@ -510,15 +503,15 @@ class SearchData extends LivingBeing {
       let timeWhere = [];
       timeWhere.push(new Date(data.timestamp.from).toISOString());
       timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
+
       /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
     */
       let sid = {};
-          
-    
+
+
       return await this.dataDb(table)
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
@@ -542,27 +535,27 @@ class SearchData extends LivingBeing {
 
             dataReply.push(dataElement);
           });
-        
+
           let globalReply = {
             total: size(dataReply),
             data: dataReply,
           };
-        
+
           return globalReply;
         });
     } catch (err) {
       throw new Error('fail to get data QOS '+err);
     }
   }
-  
-  
+
+
   async getTransactionLog(columns, table, data) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
-    
+
       /* jshint -W089 */
-  
+
       for (let key in sData) {
         table = 'hep_proto_100_default';
         if (sData.hasOwnProperty(key)) {
@@ -573,14 +566,14 @@ class SearchData extends LivingBeing {
       let timeWhere = [];
       timeWhere.push(new Date(data.timestamp.from).toISOString());
       timeWhere.push(new Date(data.timestamp.to).toISOString());
-    
+
       /*
     this.dataDb.on( 'query', function( queryData ) {
         console.log( queryData );
     });
     */
       let sid = {};
-          
+
       return await this.dataDb(table)
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
@@ -604,12 +597,12 @@ class SearchData extends LivingBeing {
 
             dataReply.push(dataElement);
           });
-        
+
           let globalReply = {
             total: size(dataReply),
             data: dataReply,
           };
-        
+
           return globalReply;
         });
     } catch (err) {

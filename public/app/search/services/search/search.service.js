@@ -54,7 +54,6 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
   };
 
   const searchCallByParam = function(mdata) {
-  
     const defer = $q.defer();
     $http.post(API.SEARCH.CALL.DATA, mdata, {
       handleStatus: [403, 503],
@@ -397,10 +396,10 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
     return defer.promise;
   };
       
-  const loadMappingFields = function(id,transaction) {
+  const loadMappingFields = function(id, transaction) {
     const defer = $q.defer();
 
-    let url = API.MAPPING.FIELDS+'/'+id+'/'+transaction;        
+    let url = API.MAPPING.FIELDS+'/'+id+'/'+transaction;
     $http.get(url, {
       handleStatus: [403, 503],
     }).then(
@@ -438,7 +437,7 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
     } else url += 'pcap';
 
     $http.post(url, data, response).then(
-      /* good response */      
+      /* good response */
       function(results) {
         results = has(results, 'data.data') ? results.data.data : results.data || [];
         defer.resolve(results);
@@ -533,7 +532,7 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
       }
     );
 
-    console.log("RETURN!!!!");
+    console.log('RETURN!!!!');
     return defer.promise;
   };
 
@@ -636,15 +635,15 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
 
 
   const searchRemoteByParam = function(mdata) {
-    console.log("REMOTE SEARCH", mdata);
+    console.log('REMOTE SEARCH', mdata);
     const defer = $q.defer();
     $http.post(API.SEARCH.REMOTE.DATA, mdata, {
       handleStatus: [403, 503],
     }).then(
       /* good response */
       function(results) {
-        console.log("RESPONSE SEARCH",results);
-        //results = has(results, 'data.data') ? results.data.data : results.data || [];
+        console.log('RESPONSE SEARCH', results);
+        // results = has(results, 'data.data') ? results.data.data : results.data || [];
         defer.resolve(results);
       },
       /* bad response */
@@ -691,7 +690,7 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
     searchMetaDataRecording,
     loadNode,
     loadMappingProtocols,
-    loadMappingFields,    
+    loadMappingFields,
     searchRemoteByParam,
   };
 };

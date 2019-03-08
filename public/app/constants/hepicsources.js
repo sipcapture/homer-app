@@ -134,7 +134,7 @@ export default {
       ],
       settings: {
         path: 'statistic\/data',
-        query: "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+        query: '{\n   "timestamp": {\n          "from": "@from_ts",\n          "to":  "@to_ts"\n   },\n  "param": {\n        "filter": [ \n             "@filters"\n       ],\n       "limit": "@limit",\n       "total": "@total"\n   }\n}',
         method: 'GET',
         limit: 200,
         total: false,

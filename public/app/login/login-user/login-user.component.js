@@ -3,7 +3,7 @@ import controller from './controllers/login-user.controller';
 
 const loginUser = {
   controller,
-  template
+  template,
 };
 
 export default loginUser;

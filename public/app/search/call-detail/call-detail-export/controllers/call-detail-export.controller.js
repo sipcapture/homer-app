@@ -114,9 +114,9 @@ class CallDetailExport {
   }
 
   getCallFileName() {
-    //const transaction = this.transaction.calldata[0];
-    //const tsHms = new Date(transaction.milli_ts);
-    const transaction = "call-";
+    // const transaction = this.transaction.calldata[0];
+    // const tsHms = new Date(transaction.milli_ts);
+    const transaction = 'call-';
     const tsHms = new Date();
     const date = (tsHms.getMonth() + 1) + '/' + tsHms.getDate() + '/' + tsHms.getFullYear();
     const time = tsHms.getHours() + ':' + tsHms.getMinutes() + ':' + tsHms.getSeconds();

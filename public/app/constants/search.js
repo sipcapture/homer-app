@@ -1,12 +1,12 @@
 export default {
   LIMIT: 200,
   QUERY: {
-    DEFAULT: { '1_call': [] }
+    DEFAULT: {'1_call': []},
   },
   TRANSACTION: {
-    DEFAULT: {}
+    DEFAULT: {},
   },
   PROTO: {
-    ID: 'call'
-  }
+    ID: 'call',
+  },
 };

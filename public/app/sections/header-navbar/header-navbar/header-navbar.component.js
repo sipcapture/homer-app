@@ -10,7 +10,7 @@ const headerNavbar = {
     users: '<',
     userSettings: '<',
     aliases: '<',
-    mappings: '<'
+    mappings: '<',
   },
 };
 

@@ -31,7 +31,7 @@ export default class prometheuschartWidgetSettings {
   }
 
   toggleSelection(metricName) {
-    var idx = this.widget.config.selectedMetrics.indexOf(metricName);
+    let idx = this.widget.config.selectedMetrics.indexOf(metricName);
 
     if (idx > -1) {
       this.widget.config.selectedMetrics.splice(idx, 1);

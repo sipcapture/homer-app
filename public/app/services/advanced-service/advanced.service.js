@@ -26,7 +26,6 @@ class AdvancedService {
   */
   async add({partid, category, param, data}) {
     try {
-
       const settings = {partid, category, param, data};
       try {
         settings.data = JSON.stringify(settings.data);

@@ -11,5 +11,5 @@ export default {
   LABEL: 'Today',
   TIMEZONE: {},
   FROM: startOfTheDayUnix(),
-  TO: nowTimeUnix()
+  TO: nowTimeUnix(),
 };

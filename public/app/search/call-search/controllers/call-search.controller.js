@@ -44,6 +44,9 @@ class SearchCall {
     this.ROUTER = ROUTER;
     this.homerHelper = homerHelper;
     this.selectedRows = [];
+
+    this.timeChangeEventListener = null;
+    this.gridStateResetEventListener = null;
   }
 
   $onInit() {
@@ -66,11 +69,11 @@ class SearchCall {
       this.gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => this.rowSelectionChanged(row));
     };
 
-    this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
+    this.gridStateResetEventListener = this.EventBus.subscribe(this.EVENTS.GRID_STATE_RESET, () => {
       this.resetUiGridState();
     });
 
-    this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
+    this.timeChangeEventListener = this.EventBus.subscribe(this.EVENTS.TIME_CHANGE, () => {
       if (this.homerHelper.isCurrentUiRouterState(this.$state, this.ROUTER.SEARCH.NAME)) {
         this._updateUiRouterState();
         this.processSearchResult();
@@ -80,6 +83,12 @@ class SearchCall {
 
   $onDestroy() {
     this.saveUiGridState();
+    this.destroyEventListeners();
+  }
+
+  destroyEventListeners() {
+    this.gridStateResetEventListener();
+    this.timeChangeEventListener();
   }
 
   async initData() {
@@ -185,7 +194,7 @@ class SearchCall {
       this.log.error(err);
     }
   }
-  
+
   killParam(param) {
     swal({
       title: 'Remove Filter?',
@@ -321,7 +330,7 @@ class SearchCall {
 
   showMessage(localrow, event) {
     let proto = localrow.entity.table.replace('hep_proto_', '');
-    
+
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.create_date) - 300*1000,
@@ -329,7 +338,7 @@ class SearchCall {
       },
       param: {
         search: {
-     
+
         },
         location: {
         },
@@ -340,7 +349,7 @@ class SearchCall {
         },
       },
     };
-    
+
     searchData.param.search[proto] = {
       id: parseInt(localrow.entity.id),
       sid: localrow.entity.sid,
@@ -379,7 +388,7 @@ class SearchCall {
     else if (parseInt(row.entity.proto) == 4) return 'sctp';
     else return 'udp';
   }
-    
+
   eventCheck(row) {
     if (parseInt(row.entity.event) == 1) return 'MOS';
     else if (parseInt(row.entity.event) == 2) return 'Rec';
@@ -498,7 +507,7 @@ class SearchCall {
     const sids = [];
     const uuids = [];
     let nodes = [];
-    
+
     let protoTable = localrow.entity.table.replace('hep_proto_', '');
 
     sids.push(localrow.entity.sid);
@@ -521,14 +530,14 @@ class SearchCall {
         uuids.push(row.uuid);
       }
     });
-    
+
     let stop;
     if (localrow.entity.cdr_stop && (localrow.entity.cdr_stop > (localrow.entity.create_date / 1000))) {
       stop = (localrow.entity.cdr_stop * 1000);
     } else {
       stop = parseInt(localrow.entity.create_date);
     }
-      
+
     const searchData = {
       timestamp: {
         from: parseInt(localrow.entity.create_date - (300 * 1000)),
@@ -549,7 +558,7 @@ class SearchCall {
         },
       },
     };
-    
+
     searchData.param.search[protoTable] = {
       id: parseInt(localrow.entity.id),
       callid: sids,
@@ -654,7 +663,7 @@ class SearchCall {
   getUiGridState() {
     return this.localStorage.getItem('hepic.localStorageGrid');
   }
-  
+
   rowSelectionChanged(row) {
     if (row.isSelected) this.selectedRows.push(row.entity);
     else this.selectedRows.splice(this.selectedRows.findIndex((item) => item.id === row.entity.id), 1);

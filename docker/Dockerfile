@@ -1,5 +1,7 @@
 # HOMER 7.0.x UI+API
-FROM node:8
+FROM node:8-alpine
+
+RUN apk add --no-cache git
 
 # BUILD FORCE
 ENV BUILD 703053

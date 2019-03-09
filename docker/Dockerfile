@@ -2,6 +2,7 @@
 FROM node:8-alpine
 
 RUN apk add --no-cache git
+RUN apk add --update bash
 
 # BUILD FORCE
 ENV BUILD 703053

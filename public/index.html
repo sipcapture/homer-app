@@ -4,7 +4,7 @@
     <title>{{hepicCtrl.title||"HOMER"}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="utf-8">
-    <meta name="viewport" content="width= 1280,initial-scale=0.8,minimum-scale=0.7,maximum-scale=1.0">    
+    <meta name="viewport" content="width= 1280,initial-scale=0.8,minimum-scale=0.7,maximum-scale=1.0">
     <link rel="icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="css/new-design/style-flow.css" />
@@ -13,26 +13,34 @@
     <link rel="stylesheet" href="css/dialogs.min.css" />
     <link rel="stylesheet" href="css/ui-grid.min.css" />
     <link rel="stylesheet" href="css/angular-chart.min.css" />
-    <link rel="stylesheet" href="css/sweetalert.min.css" />   
+    <link rel="stylesheet" href="css/sweetalert.min.css" />
     <link rel="stylesheet" href="css/inputDropdownStyles.css" />
     <link rel="stylesheet" href="css/report-style.css" />
     <link rel="stylesheet" href="css/nv.d3.css" />
-    <link rel="stylesheet" href="css/select.css" />      
+    <link rel="stylesheet" href="css/select.css" />
     <link rel="stylesheet" href="css/themes/base/jquery-ui.min.css" />
     <link rel="stylesheet" href="css/new-design/style.css" />
     <link rel="stylesheet" href="css/material/css/material-design-iconic-font.min.css" />
     <link rel="stylesheet" href="css/angular-gridster.min.css" />
     <link rel="stylesheet" href="css/leaflet.css" />
-    <link rel="stylesheet" href="css/select.css" />        
-    <link rel="stylesheet" href="css/wavesurfer/wavesurfer.angular.min.css" />        
-    <link rel="stylesheet" href="css/demo-style.css" /> 
+    <link rel="stylesheet" href="css/select.css" />
+    <link rel="stylesheet" href="css/wavesurfer/wavesurfer.angular.min.css" />
+    <link rel="stylesheet" href="css/demo-style.css" />
     <link rel="stylesheet" href="css/dashboard-style.css" />
     <link rel="stylesheet" href="css/style-test.css" />
     <link rel="stylesheet" href="css/vis.css" />
+
+    <!--
+      Fix for UI-Grid Excel import
+      Check: http://ui-grid.info/docs/#!/tutorial/Tutorial:%20410%20Exporting%20Data%20with%20Fonts,%20Colors%20and%20Header%20in%20Excel
+    -->
+    <script src="http://ui-grid.info/docs/grunt-scripts/lodash.min.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/jszip.min.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/excel-builder.dist.js"></script>
   </head>
-  
+
   <script type="application/javascript" src="dist/bundle.js"></script>
-  
+
   <body>
     <header>
       <div ui-view="header"></div>

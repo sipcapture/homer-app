@@ -39,6 +39,7 @@ class CallDetail {
       transaction: false,
       blacklist: false,
       qoschart: false,
+      flow: false,
       graph: false,
       timeline: false,
     };
@@ -110,7 +111,7 @@ class CallDetail {
         'select': () => {
           this.EventBus.resizeNull();
         },
-        'ngshow': 'tab',
+        'ngshow': '$ctrl.enable.flow',
         'icon': 'fa fa-exchange',
       },
       {
@@ -119,7 +120,7 @@ class CallDetail {
         'select': () => {
           this.refreshGrid();
         },
-        'ngshow': 'tab',
+        'ngshow': '$ctrl.enable.qoschart',
         'icon': 'zmdi zmdi-grid',
       },
       {
@@ -243,6 +244,7 @@ class CallDetail {
         this.enable.transaction = this.call.transaction ? true : false;
 
         this.setSDPInfo(this.call);
+        this.enable.flow = (this.call.hosts && Object.keys(this.call.hosts).length);
         /* and now we should do search for LOG and QOS*/
         forEach(this.call.callid, function(v, k) {
           if (data.param.search.callid.indexOf(k) == -1) {
@@ -266,17 +268,18 @@ class CallDetail {
         /*  TIMELINE TEST END */
 
         this.qosData = await this.SearchService.searchQOSReport(data);
+        this.enable.qoschart = (this.qosData && this.qosData.length);
         await this.showLogReport(data);
 
         /* LOKI */
         await this.showLokiReport(data);
-        
+
         this.dataLoading = false;
 
         try {
           console.log('Scanning for Aliases...');
           this.ip_alias = [];
-          if (data && data.alias) {;
+          if (data && data.alias) {
             angular.forEach(data.alias, function(v, k) {
               this.ip_alias[k.split(':')[0]] = v.split(':')[0];
               this.ip_alias[k] = v;
@@ -603,12 +606,12 @@ class CallDetail {
       this.$log.error(['CallDetail'], 'show log report', err);
     });
   }
-  
+
   showLokiReport(rdata) {
         console.log("LOKI", rdata);
         this.enable.report.loki = true;
         this.lokireport = rdata;
-  }  
+  }
 
   showRemoteLogReport(rdata) {
     this.SearchService.searchRemoteLog(rdata).then((msg) => {

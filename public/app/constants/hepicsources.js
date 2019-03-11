@@ -202,5 +202,81 @@ export default {
         ],
       },
     },
+    prometheus: {
+      name: 'Prometheus',
+      type: 'JSON',
+      alias: 'prometheus',
+      fields: [
+        {
+          name: 'Main Category',
+          type: 'select-main',
+          value: 'main',
+          data: [
+            {
+              name: 'ASR NER',
+              value: 'asr_ner',
+            },
+          ],
+        },
+        {
+          Name: 'Counter',
+          Type: 'select2',
+          Value: 'type',
+          Data: [],
+        },
+        {
+          name: 'Tag',
+          type: 'selecttag',
+          value: 'typetag',
+          data: [],
+        },
+        {
+          name: 'Group',
+          type: 'select3',
+          value: 'tag',
+          data: [],
+        },
+        {
+          name: 'Sum',
+          type: 'checkbox',
+          value: 'sum',
+        },
+        {
+          name: 'Limit',
+          type: 'input',
+          value: 'limit',
+        },
+      ],
+      settings: {
+        path: 'prometheus\/value',
+        query: "{\"timestamp\": {\"from\": \"@from_ts\",\"to\": \"@to_ts\"},\"param\": {\"metrics\": [],\"limit\": \"@limit\",\"total\": \"@total\"}}",
+        method: 'GET',
+        limit: 200,
+        total: false,
+        eval: {
+          incoming: {
+            name: 'test incoming',
+            value: 'var object = @incoming; return object',
+          },
+        },
+        timefields: [
+          {
+            field: 'from_ts',
+            desc: 'From Timestamp',
+          },
+          {
+            field: 'to_ts',
+            desc: 'To Timestamp',
+          },
+        ],
+        fieldvalues: [
+          {
+            field: 'total',
+            desc: 'All Packets',
+          },
+        ],
+        filters: [],
+      },
+    },
   },
 };

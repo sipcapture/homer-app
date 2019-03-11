@@ -70,21 +70,11 @@ export default class prometheuschartWidget {
     this.createListeners();
   }
 
-  ISODateString(d) {
-    function pad(n) {
-      return n < 10 ? '0' + n : n;
-    }
-
-    return d.getUTCFullYear() + '-'
-      + pad(d.getUTCMonth() + 1) + '-'
-      + pad(d.getUTCDate()) + 'T'
-      + pad(d.getUTCHours()) + ':'
-      + pad(d.getUTCMinutes()) + ':'
-      + pad(d.getUTCSeconds()) + 'Z';
-  }
-
   updateMetricDatabase() {
-    const {from, to} = this.TimeMachine.getTimerange();
+
+    let timedate = this.TimeMachine.getTimerange();    
+    let timezone = this.TimeMachine.getTimezone();
+    let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
 
     if (!this._widget.config.selectedMetrics.length) {
       this.data = [];
@@ -94,13 +84,13 @@ export default class prometheuschartWidget {
     const prometheusMetrics = this.CONFIGURATION.APIURL + 'prometheus/value';
 
     const payload = {
-      metrics: this._widget.config.selectedMetrics,
-      datetime: {
-        from: this.ISODateString(from),
-        to: this.ISODateString(to),
+      param: { metrics: this._widget.config.selectedMetrics },
+      timestamp: {
+        from: timedate.from.getTime() - diff,
+        to: timedate.to.getTime() - diff
       },
     };
-
+    
     this.$http.post(prometheusMetrics, payload).then((resp) => {
       if (resp && resp.status && resp.status === 200) {
         this.updateChartData(resp.data);

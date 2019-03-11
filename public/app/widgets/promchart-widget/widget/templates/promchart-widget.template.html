@@ -1,0 +1,33 @@
+<div class="box">
+  <div class="box-header">
+    <h3>{{ $ctrl.widget.title }}</h3>
+    <div class="box-header-btns pull-right">
+      <a title="settings" ng-click="$ctrl.openSettings(widget)"><i class="glyphicon glyphicon-cog"></i></a>
+      <a title="Remove widget" ng-click="$ctrl.delete()"><i class="glyphicon glyphicon-trash"></i></a>
+    </div>
+  </div> <!-- END box-header -->
+
+  <div class="box-content">
+    <div style="height:100% !important;">
+      <div class="center-div" ng-show="!d3Enabled">
+        <h4>No Data</h4>
+        <a title="settings" ng-click="$ctrl.openSettings(widget)" class="alert-link">add datasource <i class="glyphicon glyphicon-cog"></i></a>
+      </div>
+      <div ng-show="d3Enabled" style="height:100%;width:100%;">
+        <div class="alert alert-info" ng-if="!config.chart.type || config.chart.type === ''">
+          <h4>
+            Please select a <a title="settings" ng-click="openSettings(widget)" class="alert-link">chart type <i class="glyphicon glyphicon-cog"></i></a>
+          </h4>
+        </div>
+        <nvd3
+          options="$ctrl.d3Chart.options"
+          data="$ctrl.d3Chart.data"
+          config="$ctrl.d3Chart.config"
+          events="$ctrl.d3Chart.events"
+          api="$ctrl.d3Chart.api"
+        ></nvd3>
+      </div>
+    </div>
+  </div> <!-- END box-content -->
+</div> <!-- END box -->
+

@@ -1,4 +1,4 @@
-class InfluxdbchartWidgetSettings {
+class PromchartWidgetSettings {
   constructor($scope, $http, UserProfile, HEPICSOURCES, CONFIGURATION, EventBus, EVENTS, log) {
     'ngInject';
     this.$scope = $scope;
@@ -9,7 +9,7 @@ class InfluxdbchartWidgetSettings {
     this.EventBus = EventBus;
     this.EVENTS = EVENTS;
     this.log = log;
-    this.log.initLocation('influxdbchartWidgetSettings');
+    this.log.initLocation('promchartWidgetSettings');
   }
 
   $onInit() {
@@ -19,24 +19,16 @@ class InfluxdbchartWidgetSettings {
     this.mainTag = '';
     
     /* Chart options */
-    //this.metricsdatasources = this.HEPICSOURCES.DATA;
-    this.metricsdatasources = {"influxdb": this.HEPICSOURCES.DATA['influxdb']};        
-    this.panel.metricsdatasources = this.HEPICSOURCES.DATA[0];
-    
-    this.log.debug('DB', this.HEPICSOURCES.DATA);
+    this.metricsdatasources = {"prometheus": this.HEPICSOURCES.DATA['prometheus']};    
+    //this.panel.metricsdatasources = this.HEPICSOURCES.DATA[0];    
+    this.log.debug('DB', this.metricsdatasources);
     
     const dbdata = [];
-    this.metricdatabases = dbdata;
-    this.metricdatabases_select = dbdata[0];
     
-    const policiesdata = [];
-    this.retentionpolices = policiesdata;
-    this.retentionpolices_select = policiesdata[0];
-
     this.displayExpertMode = false;
     this.expertMode = 'Switch to expert mode';
     this.expertClass = 'glyphicon glyphicon-chevron-down';
-    // this.updateDebugUrl(0);
+    //this.updateDebugUrl(0);
   
     if (!this._config.dataquery) {
       this._config.dataquery = {};
@@ -159,223 +151,20 @@ class InfluxdbchartWidgetSettings {
     };
   }
 
-  popuplateMetricDatabase(type) {
-    const dbdata = [
-      {
-        name: 'homer',
-        value: 'homer',
-      },
-    ];
-  
-    this.metricdatabases = dbdata;
-    this.metricdatabases_select = dbdata[0];
-  
-    this.log.debug('MMM', this.database);
-    this.log.debug('XXX', this.retention);
-  
-    const urlMetrics = this.CONFIGURATION.APIURL + 'statistic/_db';
-  
-    this.$http.get(urlMetrics).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.metricdatabases = resp.data.data;
-        this.log.debug('popuplate metric database', this.metricdatabases);
-      } else {
-        this.log.error('popuplate metric database', 'fail to get data');
-      }
-    }).catch((err) => {
-      this.log.error('popuplate metric database', err);
-    });
-  };
-
-  popuplateRetentionsPolicies(source, db) {
-    const policiesdata = [
-      {
-        name: 'none',
-        value: 'none',
-      },
-    ];
-  
-    this.retentionpolices = [];
-  
-    let urlMetrics = this.CONFIGURATION.APIURL + 'statistic/_retentions';
-    let objQuery = {};
-    let timedate = this.UserProfile.getProfile('timerange');
-    let timezone = this.UserProfile.getProfile('timezone');
-    objQuery.timestamp = {};
-    objQuery.param = {};
-    objQuery.param.search = {};
-  
-    let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
-    objQuery.timestamp.from = timedate.from.getTime() - diff;
-    objQuery.timestamp.to = timedate.to.getTime() - diff;
-    objQuery.param.limit = 100;
-    objQuery.param.total = false;
-  
-    let obj = {};
-    obj['main'] = source;
-    obj['database'] = db.name;
-    objQuery.param.search = obj;
-  
-    this.$http.post(urlMetrics, objQuery).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.retentionpolices = resp.data.data;
-        this.retentionpolices.push(policiesdata[0]);
-      } else {
-        this.log.error('popuplate retentions policies', 'no data');
-      }
-    }).catch((err) => {
-      this.log.error('popuplate retentions policies', err);
-    });
-  };
-
-  panelDataSourceSelection() {
-    this.log.debug('source', this.panel.metricsdatasource);
-    this.panel.metricdatabase = {};
-    this.panel.retentionpolicy = {};
-    this.popuplateMetricDatabase(this.panel.metricsdatasource);
-  };
-  
-  panelDataBaseSelection() {
-    this.log.debug('data base', this.panel.metricdatabase);
-    this.panel.retentionpolicy = {};
-    this.popuplateRetentionsPolicies(this.panel.metricsdatasource, this.panel.metricdatabase);
-  };
-
   popuplateMainCategory() {
-    const ldata = [
-      {
-        name: 'New PPS',
-        value: 'total_pps',
-      },
-    ];
-  
-    this.myMeasurements = ldata;
-    this.log.debug('MMM', this.database);
-    this.log.debug('XXX', this.retention);
-  
-    const urlMetrics = this.CONFIGURATION.APIURL + 'statistic/_measurements/' + this.database.name;
+
+    this.myRemotedata = [];
+          
+    const urlMetrics = this.CONFIGURATION.APIURL + 'prometheus/label';
     this.$http.get(urlMetrics).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.myMeasurements = resp.data.data;
-        this.log.debug('popuplate main category', this.myMeasurements);
+      if (resp && resp.status && resp.status === 200) {        
+        resp.data.forEach((val) => this.myRemotedata.push({name: val, value: val}));
+        //this.myRemotedata = resp.data;           
       } else {
         this.log.error('popuplate main category', 'fail to get data');
       }
     }).catch((err) => {
       this.log.error('popuplate main category', err);
-    });
-  };
-
-  popuplateSourceTypeData(index, nameparam) {
-    this.myRemotedata = [];
-    let urlMetrics = this.CONFIGURATION.APIURL + 'statistic/_metrics';
-    let objQuery = {};
-    let timedate = this.UserProfile.getProfile('timerange');
-    let timezone = this.UserProfile.getProfile('timezone');
-    objQuery.timestamp = {};
-    objQuery.param = {};
-    objQuery.param.search = {};
-  
-    let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
-    objQuery.timestamp.from = timedate.from.getTime() - diff;
-    objQuery.timestamp.to = timedate.to.getTime() - diff;
-    objQuery.param.limit = 100;
-    objQuery.param.total = false;
-  
-    let obj = {};
-    let queryParams = [];
-    obj['main'] = nameparam;
-    obj['database'] = this.database.name;
-    obj['retention'] = this.retention.name;
-    queryParams.push(obj);
-    objQuery.param.query = queryParams;
-  
-    this.$http.post(urlMetrics, objQuery).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.myRemotedata = resp.data.data;
-      } else {
-        this.log.error('popuplate source type data', 'fail to post data');
-      }
-    }).catch((err) => {
-      this.log.error('popuplate source type data', err);
-    });
-  };
-
-  popuplateTagsData(index, mainTag, typeTag) {
-    const lgroup = [
-      {
-        name: 'default',
-        value: 'default',
-      },
-    ];
-  
-    this.myGroupdata = lgroup;
-  
-    let urlGroups = this.CONFIGURATION.APIURL + 'statistic/_fields';
-    let objQuery = {};
-    let timedate = this.UserProfile.getProfile('timerange');
-    let timezone = this.UserProfile.getProfile('timezone');
-    objQuery.timestamp = {};
-    objQuery.param = {};
-    objQuery.param.search = {};
-  
-    let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
-    objQuery.timestamp.from = timedate.from.getTime() - diff;
-    objQuery.timestamp.to = timedate.to.getTime() - diff;
-    objQuery.param.limit = this._config.panel.limit || 100;
-    objQuery.param.total = this._config.panel.total;
-  
-    objQuery.param.search['tag'] = typeTag;
-    objQuery.param.search['main'] = mainTag;
-    objQuery.param.search['database'] = this.database.name;
-    objQuery.param.search['retention'] = this.retention.name;
-    this.log.debug('nameparam:', mainTag);
-  
-    this.$http.post(urlGroups, objQuery).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.myGroupdata = resp.data.data;
-      } else {
-        this.log.error('popuplate tags data', 'fail to post data');
-      }
-    }).catch((err) => {
-      this.log.error('popuplate tags data', err);
-    });
-  };
-
-  popuplateTags(index, mainTag) {
-    this.myTypeTag = [];
-  
-    let urlGroups = this.CONFIGURATION.APIURL + 'statistic/_tags';
-    let objQuery = {};
-    let timedate = this.UserProfile.getProfile('timerange');
-    let timezone = this.UserProfile.getProfile('timezone');
-    objQuery.timestamp = {};
-    objQuery.param = {};
-    objQuery.param.search = {};
-  
-    let diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
-    objQuery.timestamp.from = timedate.from.getTime() - diff;
-    objQuery.timestamp.to = timedate.to.getTime() - diff;
-    objQuery.param.limit = this._config.panel.limit || 100;
-    objQuery.param.total = this._config.panel.total;
-  
-    this.log.debug('nameparam:', mainTag);
-    objQuery.param.search['main'] = mainTag;
-    objQuery.param.search['database'] = this.database.name;
-    objQuery.param.search['retention'] = this.retention.name;
-  
-    this.$http.post(urlGroups, objQuery).then((resp) => {
-      if (resp && resp.status && resp.status === 200) {
-        this.myTypeTag = resp.data.data;
-        this.myTypeTag.unshift({
-          name: '',
-          value: '',
-        });
-      } else {
-        this.log.error('popuplate tags', 'fail to post data');
-      }
-    }).catch((err) => {
-      this.log.error('popuplate tags', err);
     });
   };
 
@@ -404,10 +193,7 @@ class InfluxdbchartWidgetSettings {
     }
   };
 
-  checkMainSelection(index) {
-    this._config.dataquery.data[index]['database'] = this.database;
-    this._config.dataquery.data[index]['retention'] = this.retention;
-  
+  checkMainSelection(index) {  
     this.log.debug(index);
   
     const mainTag = this._config.dataquery.data[index]['main'].value;
@@ -473,12 +259,6 @@ class InfluxdbchartWidgetSettings {
         name: this.panel.metricsdatasource.name,
         alias: this.panel.metricsdatasource.alias,
       },
-      database: {
-        name: this.panel.metricdatabase.name,
-      },
-      retention: {
-        name: this.panel.retentionpolicy.name,
-      },
       value: 'query',
     });
   };
@@ -493,21 +273,6 @@ class InfluxdbchartWidgetSettings {
     this.log.debug('fieldsdata', this.fieldsdata);
     this.log.debug('hepicsource', this.HEPICSOURCES.DATA[alias]);
     this.localindex = index;
-  
-    if (this._config.panel.queries[index] && !this._config.panel.queries[index].database) {
-      this._config.panel.queries[index].database = {
-        name: 'hepic',
-      };
-    }
-  
-    if (this._config.panel.queries[index] && !this._config.panel.queries[index].retention) {
-      this._config.panel.queries[index].retention = {
-        name: 'none',
-      };
-    }
-  
-    this.database = this._config.panel.queries[index].database;
-    this.retention = this._config.panel.queries[index].retention;
   
     /* MAIN CATEGORY*/
     this.popuplateMainCategory();
@@ -562,4 +327,4 @@ class InfluxdbchartWidgetSettings {
   };
 }
 
-export default InfluxdbchartWidgetSettings;
+export default PromchartWidgetSettings;

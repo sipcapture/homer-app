@@ -12,17 +12,22 @@ export default function statistics(server) {
       },
       validate: {
         payload: {
-          metrics: Joi.array(),
-          datetime: Joi.object(),
+          param: Joi.object(),
+          timestamp: {
+                from: Joi.date().timestamp().required(),
+                to: Joi.date().timestamp().required(),
+          },
         },
       },
     },
     handler: function(request, reply) {
       const prometheus = new Prometheus(server);
-      let metrics = request.payload.metrics;
-      let {from, to} = request.payload.datetime;      
-            
-      prometheus.getValues(metrics, from, to).then(function(data) {
+      let metrics = request.payload.param.metrics;
+      let precision = request.payload.param.precision || 60;      
+      let fromts = (new Date(request.payload.timestamp.from)).getTime()/1000;
+      let tots = (new Date(request.payload.timestamp.to)).getTime()/1000;
+                         
+      prometheus.getValues(metrics, fromts, tots, precision).then(function(data) {
         if (!data) {
             return reply(Boom.notFound('prometheus values has been not found'));
         }

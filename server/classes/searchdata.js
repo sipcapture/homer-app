@@ -32,13 +32,16 @@ class SearchData extends LivingBeing {
     let dataWhere = {};
 
     /* jshint -W089 */
+    
+
 
     for (let key in sData) {
       table = 'hep_proto_'+key;
+
       if (sData.hasOwnProperty(key)) {
-        let elems = sData[key];
-        forEach(elems, function(el) {
-          if (!isEmpty(el.value)) {
+        let elems = sData[key];        
+        forEach(elems, function(el) {        
+          if (!isEmpty(el.value) || !isNaN(el.value)) {          
             if (el.name.indexOf('.') > -1) {
               let elemArray = el.name.split('.');
               if (el.type == 'integer') {
@@ -50,11 +53,17 @@ class SearchData extends LivingBeing {
                 dataWhereRawKey.push(elemArray[0]+'->>?'+eqValue+'?');
                 dataWhereRawValue.push(elemArray[1], el.value);
               }
-            } else if (el.value.indexOf('%') > -1 ) {
+            } else if (isNaN(el.value) && el.value.indexOf('%') > -1 ) {
               dataWhereRawKey.push(el.name+' LIKE ?');
               dataWhereRawValue.push(el.value);
             } else {
-              dataWhere[el.name] = el.value;
+              /* system fields */
+              if(el.name == 'limit') {
+                  sLimit = el.value;
+              }
+              else {
+                  dataWhere[el.name] = el.value;
+              }
             }
           }
         });

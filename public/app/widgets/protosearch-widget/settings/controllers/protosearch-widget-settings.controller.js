@@ -26,8 +26,6 @@ class ProtosearchWidgetSettings {
     this.protoData = [];
     let hashLocal = [];
     this.headers = [];
-    
-    console.log('ADD DATA TO PROTO');
 
     this.SearchService.loadMappingProtocols().then((data) => {
       console.log('GOT', data);
@@ -58,8 +56,6 @@ class ProtosearchWidgetSettings {
     this.profileData = [];
     this.headers = [];
     
-    console.log('SELECTED PROTO');
-    
     let id = this.widget.config.protocol_id.value;
     this.protoTransactions.forEach((field) => {
       if (field.hepid == id) {
@@ -89,9 +85,24 @@ class ProtosearchWidgetSettings {
     let id = this.widget.config.protocol_id.value;
     let profile = this.widget.config.protocol_profile.value;
         
+    let defaultFields = [
+        {
+	     name: "limit",
+	     selection: "Limit Query",
+	     type: "integer",
+	     field_name: "limit",
+	     index: "none",
+	     form_type: "input",
+	     form_default: "100",
+	     disabled: false,
+	     hepid: id,
+	     profile: profile,
+        }
+    ];
+      
     console.log('MMM PROFILE:', this.widget.config.protocol_profile);
     
-    this.headers = [];
+    this.headers = this.headers.concat(defaultFields);
     
     this.SearchService.loadMappingFields(id, profile).then((data) => {
       console.log('GOT FIELDS', data);
@@ -116,7 +127,6 @@ class ProtosearchWidgetSettings {
         
         this.headers.push(lobj);
       });
-      
       
       // END To-do
     }).catch((error) => {

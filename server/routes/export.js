@@ -51,14 +51,14 @@ export default function search(server) {
         data.forEach(function(row) {
           // for (let k in row) {
           // console.log("FULL", row);
-          // };
+          //};
           // src_ip, src_port, dst_ip, dst_port
           pcapBuffer.writePacket({
-            protocol: row.protocol_header.protocol,
-            sourceIp: row.protocol_header.srcIp,
-            sourcePort: row.protocol_header.srcPort,
-            destinationIp: row.protocol_header.dstIp,
-            destinationPort: row.protocol_header.dstPort,
+            protocol: row.protocol_header.protocol ? row.protocol_header.protocol : row.data_header.protocol,
+            sourceIp: row.protocol_header.srcIp ? row.protocol_header.srcIp : row.data_header.srcIp,
+            sourcePort: row.protocol_header.srcPort ? row.protocol_header.srcPort : row.data_header.srcPort,
+            destinationIp: row.protocol_header.dstIp ? row.protocol_header.dstIp : row.data_header.dstIp,
+            destinationPort: row.protocol_header.dstPort ? row.protocol_header.dstPort : row.data_header.dstPort,
             data: row.raw,
             timestamp: (row.timeSeconds * 1000 + row.timeUseconds*10),
           });
@@ -120,11 +120,11 @@ export default function search(server) {
           // console.log("FULL", row);
           // src_ip, src_port, dst_ip, dst_port
           textBuffer.writePacket({
-            protocol: row.protocol_header.protocol,
-            sourceIp: row.protocol_header.srcIp,
-            sourcePort: row.protocol_header.srcPort,
-            destinationIp: row.protocol_header.dstIp,
-            destinationPort: row.protocol_header.dstPort,
+            protocol: row.protocol_header.protocol ? row.protocol_header.protocol : row.data_header.protocol,
+            sourceIp: row.protocol_header.srcIp ? row.protocol_header.srcIp : row.data_header.srcIp,
+            sourcePort: row.protocol_header.srcPort ? row.protocol_header.srcPort : row.data_header.srcPort,
+            destinationIp: row.protocol_header.dstIp ? row.protocol_header.dstIp : row.data_header.dstIp,
+            destinationPort: row.protocol_header.dstPort ? row.protocol_header.dstPort : row.data_header.dstPort,
             data: row.raw,
             timestamp: (row.timeSeconds * 1000 + row.timeUseconds*10),
           });

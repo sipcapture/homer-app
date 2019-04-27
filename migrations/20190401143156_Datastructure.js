@@ -38,6 +38,18 @@ exports.up = function(knex) {
       mappingTable.json('schema_settings');
       mappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     })
+    .createTable('sub_mapping_schema', function(subMappingTable) {
+      // Primary Key
+      subMappingTable.increments();
+      // Data
+      subMappingTable.uuid('guid');
+      subMappingTable.string('profile', 100).notNullable().defaultTo('default');
+      subMappingTable.integer('hepid').notNullable();
+      subMappingTable.string('hep_alias', 100);
+      subMappingTable.integer('version').notNullable();
+      subMappingTable.json('mapping');
+      subMappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
+    })
     .createTable('user_settings', function(userSettingsTable) {
       // Primary Key
       userSettingsTable.increments();

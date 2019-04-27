@@ -10,6 +10,7 @@ const routes = {
   remote: require('./routes/remote'),
   export: require('./routes/export'),
   mapping: require('./routes/mapping'),
+  submapping: require('./routes/submapping'),
   birds: require('./routes/birds'),
   ui: require('./routes/ui'),
   profile: require('./routes/profile'),

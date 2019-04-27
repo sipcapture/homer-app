@@ -1,6 +1,6 @@
 import LivingBeing from './living_being';
 
-const table = 'agent_subscribe';
+const table = 'agent_location_session';
 
 /**
  * A class to handle agent_subscribe in DB

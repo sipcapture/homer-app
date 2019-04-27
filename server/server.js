@@ -21,6 +21,7 @@ const routes = {
   advanced: require('./routes/advanced'),
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
+  agent_subscribe: require('./routes/agent_subscribe'),
 };
 
 const databases = {

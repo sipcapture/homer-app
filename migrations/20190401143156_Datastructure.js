@@ -61,6 +61,22 @@ exports.up = function(knex) {
       globalSettingsTable.string('param', 100).notNullable().defaultTo('default');
       globalSettingsTable.json('data');
     })
+    .createTable('agent_location_session', function(agentLocationSession) {
+      // Primary Key
+      agentLocationSession.increments();
+      // Data
+      agentLocationSession.uuid('guid');
+      agentLocationSession.integer('gid').notNullable();
+      agentLocationSession.string('host', 250).notNullable().defaultTo('127.0.0.1');
+      agentLocationSession.integer('port').notNullable().defaultTo(8080);
+      agentLocationSession.string('protocol', 50).notNullable().defaultTo('log');
+      agentLocationSession.string('path', 250).notNullable().defaultTo('/api/search');
+      agentLocationSession.string('node', 100).notNullable().defaultTo('testnode');
+      agentLocationSession.string('type', 200).notNullable().defaultTo('type');      
+      agentLocationSession.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
+      agentLocationSession.timestamp('expire_date').notNullable().defaultTo('2032-12-31 00:00:00');
+      agentLocationSession.integer('active').notNullable().defaultTo(1);
+    })
     .createTable('alias', function(aliasTable) {
       // Primary Key
       aliasTable.increments();
@@ -82,6 +98,7 @@ exports.down = function(knex) {
     .dropTableIfExists( 'mapping_schema' )
     .dropTableIfExists( 'user_settings' )
     .dropTableIfExists( 'global_settings' )
+    .dropTableIfExists( 'agent_location_session' )
     .dropTableIfExists( 'alias' )
     .dropTableIfExists( 'users' );
 };

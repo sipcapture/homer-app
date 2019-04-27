@@ -72,6 +72,7 @@
     "json-editor": "0.7.28",
     "jsonwebtoken": "8.1.0",
     "knex": "^0.16.3",
+    "ldapjs-no-python": "^1.0.3",
     "leaflet": "1.2.0",
     "lodash": "4.17.11",
     "loglevel": "1.5.0",

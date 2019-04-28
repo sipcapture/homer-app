@@ -162,7 +162,7 @@ class RemoteData extends LivingBeing {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(query)
+      body: query
     };
     
     return fetch(url, param)

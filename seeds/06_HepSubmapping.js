@@ -11,7 +11,7 @@ exports.seed = function seed(knex) {
       lookup_id: 0,
       lookup_type: "pubsub",
       lookup_profile: 'cdr',
-      lookup_field: '{"data":"$source_field"}',
+      lookup_field: '{"data":"$source_field","fromts":$fromts,"tots":$tots}',
       lookup_range: [-300, 200],
     },
   ];

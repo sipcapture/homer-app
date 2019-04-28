@@ -87,6 +87,7 @@ const API = {
     TRANSACTION: 'api/v3/call/transaction',
     REPORT: {
       LOG: 'api/v3/call/report/log',
+      HEPSUB: 'api/v3/call/report/hepsub',
       RTCP: 'api/v3/call/report/rtcp',
       RTC: 'api/v3/call/report/rtc',
       QOS: 'api/v3/call/report/qos',

@@ -13,6 +13,7 @@ import CallDetailLoki from './call-detail-loki';
 import CallDetailLogsRemote from './call-detail-logs-remote';
 import CallDetailRecording from './call-detail-recording';
 import CallDetailTimeline from './call-detail-timeline';
+import CallDetailHepsub from './call-detail-hepsub';
 import CallDetailWss from './call-detail-wss';
 import CallDetailQos from './call-detail-qos';
 
@@ -32,5 +33,6 @@ export default angular.module('hepicApp.call-detail-components', [
   CallDetailRecording.name,
   CallDetailTimeline.name,
   CallDetailWss.name,
+  CallDetailHepsub.name,
   CallDetailQos.name
 ]);

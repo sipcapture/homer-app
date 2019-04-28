@@ -618,6 +618,50 @@ class SearchData extends LivingBeing {
       throw new Error('fail to get data QOS '+err);
     }
   }
+  
+  async getHepSubData(remoteAgents) {
+    try {
+
+      let dataWhere = [];
+      let allDataRow = [];
+      
+      //console.log("MAPHEP", remoteAgents);
+      
+      /* jshint -W089 */
+
+      for (let key in remoteAgents) {
+                
+        
+          let param = [];                    
+          let agent = remoteAgents[key];
+          let serverUrl = "http://"+agent['host']+":"+agent['port'];
+          let serverApi = agent['path'];
+          let serverNode = agent['node'];
+          let query = agent['query'];
+          let dataLog = {};
+
+          /* correlation requests */
+          const remotedata = new RemoteData(this.server, this.param);
+          const dataHepSub = await remotedata.getRemoteHepSubData(serverUrl, serverApi, query);
+          if(dataHepSub.length > 0) {
+                dataLog['node'] =  serverNode;
+                dataLog['data'] =  dataHepSub;                
+                allDataRow = allDataRow.concat(dataLog);              
+          }          
+      };
+      
+      let globalReply = {
+            total: size(allDataRow),
+            data: allDataRow,
+      };
+      
+      return globalReply;
+      
+    } catch (err) {
+      throw new Error('fail to get data HepSub '+err);
+    }
+  }
+  
 }
 
 export default SearchData;

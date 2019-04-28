@@ -33,6 +33,7 @@ class CallDetail {
         recording: false,
         dtmf: false,
         remotelog: false,
+        hepsub: false,
         rtc: false,
         rtpagent: false,
       },
@@ -181,6 +182,15 @@ class CallDetail {
         'icon': 'fa fa-file-text-o',
       },
       {
+        'heading': 'HepSub',
+        'active': true,
+        'ngshow': '$ctrl.enable.report.hepsub',
+        'select': () => {
+          this.EventBus.resizeNull();
+        },
+        'icon': 'fa fa-file-text-o',
+      },
+      {
         'heading': 'Loki',
         'active': true,
         'ngshow': '$ctrl.enable.report.loki',
@@ -271,6 +281,8 @@ class CallDetail {
         this.enable.qoschart = (this.qosData && this.qosData.length);
         await this.showLogReport(data);
 
+        await this.showHepSubReport(data);
+        
         /* LOKI */
         await this.showLokiReport(data);
 
@@ -604,6 +616,30 @@ class CallDetail {
       }
     }).catch((err) => {
       this.$log.error(['CallDetail'], 'show log report', err);
+    });
+  }
+  
+  showHepSubReport(rdata) {
+
+    this.SearchService.searchHepSubReport(rdata).then((msg) => {
+      if (msg.length > 0) {
+        this.enable.report.hepsub = true;
+        msg.forEach((entry) => {
+          if (entry.data) {
+            try {
+              entry.data = JSON.parse(entry.data);
+            } catch (err) {
+              this.$log.error(['CallDetail'], err);
+            }
+          }
+          this.$log.debug('PARSED HEPSUB!', entry);
+        });
+        
+        this.hepsubreport = msg;
+        console.log("REPO", this.hepsubreport);
+      }
+    }).catch((err) => {
+      this.$log.error(['CallDetail'], 'show hepsub report', err);
     });
   }
 

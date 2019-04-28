@@ -1,14 +1,10 @@
 # HOMER 7.0.x UI+API
 FROM node:8-alpine
 
-RUN apk add --update git
-RUN apk add --update bash
-RUN apk add --update openssl
-RUN apk add --update run-parts
-
 # BUILD FORCE
 ENV BUILD 703099
 
+RUN apk add --update git bash openssl run-parts
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 # Requires HOMER7-UI Git

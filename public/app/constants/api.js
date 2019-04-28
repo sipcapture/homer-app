@@ -32,6 +32,12 @@ const API = {
       UPDATE: `${base}/mapping/protocol`,
       DELETE: `${base}/mapping/protocol`,
     },
+    HEPSUB: {
+      GETALL: `${base}/hepsub/protocol`,
+      ADD: `${base}/hepsub/protocol`,
+      UPDATE: `${base}/hepsub/protocol`,
+      DELETE: `${base}/hepsub/protocol`,
+    },
   },
   PROFILE: {
     STORE: 'api/v3/profile/store',
@@ -52,6 +58,10 @@ const API = {
   MAPPING: {
     PROTOCOLS: 'api/v3/mapping/protocols',
     FIELDS: 'api/v3/mapping/fields',
+  },
+  HEPSUB: {
+    PROTOCOLS: 'api/v3/hepsub/protocols',
+    FIELDS: 'api/v3/hepsub/fields',
   },
   SHARE: {
     LINK: 'api/v3/share/link',

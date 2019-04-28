@@ -10,6 +10,8 @@ import appPreferencesAdvanced from './components/app-preferences-advanced';
 import appPreferencesAdvancedAddEdit from './components/app-preferences-advanced/components/app-preferences-advanced-add-edit';
 import appPreferencesMapping from './components/app-preferences-mapping';
 import appPreferencesMappingAddEdit from './components/app-preferences-mapping/components/app-preferences-mapping-add-edit';
+import appPreferencesHepSub from './components/app-preferences-hepsub';
+import appPreferencesHepSubAddEdit from './components/app-preferences-hepsub/components/app-preferences-hepsub-add-edit';
 
 
 export default angular.module('hepicApp.appPreferences', [])
@@ -50,6 +52,12 @@ export default angular.module('hepicApp.appPreferences', [])
         component: 'appPreferencesMapping',
         resolve: {
         },
+      })
+      .state(ROUTER.PREFERENCES_HEPSUB.NAME, {
+        url: ROUTER.PREFERENCES_HEPSUB.PATH,
+        component: 'appPreferencesHepSub',
+        resolve: {
+        },
       });
   })
   .component('appPreferencesUsers', appPreferencesUsers)
@@ -62,4 +70,6 @@ export default angular.module('hepicApp.appPreferences', [])
   .component('appPreferencesAdvancedAddEdit', appPreferencesAdvancedAddEdit)
   .component('appPreferencesMapping', appPreferencesMapping)
   .component('appPreferencesMappingAddEdit', appPreferencesMappingAddEdit)
+  .component('appPreferencesHepSub', appPreferencesHepSub)
+  .component('appPreferencesHepSubAddEdit', appPreferencesHepSubAddEdit)
   .component('appPreferences', appPreferences);

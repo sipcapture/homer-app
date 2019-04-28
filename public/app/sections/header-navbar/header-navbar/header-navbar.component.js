@@ -11,6 +11,7 @@ const headerNavbar = {
     userSettings: '<',
     aliases: '<',
     mappings: '<',
+    hepsub: '<',
   },
 };
 

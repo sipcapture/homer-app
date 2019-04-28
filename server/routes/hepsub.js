@@ -2,16 +2,16 @@ import uuid from 'uuid/v4';
 import {pick} from 'lodash';
 import Joi from 'joi';
 import Boom from 'boom';
-import SubMappingData from '../classes/submappingdata';
+import HepSubData from '../classes/hepsubdata';
 
 export default function search(server) {
   server.route({
-    path: '/api/v3/submapping/protocols',
+    path: '/api/v3/hepsub/protocols',
     method: 'GET',
     handler: function(request, reply) {
-      const submappingdata = new SubMappingData({server});
+      const hepsubdata = new HepSubData({server});
      
-      submappingdata.getProtocols().then(function(data) {
+      hepsubdata.getProtocols().then(function(data) {
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }
@@ -23,15 +23,15 @@ export default function search(server) {
   });
 
   server.route({
-    path: '/api/v3/submapping/fields/{id}/{transaction}',
+    path: '/api/v3/hepsub/fields/{id}/{transaction}',
     method: 'GET',
     handler: function(request, reply) {
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
       
-      const submappingdata = new SubMappingData({server});
+      const hepsubdata = new HepSubData({server});
 
-      submappingdata.getFields(id, transaction).then(function(data) {
+      hepsubdata.getFields(id, transaction).then(function(data) {
         if (!data) {
           return reply(Boom.notFound('data was not found'));
         }
@@ -44,13 +44,13 @@ export default function search(server) {
   
   server.route({
     /**
-     * GET all submapping settings
+     * GET all hepsub settings
      *
      * @header
      *  @param {string} JWT token for authentication
-     * @return {array} list of submapping data
+     * @return {array} list of hepsub data
      */
-    path: '/api/v3/submapping/protocol',
+    path: '/api/v3/hepsub/protocol',
     method: 'GET',
     config: {
       auth: {
@@ -58,12 +58,12 @@ export default function search(server) {
       },
     },
     handler: async function(request, reply) {
-      const settings = new SubMappingData({server});
+      const settings = new HepSubData({server});
 
       try {
-        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_submapping', 'fields_submapping', 'submapping_settings', 'schema_submapping', 'schema_settings']);
+        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'version', 'mapping']);
         if (!data || !data.length) {
-          return reply(Boom.notFound('no submapping settings found'));
+          return reply(Boom.notFound('no hepsub settings found'));
         }
   
         return reply({
@@ -78,15 +78,15 @@ export default function search(server) {
 
   server.route({
     /**
-     * GET submapping settings by guid
+     * GET hepsub settings by guid
      *
      * @header
      *  @param {string} JWT token for authentication
      * @request
      *  @param {string} guid
-     * @return {array} list of submapping data
+     * @return {array} list of hepsub data
      */
-    path: '/api/v3/submapping/protocol/{guid}',
+    path: '/api/v3/hepsub/protocol/{guid}',
     method: 'GET',
     config: {
       auth: {
@@ -100,10 +100,10 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const settings = new SubMappingData({server, guid});
+      const settings = new HepSubData({server, guid});
 
       try {
-        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_submapping', 'fields_submapping', 'submapping_settings', 'schema_submapping', 'schema_settings']);
+        const data = await settings.getAll(['guid', 'profile', 'hepid', 'hep_alias', 'version', 'mapping']);
         if (!data || !Object.keys(data).length) {
           return reply(Boom.notFound('no advacned settings found for guid ' + guid));
         }
@@ -120,7 +120,7 @@ export default function search(server) {
 
   server.route({
     /**
-     * Create (POST) a new submapping settings
+     * Create (POST) a new hepsub settings
      *
      * @header
      *  @param {string} JWT token for authentication
@@ -129,9 +129,9 @@ export default function search(server) {
      *  @param {string} category
      *  @param {string} param
      *  @param {string} data
-     * @return submapping settings guid and success message
+     * @return hepsub settings guid and success message
      */
-    path: '/api/v3/submapping/protocol',
+    path: '/api/v3/hepsub/protocol',
     method: 'POST',
     config: {
       auth: {
@@ -149,15 +149,15 @@ export default function search(server) {
       */
     },
     handler: async function(request, reply) {
-      const {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_submapping, fields_submapping, submapping_settings, schema_submapping, schema_settings} = request.payload;
+      const {profile, hepid, hep_alias, version, mapping} = request.payload;
       const guid = uuid();
-      const settings = new SubMappingData({server});
+      const settings = new HepSubData({server});
 
       try {
-        await settings.add({profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_submapping, fields_submapping, submapping_settings, schema_submapping, schema_settings});
+        await settings.add({profile, hepid, hep_alias, version, mapping});
         return reply({
           data: guid,
-          message: 'successfully created submapping settings',
+          message: 'successfully created hepsub settings',
         }).code(201);
       } catch (err) {
         return reply(Boom.serverUnavailable(err));
@@ -167,7 +167,7 @@ export default function search(server) {
 
   server.route({
     /**
-     * Update (PUT) an submapping setttings
+     * Update (PUT) an hepsub setttings
      *
      * @header
      *  @param {string} JWT token for authentication
@@ -178,9 +178,9 @@ export default function search(server) {
      *  @param {string} category
      *  @param {string} param
      *  @param {string} data
-     * @return submapping settings guid and success message
+     * @return hepsub settings guid and success message
      */
-    path: '/api/v3/submapping/protocol/{guid}',
+    path: '/api/v3/hepsub/protocol/{guid}',
     method: 'PUT',
     config: {
       auth: {
@@ -203,12 +203,12 @@ export default function search(server) {
         {
           method: async function(request, reply) {
             const {guid} = request.params;
-            const settings = new SubMappingData({server, guid});
+            const settings = new HepSubData({server, guid});
 
             try {
               const res = await settings.get(['guid']);
               if (!res || !res.guid || res.guid !== guid) {
-                return reply(Boom.notFound(`the submapping settings with id ${guid} was not found`));
+                return reply(Boom.notFound(`the hepsub settings with id ${guid} was not found`));
               }
 
               return reply.continue();
@@ -221,15 +221,15 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const updates = pick(request.payload, ['guid', 'profile', 'hepid', 'hep_alias', 'partid', 'version', 'retention', 'partition_step', 'create_index', 'create_table', 'correlation_submapping', 'fields_submapping', 'submapping_settings', 'schema_submapping', 'schema_settings']);
+      const updates = pick(request.payload, ['guid', 'profile', 'hepid', 'hep_alias', 'version', 'mapping']);
 
-      const settings = new SubMappingData({server, guid});
+      const settings = new HepSubData({server, guid});
 
       try {
         await settings.update(updates);
         return reply({
           data: guid,
-          message: 'successfully updated submapping settings',
+          message: 'successfully updated hepsub settings',
         }).code(201);
       } catch (err) {
         return reply(Boom.serverUnavailable(err));
@@ -239,15 +239,15 @@ export default function search(server) {
 
   server.route({
     /**
-     * DELETE an submapping settings
+     * DELETE an hepsub settings
      *
      * @header
      *  @param {string} JWT token for authentication
      * @request
      *  @param {string} guid
-     * @return submapping settings guid and success message
+     * @return hepsub settings guid and success message
      */
-    path: '/api/v3/submapping/protocol/{guid}',
+    path: '/api/v3/hepsub/protocol/{guid}',
     method: 'DELETE',
     config: {
       auth: {
@@ -262,12 +262,12 @@ export default function search(server) {
         {
           method: async function(request, reply) {
             const {guid} = request.params;
-            const settings = new SubMappingData({server, guid});
+            const settings = new HepSubData({server, guid});
 
             try {
               const res = await settings.get(['guid']);
               if (!res || !res.guid || res.guid !== guid) {
-                return reply(Boom.notFound(`the submapping settings with id ${guid} were not found`));
+                return reply(Boom.notFound(`the hepsub settings with id ${guid} were not found`));
               }
 
               return reply.continue();
@@ -280,13 +280,13 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       const {guid} = request.params;
-      const settings = new SubMappingData({server, guid});
+      const settings = new HepSubData({server, guid});
 
       try {
         await settings.delete();
         return reply({
           data: guid,
-          message: 'successfully deleted submapping settings',
+          message: 'successfully deleted hepsub settings',
         }).code(201);
       } catch (err) {
         return reply(Boom.serverUnavailable(err));

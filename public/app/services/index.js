@@ -10,6 +10,7 @@ import UserSettingsService from './user-settings-service';
 import AliasService from './alias-service';
 import AdvancedService from './advanced-service';
 import MappingService from './mapping-service';
+import HepSubService from './hepsub-service';
 import HomerHelper from './homer-helper';
 
 export default angular.module('hepicApp.services', [
@@ -24,5 +25,6 @@ export default angular.module('hepicApp.services', [
   AliasService.name,
   AdvancedService.name,
   MappingService.name,
+  HepSubService.name,
   HomerHelper.name,
 ]);

@@ -118,6 +118,7 @@ export default function agent_subscribe(server) {
 
       try {
         await settings.delete();        
+        await settings.deleteExpire();        
         await settings.add({guid, gid, host, port, protocol, path, node, type, create_date, expire_date});
         return reply({
           data: uuid,

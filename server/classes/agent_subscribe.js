@@ -86,6 +86,14 @@ class AgentSubscribe extends LivingBeing {
       throw new Error(`delete agent_subscribe: ${err.message}`);
     }
   }
+    
+  async deleteExpire() {
+    try {
+      const dataAgent =  await this.configDb(table).whereRaw('NOW() > expire_date').del();
+    } catch (err) {
+      throw new Error(`delete expire agent_subscribe: ${err.message}`);
+    }
+  }
 }
 
 export default AgentSubscribe;

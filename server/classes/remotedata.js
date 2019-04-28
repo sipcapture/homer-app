@@ -152,15 +152,19 @@ class RemoteData extends LivingBeing {
   */
   getRemoteHepSubData(serverUrl, serverApi, query) {
 
-    console.log('IN Query', query);
+    console.log('IN PUBSUB Query', query);
     
     const url =  serverUrl + serverApi;    
     let dataset = [];
-    let param = {};
+    let param = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(query)
+    };
     
-    param['method'] = "POST";
-    param['body'] = query;
-
     return fetch(url, param)
       .then((response) => response.json())
       .then(function(responseJSON) {

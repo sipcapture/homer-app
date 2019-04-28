@@ -299,6 +299,25 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
 
     return defer.promise;
   };
+  
+  const searchHepSubReport = function(data) {
+    const defer = $q.defer();
+    $http.post(API.CALL.REPORT.HEPSUB, data, {
+      handleStatus: [403, 503],
+    }).then(
+      /* good response */
+      function(results) {
+        results = has(results, 'data.data') ? results.data.data : results.data || [];
+        defer.resolve(results);
+      },
+      /* bad response */
+      function() {
+        defer.reject('bad response combination');
+      }
+    );
+
+    return defer.promise;
+  };
 
   const searchRtcReport = function(data) {
     const defer = $q.defer();
@@ -682,6 +701,7 @@ const SearchService = function($q, $http, UserProfile, GlobalProfile, API) {
     searchCallRTCPReport,
     searchQOSReport,
     searchLogReport,
+    searchHepSubReport,
     searchRtcReport,
     searchRemoteLog,
     searchQualityReport,

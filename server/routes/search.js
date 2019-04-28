@@ -191,6 +191,48 @@ export default function search(server) {
         });
     },
   });
+
+  server.route({
+    path: '/api/v3/call/report/hepsub',
+    method: 'POST',
+    config: {
+      validate: {
+        payload: {
+          param: {
+            id: Joi.object(),
+            transaction: Joi.object(),
+            limit: Joi.number().integer().min(0),
+            location: Joi.object(),
+            search: Joi.object(),
+            timezone: Joi.object(),
+          },
+          timestamp: {
+            from: Joi.date().timestamp().required(),
+            to: Joi.date().timestamp().required(),
+          },
+        },
+      },
+    },
+    handler: async function(request, reply) {
+
+      const searchTable = 'hep_proto_1_default';
+      const searchdata = new SearchData(server, request.payload.param);
+      const settings = new Settings(server, 'null');
+            
+      try {
+        const hepSubMap = await settings.getHepSubMap(request.payload);       
+        const remoteAgents = await settings.getHepSubAgents(hepSubMap, request.payload);
+        const data = await searchdata.getHepSubData(remoteAgents);
+     
+        if (!data) {
+          return reply(Boom.notFound('data was not found'));
+        }
+        return reply(data);
+      } catch (error) {
+        return reply(Boom.serverUnavailable(error));
+      };
+    },    
+  });
   
   server.route({
     path: '/api/v3/call/recording/data',

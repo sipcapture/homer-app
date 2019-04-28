@@ -89,6 +89,14 @@
         >
         </call-detail-logs>
         
+        <call-detail-hepsub
+          ng-if="tab.heading === 'HepSub'"
+          hepsubreport="$ctrl.hepsubreport"
+          enable="$ctrl.enable.report.hepsub"
+          on-match-json="$ctrl.matchJSON"
+        >
+        </call-detail-hepsub>
+        
         <call-detail-loki
           ng-if="tab.heading === 'Loki'"
           lokireport="$ctrl.lokireport"

@@ -152,8 +152,6 @@ class CallDetailLoki {
 
       const {data, keys} = response.data;
 
-      console.log('DATA', data);
-
       this.$scope.$ctrl.lokidata = data;
 
       this.$timeout(() => {
@@ -165,8 +163,6 @@ class CallDetailLoki {
   }
 
   async processRefreshSearchResult() {
-    console.log('RRR', this.$scope);
-    console.log('ARR', this.searchParams);
     this.processSearchResult();
   }
 }

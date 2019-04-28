@@ -146,6 +146,34 @@ class RemoteData extends LivingBeing {
         console.error(error); return JSON.stringify(dataset);
       });
   }
+  
+  /*
+  Fetch Remote Data
+  */
+  getRemoteHepSubData(serverUrl, serverApi, query) {
+
+    console.log('IN Query', query);
+    
+    const url =  serverUrl + serverApi + '?'+encodeURI(query);    
+    let dataset = [];
+
+    return fetch(url)
+      .then((response) => response.json())
+      .then(function(responseJSON) {
+        if (!responseJSON.streams) return dataset;
+        responseJSON.streams.forEach(function(stream) {
+          // console.log(stream.labels);
+          stream.entries.forEach(function(entry) {
+            dataset.push(entry);
+          });
+        });
+
+        return dataset;
+      })
+      .catch(function(error) {
+        console.error(error); return JSON.stringify(dataset);
+      });
+  }
 
 
   async getTransactionData(table, columns, fieldKey, dataWhere, timeWhere) {

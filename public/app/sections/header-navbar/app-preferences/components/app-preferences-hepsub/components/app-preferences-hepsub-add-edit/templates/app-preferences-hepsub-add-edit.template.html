@@ -1,0 +1,73 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title">Protocol HepSub</h4>
+    <button type="button" class="close" ng-click="$ctrl.dismiss()" aria-hidden="true">&times;</button>
+  </div>
+  <div class="modal-body">
+    <form role="form" name="form" ng-model-options="{ getterSetter: true }">
+      <div class="row">
+        <h4 class="setting__main-title">HepSub Settings</h4>
+	<p>Defines the identifier, format and lifetime of protocol data</p>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-3 col-sm-3">
+          <div class="form-group">
+            <label class="label-sett" for="profileCategory">HEP Alias</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-hepsub"
+              id="profileHepAlias"
+              ng-model="$ctrl.hepsub.hep_alias"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+	</div>
+        <div class="col-lg-3 col-sm-3">
+          <div class="form-group">
+            <label class="label-sett" for="profileHepId">HEP ID</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-hepsub"
+              id="profileParam"
+              ng-model="$ctrl.hepsub.hepid"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-3">
+          <div class="form-group">
+            <label class="label-sett" for="profileHepId">Profile</label>
+            <input
+              type="text"
+              ng-readonly="false"
+              class="form-control
+              form-control-hepsub"
+              id="profileParam"
+              ng-model="$ctrl.hepsub.profile"
+              ng-required="$ctrl.areNewSettings"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <h4 class="setting__main-title">HepSub Mapping</h4>
+	<p>Defines any cross-protocol correlation mechanism</p>
+        <div style="border-top: 1px solid rgba(151, 151, 151, 0.28); margin-bottom:25px;"></div>
+        <div class="col-lg-12 col-sm-12 col_margin-r">
+          <div class="form-group">
+            <div ui-ace="$ctrl.aceOptions" ng-model="$ctrl.hepsub.mapping_source"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button ng-click="$ctrl.dismiss()" class="btn default"><i class="glyphicon glyphicon-remove"></i>Cancel</button>
+      <button ng-click="$ctrl.submit()" ng-disabled="form.$pristine && form.$invalid || form.$dirty && form.$invalid" class="btn btn-primary btn-lg">
+        <i class="glyphicon glyphicon-ok"></i>Save
+      </button>
+    </div>
+  </form>
+</div>

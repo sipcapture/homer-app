@@ -72,6 +72,14 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           log.error(err.message);
         });
       },
+      hepsubs: function(HepSubService, log) {
+        'ngInject';
+        log.initLocation('appPreferences');
+
+        return HepSubService.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
     },
   });
 

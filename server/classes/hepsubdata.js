@@ -1,11 +1,11 @@
 import LivingBeing from './living_being';
 
-const table = 'sub_mapping_schema';
+const table = 'hepsub_mapping_schema';
 
 /**
  * A class to handle users in DB
  */
-class MappingData extends LivingBeing {
+class HepSubData extends LivingBeing {
   /**
    * Class constructor
    *
@@ -27,7 +27,7 @@ class MappingData extends LivingBeing {
   getProtocols() {
     return this.configDb(this.table)
       .where('partid', 10)
-      .select(['hepid', 'hep_alias', 'partid', 'profile'])
+      .select(['hepid', 'hep_alias'])
       .then(function(rows) {
         let dataReply = {
           total: rows.length,
@@ -44,7 +44,7 @@ class MappingData extends LivingBeing {
         hepid: id,
         profile: transaction,
       })
-      .select(['id', 'partid', 'profile', 'fields_mapping'])
+      .select(['id', 'profile', 'mapping'])
       .then(function(rows) {
         let dataReply = {
           total: rows[0] ? rows[0].length : 0,
@@ -125,4 +125,4 @@ class MappingData extends LivingBeing {
   }
 }
 
-export default MappingData;
+export default HepSubData;

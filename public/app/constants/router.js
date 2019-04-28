@@ -84,6 +84,14 @@ const ROUTER = {
     DESCRIPTION: 'mapping preferences',
     SECURE: true,
   },
+  PREFERENCES_HEPSUB: {
+    NAME: 'hepic.preferences.hepsub',
+    CHILDNAME: 'hepsub',
+    CHILDPATH: 'hepsub',
+    PATH: '/hepsub/protocol',
+    DESCRIPTION: 'hepsub preferences',
+    SECURE: true,
+  },
   SETTINGSMAIN: {
     NAME: 'hepic.settings',
     PATH: '/settings',

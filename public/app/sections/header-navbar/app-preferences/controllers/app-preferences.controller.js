@@ -33,6 +33,10 @@ class AppPreferences {
           name: ROUTER.PREFERENCES_MAPPING.CHILDNAME,
           path: ROUTER.PREFERENCES_MAPPING.CHILDPATH,
         },
+        {
+          name: ROUTER.PREFERENCES_HEPSUB.CHILDNAME,
+          path: ROUTER.PREFERENCES_HEPSUB.CHILDPATH,
+        },
       ],
     };
   }

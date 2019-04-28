@@ -635,7 +635,7 @@ class SearchData extends LivingBeing {
           let param = [];                    
           let agent = remoteAgents[key];
           let serverUrl = "http://"+agent['host']+":"+agent['port'];
-          let serverApi = agent['path'];
+          let serverApi = agent['path']+"/"+agent['type'];
           let serverNode = agent['node'];
           let query = agent['query'];
           let dataLog = {};
@@ -643,11 +643,9 @@ class SearchData extends LivingBeing {
           /* correlation requests */
           const remotedata = new RemoteData(this.server, this.param);
           const dataHepSub = await remotedata.getRemoteHepSubData(serverUrl, serverApi, query);
-          if(dataHepSub.length > 0) {
-                dataLog['node'] =  serverNode;
-                dataLog['data'] =  dataHepSub;                
-                allDataRow = allDataRow.concat(dataLog);              
-          }          
+          dataLog['node'] =  serverNode;
+          dataLog['data'] =  dataHepSub;                
+          allDataRow = allDataRow.concat(dataLog);                                  
       };
       
       let globalReply = {

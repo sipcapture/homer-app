@@ -154,21 +154,18 @@ class RemoteData extends LivingBeing {
 
     console.log('IN Query', query);
     
-    const url =  serverUrl + serverApi + '?'+encodeURI(query);    
+    const url =  serverUrl + serverApi;    
     let dataset = [];
+    let param = {};
+    
+    param['method'] = "POST";
+    param['body'] = query;
 
-    return fetch(url)
+    return fetch(url, param)
       .then((response) => response.json())
       .then(function(responseJSON) {
-        if (!responseJSON.streams) return dataset;
-        responseJSON.streams.forEach(function(stream) {
-          // console.log(stream.labels);
-          stream.entries.forEach(function(entry) {
-            dataset.push(entry);
-          });
-        });
-
-        return dataset;
+        console.log("RESP", responseJSON);
+        return responseJSON;
       })
       .catch(function(error) {
         console.error(error); return JSON.stringify(dataset);

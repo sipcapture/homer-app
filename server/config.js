@@ -42,6 +42,14 @@ const prometheus = {
   api: '/api/v1/'
 }
 
+const ldapauth = {
+   url: 'ldap://127.0.0.1:1389',
+   strictDN: true,
+   dn: 'ou=users,o=acme.com',
+   filter: '(mail=%USERNAME%)',
+   scope: 'sub'
+}
+
 export default {
   http_host: '0.0.0.0',
   http_port: 80,
@@ -50,6 +58,9 @@ export default {
   certificate: {
     self_signed: true,
     days: 1,
+  },
+  auth: {
+    internal: true,
   },
   bcrypt: {
     saltRounds: 10,
@@ -61,6 +72,7 @@ export default {
     },
     influxdb: influxdb,
     prometheus: prometheus,
+    ldapauth: ldapauth,
     pgsql: {
       homer_config: {
         client: 'pg',

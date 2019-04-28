@@ -78,6 +78,7 @@ export default function users(server) {
       },
     },
     handler: async function(request, reply) {
+    
       const {firstname, lastname, username, email, partid, usergroup, department, password} = request.payload;
       const guid = uuid();
       const salt = bcrypt.genSaltSync(config.bcrypt.saltRounds);

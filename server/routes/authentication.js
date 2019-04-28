@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import Boom from 'boom';
 import User from '../classes/user';
+import LdapAuth from '../classes/ldap';
+import config from '../config';
 
 export default function auth(server) {
   server.route({
@@ -26,9 +28,16 @@ export default function auth(server) {
       },
     },
     handler: function(request, reply) {
-      const {username, password} = request.payload;
-      const user = new User({server, username});
-
+      const {username, password} = request.payload;      
+      let user;
+      
+      if(config.auth && config.auth.ldap) {
+          let ldapAuth = config.db.ldapauth;
+          user = new LdapAuth({ldapAuth, username, password});
+      }	
+      /* default internal */
+      else user = new User({server, username});
+      
       user.get(['guid', 'hash']).then(function(user) {
         if (!user) {
           return reply(Boom.notFound('the user was not found'));

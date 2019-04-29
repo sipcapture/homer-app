@@ -155,11 +155,12 @@ class RemoteData extends LivingBeing {
     console.log('IN PUBSUB Query', query);
     
     const url =  serverUrl + serverApi;    
-    let dataset = [];
+    let dataset = [];    
     let param = {};
     param['method'] = "POST";
+    param["headers"] = new fetch.Headers({'Content-Type': 'application/json'});    
     param['body'] = query;
-
+    
     return fetch(url, param)
       .then((response) => response.json())
       .then(function(responseJSON) {

@@ -156,15 +156,10 @@ class RemoteData extends LivingBeing {
     
     const url =  serverUrl + serverApi;    
     let dataset = [];
-    let param = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: query
-    };
-    
+    let param = {};
+    param['method'] = "POST";
+    param['body'] = query;
+
     return fetch(url, param)
       .then((response) => response.json())
       .then(function(responseJSON) {

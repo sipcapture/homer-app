@@ -16,7 +16,7 @@ exports.seed = function seed(knex) {
       node: 'rtpnode01',
       type: 'cdr',
       create_date: new Date(),
-      expire_date: new Date('December 31, 2032 00:00:00'),
+      expire_date: new Date(),
       active: 1,
     },
   ];

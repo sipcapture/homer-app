@@ -140,7 +140,8 @@ class CallDetailLoki {
     query.param.limit = param.limit ? param.limit : 300;
     query.param.timezone = param.timezone;
     query.param.search = this.searchParams;
-
+    query.param.server = this.getLokiServer(); // fetch widget server configuration
+    
     return query;
   }
 

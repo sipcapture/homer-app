@@ -384,11 +384,13 @@ class SearchRemote {
         queryBody[va[0]] = va[1];
       }
     }
-
+    
+    let wServer = this.getLokiServer(); // fetch widget server configuration
+            
     if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
       // query.param.transaction = {};
-      query.param.server = server;
+      query.param.server = wServer;
       query.param.limit = limit;
       query.param.search = search;
       // query.param.location = {};
@@ -419,6 +421,7 @@ class SearchRemote {
 
       query.param.limit = limit;
       query.param.search = search;
+      query.param.server = wServer;
       // query.param.location = {};
     }
     return query;

@@ -23,9 +23,30 @@ class RsearchWidget {
     this.ModalHelper = ModalHelper;
     this.ROUTER = ROUTER;
     this.TimeMachine = TimeMachine;
+
+    /* this is OLD function */
     this.getLokiServer = function() {
       return this._widget.server || 'http://loki:3100';
     };
+
+    /*this is new block */
+    async function initData() {
+        try {
+            await this.GlobalProfile.getAll();
+        } catch (err) {
+          this.log.error(err);
+        }
+    }
+
+    initData();
+
+    /* new function */
+    this.getLokiServer2 = function() {
+              let lokiServer = this.GlobalProfile.getProfileCategory('search', 'lokiserver');
+              let nLokiServer =  (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
+              return this._widget.server || nLokiServer;
+    };
+
 
     let that = this;
 

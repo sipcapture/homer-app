@@ -116,7 +116,6 @@ class RemoteData extends LivingBeing {
     +'&end='+tots;
 
     console.log('OUT LogQL', logql);
-
     // Fetch
     let LOKI_API = data.param.server || LOKI_SERVER;
     const url = LOKI_API + '/api/prom/query?'+encodeURI(logql);

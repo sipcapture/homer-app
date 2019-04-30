@@ -30,6 +30,9 @@ class AppPreferencesAdvanced {
   }
 
   editAdvanced(advanced) {
+
+    advanced.data_source = JSON.stringify(advanced.data, null, 2);
+        
     this.$uibModal.open({
       component: 'appPreferencesAdvancedAddEdit',
       resolve: {
@@ -37,7 +40,9 @@ class AppPreferencesAdvanced {
           return cloneDeep(advanced);
         },
       },
-    }).result.then((advanced) => {
+    }).result.then((advanced) => {    
+      advanced.data = JSON.parse(advanced.data_source);
+      delete advanced.data_source;                 
       this.updateAdvancedInStorage(advanced);
     });
   }

@@ -43,7 +43,6 @@ class AppPreferencesHepSub {
     }).result.then((hepsub) => {
       hepsub.mapping = JSON.parse(hepsub.mapping_source);
       delete hepsub.mapping_source;
-      console.log("SSS", hepsub);
       this.updateHepSubInStorage(hepsub);
     });
   }

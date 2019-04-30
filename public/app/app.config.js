@@ -64,6 +64,14 @@ app.config(function($urlRouterProvider, $httpProvider, $stateProvider, $translat
           log.error(err.message);
         });
       },
+      globalprofile: function(GlobalProfile, log) {
+        'ngInject';
+        log.initLocation('init globalprofile');
+
+        return GlobalProfile.getAll().catch(function(err) {
+          log.error(err.message);
+        });
+      },
       mappings: function(MappingService, log) {
         'ngInject';
         log.initLocation('appPreferences');

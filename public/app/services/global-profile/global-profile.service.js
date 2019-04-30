@@ -41,7 +41,8 @@ class GlobalProfile {
     return this.$http.get(this.API.GLOBALPROFILE.STORE, {handleStatus: [403, 503]}).then((response) => {
       forEach(response.data.data, (value, key) => {
         let nkey=value.category+':'+value.param;
-        let nobj = JSON.parse(value.data);
+        //let nobj = JSON.parse(value.data);
+        let nobj = value.data;
         this.setLocalProfile(nkey, nobj);
         this.profileScope[nkey] = nobj;
         console.log('VV', nkey);

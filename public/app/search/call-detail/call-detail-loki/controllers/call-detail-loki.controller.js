@@ -15,9 +15,11 @@ class CallDetailLoki {
     this.$timeout = $timeout;
 
     let that = this;
+    
+    this.GlobalProfile.getAll();
 
-    this.getLokiServer = function() {
-      let lokiServer = this.GlobalProfile.getProfileCategory('search', 'lokiserver');
+    this.getLokiServer = function() {    
+      let lokiServer = this.GlobalProfile.getProfileCategory('search', 'lokiserver');      
       return (lokiServer && lokiServer.host) ? lokiServer.host : 'http://127.0.0.1:3100';
     };
 

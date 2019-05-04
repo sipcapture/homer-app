@@ -101,6 +101,20 @@ class RsearchWidget {
               });
           },
         };
+        
+        
+        //editor.commands.bindKey("Enter|Shift-Enter", "null");
+            
+        /*
+        editor.getSession().on('change', function(e) {
+              console.log(e)
+              if (e.data.text.charCodeAt(0) === 10 && e.data.action == "insertText") {
+                  console.log('cancel event')
+                  editor.find(String.fromCharCode(10))
+                  editor.replaceAll(''); // this work
+              }
+        });
+        */
 
         editor.commands.addCommand({
           name: 'getValues',

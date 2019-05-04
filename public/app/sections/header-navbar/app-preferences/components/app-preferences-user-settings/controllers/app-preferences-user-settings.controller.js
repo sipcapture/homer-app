@@ -106,7 +106,7 @@ class AppPreferencesUserSettings {
   }
 
   _reloadThisState() {
-    this.$state.reload(this.$state.$current.name);
+    this.$state.reload();
   }
 }
 

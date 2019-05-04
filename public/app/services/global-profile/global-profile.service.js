@@ -45,8 +45,6 @@ class GlobalProfile {
         let nobj = value.data;
         this.setLocalProfile(nkey, nobj);
         this.profileScope[nkey] = nobj;
-        console.log('VV', nkey);
-        console.log('DD', nobj);
         this.loadedProfile = true;
         return 'yes';
       });

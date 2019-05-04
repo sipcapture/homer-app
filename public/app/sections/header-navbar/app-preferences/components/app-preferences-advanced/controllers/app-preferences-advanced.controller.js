@@ -40,9 +40,9 @@ class AppPreferencesAdvanced {
           return cloneDeep(advanced);
         },
       },
-    }).result.then((advanced) => {    
+    }).result.then((advanced) => {        
       advanced.data = JSON.parse(advanced.data_source);
-      delete advanced.data_source;                 
+      delete advanced.data_source;    
       this.updateAdvancedInStorage(advanced);
     });
   }
@@ -111,7 +111,7 @@ class AppPreferencesAdvanced {
   }
 
   _reloadThisState() {
-    this.$state.reload(this.$state.$current.name);
+    this.$state.reload();
   }
 }
 

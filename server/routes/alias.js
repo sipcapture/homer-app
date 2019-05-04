@@ -26,9 +26,9 @@ export default function alias(server) {
 
       try {
         const data = await settings.getAll(['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
-        if (!data || !data.length) {
-          return reply(Boom.notFound('no alias found'));
-        }
+        //if (!data || !data.length) {
+          //return reply(Boom.notFound('no alias found'));          
+        //}
   
         return reply({
           count: data.length,

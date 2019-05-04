@@ -103,7 +103,7 @@ class RsearchWidget {
         };
         
         
-        //editor.commands.bindKey("Enter|Shift-Enter", "null");
+        editor.commands.bindKey("Enter|Shift-Enter", "null");
             
         /*
         editor.getSession().on('change', function(e) {

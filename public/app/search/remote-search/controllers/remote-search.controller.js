@@ -118,6 +118,8 @@ class SearchRemote {
           },
         };
 
+        editor.commands.bindKey("Enter|Shift-Enter", "null");
+
         editor.commands.addCommand({
           name: 'getValues',
           bindKey: {win: '=', mac: '='},

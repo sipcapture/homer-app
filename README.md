@@ -1,4 +1,4 @@
-<img src="https://github.com/sipcapture/homer-app/raw/master/public/img/homerseven.png" width=200 />
+<img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200/>
 
 # HOMER-APP
 ![ezgif com-optimize 10](https://user-images.githubusercontent.com/1423657/46264200-211a6680-c51a-11e8-8477-3b7a53f9aa0b.gif)

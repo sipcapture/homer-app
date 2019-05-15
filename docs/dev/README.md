@@ -8,7 +8,7 @@
 
 ### Build Requirements
 
-1. Install Postgres
+1. Install Postgres >= 10
     * Create new user and database
 ```
 sudo su - postgres

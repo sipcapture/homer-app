@@ -22,9 +22,38 @@ class AppPreferencesMapping {
   }
 
   addMapping() {
+    
+    var mapping = {    
+        correlation_mapping_source: [],
+        create_index: {},
+        create_table: "CREATE TABLE",
+        fields_mapping_source: [],
+        hep_alias: "NEW",        
+        hepid: 10,
+        mapping_settings: null,
+        partid: 10,
+        partition_step: 10,
+        profile: "rest",
+        retention: 10,
+        version: 1,
+        schema_mapping: {},
+        schema_settings: {},
+    }
+    
     this.$uibModal.open({
       component: 'appPreferencesMappingAddEdit',
+      resolve: {
+        mapping: () => {            
+          return cloneDeep(mapping);
+        },
+      },
+                                      
     }).result.then((mapping) => {
+      mapping.correlation_mapping = JSON.parse(mapping.correlation_mapping_source);
+      mapping.fields_mapping = JSON.parse(mapping.fields_mapping_source);
+      delete mapping.correlation_mapping_source;
+      delete mapping.fields_mapping_source;           
+      console.log("ADD", mapping);
       this.addMappingToStorage(mapping);
     });
   }
@@ -116,7 +145,10 @@ class AppPreferencesMapping {
   }
 
   _reloadThisState() {
-    this.$state.reload();
+    //this.$state.reload();
+    this.$state.transitionTo(this.$state.current, this.$state.params, { 
+      reload: true, inherit: false, notify: true
+    });
   }
 }
 

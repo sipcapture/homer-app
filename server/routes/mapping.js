@@ -65,6 +65,12 @@ export default function search(server) {
         if (!data || !data.length) {
           return reply(Boom.notFound('no mapping settings found'));
         }
+        
+        data.sort(function(a, b){
+            if(a.guid < b.guid) { return -1; }
+            if(a.guid > b.guid) { return 1; }
+            return 0;
+        })
   
         return reply({
           count: data.length,

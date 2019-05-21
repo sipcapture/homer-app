@@ -31,6 +31,12 @@ export default function users(server) {
           return reply(Boom.notFound('no users found'));
         }
   
+        data.sort(function(a, b){
+          if(a.username < b.username) { return -1; }
+          if(a.username > b.username) { return 1; }
+          return 0;
+        })
+                                                    
         return reply({
           count: data.length,
           data,

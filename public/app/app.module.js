@@ -37,6 +37,10 @@ import 'font-awesome-webpack';
 import 'angular-json-tree';
 import 'ace-angular';
 import 'angularjs-dropdown-multiselect';
+import 'brace/index';
+import 'brace/theme/dreamweaver';
+import 'brace/mode/json.js';
+import 'brace/worker/json.js';
 
 // style
 import 'font-awesome/css/font-awesome.css';

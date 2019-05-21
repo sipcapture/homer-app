@@ -29,6 +29,13 @@ export default function alias(server) {
         //if (!data || !data.length) {
           //return reply(Boom.notFound('no alias found'));          
         //}
+        
+        data.sort(function(a, b){
+              if(a.guid < b.guid) { return -1; }
+              if(a.guid > b.guid) { return 1; }
+              return 0;
+        });     
+                                                                                    
   
         return reply({
           count: data.length,

@@ -1,22 +1,26 @@
 class AppPreferencesMappingAddEdit {
   constructor(log) {
     'ngInject';
+
+    window.define = window.define || ace.define;    
     this.log = log;
     this.log.initLocation('AppPreferencesMappingAddEdit');
     this.aceOptions = {
       mode: 'json',
-      useWrapMode: true,
-      showGutter: false,
+      theme: 'dreamweaver',
       rendererOptions: {
         maxLines: 32,
         minLines: 5,
       },
       editorOptions: {
-        autoScrollEditorIntoView: false,
+        autoScrollEditorIntoView: true,
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: false
       },
     };
   }
-
+                                                                                      
   $onInit() {
     this._initMapping();
     this.isNewMapping = !Object.keys(this.mapping).length;

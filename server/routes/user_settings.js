@@ -28,6 +28,12 @@ export default function users(server) {
         if (!data || !data.length) {
           return reply(Boom.notFound('no users settings found'));
         }
+        
+        data.sort(function(a, b){
+              if(a.username < b.username) { return -1; }
+              if(a.username > b.username) { return 1; }
+              return 0;
+        });                                                 
   
         return reply({
           count: data.length,

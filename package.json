@@ -50,6 +50,7 @@
     "bluebird": "3.5.0",
     "boom": "6.0.0",
     "bootstrap": ">=4.3.1",
+    "brace": "^0.11.1",
     "bufferpack": "0.0.6",
     "bufferutil": "^4.0.1",
     "d3": "3.5.16",

@@ -66,6 +66,13 @@ export default function search(server) {
           return reply(Boom.notFound('no hepsub settings found'));
         }
   
+        data.sort(function(a, b){
+              if(a.guid < b.guid) { return -1; }
+              if(a.guid > b.guid) { return 1; }
+              return 0;
+        });     
+          
+  
         return reply({
           count: data.length,
           data,

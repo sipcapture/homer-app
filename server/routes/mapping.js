@@ -160,7 +160,7 @@ export default function search(server) {
       const settings = new MappingData({server});
 
       try {
-        await settings.add({profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings});
+        await settings.add({guid, profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings});
         return reply({
           data: guid,
           message: 'successfully created mapping settings',

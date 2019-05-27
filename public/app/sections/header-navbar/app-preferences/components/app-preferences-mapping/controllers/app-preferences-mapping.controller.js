@@ -53,13 +53,12 @@ class AppPreferencesMapping {
       mapping.fields_mapping = JSON.parse(mapping.fields_mapping_source);
       delete mapping.correlation_mapping_source;
       delete mapping.fields_mapping_source;           
-      console.log("ADD", mapping);
       this.addMappingToStorage(mapping);
     });
   }
 
   editMapping(mapping) {
-    
+  
     mapping.correlation_mapping_source = JSON.stringify(mapping.correlation_mapping, null, 2);
     mapping.fields_mapping_source = JSON.stringify(mapping.fields_mapping, null, 2);
   
@@ -81,16 +80,19 @@ class AppPreferencesMapping {
   }
 
   async deleteMapping(mapping) {
+  
+    if(mapping.guid == null) mapping.guid = "abvgdec12346833";
+
     const mustDelete = await swal({
       icon: 'warning',
-      title: 'Delete mapping?',
+      title: 'Delete mapping ['+mapping.guid+'] ?',
       text: 'Once deleted, you will not be able to recover this!',
       buttons: true,
       dangerMode: true,
     });
 
     if (mustDelete) {
-      try {
+      try {      
         await this.MappingService.delete(mapping.guid);
         this._tableMappingDelete(mapping);
       } catch (err) {

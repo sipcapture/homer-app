@@ -1,8 +1,8 @@
 const pgsql = {
   host: 'localhost',
-  user: 'homer_user',
+  user: 'homer',
   port: 5432,
-  password: 'homer_password',
+  password: '123456',
   charset: 'utf8',
   timezone: 'utc',
   pool: {
@@ -43,24 +43,26 @@ const prometheus = {
 }
 
 const ldapauth = {
-   url: 'ldap://127.0.0.1:1389',
+   url: 'ldap://127.0.0.1:389',
    strictDN: true,
-   dn: 'ou=users,o=acme.com',
-   filter: '(mail=%USERNAME%)',
+   dn: 'dc=qxip,dc=net',
+   userdn: 'uid=%USERNAME%',
+   filter: '(uid=%USERNAME%)',      
    scope: 'sub'
 }
 
 export default {
   http_host: '0.0.0.0',
-  http_port: 80,
+  http_port: 8081,
   https_host: '0.0.0.0',
-  https_port: 443,
+  https_port: 8443,
   certificate: {
     self_signed: true,
     days: 1,
   },
   auth: {
-    internal: true,
+    internal: false,
+    ldap: true,
   },
   bcrypt: {
     saltRounds: 10,

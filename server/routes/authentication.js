@@ -33,38 +33,40 @@ export default function auth(server) {
       
       if(config.auth && config.auth.ldap) {
           let ldapAuth = config.db.ldapauth;
-          user = new LdapAuth({ldapAuth, username, password});
+          user = new LdapAuth({ldapAuth, username, password});          
+          console.log("USER LDAP", user);
+          let response = user.get(['guid', 'hash']);
+          console.log("USER RESPONSE", response);                    
       }	
       /* default internal */
-      else user = new User({server, username});
+      else {
+          user = new User({server, username});
+          user.get(['guid', 'hash']).then(function(user) {
+              console.log("RESPONSE!", user);        
       
-      user.get(['guid', 'hash']).then(function(user) {
-        if (!user) {
-          return reply(Boom.notFound('the user was not found'));
-        }
+              if (!user) {
+                    return reply(Boom.notFound('the user was not found'));
+              }
 
-        return bcrypt.compare(password, user.hash).then(function(isCorrect) {
-          if (isCorrect) {
-            const token = jwt.sign({
-              username,
-              scope: user.guid,
-            }, jwtSettings.key,
-            {
-              algorithm: jwtSettings.algorithm,
-              expiresIn: jwtSettings.expires_in,
-            });
-
-            return reply({
-              token,
-              scope: user.guid,
-            });
-          } else {
-            return reply(Boom.unauthorized('incorrect password'));
-          }
-        });
-      }).catch(function(error) {
-        return reply(Boom.serverUnavailable(error));
-      });
+              return bcrypt.compare(password, user.hash).then(function(isCorrect) {
+                      if (isCorrect) {
+                          const token = jwt.sign({username, scope: user.guid, }, jwtSettings.key, 
+                          {
+                            algorithm: jwtSettings.algorithm,
+                            expiresIn: jwtSettings.expires_in,
+                          });
+                          
+                          return reply({token, scope: user.guid,});
+                     } else {
+                            return reply(Boom.unauthorized('incorrect password'));
+                     }
+              });
+      
+        
+          }).catch(function(error) {
+              return reply(Boom.serverUnavailable(error));
+          });
+      }
     },
   });
 };

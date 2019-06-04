@@ -43,10 +43,12 @@ knex seed:run
 ### Authentication
 [JWT Web Tokens](https://jwt.io/introduction/) are used to secure API. JWT settings are in `src/private/jwt_settings.json`.
 
-First, get JWT token.
+First, get JWT token. For real password check your knex import: 
+https://github.com/sipcapture/homer-app/blob/master/seeds/01_Users.js#L14
+
 ```
 curl -X POST localhost:80/api/v3/auth \
--d "username=admin&password=password"
+-d "username=admin&password=sipcapture"
 ```
 You will receive a message similiar to the following one:
 ```

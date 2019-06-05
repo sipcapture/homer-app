@@ -24,60 +24,48 @@ class LdapAuth {
    * @param {array} columns of user table
    * @return {object} user data
    */
-  async get(columns) {
+  get(columns) {
 
-      let userObject = {};
+      return new Promise((resolve, reject) => {        
       
-      if(!this.username) return userObject;
+              let userObject = {auth: false};      
+              if(!this.username) return resolv(userObject);
 
-    
-      let client = ldap.createClient({url: this.ldapAuth.url});
+              try {
+                
+                  let client = ldap.createClient({url: this.ldapAuth.url});      
+                  let opts = {
+                        filter: this.ldapAuth.filter.replace("%USERNAME\%", this.username),		
+                        scope: this.ldapAuth.scope
+                  };
 	
-      let opts = {
-		filter: this.ldapAuth.filter.replace("%USERNAME\%", this.username),
-		userdn: this.ldapAuth.userdn.replace("%USERNAME\%", this.username),
-		scope: this.ldapAuth.scope
-      };
-	
-      console.log("OPTS", opts);
-	
-      /*
-	client.search(this.ldapAuth.dn, opts, function(err, res) {
-	        
-	        console.log("ERR", err);
-	        console.log("RES", res);
-	
-		//assert.ifError(err);
-		
-		res.on('searchEntry', function(entry) {
-		   userObject = entry;
-		    console.log('entry: ' + JSON.stringify(entry.object));
-		});
-		res.on('searchReference', function(referral) {
-		    console.log('referral: ' + referral.uris.join());
-		});
-		res.on('error', function(err) {
-		    console.error('error: ' + err.message);
-		});
-		res.on('end', function(result) {
-		    console.log('status: ' + result.status);
-		});
-	});        
-	*/
-      let dnRetrieved =  opts.userdn + ',' + this.ldapAuth.dn;
-      console.log("USERDN", dnRetrieved);
+                  let userDN = this.ldapAuth.userdn.replace("%USERNAME\%", this.username);
+                  let dnRetrieved =  userDN + ',' + this.ldapAuth.dn;
 
-     Promise.promisifyAll(client);
-     client.bindAsync(dnRetrieved, this.password).then(function() {
-		console.log("DONE");
-	}).then(function(search) { // flatten your chain
-	    console.log("SEARCH", search);
-	}).then(function(entry){
-	    var user = entry;
-	    console.log(user);
-	}).catch(function(err) { // always catch errors!
-	    console.error(err);
-     });
+                  let that = this;
+                  client.bind(dnRetrieved, this.password, function(res) {
+                          client.search(that.ldapAuth.dn, opts, function(err, res) {
+                                res.on('searchEntry', function(entry) {
+                                        userObject.auth = true;
+                                        userObject.data = entry.object;
+                                        userObject.guid = entry.object.gidNumber;
+                                        console.log('entry: ' + JSON.stringify(entry.object));
+                                        console.log('userObject: ' +  JSON.stringify(userObject));
+                                });
+                                res.on('end', function(result) {
+                                      //console.log('status: ' + result.status);
+                                      //console.log("OBJECT", userObject);
+                                      client.unbind();	
+                                      return resolve(userObject);
+                                });                      
+                          });                                  		                          
+                  });
+        
+            } catch (err) {
+                throw new Error(`fail to get user: ${err.message}`);
+                return reject(userObject);
+            }                             
+      });
   }
 }
 

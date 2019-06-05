@@ -43,11 +43,13 @@ const prometheus = {
 }
 
 const ldapauth = {
-   url: 'ldap://127.0.0.1:1389',
+   url: 'ldap://127.0.0.1:389',
    strictDN: true,
-   dn: 'ou=users,o=acme.com',
-   filter: '(mail=%USERNAME%)',
-   scope: 'sub'
+   dn: 'dc=qxip,dc=net',
+   userdn: 'uid=%USERNAME%',
+   filter: '(uid=%USERNAME%)',
+   scope: 'sub',
+   uidNumber: 'uidNumber'
 }
 
 export default {

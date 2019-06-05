@@ -48,7 +48,8 @@ const ldapauth = {
    dn: 'dc=qxip,dc=net',
    userdn: 'uid=%USERNAME%',
    filter: '(uid=%USERNAME%)',
-   scope: 'sub'
+   scope: 'sub',
+   uidNumber: 'uidNumber'
 }
 
 export default {

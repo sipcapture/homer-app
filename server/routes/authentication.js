@@ -27,22 +27,31 @@ export default function auth(server) {
         },
       },
     },
-    handler: function(request, reply) {
+    handler: async function(request, reply) {
       const {username, password} = request.payload;      
       let user;
       
       if(config.auth && config.auth.ldap) {
           let ldapAuth = config.db.ldapauth;
           user = new LdapAuth({ldapAuth, username, password});          
-          console.log("USER LDAP", user);
-          let response = user.get(['guid', 'hash']);
+          let response = await user.get(['guid', 'hash']);
+          
           console.log("USER RESPONSE", response);                    
+          if (response.auth) {
+             const token = jwt.sign({username, scope: response.guid, }, jwtSettings.key, 
+             {
+                algorithm: jwtSettings.algorithm,
+                expiresIn: jwtSettings.expires_in,
+             });                          
+             return reply({token, scope: response.guid,});
+          } else {
+              return reply(Boom.unauthorized('incorrect password'));
+          }
       }	
       /* default internal */
       else {
           user = new User({server, username});
           user.get(['guid', 'hash']).then(function(user) {
-              console.log("RESPONSE!", user);        
       
               if (!user) {
                     return reply(Boom.notFound('the user was not found'));

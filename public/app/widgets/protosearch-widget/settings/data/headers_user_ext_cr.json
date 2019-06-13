@@ -1,7 +1,0 @@
-[
-  {"name":"hash_trade_id", "selection":"Trade ID", "type":"text", "index":1, "disabled":false}, 
-  {"name":"hash_orig_trunk_id", "selection":"Orig. Trunk ID ", "type":"text", "index":1, "disabled":false},
-  {"name":"hash_term_trunk_id", "selection":"Term. Trunk ID", "type":"text", "index":1, "disabled":false},
-  {"name":"hash_rate_id", "selection":"Rate ID", "type":"text", "index":1, "disabled":false},
-  {"name":"hash_route_id", "selection":"Route ID", "type":"text", "index":1, "disabled":false} 
-]

@@ -85,9 +85,11 @@ class ProtosearchWidgetSettings {
     let id = this.widget.config.protocol_id.value;
     let profile = this.widget.config.protocol_profile.value;
         
+    let system_prefix = "system:"+id+":"+profile;
+        
     let defaultFields = [
         {
-	     name: "limit",
+	     name: system_prefix+":limit",
 	     selection: "Limit Query",
 	     type: "integer",
 	     field_name: "limit",
@@ -99,10 +101,13 @@ class ProtosearchWidgetSettings {
 	     profile: profile,
         }
     ];
-      
+
+          
     console.log('MMM PROFILE:', this.widget.config.protocol_profile);
-    
-    this.headers = this.headers.concat(defaultFields);
+
+    if(!this.headers.contains("field_name", "limit") && !this.headers.contains("name", defaultFields.name)) {    
+          this.headers = this.headers.concat(defaultFields);
+    }
     
     this.SearchService.loadMappingFields(id, profile).then((data) => {
       console.log('GOT FIELDS', data);
@@ -110,7 +115,7 @@ class ProtosearchWidgetSettings {
     }).then(() => {
       console.log('FIELDS...', this.fieldsData);
       this.fieldsData.forEach((field) => {
-        console.log('RRR', field);
+        //console.log('RRR', field);
       
         let lobj = {
           name: id+':'+profile+':'+field.id,

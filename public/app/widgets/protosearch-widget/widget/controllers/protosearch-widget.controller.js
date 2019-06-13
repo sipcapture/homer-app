@@ -37,7 +37,9 @@ class ProtosearchWidget {
 
     // To-do: check if all the vars below are needed
     this.indexes = dataIndexes.indexes;
-            
+    
+    this.system_prefix = "system:"+this._widget.config.protocol_id.value+":"+this._widget.config.protocol_profile.value;
+                
     this.type_transaction = dataTypeTransaction;
     this.type_mono_status = dataTypeMonoStatus;
     this.type_result = dataTypeResult;
@@ -56,7 +58,14 @@ class ProtosearchWidget {
       }
       this.newObject = this.UserProfile.profileScope.search;
       this.newResult = this.UserProfile.profileScope.result;
-      this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
+      console.log("ZZZ", this.newResult);
+      
+      if(this.newResult[this.system_prefix+":limit"]) {
+          this.newResult[this.system_prefix+":limit"] = this.newResult[this.system_prefix+":limit"] || this.UserProfile.profileScope[this.system_prefix+":limit"];
+      }
+      else this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
+      
+      
       this.newResult.restype = this.type_result[0];
       this.newNode = this.UserProfile.profileScope.node;
       this.newNode.node = this.db_node[0];
@@ -105,7 +114,9 @@ class ProtosearchWidget {
     for (var key in this.newObject) {
       console.log('K', key);
       console.log('V', this.newObject[key]);
-
+      
+      if(key == "limit" || key.startsWith("system:")) continue;
+      
       let myLocalObject = this._widget.fields.find(function(obj) {
 		    return obj.name == key;
       });
@@ -134,11 +145,21 @@ class ProtosearchWidget {
       let subKey = this.widget.config.protocol_id.value + '_'+this.widget.config.protocol_profile.value;
       this.searchObject[subKey]=[];
     }
+        
+    //this.system_prefix = "system:"+this._widget.config.protocol_id.value+":"+this._widget.config.protocol_profile.value;        
     
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('node', this.newNode);
-    this.UserProfile.setProfile('limit', this.newResult.limit);
+
+    console.log("LIMIT", this.newObject);
+ 
+    if(this.newObject[this.system_prefix+':limit']) {
+          this.newResult.limit = parseInt(this.newObject[this.system_prefix+':limit']);
+    }
+    
+    this.UserProfile.setProfile(this.system_prefix+':limit', this.newResult.limit);                    
+          
     this.isBusy = true;
     
     let tres = this.newResult.restype.name;
@@ -191,13 +212,13 @@ class ProtosearchWidget {
     /* save data for next search */
     let data = {param: {}, timestamp: {}};
     let transaction = this.UserProfile.getProfile('transaction');
-    let limit = this.UserProfile.getProfile('limit');
+    let limit = this.UserProfile.getProfile(this.system_prefix+':limit');
     let timedate = this.UserProfile.getProfile('timerange');
     let value = this.UserProfile.getProfile('search');
     let node = this.UserProfile.getProfile('node').dbnode;
 
 
-    console.log('VALUE', value);
+    console.log('LIMIT VALUE', limit);
     
     /* make construct of query */
     data.param.transaction = {};

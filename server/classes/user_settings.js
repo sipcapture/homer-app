@@ -86,6 +86,14 @@ class UserSettings extends LivingBeing {
       throw new Error(`delete user settings: ${err.message}`);
     }
   }
+  
+  async delete(properties) {
+    try {
+      return await super.delete(properties);
+    } catch (err) {
+      throw new Error(`delete user settings: ${err.message}`);
+    }
+  }
 }
 
 export default UserSettings;

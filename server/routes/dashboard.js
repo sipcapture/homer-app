@@ -20,6 +20,9 @@ export default function dashboards(server) {
     },
     handler: function(request, reply) {
       let userObject = request.auth.credentials;
+      
+      console.log(userObject);
+      
       const settings = new Settings(server, userObject.username);
 
       let table = 'user_settings';

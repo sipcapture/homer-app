@@ -103,6 +103,26 @@ class Settings extends LivingBeing {
       });
   }
   
+  getProfileList(table, columns) {
+    let dataWhere = {};
+
+    dataWhere['username'] = this.username;
+    
+    return this.configDb(table)
+      .where(dataWhere)
+      .select(columns)
+      .then(function(rows) {
+
+        let globalReply = {
+          data: rows,
+          status: 'ok',
+          auth: 'ok',
+        };
+        return globalReply;
+      });
+  }
+  
+  
   insertDashboard(table, dashboardId, newBoard) {
     let dataWhere = {};
 

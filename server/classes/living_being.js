@@ -99,6 +99,21 @@ class LivingBeing {
       throw new Error(`fail to delete a living being: ${err.message}`);
     }
   }
+  
+  /**
+   * Delete row by guid
+   *
+   * @return {object} confirm
+   */
+  async delete(properties) {
+    try {
+      return await this.db(this.table)
+        .where(properties)
+        .delete();
+    } catch (err) {
+      throw new Error(`fail to delete a living being: ${err.message}`);
+    }
+  }
 }
 
 export default LivingBeing;

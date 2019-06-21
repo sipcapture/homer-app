@@ -284,7 +284,7 @@ class SearchData extends LivingBeing {
         }
         if (dataElement.hasOwnProperty('sid')) callElement.sid = dataElement['sid'];
         if (dataElement.hasOwnProperty('raw')) {
-          callElement.ruri_user = dataElement['raw'].substr(0, 20);
+          callElement.ruri_user = dataElement['raw'].substr(0, 50);
         }
 
         callElement.srcId = callElement.srcHost+':'+callElement.srcPort;

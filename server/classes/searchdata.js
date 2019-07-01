@@ -499,16 +499,18 @@ class SearchData extends LivingBeing {
     try {
       let sData = data.param.search;
       let dataWhere = [];
+      let dataRtcp;
+      let dataRtp;
+      let myReply = {};
 
       /* jshint -W089 */
 
       for (let key in sData) {
-        table = 'hep_proto_5_default';
         if (sData.hasOwnProperty(key)) {
           dataWhere = sData[key]['callid'];
         }
       };
-
+      
       let timeWhere = [];
       timeWhere.push(new Date(data.timestamp.from).toISOString());
       timeWhere.push(new Date(data.timestamp.to).toISOString());
@@ -519,9 +521,8 @@ class SearchData extends LivingBeing {
     });
     */
       let sid = {};
-
-
-      return await this.dataDb(table)
+      
+      dataRtcp = await this.dataDb("hep_proto_5_default")
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
@@ -552,6 +553,45 @@ class SearchData extends LivingBeing {
 
           return globalReply;
         });
+        
+       dataRtp = await this.dataDb("hep_proto_35_default")
+        .whereIn('sid', dataWhere)
+        .whereBetween('create_date', timeWhere)
+        .select(columns)
+        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .then(function(rows) {
+          let dataReply = [];
+
+          rows.forEach(function(row) {
+            let dataElement = {};
+            for (let k in row) {
+              if (k == 'protocol_header' || k == 'data_header') {
+                Object.assign(dataElement, row[k]);
+              } else if (k == 'sid' || k == 'correlation_id') {
+                dataElement[k] = row[k];
+                sid[row[k]] = row[k];
+              } else {
+                dataElement[k] = row[k];
+              }
+            }
+
+            dataReply.push(dataElement);
+          });
+
+          let globalReply = {
+            total: size(dataReply),
+            data: dataReply,
+          };
+
+          return globalReply;
+        });
+        
+        
+        myReply['rtcp'] = dataRtcp;
+        myReply['rtp'] = dataRtp;
+                
+        return myReply; 
+        
     } catch (err) {
       throw new Error('fail to get data QOS '+err);
     }

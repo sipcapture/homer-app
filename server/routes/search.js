@@ -143,7 +143,7 @@ export default function search(server) {
     },
     handler: function(request, reply) {
       const searchdata = new SearchData(server, request.payload.param);
-      const searchTable = 'hep_proto_1_default';
+      const searchTable = 'hep_proto_5_default';
       searchdata.getTransactionQos(['id', 'sid', 'protocol_header', 'data_header', 'raw'], searchTable, request.payload)
         .then(function(data) {
           if (!data) {

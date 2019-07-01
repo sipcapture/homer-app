@@ -1,8 +1,8 @@
 const pgsql = {
   host: 'localhost',
-  user: 'homer',
+  user: 'homer_user',
   port: 5432,
-  password: '123456',
+  password: 'homer_password',
   charset: 'utf8',
   timezone: 'utc',
   pool: {
@@ -47,23 +47,22 @@ const ldapauth = {
    strictDN: true,
    dn: 'dc=qxip,dc=net',
    userdn: 'uid=%USERNAME%',
-   filter: '(uid=%USERNAME%)',      
+   filter: '(uid=%USERNAME%)',
    scope: 'sub',
    uidNumber: 'uidNumber'
 }
 
 export default {
   http_host: '0.0.0.0',
-  http_port: 8081,
+  http_port: 80,
   https_host: '0.0.0.0',
-  https_port: 8443,
+  https_port: 443,
   certificate: {
     self_signed: true,
     days: 1,
   },
   auth: {
     internal: true,
-    ldap: false,
   },
   bcrypt: {
     saltRounds: 10,

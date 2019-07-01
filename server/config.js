@@ -47,7 +47,7 @@ const ldapauth = {
    strictDN: true,
    dn: 'dc=qxip,dc=net',
    userdn: 'uid=%USERNAME%',
-   filter: '(uid=%USERNAME%)',      
+   filter: '(uid=%USERNAME%)',
    scope: 'sub',
    uidNumber: 'uidNumber'
 }
@@ -63,7 +63,6 @@ export default {
   },
   auth: {
     internal: true,
-    ldap: false,
   },
   bcrypt: {
     saltRounds: 10,

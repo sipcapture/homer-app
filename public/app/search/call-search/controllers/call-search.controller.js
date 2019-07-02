@@ -125,7 +125,7 @@ class SearchCall {
           displayName: name,
           resizable: true,
           type: 'string',
-          width: '*',
+          width: '3%',
           visible: true,
         };
       });

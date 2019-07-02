@@ -240,7 +240,7 @@ class SearchRemote {
           displayName: name,
           resizable: true,
           type: 'string',
-          width: '*',
+          width: '3%',
           visible: true,
         };
       });
@@ -386,9 +386,9 @@ class SearchRemote {
         queryBody[va[0]] = va[1];
       }
     }
-    
+
     let wServer = this.getLokiServer(); // fetch widget server configuration
-            
+
     if (Object.keys(queryBody).length == 0) {
       /* make construct of query */
       // query.param.transaction = {};

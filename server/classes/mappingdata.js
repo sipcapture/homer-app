@@ -16,6 +16,7 @@ class MappingData extends LivingBeing {
   constructor({server, guid}) {
     super({db: server.databases.config, table, guid});
     this.configDb = server.databases.config;
+    this.table = "mapping_schema";
     this.guid = guid;
   }
 
@@ -118,7 +119,12 @@ class MappingData extends LivingBeing {
    */
   async delete() {
     try {
-      return await super.delete();
+      
+      return await this.db(this.table)
+                   .where({ guid: this.guid,})
+                   .delete();
+                         
+      //return await super.delete();
     } catch (err) {
       throw new Error(`delete mapping: ${err.message}`);
     }

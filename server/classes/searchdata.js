@@ -649,11 +649,29 @@ class SearchData extends LivingBeing {
           rows.forEach(function(row) {
             let dataElement = {};
             for (let k in row) {
-              if (k == 'protocol_header' || k == 'data_header') {
+              if (k == 'protocol_header') {
                 Object.assign(dataElement, row[k]);
-              } else if (k == 'sid' || k == 'correlation_id') {
+              }
+              else if (k == 'data_header') {
+
+                if((!row['data_header'] || Object.keys(row['data_header']).length < 50) && row["raw"])
+                {
+                    row['data_header'] = JSON.parse(row["raw"]);
+                }
+                
+                Object.assign(dataElement, row[k]);                
+              }
+               else if (k == 'sid' || k == 'correlation_id') {
                 dataElement[k] = row[k];
                 sid[row[k]] = row[k];
+              } else if (k == 'raw') {
+                    if((!row[k] || row[k].length < 50) && row["data_header"])
+                    {
+                        Object.assign(dataElement, JSON.parse(row[k]));
+                        row[k] = JSON.stringify(row["data_header"]);                        
+                    }                                                    
+                    
+                    dataElement[k] = row[k];
               } else {
                 dataElement[k] = row[k];
               }

@@ -356,12 +356,28 @@ class SearchData extends LivingBeing {
       throw new Error('fail to get data full'+err);
     }
   }
+  
+  async getTransactionDataRaw(table, columns, fieldKey, dataWhere, timeWhere) {
+    try {
+      return await this.dataDb(table)
+        .whereRaw(fieldKey, dataWhere)
+        .whereBetween('create_date', timeWhere)
+        .select(columns)
+        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .then(function(rows) {
+          return rows;
+        });
+    } catch (err) {
+      throw new Error('fail to get data full'+err);
+    }
+  }
 
   async getTransaction(columns, table, data, correlation, doexp) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
       let dataSrcField = {};
+      let inputObject = {};      
 
       /* jshint -W089 */
 
@@ -383,15 +399,40 @@ class SearchData extends LivingBeing {
     });
 
    */
+
       /* MAIN REQUEST */
       let dataRow = await this.getTransactionData(table, columns, 'sid', dataWhere, timeWhere);
       // let dataRow = []
+      
+      dataRow.sort(function(a, b) {
+        return a.create_date - b.create_date;
+      });
 
       if (!isEmpty(correlation)) {
         dataRow.forEach(function(row) {
           /* looping over correlation object and extraction keys */
           correlation.forEach(function(corrs) {
             let sf = corrs['source_field'];
+            
+            if(corrs['lookup_match_field'] && corrs['lookup_match_value']) 
+            {
+                  let lmField = corrs['lookup_match_field'];  
+                  let lmValues = corrs['lookup_match_value'];                                    
+                  let expLookupValue;
+                  
+                  if (lmField.indexOf('.') > -1) 
+                  {
+                      let emArray = lmField.split('.', 2);
+                      expLookupValue = row[emArray[0]][emArray[1]];
+                  } else {
+                      expLookupValue = row[lmField];
+                  }  
+                                                                                                                        
+                  if(lmValues.includes(expLookupValue)) 
+                  {
+                        return;
+                  }                  
+            }
 
             let nKey = null;
             if (sf.indexOf('.') > -1) {
@@ -403,13 +444,16 @@ class SearchData extends LivingBeing {
             if (!dataSrcField.hasOwnProperty(sf)) {
               dataSrcField[sf] = [];
             }
+            
             if (nKey != null && dataSrcField[sf].indexOf(nKey) == -1) {
+            
+              if(dataSrcField[sf].length > 0 && corrs['lookup_match_first']) return;
               dataSrcField[sf].push(nKey);
             }
           });
         });
       }
-
+      
       /*
     correlation [ { source_field: 'data_header.callid',
     lookup_id: 100,
@@ -431,7 +475,6 @@ class SearchData extends LivingBeing {
         timeWhere = [];
 
         let newDataRow=[];
-        newDataWhere = newDataWhere.concat(dataWhere);
         newDataWhere = newDataWhere.concat(dataSrcField[sourceField]);
         table = 'hep_proto_'+lookupId+'_'+lookupProfile;
 
@@ -463,19 +506,60 @@ class SearchData extends LivingBeing {
             let callIdFunction = new Function('data', corrs.callid_function);
             let callIdArray = callIdFunction(dataWhere);
             searchPayload.param['search'] = lookupField.replace('$source_field', callIdArray.join('|'));
-          }
+          }                    
 
-          const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
-          newDataRow = JSON.parse(dataJson);
+          try {
+                    const dataJson = await remotedata.getRemoteData(['id', 'sid', 'protocol_header', 'data_header'], table, searchPayload);
+                    newDataRow = JSON.parse(dataJson);
 
-          if (!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty('output_function')) {
-            let outFunction = new Function('data', corrs.output_function);
-            newDataRow = outFunction(newDataRow.data);
-          }
+                    if (!isEmpty(newDataRow) && newDataRow.hasOwnProperty('data') && corrs.hasOwnProperty('output_function')) {
+                          let outFunction = new Function('data', corrs.output_function);
+                          newDataRow = outFunction(newDataRow.data);
+                    }                    
+          } catch (err) {
+              var errorString = new Error('fail to get data in lookup [0]: '+err);
+              console.log(errorString);
+          }               
+         
         } else {
-          newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
-        }
+        
+            try {        
+                /* include the original CALLIDs */
+                if(sourceField == "data_header.callid") {
+                        newDataWhere = newDataWhere.concat(dataWhere);  
+                }
+                
+                if (corrs.hasOwnProperty('input_function')) {
+                    let inputIdFunction = new Function('data', corrs.input_function);
+                    let extraIdArray = inputIdFunction(newDataWhere);
+                    newDataWhere = extraIdArray;
+                }
 
+                /* JSON */
+                if (lookupField.indexOf('->>') > -1) 
+                {
+                      let lookupCast = "varchar";                      
+                      if(corrs['lookup_field_cast']) lookupCast=corrs['lookup_field_cast'];
+                
+                      let emArray = lookupField.split('->>', 2);
+                      let strQuestion = "?,";
+                      let fadKey = "cast("+emArray[0]+"->>? as "+lookupCast+") IN ("+strQuestion.repeat((newDataWhere.length-1))+"?)";
+                      let fadValue = [];
+                      fadValue.push(emArray[1]);                      
+                      fadValue = fadValue.concat(newDataWhere);                                            
+                      
+                      newDataRow = await this.getTransactionDataRaw(table, columns, fadKey, fadValue, timeWhere);                      
+                      
+                } else {
+
+                      newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
+                }  
+                
+            } catch (err) {
+              var errorString = new Error('fail to get data in lookup ['+lookupId+']: '+err);
+              console.log(errorString);
+          }               
+        }
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
 
@@ -565,11 +649,29 @@ class SearchData extends LivingBeing {
           rows.forEach(function(row) {
             let dataElement = {};
             for (let k in row) {
-              if (k == 'protocol_header' || k == 'data_header') {
+              if (k == 'protocol_header') {
                 Object.assign(dataElement, row[k]);
-              } else if (k == 'sid' || k == 'correlation_id') {
+              }
+              else if (k == 'data_header') {
+
+                if((!row['data_header'] || Object.keys(row['data_header']).length < 50) && row["raw"])
+                {
+                    row['data_header'] = JSON.parse(row["raw"]);
+                }
+                
+                Object.assign(dataElement, row[k]);                
+              }
+               else if (k == 'sid' || k == 'correlation_id') {
                 dataElement[k] = row[k];
                 sid[row[k]] = row[k];
+              } else if (k == 'raw') {
+                    if((!row[k] || row[k].length < 50) && row["data_header"])
+                    {
+                        Object.assign(dataElement, JSON.parse(row[k]));
+                        row[k] = JSON.stringify(row["data_header"]);                        
+                    }                                                    
+                    
+                    dataElement[k] = row[k];
               } else {
                 dataElement[k] = row[k];
               }

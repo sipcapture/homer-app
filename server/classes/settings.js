@@ -292,7 +292,6 @@ class Settings extends LivingBeing {
         let lookupRange = hepSubMap[key]['lookup_range'];                              
 
         let query = parseQuery(lookupQuery, callId, fromts, tots, lookupRange);        
-        console.log("DATA", query);
         dataWhereIn.push(lookupProfile);
         const dataAgent =  await this.configDb(table)
           .select(columns)

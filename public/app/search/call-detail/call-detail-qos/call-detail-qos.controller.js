@@ -45,126 +45,95 @@ class CallDetailQos {
     
       let dataRtcp=[], dataRtp=[];
       
-      if(this._raw.data["rtcp"]) dataRtcp = this._raw.data["rtcp"].data;
-      //if(this._raw.data["rtp"]) dataRtp = this._raw.data["rtp"].data;
+      if(this._raw.data["rtcp"] && this._raw.data["rtcp"].data) {
+        
+        dataRtcp = this._raw.data["rtcp"].data;
+        dataRtcp.forEach((report) => {
 
-      dataRtcp.forEach((report) => {
+          var rtcp = JSON.parse(report.raw) || {};
+          var label = report.srcIp+'->'+report.dstIp;
+          var sid = report.sid;
+
+          if (rtcp.sender_information){
+            if (rtcp.sender_information.packets){
+              var ts = 'packets'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.sender_information.packets, 
+                                                label:label, sid:sid })
+            }
+            if (rtcp.sender_information.octets){
+              var ts = 'octets'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.sender_information.octets, 
+                                                label:label, sid:sid })
+            }
+          }
+          if (rtcp.report_count > 0){
+            if (rtcp.report_blocks[rtcp.report_count-1].highest_seq_no){
+              var ts = 'highest_seq_no'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.report_blocks[rtcp.report_count-1].highest_seq_no, 
+                                                label:label, sid:sid })
+            }
+            if (rtcp.report_blocks[rtcp.report_count-1].ia_jitter){
+              var ts = 'ia_jitter'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.report_blocks[rtcp.report_count-1].ia_jitter, 
+                                                label:label, sid:sid })
+            }
+            if (rtcp.report_blocks[rtcp.report_count-1].dlsr){
+              var ts = 'dlsr'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.report_blocks[rtcp.report_count-1].dlsr, 
+                                                label:label, sid:sid })
+            }
+            if (rtcp.report_blocks[rtcp.report_count-1].packets_lost){
+              var ts = 'packets_lost'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.report_blocks[rtcp.report_count-1].packets_lost, 
+                                                label:label, sid:sid })
+            }
+            if (rtcp.report_blocks[rtcp.report_count-1].lsr){
+              var ts = 'lsr'; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
+                                                y: rtcp.report_blocks[rtcp.report_count-1].lsr, 
+                                                label:label, sid:sid })
+            }
+          }
+        });
+
+      }
       
-        var rtcp = JSON.parse(report.raw) || {};
-        var label = report.srcIp+'->'+report.dstIp;
-        var sid = report.sid;
+      if(this._raw.data["rtp"] && this._raw.data["rtp"].data) {
         
-        if (rtcp.sender_information){
-          if (rtcp.sender_information.packets){
-            var ts = 'packets'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.sender_information.packets, 
-                                              label:label, sid:sid })
-          }
-          if (rtcp.sender_information.octets){
-            var ts = 'octets'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.sender_information.octets, 
-                                              label:label, sid:sid })
-          }
-        }
-        if (rtcp.report_count > 0){
-          if (rtcp.report_blocks[rtcp.report_count-1].highest_seq_no){
-            var ts = 'highest_seq_no'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.report_blocks[rtcp.report_count-1].highest_seq_no, 
-                                              label:label, sid:sid })
-          }
-          if (rtcp.report_blocks[rtcp.report_count-1].ia_jitter){
-            var ts = 'ia_jitter'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.report_blocks[rtcp.report_count-1].ia_jitter, 
-                                              label:label, sid:sid })
-          }
-          if (rtcp.report_blocks[rtcp.report_count-1].dlsr){
-            var ts = 'dlsr'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.report_blocks[rtcp.report_count-1].dlsr, 
-                                              label:label, sid:sid })
-          }
-          if (rtcp.report_blocks[rtcp.report_count-1].packets_lost){
-            var ts = 'packets_lost'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.report_blocks[rtcp.report_count-1].packets_lost, 
-                                              label:label, sid:sid })
-          }
-          if (rtcp.report_blocks[rtcp.report_count-1].lsr){
-            var ts = 'lsr'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtcp.report_blocks[rtcp.report_count-1].lsr, 
-                                              label:label, sid:sid })
-          }
-        }
-      });
-      
-      dataRtp.forEach((report) => {
-        var rtp = JSON.parse(report.raw) || {};
-        var label = report.srcIp+'->'+report.dstIp;
-        var sid = report.sid;
-        
-        //{\"CORRELATION_ID\":\"euh25c@127.0.0.1\",\"RTP_SIP_CALL_ID\":\"euh25c@127.0.0.1\",
-        //\"DELTA\":19.983,\"JITTER\":0.017,\"REPORT_TS\":1561991946.563,\"TL_BYTE\":0,\"SKEW\":0.000,\"TOTAL_PK\":1512,\"EXPECTED_PK\":1512,\"PACKET_LOSS\":0,\"SEQ\":0,\"MAX_JITTER\":0.010,
-        //\"MAX_DELTA\":20.024,\"MAX_SKEW\":0.172,\"MEAN_JITTER\":0.005,\"MIN_MOS\":4.032, \"MEAN_MOS\":4.032, \"MOS\":4.032,\"RFACTOR\":80.200,\"MIN_RFACTOR\":80.200,\"MEAN_RFACTOR\":80.200,
-        //\"SRC_IP\":\"64.249.222.113\", \"SRC_PORT\":26872, \"DST_IP\":\"55.66.77.86\",\"DST_PORT\":51354,\"SRC_MAC\":\"00-30-48-7E-5D-C6\",\"DST_MAC\":\"00-12-80-D7-38-5E\",\"OUT_ORDER\":0,
-        //\"SSRC_CHG\":0,\"CODEC_PT\":9, \"CLOCK\":8000,\"CODEC_NAME\":\"g722\",\"DIR\":0,\"REPORT_NAME\":\"64.249.222.113:26872\",\"PARTY\":0,\"TYPE\":\"PERIODIC\"}","create_date":1561991953000},
-        
-        
-        if (rtp.TOTAL_PK){
-          if (rtp.TOTAL_PK){
-            var ts = 'packets'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.TOTAL_PK, 
-                                              label:label, sid:sid })
-          }
-          if (rtp.EXPECTED_PK){
-            var ts = 'expected'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.EXPECTED_PK, 
-                                              label:label, sid:sid })
-          }
-        }
-        
-        if (rtp.report_count > 0){
-          if (rtp.report_blocks[rtp.report_count-1].highest_seq_no){
-            var ts = 'highest_seq_no'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.report_blocks[rtp.report_count-1].highest_seq_no, 
-                                              label:label, sid:sid })
-          }
-          if (rtp.report_blocks[rtp.report_count-1].ia_jitter){
-            var ts = 'ia_jitter'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.report_blocks[rtp.report_count-1].ia_jitter, 
-                                              label:label, sid:sid })
-          }
-          if (rtp.report_blocks[rtp.report_count-1].dlsr){
-            var ts = 'dlsr'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.report_blocks[rtp.report_count-1].dlsr, 
-                                              label:label, sid:sid })
-          }
-          if (rtp.report_blocks[rtp.report_count-1].packets_lost){
-            var ts = 'packets_lost'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.report_blocks[rtp.report_count-1].packets_lost, 
-                                              label:label, sid:sid })
-          }
-          if (rtp.report_blocks[rtp.report_count-1].lsr){
-            var ts = 'lsr'; this._prepare(ts);
-            this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'), 
-                                              y: rtp.report_blocks[rtp.report_count-1].lsr, 
-                                              label:label, sid:sid })
-          }
-        }
-      });
+        dataRtp = this._raw.data["rtp"].data;
+        dataRtp.forEach((report) => {
+          var rtp = JSON.parse(report.raw) || {};
+          var label = report.srcIp+'->'+report.dstIp;
+          var sid = report.sid;
+
+          //{\"CORRELATION_ID\":\"euh25c@127.0.0.1\",\"RTP_SIP_CALL_ID\":\"euh25c@127.0.0.1\",
+          //\"DELTA\":19.983,\"JITTER\":0.017,\"REPORT_TS\":1561991946.563,\"TL_BYTE\":0,\"SKEW\":0.000,\"TOTAL_PK\":1512,\"EXPECTED_PK\":1512,\"PACKET_LOSS\":0,\"SEQ\":0,\"MAX_JITTER\":0.010,
+          //\"MAX_DELTA\":20.024,\"MAX_SKEW\":0.172,\"MEAN_JITTER\":0.005,\"MIN_MOS\":4.032, \"MEAN_MOS\":4.032, \"MOS\":4.032,\"RFACTOR\":80.200,\"MIN_RFACTOR\":80.200,\"MEAN_RFACTOR\":80.200,
+          //\"SRC_IP\":\"64.249.222.113\", \"SRC_PORT\":26872, \"DST_IP\":\"55.66.77.86\",\"DST_PORT\":51354,\"SRC_MAC\":\"00-30-48-7E-5D-C6\",\"DST_MAC\":\"00-12-80-D7-38-5E\",\"OUT_ORDER\":0,
+          //\"SSRC_CHG\":0,\"CODEC_PT\":9, \"CLOCK\":8000,\"CODEC_NAME\":\"g722\",\"DIR\":0,\"REPORT_NAME\":\"64.249.222.113:26872\",\"PARTY\":0,\"TYPE\":\"PERIODIC\"}","create_date":1561991953000},
+
+          var rtp_fields = ["TOTAL_PK","EXPECTED_PK","JITTER","MOS","DELTA","PACKET_LOSS", "OUT_ORDER"];
+          rtp_fields.forEach(function(field){
+            if (rtp[field]){
+              var ts = field; this._prepare(ts);
+              this._reports[ts][0].values.push({ x: report.timeSeconds+''+(report.timeUseconds||'000'),
+                                                y: rtp[field],
+                                                label:label, sid:sid })
+            }
+          }, this);
+
+        });
+      }
+
       
     } catch (err) {
-      this.$log.error(['CallDetailQos'], `process RTCP reports: ${err.message}: ${err.stack}`);
+      this.$log.error(['CallDetailQos'], `process QOS reports: ${err.message}: ${err.stack}`);
     }
   }
 

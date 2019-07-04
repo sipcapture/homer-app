@@ -157,8 +157,8 @@ class ProtosearchWidget {
     console.log("LIMIT", this.newObject);
     console.log("PREFIX", this.system_prefix);
  
-    if(this.newObject[this.system_prefix+':limit']) {
-          this.newResult.limit = parseInt(this.newObject[this.system_prefix+':limit']);
+    if(this.system_prefix && this.newObject[this.system_prefix+':limit']) {
+          this.newResult.limit = parseInt(this.newObject[this.system_prefix+':limit']);          
     }
     
     this.UserProfile.setProfile(this.system_prefix+':limit', this.newResult.limit);                    

@@ -239,7 +239,10 @@ class SearchData extends LivingBeing {
           } else if (dataElement['payloadType'] == 35) {
             callElement.method = 'Report RTP';
             callElement.method_text = 'Report RTP';
-          }
+          } else if (dataElement['payloadType'] == 54) {
+            callElement.method = 'ISUP';
+            callElement.method_text = 'ISUP message';
+          }                                               
         }
 
         if (!dataElement.hasOwnProperty('srcIp')) {
@@ -269,6 +272,10 @@ class SearchData extends LivingBeing {
           callElement.method = dataElement['method'];
           callElement.method_text = dataElement['method'];
         }
+        if (dataElement.hasOwnProperty('msg_name')) {
+          callElement.method = dataElement['msg_name'];
+          callElement.method_text = dataElement['msg_name'];
+        }                                                                    
         if (dataElement.hasOwnProperty('event')) {
           callElement.method = dataElement['event'];
           callElement.method_text = dataElement['event'];
@@ -555,6 +562,47 @@ class SearchData extends LivingBeing {
                       newDataRow = await this.getTransactionData(table, columns, lookupField, newDataWhere, timeWhere);
                 }  
                 
+                
+                
+		if(corrs['post_aggregation_field'] && corrs['post_aggregation_field'].length > 0 ) 
+                {
+                            let postAggField = corrs['post_aggregation_field'];
+                            let dataPostLookupField = [];
+                 
+                            newDataRow.forEach(function(row) {
+                                let postLookupValue;
+                                if (postAggField.indexOf('.') > -1) {
+                                      let emArray = postAggField.split('.', 2);
+                                      postLookupValue = row[emArray[0]][emArray[1]];
+                                } else {
+                                      postLookupValue = row[postAggField];
+                                }
+                                
+                                if (postLookupValue != null && dataPostLookupField.indexOf(postLookupValue) == -1) {
+                                    dataPostLookupField.push(postLookupValue);
+                                }
+                            });
+                 
+                            if(dataPostLookupField.length > 0)
+                            {
+                                if (postAggField.indexOf('->>') > -1) {
+                                      let lookupCast = "varchar";      
+                                      let emArray = postAggField.split('->>', 2);
+                                      let strQuestion = "?,";
+                                      let fadKey = "cast("+emArray[0]+"->>? as "+lookupCast+") IN ("+strQuestion.repeat((dataPostLookupField.length-1))+"?)";
+                                      let fadValue = [];
+                                      fadValue.push(emArray[1]);
+                                      fadValue = fadValue.concat(dataPostLookupField);
+                                      newDataRow = await this.getTransactionDataRaw(table, columns, fadKey, fadValue, timeWhere);
+                                                  
+                                } else {
+                                      
+                                      let postLF = [];
+                                      postLF.push(postAggField);
+                                      newDataRow = await this.getTransactionData(table, columns, postLF, dataPostLookupField, timeWhere);
+                                }  
+                            }
+                }                                            
             } catch (err) {
               var errorString = new Error('fail to get data in lookup ['+lookupId+']: '+err);
               console.log(errorString);

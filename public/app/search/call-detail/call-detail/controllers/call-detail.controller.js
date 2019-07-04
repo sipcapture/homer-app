@@ -278,7 +278,14 @@ class CallDetail {
         /*  TIMELINE TEST END */
 
         this.qosData = await this.SearchService.searchQOSReport(data);
-        this.enable.qoschart = (this.qosData && this.qosData.length);
+        
+        if(this.qosData && 
+              (	(this.qosData.rtcp && this.qosData.rtcp.data.length > 0)
+              || (this.qosData.rtp && this.qosData.rtp.data.length > 0)))
+        {        
+              this.enable.qoschart = true;
+        }
+        
         await this.showLogReport(data);
 
         await this.showHepSubReport(data);
@@ -636,7 +643,6 @@ class CallDetail {
         });
         
         this.hepsubreport = msg;
-        console.log("REPO", this.hepsubreport);
       }
     }).catch((err) => {
       this.$log.error(['CallDetail'], 'show hepsub report', err);
@@ -659,8 +665,10 @@ class CallDetail {
   }
 
   showRtcReport(rdata) {
+  
     this.SearchService.searchRtcReport(rdata).then((msg) => {
-      if (msg && msg.length > 0) {
+    
+      if (msg && (msg.rtcp && msg.rtcp.data.length > 0)) {
         this.enable.report.rtcp = true;
         this.rtcreport = msg;
       }

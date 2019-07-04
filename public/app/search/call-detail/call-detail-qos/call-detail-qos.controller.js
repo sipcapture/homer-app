@@ -29,8 +29,8 @@ class CallDetailQos {
   }
 
   _sortReports() {
-    //if(this._raw.data['rtcp']) this._raw.data['rtcp'].sort((a,b) => (a.create_date > b.create_date) ? 1 : ((b.create_date > a.create_date) ? -1 : 0));
-    //if(this._raw.data['rtp']) this._raw.data['rtp'].sort((a,b) => (a.create_date > b.create_date) ? 1 : ((b.create_date > a.create_date) ? -1 : 0));
+    if(this._raw.data['rtcp']) this._raw.data['rtcp'].data.sort((a,b) => (a.create_date > b.create_date) ? 1 : ((b.create_date > a.create_date) ? -1 : 0));
+    if(this._raw.data['rtp']) this._raw.data['rtp'].data.sort((a,b) => (a.create_date > b.create_date) ? 1 : ((b.create_date > a.create_date) ? -1 : 0));
   }
     
   _prepare(label){
@@ -45,10 +45,11 @@ class CallDetailQos {
     
       let dataRtcp=[], dataRtp=[];
       
-      if(this._raw.data["rtcp"]) dataRtcp = this._raw.data["rtcp"];
-      if(this._raw.data["rtp"]) dataRtp = this._raw.data["rtp"];
-    
+      if(this._raw.data["rtcp"]) dataRtcp = this._raw.data["rtcp"].data;
+      //if(this._raw.data["rtp"]) dataRtp = this._raw.data["rtp"].data;
+
       dataRtcp.forEach((report) => {
+      
         var rtcp = JSON.parse(report.raw) || {};
         var label = report.srcIp+'->'+report.dstIp;
         var sid = report.sid;
@@ -105,7 +106,7 @@ class CallDetailQos {
         var rtp = JSON.parse(report.raw) || {};
         var label = report.srcIp+'->'+report.dstIp;
         var sid = report.sid;
-  
+        
         //{\"CORRELATION_ID\":\"euh25c@127.0.0.1\",\"RTP_SIP_CALL_ID\":\"euh25c@127.0.0.1\",
         //\"DELTA\":19.983,\"JITTER\":0.017,\"REPORT_TS\":1561991946.563,\"TL_BYTE\":0,\"SKEW\":0.000,\"TOTAL_PK\":1512,\"EXPECTED_PK\":1512,\"PACKET_LOSS\":0,\"SEQ\":0,\"MAX_JITTER\":0.010,
         //\"MAX_DELTA\":20.024,\"MAX_SKEW\":0.172,\"MEAN_JITTER\":0.005,\"MIN_MOS\":4.032, \"MEAN_MOS\":4.032, \"MOS\":4.032,\"RFACTOR\":80.200,\"MIN_RFACTOR\":80.200,\"MEAN_RFACTOR\":80.200,
@@ -181,6 +182,7 @@ class CallDetailQos {
   }
 
   _configureChart() {
+    
     this.chartOptions = {
       chart: {
         type: 'multiBarChart',

@@ -116,11 +116,11 @@ class CallDetailExport {
   getCallFileName() {
     // const transaction = this.transaction.calldata[0];
     // const tsHms = new Date(transaction.milli_ts);
-    const transaction = 'call-';
+    const transaction = 'export-';
     const tsHms = new Date();
     const date = (tsHms.getMonth() + 1) + '/' + tsHms.getDate() + '/' + tsHms.getFullYear();
     const time = tsHms.getHours() + ':' + tsHms.getMinutes() + ':' + tsHms.getSeconds();
-    return `HEPIC-${transaction.destination_ip}-${transaction.ruri_user}-${date} ${time}`;
+    return `HOMER-${transaction}-${date} ${time}`;
   }
 
   makePcapText(fdata, type) {

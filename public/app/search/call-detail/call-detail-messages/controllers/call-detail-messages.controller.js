@@ -25,6 +25,7 @@ class CallDetailMessages {
     else if (parseInt(type) == 1) return 'SIP';
     else if (parseInt(type) == 100) return 'LOG';
     else if (parseInt(type) == 88) return 'REST';
+    else if (parseInt(type) == 54) return 'ISUP';
     else if (parseInt(type) == 89) return 'NET';
     else if (parseInt(type) == 4) return 'WebRTC';
     else return 'Unknown';

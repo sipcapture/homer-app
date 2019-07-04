@@ -99,6 +99,7 @@ class CallDetailQos {
                                                 y: rtcp.report_blocks[rtcp.report_count-1].lsr, 
                                                 label:label, sid:sid })
             }
+            
           }
         });
 

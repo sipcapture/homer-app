@@ -2478,6 +2478,9 @@ span.navText {
 .ui-grid-header-cell-wrapper {
   font-size: 11px; }
 
+.ui-grid-viewport {
+  overflow-x: auto !important; }
+
 /* debug: force grid size */
 .ui-grid-contents-wrapper {
   height: auto;
@@ -2807,6 +2810,7 @@ body, html, main {
 	border-bottom-left-radius: 0;
 }
 .ui-grid-viewport {
+	overflow-x: hidden !important;
 	border-right: 0px solid rgba(151, 151, 151, .28);
 }
 .left.ui-grid-render-container-left.ui-grid-render-container.ui-grid-render-container {

@@ -46,6 +46,8 @@ class ProtosearchWidget {
     this.method_list = dataMethodList;
     this.db_node_selected = [];
 
+    let that = this;
+
     this.SearchService.loadNode().then((data) => {
       this.db_node = data.length ? data : dataDbNode;
     }).then(() => {
@@ -60,15 +62,15 @@ class ProtosearchWidget {
       this.newResult = this.UserProfile.profileScope.result;
       console.log("ZZZ", this.newResult);
       
-      if(this.newResult[this.system_prefix+":limit"]) {
-          this.newResult[this.system_prefix+":limit"] = this.newResult[this.system_prefix+":limit"] || this.UserProfile.profileScope[this.system_prefix+":limit"];
+      if(this.newResult[that.system_prefix+":limit"]) {
+          this.newResult[that.system_prefix+":limit"] = this.newResult[that.system_prefix+":limit"] || this.UserProfile.profileScope[that.system_prefix+":limit"];
       }
       else this.newResult.limit = this.newResult.limit || this.UserProfile.profileScope.limit;
       
       
-      this.newResult.restype = this.type_result[0];
+      this.newResult.restype = that.type_result[0];
       this.newNode = this.UserProfile.profileScope.node;
-      this.newNode.node = this.db_node[0];
+      this.newNode.node = that.db_node[0];
       this.timerange = this.UserProfile.profileScope.timerange;
       // END To-do
     }).catch((error) => {
@@ -146,13 +148,14 @@ class ProtosearchWidget {
       this.searchObject[subKey]=[];
     }
         
-    //this.system_prefix = "system:"+this._widget.config.protocol_id.value+":"+this._widget.config.protocol_profile.value;        
+    this.system_prefix = "system:"+this._widget.config.protocol_id.value+":"+this._widget.config.protocol_profile.value;        
     
     this.UserProfile.setProfile('search', this.searchObject);
     this.UserProfile.setProfile('result', this.newResult);
     this.UserProfile.setProfile('node', this.newNode);
 
     console.log("LIMIT", this.newObject);
+    console.log("PREFIX", this.system_prefix);
  
     if(this.newObject[this.system_prefix+':limit']) {
           this.newResult.limit = parseInt(this.newObject[this.system_prefix+':limit']);

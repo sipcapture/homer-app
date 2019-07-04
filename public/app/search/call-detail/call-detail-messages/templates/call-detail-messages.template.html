@@ -35,7 +35,7 @@
             {{row.event ? row.event : "-" }}
             </span>
           </td>
-          <td width="10%" ng-if="(row.method || row.reply_reason) && !row.event">
+	  <td width="10%" ng-if="(row.method || row.reply_reason) && !row.event && !row.msg_name">
             <span ng-style="
               (row.reply_reason > 399) && {'color':'red'} || 
               (row.reply_reason > 100 && row.reply_reason < 299) && {'color':'green'} ||
@@ -43,7 +43,10 @@
             {{row.method ? row.method : row.reply_reason}}
             </span>
           </td>
-          <td width="10%" ng-if="!row.method && !row.reply_reason && !row.event">
+          <td width="10%" ng-if="row.msg_name && !row.event && !row.method && !row.reply_reason">
+            <span ng-style="{'color':'green'}">{{row.msg_name}}</span>
+          </td>
+          <td width="10%" ng-if="!row.method && !row.reply_reason && !row.event && !row.msg_name">
             <span ng-style="{'color':'red'}">{{$ctrl.transactionCheck(row.payloadType)}}</span>
           </td>
           <td width="8%">{{ (row.raw).length }}</td>

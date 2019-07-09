@@ -33,7 +33,16 @@ class LdapAuth {
 
               try {
                 
-                  let client = ldap.createClient({url: this.ldapAuth.url});      
+                  var optionsTls = {
+                     rejectUnauthorized: false,
+                     reconnect: true
+                  };
+                  
+                  let client = ldap.createClient({
+                        url: this.ldapAuth.url,
+                        tlsOptions: optionsTls
+                  });    
+                    
                   let opts = {
                         filter: this.ldapAuth.filter.replace("%USERNAME\%", this.username),		
                         scope: this.ldapAuth.scope
@@ -43,23 +52,54 @@ class LdapAuth {
                   let dnRetrieved =  userDN + ',' + this.ldapAuth.dn;
 
                   let that = this;
-                  client.bind(dnRetrieved, this.password, function(res) {
-                          client.search(that.ldapAuth.dn, opts, function(err, res) {
-                                res.on('searchEntry', function(entry) {
-                                        userObject.auth = true;
-                                        userObject.data = entry.object;
-                                        userObject.guid = entry.object[that.ldapAuth.uidNumber];
-                                        //console.log('entry: ' + JSON.stringify(entry.object));
-                                        //console.log('userObject: ' +  JSON.stringify(userObject));
-                                });
-                                res.on('end', function(result) {
-                                      //console.log('status: ' + result.status);
-                                      //console.log("OBJECT", userObject);
-                                      client.unbind();	
-                                      return resolve(userObject);
-                                });                      
-                          });                                  		                          
-                  });
+
+                  /* TLS */
+                  if(this.ldapAuth.tls)
+                  {
+                          var controls = client.controls;
+                          
+                          client.starttls(optionsTls, controls, function(err, res) {
+
+                              console.log("StartTTLS connection established.")
+                              
+                              client.bind(dnRetrieved, this.password, function(res) {
+                                      client.search(that.ldapAuth.dn, opts, function(err, res) {
+                                              res.on('searchEntry', function(entry) {
+                                                    userObject.auth = true;
+                                                    userObject.data = entry.object;
+                                                    userObject.guid = entry.object[that.ldapAuth.uidNumber];
+                                                    //console.log('entry: ' + JSON.stringify(entry.object));
+                                                    //console.log('userObject: ' +  JSON.stringify(userObject));
+                                              });
+                                              res.on('end', function(result) {
+                                                    //console.log('status: ' + result.status);
+                                                    //console.log("OBJECT", userObject);
+                                                    client.unbind();	
+                                                    return resolve(userObject);
+                                              });                      
+                                      });                                  		                                                          
+                              });                              
+                          });
+                  }                  
+                  else {                  
+                        client.bind(dnRetrieved, this.password, function(res) {
+                                client.search(that.ldapAuth.dn, opts, function(err, res) {
+                                      res.on('searchEntry', function(entry) {
+                                              userObject.auth = true;
+                                              userObject.data = entry.object;
+                                              userObject.guid = entry.object[that.ldapAuth.uidNumber];
+                                              //console.log('entry: ' + JSON.stringify(entry.object));
+                                              //console.log('userObject: ' +  JSON.stringify(userObject));
+                                      });
+                                      res.on('end', function(result) {
+                                            //console.log('status: ' + result.status);
+                                            //console.log("OBJECT", userObject);
+                                            client.unbind();	
+                                            return resolve(userObject);
+                                      });                      
+                                });                                  		                                                          
+                        });
+                  }
         
             } catch (err) {
                 throw new Error(`fail to get user: ${err.message}`);

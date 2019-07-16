@@ -2483,7 +2483,7 @@ span.navText {
 
 /* debug: force grid size */
 .ui-grid-contents-wrapper {
-  height: auto;
+  height: calc(100% - 100px);
   top: 80px;
 }
 
@@ -2758,7 +2758,8 @@ body, html, main {
 }
 .gridStyle {
   border: none;
-  height: 80vh;
+  /* height: 80vh; */
+  height: calc(100vh - 150px);
   /*height: 490px !important;*/
 }
 /*.ui-grid-render-container:after {
@@ -2781,7 +2782,8 @@ body, html, main {
 	height: 100%;
 }
 .ui-grid-viewport {
-	height: 60vh !important;
+  height: calc(100% - 170px) !important;
+	/* height: 60vh !important; */
 	/* height: calc(100% - 90px) !important; */
 }
 .ui-grid-pinned-container.ui-grid-pinned-container-left {

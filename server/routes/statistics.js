@@ -57,7 +57,7 @@ export default function statistics(server) {
 
       stats.getRetentions(database).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('retentions has not been found'));
+          return reply(Boom.notFound('retentions have not been found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -82,7 +82,7 @@ export default function statistics(server) {
 
       stats.getMeasurements(databaseId).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('measurements has been not found'));
+          return reply(Boom.notFound('measurements have not been found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -120,7 +120,7 @@ export default function statistics(server) {
       
       stats.getTagsKeys(search).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('tags keys has been not found'));
+          return reply(Boom.notFound('tags keys have been not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -158,7 +158,7 @@ export default function statistics(server) {
       
       stats.getTagsValues(search).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('tags values was not found'));
+          return reply(Boom.notFound('tags values were not found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -198,7 +198,7 @@ export default function statistics(server) {
       
       stats.getMetrics(query).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('metrics has been not found'));
+          return reply(Boom.notFound('metrics have not been found'));
         }
         return reply(data);
       }).catch(function(error) {
@@ -239,7 +239,7 @@ export default function statistics(server) {
       
       stats.getData(payload).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('stats data has been not found'));
+          return reply(Boom.notFound('stats data has not been found'));
         }
         return reply(data);
       }).catch(function(error) {

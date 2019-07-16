@@ -57,7 +57,7 @@ export default function statistics(server) {
 
       stats.getRetentions(database).then(function(data) {
         if (!data) {
-          return reply(Boom.notFound('retentions has been not found'));
+          return reply(Boom.notFound('retentions has not been found'));
         }
         return reply(data);
       }).catch(function(error) {

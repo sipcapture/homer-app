@@ -29,7 +29,7 @@ export default function statistics(server) {
                          
       prometheus.getValues(metrics, fromts, tots, precision).then(function(data) {
         if (!data) {
-            return reply(Boom.notFound('prometheus values has been not found'));
+            return reply(Boom.notFound('prometheus values have not been found'));
         }
         return reply(data);
      }).catch(function(error) {
@@ -50,7 +50,7 @@ export default function statistics(server) {
       const prometheus = new Prometheus(server);      
       prometheus.getLabels().then(function(data) {
         if (!data) {
-            return reply(Boom.notFound('prometheus labels has been not found'));
+            return reply(Boom.notFound('prometheus labels have not been found'));
         }
         return reply(data);
       }).catch(function(error) {

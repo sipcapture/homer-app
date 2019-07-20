@@ -24,7 +24,7 @@ class SearchData extends LivingBeing {
   return knex('books').select(knex.raw("data->'author' as author"))
     .whereRaw("data->'author'->>'first_name'=? ",[books[0].author.first_name])
   */
-  getSearchData(columns, table, data) {
+  getSearchData(columns, table, data, aliasData) {
     let sData = data.param.search;
     let sLimit = data.param.limit;
     let dataWhereRawKey = [];
@@ -96,6 +96,7 @@ class SearchData extends LivingBeing {
       .then(function(rows) {
         let dataReply = [];
         let dataKeys = [];
+	let alias = {};
 
         rows.forEach(function(row) {
           let dataElement = {};
@@ -106,7 +107,36 @@ class SearchData extends LivingBeing {
               dataElement[k] = row[k];
             }
           }
+
           dataElement['table'] = table;
+          
+  	  let srcIpPort = dataElement.srcIp+':'+dataElement.srcPort;
+          let dstIpPort= dataElement.dstIp+':'+dataElement.dstPort;
+        
+	  let srcIpPortZero = dataElement.srcIp+':'+0;
+	  let dstIpPortZero= dataElement.dstIp+':'+0;
+
+          /* fixed aliases */
+	  if(aliasData.hasOwnProperty(srcIpPort)) {
+          	alias[srcIpPort] = aliasData[srcIpPort];
+          }
+	  else if(aliasData.hasOwnProperty(srcIpPortZero)) {
+          	alias[srcIpPort] = aliasData[srcIpPortZero];
+          }
+
+          if(aliasData.hasOwnProperty(dstIpPort)) {
+		alias[dstIpPort] = aliasData[dstIpPort];
+          }
+          else if(aliasData.hasOwnProperty(dstIpPortZero)) {
+		alias[dstIpPort] = aliasData[dstIpPortZero];
+          }          
+          
+	  if (!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = srcIpPort;
+	  if (!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = dstIpPort;
+
+	  dataElement.aliasSrc =  alias[srcIpPort];
+	  dataElement.aliasDst =  alias[dstIpPort];
+
           dataReply.push(dataElement);
           let keys = Object.keys(dataElement);
           dataKeys = dataKeys.concat(keys.filter(function(i) {
@@ -177,7 +207,7 @@ class SearchData extends LivingBeing {
       });
   }
 
-  async getTransactionSummary(data) {
+  async getTransactionSummary(data, aliasData) {
     try {
       let dataReply = [];
       let dataKeys = [];
@@ -298,10 +328,33 @@ class SearchData extends LivingBeing {
         callElement.dstId = callElement.dstHost+':'+callElement.dstPort;
         let srcIpPort = callElement.srcIp+':'+callElement.srcPort;
         let dstIpPort= callElement.dstIp+':'+callElement.dstPort;
+        
+        let srcIpPortZero = callElement.srcIp+':'+0;
+        let dstIpPortZero= callElement.dstIp+':'+0;
+
+        /* fixed aliases */
+        if(aliasData.hasOwnProperty(srcIpPort)) {
+            alias[srcIpPort] = aliasData[srcIpPort];
+        }
+        else if(aliasData.hasOwnProperty(srcIpPortZero)) {
+            alias[srcIpPort] = aliasData[srcIpPortZero];
+        }
+        
+        if(aliasData.hasOwnProperty(dstIpPort)) {
+            alias[dstIpPort] = aliasData[dstIpPort];
+        }
+        else if(aliasData.hasOwnProperty(dstIpPortZero)) {
+            alias[dstIpPort] = aliasData[dstIpPortZero];
+        }
+
+        if (!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = callElement.srcId;
+        if (!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = callElement.dstId;
+
 
         if (!hosts.hasOwnProperty(callElement.srcId)) {
           let hostElement = {
             hosts: [callElement.srcId],
+            //hosts: [alias[srcIpPort]],
             position: position++,
           };
 
@@ -317,8 +370,8 @@ class SearchData extends LivingBeing {
           hosts[callElement.dstId] = hostElement;
         }
 
-        if (!alias.hasOwnProperty(srcIpPort)) alias[srcIpPort] = callElement.srcId;
-        if (!alias.hasOwnProperty(dstIpPort)) alias[dstIpPort] = callElement.dstId;
+        dataElement.aliasSrc =  alias[srcIpPort];
+        dataElement.aliasDst =  alias[dstIpPort];
 
         callElement.destination = hosts[callElement.dstId].position;
 
@@ -379,7 +432,7 @@ class SearchData extends LivingBeing {
     }
   }
 
-  async getTransaction(columns, table, data, correlation, doexp) {
+  async getTransaction(columns, table, data, correlation, doexp, aliasData) {
     try {
       let sData = data.param.search;
       let dataWhere = [];
@@ -619,7 +672,7 @@ class SearchData extends LivingBeing {
 
       if (doexp) return dataRow;
 
-      const globalReply = await this.getTransactionSummary(dataRow);
+      const globalReply = await this.getTransactionSummary(dataRow, aliasData);
 
       return globalReply;
     } catch (err) {

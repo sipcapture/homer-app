@@ -129,7 +129,7 @@
             this.hostSize++;
           }
 
-          console.log(aliasMap);
+          console.log("ALIASFLOW", aliasMap);
 
           data['calldata'] = this.sipMessages;
           data['hosts'] = Object.keys(hostData).sort(function(a, b) {

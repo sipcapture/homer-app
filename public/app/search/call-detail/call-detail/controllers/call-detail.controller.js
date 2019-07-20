@@ -296,12 +296,13 @@ class CallDetail {
         this.dataLoading = false;
 
         try {
-          console.log('Scanning for Aliases...');
-          this.ip_alias = [];
-          if (data && data.alias) {
-            angular.forEach(data.alias, function(v, k) {
-              this.ip_alias[k.split(':')[0]] = v.split(':')[0];
-              this.ip_alias[k] = v;
+          console.log('Scanning for Aliases...');;
+          this.ip_alias = {};        
+          if (this.call && this.call.alias) {
+            let that = this;
+            angular.forEach(this.call.alias, function(v, k) {            
+               that.ip_alias[k.split(':')[0]] = v.split(':')[0];
+               that.ip_alias[k] = v;
             });
           } else {
             this.ip_alias = [];
@@ -310,6 +311,8 @@ class CallDetail {
           console.log(e);
           this.ip_alias = [];
         }
+        
+        console.log("ALIASES", this.ip_alias);
       }
     } catch (err) {
       this.$log.error(['CallDetail'], 'get call', err);

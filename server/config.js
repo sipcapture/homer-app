@@ -49,8 +49,7 @@ const ldapauth = {
    userdn: 'uid=%USERNAME%',
    filter: '(uid=%USERNAME%)',
    scope: 'sub',
-   uidNumber: 'uidNumber',
-   tls: false
+   uidNumber: 'uidNumber'
 }
 
 export default {

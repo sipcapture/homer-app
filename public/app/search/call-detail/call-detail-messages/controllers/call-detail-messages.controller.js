@@ -8,6 +8,23 @@ class CallDetailMessages {
   $onChanges(bindings) {
     if (Object.keys(bindings.call.currentValue).length) {
       console.log("FILDATA", this.call);
+
+      try {
+          console.log('Scanning for Aliases...');;
+          this.ip_alias = {};
+          if (this.call && this.call.alias) {
+            let that = this;
+            angular.forEach(this.call.alias, function(v, k) {
+               that.ip_alias[k.split(':')[0]] = v.split(':')[0];
+               that.ip_alias[k] = v;
+            });
+          } else {
+            this.ip_alias = [];
+          }
+        } catch(e) {
+          console.log(e);
+          this.ip_alias = [];
+       }
     
       this.feelGrid(this.callid, this.call);
     }

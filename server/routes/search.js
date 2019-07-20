@@ -4,6 +4,7 @@ import {forEach, isEmpty, size} from 'lodash';
 import SearchData from '../classes/searchdata';
 import RemoteData from '../classes/remotedata';
 import Settings from '../classes/settings';
+import Alias from '../classes/alias';
 
 export default function search(server) {
   server.route({
@@ -26,10 +27,19 @@ export default function search(server) {
         },
       },
     },
-    handler: function(request, reply) {
+    handler: async function(request, reply) {
+      const aliasDB = new Alias({server});            
+      const aliasRowData = await aliasDB.getAll(['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
+      const aliasData = {};          
+      aliasRowData.forEach(function(row) {
+            aliasData[row.ip+":"+row.port] = row.alias;
+      });
+              
+      console.log("AAL", aliasData);
+          
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
-      searchdata.getSearchData(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload)
+      searchdata.getSearchData(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload, aliasData)
         .then(function(data) {
           if (!data) {
             return reply(Boom.notFound('data was not found'));
@@ -99,6 +109,16 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       // let userObject = request.auth.credentials;
+
+      const aliasDB = new Alias({server});            
+      const aliasRowData = await aliasDB.getAll(['guid', 'alias', 'ip', 'port', 'mask', 'captureID', 'status']);
+      const aliasData = {};          
+      aliasRowData.forEach(function(row) {
+            aliasData[row.ip+":"+row.port] = row.alias;
+      });
+              
+      console.log("AAL", aliasData);
+      
       const searchTable = 'hep_proto_1_default';
       
       const searchdata = new SearchData(server, request.payload.param);
@@ -108,7 +128,7 @@ export default function search(server) {
       try {
         const correlation = await settings.getCorrelationMap(request.payload);
         const data = await searchdata.getTransaction(['id', 'sid', 'protocol_header', 'data_header', 'raw'],
-          searchTable, request.payload, correlation, false);
+          searchTable, request.payload, correlation, false, aliasData);
      
         if (!data) {
           return reply(Boom.notFound('data was not found'));

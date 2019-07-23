@@ -62,7 +62,13 @@ class LdapAuth {
 
                               console.log("StartTTLS connection established.")
                               
-                              client.bind(dnRetrieved, this.password, function(res) {
+                              client.bind(dnRetrieved, this.password, function(err,res) {
+			              if(err) {
+                                              console.log("ERROR AUTH", err);                        
+                                              client.unbind();
+                                              return resolve(userObject);
+                                      }
+				      
                                       client.search(that.ldapAuth.dn, opts, function(err, res) {
                                               res.on('searchEntry', function(entry) {
                                                     userObject.auth = true;
@@ -82,7 +88,13 @@ class LdapAuth {
                           });
                   }                  
                   else {                  
-                        client.bind(dnRetrieved, this.password, function(res) {
+                        client.bind(dnRetrieved, this.password, function(err,res) {
+				if(err) {
+                                      console.log("ERROR AUTH", err);                        
+                                      client.unbind();
+                                      return resolve(userObject);
+                                }
+				
                                 client.search(that.ldapAuth.dn, opts, function(err, res) {
                                       res.on('searchEntry', function(entry) {
                                               userObject.auth = true;

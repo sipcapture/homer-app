@@ -57,12 +57,12 @@ class LdapAuth {
                   if(this.ldapAuth.tls)
                   {
                           var controls = client.controls;
-                          
+                          var that = this;
                           client.starttls(optionsTls, controls, function(err, res) {
 
                               console.log("StartTTLS connection established.")
                               
-                              client.bind(dnRetrieved, this.password, function(err,res) {
+                              client.bind(dnRetrieved, that.password, function(err,res) {
 			              if(err) {
                                               console.log("ERROR AUTH", err);                        
                                               client.unbind();

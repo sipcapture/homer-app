@@ -25,6 +25,8 @@ class CallDetailFlow {
     this.sid = data.sid;
     data.hostsA = data.hosts[data.hosts.length - 1];
     data.hosts.splice(-1, 1);
+    
+    console.log("ZZZ", data);
     this.hostsflow = data.hosts;
     this.lasthosts = data.hostsA;
     this.messagesflow = data.messages;

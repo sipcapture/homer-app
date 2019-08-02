@@ -81,7 +81,6 @@
           /* how many uniques hosts */
           this.hostSize = 0;
           let data = new Object();
-          console.log(dataSIP);
 
 
           for (var sid in dataSIP.sid) {
@@ -117,6 +116,22 @@
 
           let helem;
           let aliasMap = {};
+	  let ip_alias = {};
+
+	  try {
+		if (dataSIP.alias) {
+			let that = this;
+			angular.forEach(dataSIP.alias, function(v, k) {
+				ip_alias[k.split(':')[0]] = v.split(':')[0];
+				ip_alias[k] = v;
+			});
+			} else {
+				ip_alias = [];
+			}
+	  } catch(e) {
+		console.log(e);
+		ip_alias = [];
+	  }
 
           for (var alias in dataSIP.hosts) {
             hostData[alias] = this.hostSize;
@@ -167,6 +182,8 @@
 
           let hostsData = [];
           var i = 0;
+          
+
 
           angular.forEach(dataSIP['hosts'], function(hdata, key) {
             let value = parseInt(hdata['position']);
@@ -182,6 +199,11 @@
             iaz.color = 'info__rectangle'; // can be info__rectangle_pink, blue
             // iaz.type = "info_caller";
             // iaz.type = "info_recipient";
+		
+
+	    if(ip_alias[key]) {
+		iaz.name = ip_alias[key];
+	    }
 
             hostsData[value] = iaz;
 

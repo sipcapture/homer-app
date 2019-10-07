@@ -12,3 +12,8 @@ server/config.js
 *.iml
 .idea
 out
+
+# direnv and nix-shell
+.envrc
+default.nix
+.direnv.*

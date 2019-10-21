@@ -70,12 +70,18 @@ pem.createCertificate({
   server.connection({
     host: config.http_host || '127.0.0.1',
     port: config.http_port || 8001,
+    "routes": {
+      "cors": true
+    }
   });
 
   server.connection({
     host: config.https_host || '127.0.0.1',
     port: config.https_port || 443,
     tls,
+    "routes": {
+      "cors": true
+    }
   });
 
   // JWT authentication and encryption

@@ -8,6 +8,12 @@ export default function search(server) {
   server.route({
     path: '/api/v3/hepsub/protocols',
     method: 'GET',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     handler: function(request, reply) {
       const hepsubdata = new HepSubData({server});
      
@@ -25,6 +31,12 @@ export default function search(server) {
   server.route({
     path: '/api/v3/hepsub/fields/{id}/{transaction}',
     method: 'GET',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     handler: function(request, reply) {
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
@@ -55,6 +67,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
     },
     handler: async function(request, reply) {
@@ -98,6 +114,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -143,6 +163,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       /*
       validate: {
@@ -192,6 +216,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -259,6 +287,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {

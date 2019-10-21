@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="/" />
+    <title>HOMER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        @keyframes rot001 {
+            0% {            stroke-dashoffset: 268.60617px; transform: rotate(0);
+            } 12.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(0);
+            } 12.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(72.5deg);
+            } 25% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(72.5deg);
+            } 25.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(270deg);
+            } 37.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(270deg);
+            } 37.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(161.5deg);
+            } 50% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(161.5deg);
+            } 50.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(180deg);
+            } 62.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(180deg);
+            } 62.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(251.5deg);
+            } 75% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(251.5deg);
+            } 75.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(90deg);
+            } 87.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(90deg);
+            } 87.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(341.5deg);
+            } 100% {        stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(341.5deg);
+            }
+        }
+
+        @keyframes rot002 {
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
+        }
+        body {
+            margin: 0;
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 116px;
+        }
+        .loader-container > img {
+            width: 190px;
+            margin-bottom: 6rem;
+        }
+        
+        .loader-container > .spiner {
+            animation-delay: 0s;
+            animation-direction: normal;
+            animation-duration: 2s;
+            animation-fill-mode: none;
+            animation-iteration-count: infinite;
+            animation-name: rot002;
+            animation-play-state: running;
+            animation-timing-function: linear;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 100px;
+            position: relative;
+            width: 100px;
+
+        }
+        .loader-container > .spiner > svg {
+            box-sizing: border-box;
+            display: block;
+            height: 100px;
+            left: 0px;
+            overflow: visible;
+            position: absolute;
+            top: 0px;
+            transform: matrix(6.12323e-17, -1, 1, 6.12323e-17, 0, 0);
+            transform-origin: 50px 50px;
+            width: 100px;
+            
+        }
+        .loader-container > .spiner > svg > circle {
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
+            animation-name: rot001;
+            animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+            box-sizing: border-box;
+            color: rgba(0, 0, 0, 0.87);
+            display: inline;
+            fill: rgba(0, 0, 0, 0);
+            stroke: #ee3324;
+            stroke-dasharray: 282.743px;
+            stroke-width: 10%;
+            text-size-adjust: 100%;
+            transform-origin: 50px 50px;
+            transition-delay: 0s;
+            transition-duration: 0.225s;
+            transition-property: stroke;
+            transition-timing-function: linear;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body>
+    <app-root>
+        <div class="loader-container">
+            <img  src="/assets/images/homerseven.png">
+            <div class="spiner">
+                <svg preserveAspectRatio="xMidYMid meet" focusable="false" ng-reflect-ng-switch="true" viewBox="0 0 100 100">
+                    <circle cx="50%" cy="50%" r="45"></circle>
+                </svg>
+            </div>
+        </div>
+    </app-root>
+<script src="runtime.js"></script><script src="polyfills-es5.js" nomodule></script><script src="polyfills.js"></script><script src="styles.js"></script><script src="vendor.js"></script><script src="main.js"></script></body>
+</html>
+
+
+

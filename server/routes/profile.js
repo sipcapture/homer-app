@@ -8,6 +8,10 @@ export default function dashboards(server) {
     path: '/api/v3/admin/profiles',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },

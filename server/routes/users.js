@@ -21,6 +21,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const user = new User({server});

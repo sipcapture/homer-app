@@ -14,6 +14,10 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -51,6 +55,10 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/info',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -78,6 +86,10 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -118,6 +130,10 @@ export default function dashboards(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: function(request, reply) {
       let userObject = request.auth.credentials;
@@ -144,6 +160,10 @@ export default function dashboards(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
     },
     handler: function(request, reply) {

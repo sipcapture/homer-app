@@ -20,6 +20,10 @@ export default function alias(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const settings = new Alias({server});
@@ -62,6 +66,10 @@ export default function alias(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -109,6 +117,10 @@ export default function alias(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -160,6 +172,10 @@ export default function alias(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -227,6 +243,10 @@ export default function alias(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {

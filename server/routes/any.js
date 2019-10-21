@@ -3,6 +3,12 @@ import Boom from 'boom';
 export default function any(server) {
   server.route({
     path: '/api/{any*}',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     method: ['PUT', 'POST', 'GET', 'DELETE'],
     handler: function(request, reply) {
       const accept = request.raw.req.headers.accept;

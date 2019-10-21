@@ -5,7 +5,6 @@ import jwtSettings from './private/jwt_settings';
 import config from './config';
 
 const routes = {
-  ui: require('./routes/ui'),
   auth: require('./routes/authentication'),
   search: require('./routes/search'),
   remote: require('./routes/remote'),
@@ -23,6 +22,7 @@ const routes = {
   statistics: require('./routes/statistics'),
   agent_subscribe: require('./routes/agent_subscribe'),
   api: require('./routes/any'),
+  ui: require('./routes/ui'),
 };
 
 const databases = {

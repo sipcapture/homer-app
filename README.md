@@ -1,7 +1,7 @@
 <img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200/>
 
 # HOMER-APP
-![ezgif com-optimize 10](https://user-images.githubusercontent.com/1423657/46264200-211a6680-c51a-11e8-8477-3b7a53f9aa0b.gif)
+![ezgif com-optimize 10](https://user-content.gitlab-static.net/d5f1ab82b0eb2b06e123bd7f3ae46ced5e9759d7/68747470733a2f2f692e696d6775722e636f6d2f59763965394f4c2e676966)
 
 
 ## About

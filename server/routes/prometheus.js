@@ -10,6 +10,10 @@ export default function statistics(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: Joi.object(),
@@ -44,6 +48,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
     },
     handler: function(request, reply) {

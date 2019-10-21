@@ -16,6 +16,10 @@ export default function advanced(server) {
     path: '/api/v3/advanced',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },

@@ -1,5 +1,0 @@
-[
-  { "name": "from_user","selection": "From" },
-  { "name": "to_user","selection": "To" },
-  { "name": "callid","selection": "Call-ID" }
-]

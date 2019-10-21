@@ -17,6 +17,10 @@ export default function agent_subscribe(server) {
     path: '/api/v3/agent/subscribe',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const settings = new AgentSubscribe({server});
@@ -50,6 +54,10 @@ export default function agent_subscribe(server) {
     path: '/api/v3/agent/subscribe/{uuid}',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           uuid: Joi.string().min(12).max(46).required(),
@@ -94,6 +102,10 @@ export default function agent_subscribe(server) {
     path: '/api/v3/agent/subscribe',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
            uuid: Joi.string().min(12).max(46).required(),
@@ -143,6 +155,10 @@ export default function agent_subscribe(server) {
     path: '/api/v3/agent/subscribe/{uuid}',
     method: 'DELETE',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           uuid: Joi.string().min(12).max(46).required(),

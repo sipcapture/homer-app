@@ -12,10 +12,8 @@ const routes = {
   mapping: require('./routes/mapping'),
   hepsub: require('./routes/hepsub'),
   birds: require('./routes/birds'),
-  ui: require('./routes/ui'),
   profile: require('./routes/profile'),
   prometheus: require('./routes/prometheus'),
-  any: require('./routes/any'),
   users: require('./routes/users'),
   user_settings: require('./routes/user_settings'),
   alias: require('./routes/alias'),
@@ -23,11 +21,12 @@ const routes = {
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
   agent_subscribe: require('./routes/agent_subscribe'),
+  any: require('./routes/any'),
 };
 
 const databases = {
-  data: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_data),
-  config: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_config),
+  data: require('knex')(config.db.pgsql.homer_data),
+  config: require('knex')(config.db.pgsql.homer_config),
 };
 
 const server = new Hapi.Server({
@@ -36,6 +35,7 @@ const server = new Hapi.Server({
     request: ['debug', 'warn', 'error', 'implementation', 'internal'],
   },
 });
+
 
 const Influx = require('influx');
 const influx = new Influx.InfluxDB({
@@ -108,6 +108,7 @@ pem.createCertificate({
       }
     });
   });
+
 
   // Server start
   server.start(function(error) {

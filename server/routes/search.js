@@ -11,6 +11,10 @@ export default function search(server) {
     path: '/api/v3/search/call/data',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {

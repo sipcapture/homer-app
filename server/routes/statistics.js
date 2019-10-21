@@ -8,6 +8,10 @@ export default function statistics(server) {
     path: '/api/v3/statistic/_db',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -34,6 +38,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -74,6 +82,10 @@ export default function statistics(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: function(request, reply) {
       let databaseId = encodeURIComponent(request.params.databaseId);
@@ -98,6 +110,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -137,6 +153,10 @@ export default function statistics(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
@@ -174,6 +194,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -214,6 +238,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {

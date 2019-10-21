@@ -22,6 +22,12 @@ export default function proxy(server, config) {
 
   server.route({
     method: 'POST',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     path,
     handler: {
       proxy: {

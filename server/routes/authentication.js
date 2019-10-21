@@ -20,6 +20,10 @@ export default function auth(server) {
     path: '/api/v3/auth',
     method: 'POST',
     config: {
+      cors: {
+        origin: ['*'],
+        additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           username: Joi.string().min(2).max(50).required(),

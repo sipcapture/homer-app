@@ -19,6 +19,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const settings = new UserSettings({server});
@@ -60,6 +64,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -106,6 +114,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -155,6 +167,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -221,6 +237,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {

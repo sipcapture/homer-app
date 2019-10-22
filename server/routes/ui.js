@@ -25,6 +25,29 @@ export default function ui(server) {
             additionalHeaders: ['cache-control', 'x-requested-with']
         }
     },
+    path: '/{path*}',
+    handler: function (request, reply) {
+
+        var path = request.params.path;
+        var match = path.match(/(.+\/)?(.+\.js)$/);
+        if (match) {
+            var filename = match[2];
+	    reply.file('public/'+ filename);
+        } else {
+            reply.file('public/index.html');
+	}
+	return;
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     path: '/js/{param*}',
     handler: {
       directory: {
@@ -50,17 +73,4 @@ export default function ui(server) {
     }
   });
 
-  server.route({
-    method: 'GET',
-    config: {
-        cors: {
-            origin: ['*'],
-            additionalHeaders: ['cache-control', 'x-requested-with']
-        }
-    },
-    path: '/{p*}',
-    handler: function (request, reply) {
-         reply.file('public/index.html');
-    }
-  });
 };

@@ -130,7 +130,7 @@ export default function statistics(server) {
     },
     handler: function(request, reply) {
       let param = request.payload.param;
-      let search = param.search;
+      let query = param.query[0];
       let userObject = request.auth.credentials;
       const stats = new Stats(server, userObject.username);
       

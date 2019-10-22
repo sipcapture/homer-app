@@ -5469,7 +5469,8 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
             }, {});
             _this.chartLabels = data
                 // .map(item => moment(item.reporttime).format('HH:mm'))
-                .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('DD-MM-YYYY HH:mm'); })
+                // .map(item => moment(item.reporttime * 1000).format('DD-MM-YYYY HH:mm'))
+                .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('HH:mm'); })
                 .filter(function (i, k, a) { return i !== a[k + 1]; });
             var fillKey = 0;
             Object.keys(formattedData).forEach(function (key) {

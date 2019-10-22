@@ -6039,7 +6039,13 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             timestamp: this.timestamp,
             param: {
                 search: {},
-                limit: 100
+                limit: 100,
+                total: true,
+                query: [{
+                        main: this.measurement,
+                        database: this.selecedEditQuery.database,
+                        retention: this.selecedEditQuery.retentionPolicy
+                    }]
             }
         };
         var getStatisticMetricsSubscription = this._ss.getStatisticMetrics(reqData).subscribe(function (res) {

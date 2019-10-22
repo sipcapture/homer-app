@@ -392,7 +392,7 @@ module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"on-top modal-resizable\" #layerZIndex>\n  <div [className]=\"isFullPage ? 'detail-container full-page' : 'detail-container'\" (mousedown)=\"onFocus()\" #containerWindow>\n    <mat-toolbar\n      class=\"title\"\n      color=\"primary\"\n      (dblclick)=\"onFullPage()\"\n      [ngStyle]=\"{'background-color': headerColor}\"\n      (mousedown)=\"onStartMove($event)\">\n      <div> {{ title }} </div>\n      <div style=\"display: flex\">\n        <button mat-icon-button (click)=\"onFullPage()\">\n          <mat-icon *ngIf=\"!isFullPage\">fullscreen</mat-icon>\n          <mat-icon *ngIf=\"isFullPage\">fullscreen_exit</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"newWindow()\">\n          <mat-icon>flip_to_front</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"onClose()\">\n          <mat-icon>close</mat-icon>\n        </button>\n      </div>\n    </mat-toolbar>\n    <div class=\"inside-content\" mat-dialog-content>\n      <span #inWindow>\n        <ng-content></ng-content>\n      </span>\n    </div>\n\n    <!-- \n      Resizable conrols \n    -->\n    <div class=\"resize left\"      (mousedown)=\"onResize($event, 'left')\"></div>\n    <div class=\"resize right\"     (mousedown)=\"onResize($event, 'right')\"></div>\n    <div class=\"resize bottom\"    (mousedown)=\"onResize($event, 'bottom')\"></div>\n    <div class=\"resize top\"       (mousedown)=\"onResize($event, 'top')\"></div>\n    <div class=\"resize corner tl\" (mousedown)=\"onResize($event, 'tl')\"></div>\n    <div class=\"resize corner tr\" (mousedown)=\"onResize($event, 'tr')\"></div>\n    <div class=\"resize corner bl\" (mousedown)=\"onResize($event, 'bl')\"></div>\n    <div class=\"resize corner br\" (mousedown)=\"onResize($event, 'br')\"></div>\n  </div>\n</div>\n\n<app-window [isWindow]=\"isBrowserWindow\"\n  [width]=\"width\"\n  [height]=\"height\"\n  (close)=\"onWindowClose($event)\">\n  <div class=\"out-window\" #outWindow></div>\n  <!-- <ng-content *ngIf=\"isBrowserWindow\"></ng-content> -->\n</app-window>"
+module.exports = "<div class=\"on-top modal-resizable\" #layerZIndex>\n  <div [className]=\"isFullPage ? 'detail-container full-page' : 'detail-container'\" (mousedown)=\"onFocus()\" #containerWindow>\n    <mat-toolbar\n      class=\"title\"\n      color=\"primary\"\n      (dblclick)=\"onFullPage()\"\n      [ngStyle]=\"{'background-color': headerColor}\"\n      (mousedown)=\"onStartMove($event)\">\n      <div> {{ title }} </div>\n      <div style=\"display: flex\">\n        <button mat-icon-button (click)=\"onFullPage()\">\n          <mat-icon *ngIf=\"!isFullPage\">fullscreen</mat-icon>\n          <mat-icon *ngIf=\"isFullPage\">fullscreen_exit</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"newWindow()\">\n          <mat-icon>flip_to_front</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"onClose()\">\n          <mat-icon>close</mat-icon>\n        </button>\n      </div>\n    </mat-toolbar>\n    <div class=\"inside-content\">\n      <span #inWindow>\n        <ng-content></ng-content>\n      </span>\n    </div>\n\n    <!-- \n      Resizable conrols \n    -->\n    <div class=\"resize left\"      (mousedown)=\"onResize($event, 'left')\"></div>\n    <div class=\"resize right\"     (mousedown)=\"onResize($event, 'right')\"></div>\n    <div class=\"resize bottom\"    (mousedown)=\"onResize($event, 'bottom')\"></div>\n    <div class=\"resize top\"       (mousedown)=\"onResize($event, 'top')\"></div>\n    <div class=\"resize corner tl\" (mousedown)=\"onResize($event, 'tl')\"></div>\n    <div class=\"resize corner tr\" (mousedown)=\"onResize($event, 'tr')\"></div>\n    <div class=\"resize corner bl\" (mousedown)=\"onResize($event, 'bl')\"></div>\n    <div class=\"resize corner br\" (mousedown)=\"onResize($event, 'br')\"></div>\n  </div>\n</div>\n\n<app-window [isWindow]=\"isBrowserWindow\"\n  [width]=\"width\"\n  [height]=\"height\"\n  (close)=\"onWindowClose($event)\">\n  <div class=\"out-window\" #outWindow></div>\n  <!-- <ng-content *ngIf=\"isBrowserWindow\"></ng-content> -->\n</app-window>"
 
 /***/ }),
 
@@ -502,7 +502,7 @@ module.exports = "<div style=\"display: flex; height: 100%\">\n  <!-- menu -->\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal-resizable \n  [title]=\"'[SIP] Call-ID: ' + titleId\"\n  [headerColor]=\"headerColor\"\n  (close)=\"onClose()\" \n  [width]=\"1000\"\n  [height]=\"800\"\n  [minWidth]=\"600\"\n  [minHeight]=\"400\">\n  <div *ngIf=\"!_isLoaded\" class=\"loading\">\n      <mat-spinner></mat-spinner>\n  </div>\n  <mat-tab-group *ngIf=\"_isLoaded\" style=\"height: 100%;\">\n    <mat-tab label=\"Messages\">\n      <app-tab-messages [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-messages>\n    </mat-tab>\n    <mat-tab label=\"Flow\">\n      <app-tab-flow [callid]=\"titleId\" [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-flow>\n    </mat-tab>\n    <mat-tab label=\"QoS\">\n      <app-tab-qos [callid]=\"titleId\" [dataItem]=\"sipDataItem\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-qos>\n    </mat-tab>\n    <mat-tab *ngIf=\"dataLogs.length > 0\" label=\"Logs\">\n      <app-tab-logs [data]=\"dataLogs\"></app-tab-logs>\n    </mat-tab>\n    <!-- <mat-tab label=\"Loki\">\n      <mat-spinner></mat-spinner>\n    </mat-tab> -->\n    <mat-tab label=\"Export\">\n      <app-tab-export [callid]=\"titleId\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-export>\n    </mat-tab>\n  </mat-tab-group>\n</app-modal-resizable>\n\n<app-modal-resizable *ngFor=\"let item of arrMessageDetail; let idx = index\" \n  [title]=\"'Message ID: ' + item.id\" \n  (close)=\"closeWindow(idx)\"\n  [headerColor]=\"item.headerColor\"\n  [minWidth]=\"500\"\n  [minHeight]=\"400\"\n  [width]=\"500\" [height]=\"400\">\n  <app-message-content [data]=\"item\"></app-message-content>\n  <!-- <mat-tab-group style=\"height: 100%;\">\n    <mat-tab label=\"Message\" style=\"padding: 1rem;\">\n      <pre style=\"font-family: monospace;font-size: 10pt;padding: 0.5rem 2rem;height: calc(100vh - 3.1rem);box-sizing: border-box;margin: 0;\">{{ item.item.raw }}\n      </pre>\n    </mat-tab>\n    <mat-tab label=\"Details\" style=\"padding: 1rem;\">\n      <div style=\"height: calc(100vh - 3.2rem)\">\n        <table mat-table [dataSource]=\"item.messageDetaiTableData\" class=\"mat-elevation-z8\" style=\"width: 100%\">\n          <ng-container matColumnDef=\"name\">\n            <th mat-header-cell *matHeaderCellDef> Name </th>\n            <td mat-cell *matCellDef=\"let element\" style=\"font-weight: bold\"> {{element.name}} </td>\n          </ng-container>\n          <ng-container matColumnDef=\"value\">\n            <th mat-header-cell *matHeaderCellDef> Value </th>\n            <td mat-cell *matCellDef=\"let element\"> {{element.value}} </td>\n          </ng-container>\n          \n          <tr mat-header-row *matHeaderRowDef=\"['name', 'value']\"></tr> \n          <tr mat-row *matRowDef=\"let row; columns: ['name', 'value']\" ></tr>\n        </table>\n      </div>\n    </mat-tab>\n  </mat-tab-group> -->\n</app-modal-resizable>\n"
+module.exports = "<app-modal-resizable \n  [title]=\"'[SIP] Call-ID: ' + titleId\"\n  [headerColor]=\"headerColor\"\n  (close)=\"onClose()\" \n  [width]=\"1000\"\n  [height]=\"800\"\n  [minWidth]=\"600\"\n  [minHeight]=\"400\">\n  <div *ngIf=\"!_isLoaded\" class=\"loading\">\n      <mat-spinner></mat-spinner>\n  </div>\n  <mat-tab-group *ngIf=\"_isLoaded\" style=\"height: 100%;\">\n    <mat-tab label=\"Messages\">\n      <app-tab-messages [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-messages>\n    </mat-tab>\n    <mat-tab label=\"Flow\">\n      <app-tab-flow [callid]=\"titleId\" [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-flow>\n    </mat-tab>\n    <mat-tab label=\"QoS\">\n      <app-tab-qos [callid]=\"titleId\" [dataItem]=\"sipDataItem\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-qos>\n    </mat-tab>\n    <mat-tab *ngIf=\"dataLogs.length > 0\" label=\"Logs\">\n      <app-tab-logs [data]=\"dataLogs\"></app-tab-logs>\n    </mat-tab>\n    <!-- <mat-tab label=\"Loki\">\n      <mat-spinner></mat-spinner>\n    </mat-tab> -->\n    <mat-tab label=\"Export\">\n      <app-tab-export [callid]=\"titleId\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-export>\n    </mat-tab>\n  </mat-tab-group>\n</app-modal-resizable>\n"
 
 /***/ }),
 
@@ -546,7 +546,7 @@ module.exports = "<div *ngFor=\"let item of _data\" class=\"red-container\">\n  
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<table mat-table [dataSource]=\"dataSource\" class=\"mat-elevation-z8\" #table>\n  <ng-container matColumnDef=\"id\"><th mat-header-cell *matHeaderCellDef> Id </th><td mat-cell *matCellDef=\"let element\"> {{element.id}} </td></ng-container>\n  <ng-container matColumnDef=\"create_date\"><th mat-header-cell *matHeaderCellDef> Date </th><td mat-cell *matCellDef=\"let element\"> {{element.create_date}} </td></ng-container>\n  <ng-container matColumnDef=\"timeSeconds\"><th mat-header-cell *matHeaderCellDef> Time </th><td mat-cell *matCellDef=\"let element\"> {{element.timeSeconds}} </td></ng-container>\n  <ng-container matColumnDef=\"timeUseconds\"><th mat-header-cell *matHeaderCellDef> Diff </th><td mat-cell *matCellDef=\"let element\"> {{element.timeUseconds}} </td></ng-container>\n  \n  <ng-container matColumnDef=\"method\">\n    <th mat-header-cell *matHeaderCellDef> Event </th>\n    <td mat-cell *matCellDef=\"let element\" [style]=\"element.method === 'LOG' ? 'color: red;' : ''\">\n      {{element.method}}\n    </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"Msg_Size\"><th mat-header-cell *matHeaderCellDef> Msg Size </th><td mat-cell *matCellDef=\"let element\"> {{element.Msg_Size}} </td></ng-container>\n  <ng-container matColumnDef=\"srcIp_srcPort\"><th mat-header-cell *matHeaderCellDef> Src IP/Host </th><td mat-cell *matCellDef=\"let element\"> {{element.srcIp_srcPort}} </td></ng-container>\n  <ng-container matColumnDef=\"srcPort\"><th mat-header-cell *matHeaderCellDef> Sport </th><td mat-cell *matCellDef=\"let element\"> {{element.srcPort}} </td></ng-container>\n  \n  <ng-container matColumnDef=\"dstIp_dstPort\"><th mat-header-cell *matHeaderCellDef> Dst IP/Host </th><td mat-cell *matCellDef=\"let element\"> {{element.dstIp_dstPort}} </td></ng-container>\n  <ng-container matColumnDef=\"dstPort\"><th mat-header-cell *matHeaderCellDef> Dport </th><td mat-cell *matCellDef=\"let element\"> {{element.dstPort}} </td></ng-container>\n  <ng-container matColumnDef=\"proto\"><th mat-header-cell *matHeaderCellDef> Proto </th><td mat-cell *matCellDef=\"let element\"> {{element.proto | uppercase }} </td></ng-container>\n  <ng-container matColumnDef=\"type\"><th mat-header-cell *matHeaderCellDef> Type </th><td mat-cell *matCellDef=\"let element\"> {{element.type}} </td></ng-container>\n  \n  <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n  <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\" \n      (click)=\"onClickMessageRow(row, $event)\">\n  </tr>\n</table>\n"
+module.exports = "<table mat-table [dataSource]=\"dataSource\" class=\"mat-elevation-z8\" #table>\n  <ng-container matColumnDef=\"id\"><th mat-header-cell *matHeaderCellDef> Id </th><td mat-cell *matCellDef=\"let element\"> {{element.id}} </td></ng-container>\n  <ng-container matColumnDef=\"create_date\"><th mat-header-cell *matHeaderCellDef> Date </th><td mat-cell *matCellDef=\"let element\"> {{element.create_date}} </td></ng-container>\n  <ng-container matColumnDef=\"timeSeconds\"><th mat-header-cell *matHeaderCellDef> Time </th><td mat-cell *matCellDef=\"let element\"> {{element.timeSeconds}} </td></ng-container>\n  <ng-container matColumnDef=\"timeUseconds\"><th mat-header-cell *matHeaderCellDef> Diff </th><td mat-cell *matCellDef=\"let element\"> {{element.timeUseconds}} </td></ng-container>\n  \n  <ng-container matColumnDef=\"method\">\n    <th mat-header-cell *matHeaderCellDef> Event </th>\n    <td mat-cell *matCellDef=\"let element\" [ngStyle]=\"{'color': element.method === 'LOG' ? 'red': ''}\">\n      {{element.method}}\n    </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"Msg_Size\"><th mat-header-cell *matHeaderCellDef> Msg Size </th><td mat-cell *matCellDef=\"let element\"> {{element.Msg_Size}} </td></ng-container>\n  <ng-container matColumnDef=\"srcIp_srcPort\"><th mat-header-cell *matHeaderCellDef> Src IP/Host </th><td mat-cell *matCellDef=\"let element\"> {{element.srcIp_srcPort}} </td></ng-container>\n  <ng-container matColumnDef=\"srcPort\"><th mat-header-cell *matHeaderCellDef> Sport </th><td mat-cell *matCellDef=\"let element\"> {{element.srcPort}} </td></ng-container>\n  \n  <ng-container matColumnDef=\"dstIp_dstPort\"><th mat-header-cell *matHeaderCellDef> Dst IP/Host </th><td mat-cell *matCellDef=\"let element\"> {{element.dstIp_dstPort}} </td></ng-container>\n  <ng-container matColumnDef=\"dstPort\"><th mat-header-cell *matHeaderCellDef> Dport </th><td mat-cell *matCellDef=\"let element\"> {{element.dstPort}} </td></ng-container>\n  <ng-container matColumnDef=\"proto\"><th mat-header-cell *matHeaderCellDef> Proto </th><td mat-cell *matCellDef=\"let element\"> {{element.proto | uppercase }} </td></ng-container>\n  <ng-container matColumnDef=\"type\"><th mat-header-cell *matHeaderCellDef> Type </th><td mat-cell *matCellDef=\"let element\"> {{element.type}} </td></ng-container>\n  \n  <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n  <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\" \n      (click)=\"onClickMessageRow(row, $event)\">\n  </tr>\n</table>\n"
 
 /***/ }),
 
@@ -590,7 +590,7 @@ module.exports = "<mat-tab-group class=\"message-container\">\n  <mat-tab label=
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"resalt-top-tools\">\n    <h3>Search Results</h3>\n    \n    <mat-form-field>\n        <button mat-button matSuffix mat-stroked-button aria-label=\"search\">Refresh Search</button>\n        <mat-placeholder>Regex Results Filter</mat-placeholder>\n        <input matInput type=\"search\">\n    </mat-form-field>\n\n</div>\n\n<ag-grid-angular \n    style=\"height: calc(100vh - 119px); width: 100%;\" \n    class=\"ag-theme-material\"\n    [defaultColDef]=\"defaultColDef\"\n    [gridOptions]=\"gridOptions\"\n    [rowData]=\"rowData\" \n    [columnDefs]=\"columnDefs\"\n    [enableRangeSelection]=\"true\"\n    [rowMultiSelectWithClick]=\"true\"\n    [pagination]=\"true\"\n    (gridReady)=\"onGridReady($event)\"\n    [context]=\"context\"\n    [enableCellTextSelection]=\"true\"\n    [frameworkComponents]=\"frameworkComponents\"\n></ag-grid-angular>\n\n<app-detail-dialog\n    *ngFor=\"let item of arrWindow; let idx = index\"\n    [titleId]=\"item.id\"\n    [sipDataItem]=\"item.data\"\n    [headerColor]=\"item.headerColor\"\n    [isLoaded]=\"item.loaded\"\n    (close)=\"closeWindow(idx)\"\n></app-detail-dialog>\n\n<app-modal-resizable\n    *ngFor=\"let item of arrMessageDetail; let idx = index\" \n    [title]=\"'Message ID: ' + item.id\" \n    [headerColor]=\"item.headerColor\"\n    (close)=\"closeWindowMessage(idx)\"\n    [minWidth]=\"500\"\n    [minHeight]=\"400\"\n    [width]=\"500\" [height]=\"400\">\n  <div *ngIf=\"!item.loaded\" class=\"loading\"><mat-spinner></mat-spinner></div>\n  <app-message-content *ngIf=\"item.loaded\" [data]=\"item.data\"></app-message-content>\n</app-modal-resizable>\n\n<div *ngIf=\"isLoading\" class=\"loading\">\n    <mat-spinner></mat-spinner>\n</div>"
+module.exports = "<div class=\"resalt-top-tools\">\n    <h3>Search Results</h3>\n    \n    <mat-form-field>\n        <button mat-button matSuffix mat-stroked-button aria-label=\"search\">Refresh Search</button>\n        <mat-placeholder>Regex Results Filter</mat-placeholder>\n        <input matInput type=\"search\">\n    </mat-form-field>\n\n</div>\n\n<ag-grid-angular \n    style=\"height: calc(100vh - 119px); width: 100%;\" \n    class=\"ag-theme-material\"\n    [defaultColDef]=\"defaultColDef\"\n    [gridOptions]=\"gridOptions\"\n    [rowData]=\"rowData\" \n    [columnDefs]=\"columnDefs\"\n    [enableRangeSelection]=\"true\"\n    [rowMultiSelectWithClick]=\"true\"\n    [pagination]=\"true\"\n    (gridReady)=\"onGridReady($event)\"\n    [context]=\"context\"\n    [enableCellTextSelection]=\"true\"\n    [frameworkComponents]=\"frameworkComponents\"\n></ag-grid-angular>\n\n<app-detail-dialog\n    *ngFor=\"let item of arrWindow; let idx = index\"\n    [titleId]=\"item.id\"\n    [sipDataItem]=\"item.data\"\n    [headerColor]=\"item.headerColor\"\n    [isLoaded]=\"item.loaded\"\n    (openMessage)=\"addWindowMessage($event)\"\n    (close)=\"closeWindow(idx)\"\n></app-detail-dialog>\n\n<app-modal-resizable\n    *ngFor=\"let item of arrMessageDetail; let idx = index\" \n    [title]=\"'Message ID: ' + item.id\" \n    [headerColor]=\"item.headerColor\"\n    (close)=\"closeWindowMessage(idx)\"\n    [minWidth]=\"500\"\n    [minHeight]=\"400\"\n    [width]=\"500\" [height]=\"400\">\n  <div *ngIf=\"!item.loaded\" class=\"loading\"><mat-spinner></mat-spinner></div>\n  <app-message-content *ngIf=\"item.loaded\" [data]=\"item.data\"></app-message-content>\n</app-modal-resizable>\n\n<div *ngIf=\"isLoading\" class=\"loading\">\n    <mat-spinner></mat-spinner>\n</div>"
 
 /***/ }),
 
@@ -634,7 +634,7 @@ module.exports = "<div class=\"chart-container\">\n    <div *ngIf=\"!_isLoaded\"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\">\n          <mat-option value=\"row\">Defult</mat-option>\n          <mat-option value=\"byte\">Bytes</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\" (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\" (click)=\"editRecord(element.id)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Path</mat-label>\n                <input matInput [(ngModel)]=\"apiQueryPath\" >\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\" (selectionChange)=\"onFormat()\">\n          <mat-option value=\"row\">Default</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n          <mat-option value=\"short\">Short</mat-option>\n          <mat-option value=\"bytes\">Bytes</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\" (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\" (click)=\"editRecord(element.id)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Path</mat-label>\n                <input matInput [(ngModel)]=\"apiQueryPath\" >\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
 
 /***/ }),
 
@@ -1504,7 +1504,7 @@ var DashboardComponent = /** @class */ (function () {
                     _this.dashboardCollection.data ?
                     _this.dashboardCollection.data.name : '';
                 if (_this.dashboardCollection) {
-                    var widgets = _this.dashboardCollection.data['widgets'];
+                    var widgets = _this.dashboardCollection.data.widgets;
                     // sync old version and new version
                     _this.dashboardArray = widgets.map(function (item, i) {
                         item.id = item.name + '' + i;
@@ -1518,17 +1518,9 @@ var DashboardComponent = /** @class */ (function () {
                     });
                 }
                 else {
-                    var _empty = {
-                        x: 0,
-                        y: 0,
-                        cols: 5,
-                        rows: 2,
-                        name: 'empty',
-                        title: 'empty'
-                    };
-                    _this.dashboardArray = [_empty];
+                    _this.dashboardArray = [];
                 }
-                _this.dashboardCollection.data['widgets'] = _this.dashboardArray;
+                _this.dashboardCollection.data.widgets = _this.dashboardArray;
                 dashboardStoreSubscription.unsubscribe();
             });
         });
@@ -1589,12 +1581,9 @@ var DashboardComponent = /** @class */ (function () {
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (name) {
             if (name) {
                 var widget = {
-                    x: 0,
-                    y: 0,
-                    cols: 1,
-                    rows: 1,
-                    name: name,
-                    title: name,
+                    x: 0, y: 0, cols: 1, rows: 1,
+                    name: name, title: name,
+                    id: name + (Math.random() * 1000).toFixed(0)
                 };
                 _this.dashboardArray.push(widget);
                 var subscription_1 = _this.onDashboardSave().subscribe(function () {
@@ -1665,7 +1654,7 @@ var DashboardComponent = /** @class */ (function () {
             item['row'] = item.y;
             return item;
         });
-        this.dashboardCollection.data['widgets'] = this.dashboardArray;
+        this.dashboardCollection.data.widgets = this.dashboardArray;
         return this._ds.postDashboardStore(this._ds.getCurrentDashBoardId(), this.dashboardCollection.data);
     };
     DashboardComponent.prototype.ngOnDestroy = function () {
@@ -2256,7 +2245,7 @@ var MenuComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".on-top {\n    position: absolute;\n    top: 0;\n    left: 0;\n    bottom: 0;\n    right: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    /* debug */ \n        /* background-color: rgba(0,0,0,0.2); */\n    width: 1px;\n    height: 1px;\n    margin: auto;\n}\n\n.detail-container .title {\n    cursor: move;\n}\n\n.detail-container {\n    position: relative;\n    min-width: 200px;\n    min-height: 200px;\n    width: 60vw;\n    border: solid 1px #ccc;\n    color: rgba(0, 0, 0, 0.87);\n    /* -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none; */\n    justify-content: center;\n    padding: 1.5rem;\n    overflow: hidden;\n    background: #fff;\n    border-radius: 4px;\n    z-index: 1;\n    opacity: 1;\n    /* transition: all 0.3s cubic-bezier(0, 0, 0.2, 1); */\n    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),\n                0 2px 2px 0 rgba(0, 0, 0, 0.14),\n                0 1px 5px 0 rgba(0, 0, 0, 0.12)\n}\n\n.detail-container:active {\n    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),\n                0 8px 10px 1px rgba(0, 0, 0, 0.14),\n                0 3px 14px 2px rgba(0, 0, 0, 0.12);\n}\n\n.detail-container.full-page {\n    border: solid 0px #ccc;\n    border-radius: 0px;\n    min-width: 100vw !important;\n    width: 100vw !important;\n    min-height: 100vh !important;\n    -webkit-transform: translate3d(0px, 0px, 0px) !important;\n            transform: translate3d(0px, 0px, 0px) !important;\n}\n\n.title {\n    margin: -1.5rem -1.5rem 2rem -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.detail-container table {\n    width: 100%;\n    overflow: auto;\n}\n\n.detail-container table tr {\n    /* transition: background-color 0.3s; */\n}\n\n.detail-container table tr:hover {\n    background-color: rgba(0, 0, 0, 0.12);\n\n    cursor: pointer;\n}\n\n.inside-content {\n    position: absolute;\n    left: 0.3rem;\n    right: 0.3rem;\n    top: 4rem;\n    bottom: 0.3rem;\n}\n\n/* resize controls elements */\n\n.animation-off {\n    transition: none;\n}\n\n.resize {\n    position: absolute;\n}\n\n.resize.right {\n    width: 0.5rem;\n    right: 0;\n    height: 100%;\n    top: 0;\n    cursor: ew-resize;\n}\n\n.resize.bottom {\n    bottom: 0;\n    height: 0.5rem;\n    width: 100%;\n    left: 0;\n    cursor: ns-resize;\n}\n\n.resize.left {\n    width: 0.5rem;\n    left: 0;\n    height: 100%;\n    top: 0;\n    cursor: ew-resize;\n}\n\n.resize.top {\n    top: 0;\n    height: 0.5rem;\n    width: 100%;\n    left: 0;\n    cursor: ns-resize;\n}\n\n.resize.corner {\n    width: 1rem;\n    height: 1rem;\n    cursor: nwse-resize;\n}\n\n.resize.corner.tl {\n    top: 0;\n    left: 0;\n}\n\n.resize.corner.tr {\n    top: 0;\n    right: 0;\n    cursor: nesw-resize;\n}\n\n.resize.corner.bl {\n    bottom: 0;\n    left: 0;\n    cursor: nesw-resize;\n}\n\n.resize.corner.br {\n    right: 0;\n    bottom: 0;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tb2RhbC1yZXNpemFibGUvbW9kYWwtcmVzaXphYmxlLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7SUFDbEIsTUFBTTtJQUNOLE9BQU87SUFDUCxTQUFTO0lBQ1QsUUFBUTtJQUNSLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsdUJBQXVCO0lBQ3ZCLFVBQVU7UUFDTix1Q0FBdUM7SUFDM0MsVUFBVTtJQUNWLFdBQVc7SUFDWCxZQUFZO0FBQ2hCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLFdBQVc7SUFDWCxzQkFBc0I7SUFDdEIsMEJBQTBCO0lBQzFCOzs7d0JBR29CO0lBQ3BCLHVCQUF1QjtJQUN2QixlQUFlO0lBQ2YsZ0JBQWdCO0lBQ2hCLGdCQUFnQjtJQUNoQixrQkFBa0I7SUFDbEIsVUFBVTtJQUNWLFVBQVU7SUFDVixxREFBcUQ7SUFDckQ7OztBQUdKOztBQUVBO0lBQ0k7O2tEQUU4QztBQUNsRDs7QUFFQTtJQUNJLHNCQUFzQjtJQUN0QixrQkFBa0I7SUFDbEIsMkJBQTJCO0lBQzNCLHVCQUF1QjtJQUN2Qiw0QkFBNEI7SUFDNUIsd0RBQWdEO1lBQWhELGdEQUFnRDtBQUNwRDs7QUFDQTtJQUNJLG9DQUFvQztJQUNwQyx5QkFBeUI7SUFDekIsYUFBYTtJQUNiLDhCQUE4QjtBQUNsQzs7QUFFQTtJQUNJLFdBQVc7SUFDWCxjQUFjO0FBQ2xCOztBQUNBO0lBQ0ksdUNBQXVDO0FBQzNDOztBQUNBO0lBQ0kscUNBQXFDOztJQUVyQyxlQUFlO0FBQ25COztBQUVBO0lBQ0ksa0JBQWtCO0lBQ2xCLFlBQVk7SUFDWixhQUFhO0lBQ2IsU0FBUztJQUNULGNBQWM7QUFDbEI7O0FBRUEsNkJBQTZCOztBQUM3QjtJQUNJLGdCQUFnQjtBQUNwQjs7QUFDQTtJQUNJLGtCQUFrQjtBQUN0Qjs7QUFDQTtJQUNJLGFBQWE7SUFDYixRQUFRO0lBQ1IsWUFBWTtJQUNaLE1BQU07SUFDTixpQkFBaUI7QUFDckI7O0FBQ0E7SUFDSSxTQUFTO0lBQ1QsY0FBYztJQUNkLFdBQVc7SUFDWCxPQUFPO0lBQ1AsaUJBQWlCO0FBQ3JCOztBQUNBO0lBQ0ksYUFBYTtJQUNiLE9BQU87SUFDUCxZQUFZO0lBQ1osTUFBTTtJQUNOLGlCQUFpQjtBQUNyQjs7QUFDQTtJQUNJLE1BQU07SUFDTixjQUFjO0lBQ2QsV0FBVztJQUNYLE9BQU87SUFDUCxpQkFBaUI7QUFDckI7O0FBRUE7SUFDSSxXQUFXO0lBQ1gsWUFBWTtJQUNaLG1CQUFtQjtBQUN2Qjs7QUFDQTtJQUNJLE1BQU07SUFDTixPQUFPO0FBQ1g7O0FBQ0E7SUFDSSxNQUFNO0lBQ04sUUFBUTtJQUNSLG1CQUFtQjtBQUN2Qjs7QUFDQTtJQUNJLFNBQVM7SUFDVCxPQUFPO0lBQ1AsbUJBQW1CO0FBQ3ZCOztBQUNBO0lBQ0ksUUFBUTtJQUNSLFNBQVM7QUFDYiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvbW9kYWwtcmVzaXphYmxlL21vZGFsLXJlc2l6YWJsZS5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm9uLXRvcCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogMDtcbiAgICBsZWZ0OiAwO1xuICAgIGJvdHRvbTogMDtcbiAgICByaWdodDogMDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgLyogZGVidWcgKi8gXG4gICAgICAgIC8qIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsMC4yKTsgKi9cbiAgICB3aWR0aDogMXB4O1xuICAgIGhlaWdodDogMXB4O1xuICAgIG1hcmdpbjogYXV0bztcbn1cblxuLmRldGFpbC1jb250YWluZXIgLnRpdGxlIHtcbiAgICBjdXJzb3I6IG1vdmU7XG59XG4uZGV0YWlsLWNvbnRhaW5lciB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIG1pbi13aWR0aDogMjAwcHg7XG4gICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgd2lkdGg6IDYwdnc7XG4gICAgYm9yZGVyOiBzb2xpZCAxcHggI2NjYztcbiAgICBjb2xvcjogcmdiYSgwLCAwLCAwLCAwLjg3KTtcbiAgICAvKiAtd2Via2l0LXVzZXItc2VsZWN0OiBub25lO1xuICAgIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgLW1zLXVzZXItc2VsZWN0OiBub25lO1xuICAgIHVzZXItc2VsZWN0OiBub25lOyAqL1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIHBhZGRpbmc6IDEuNXJlbTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGJhY2tncm91bmQ6ICNmZmY7XG4gICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgIHotaW5kZXg6IDE7XG4gICAgb3BhY2l0eTogMTtcbiAgICAvKiB0cmFuc2l0aW9uOiBhbGwgMC4zcyBjdWJpYy1iZXppZXIoMCwgMCwgMC4yLCAxKTsgKi9cbiAgICBib3gtc2hhZG93OiAwIDNweCAxcHggLTJweCByZ2JhKDAsIDAsIDAsIDAuMiksXG4gICAgICAgICAgICAgICAgMCAycHggMnB4IDAgcmdiYSgwLCAwLCAwLCAwLjE0KSxcbiAgICAgICAgICAgICAgICAwIDFweCA1cHggMCByZ2JhKDAsIDAsIDAsIDAuMTIpXG59XG5cbi5kZXRhaWwtY29udGFpbmVyOmFjdGl2ZSB7XG4gICAgYm94LXNoYWRvdzogMCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgICAgICAgICAgICAgIDAgOHB4IDEwcHggMXB4IHJnYmEoMCwgMCwgMCwgMC4xNCksXG4gICAgICAgICAgICAgICAgMCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjEyKTtcbn1cblxuLmRldGFpbC1jb250YWluZXIuZnVsbC1wYWdlIHtcbiAgICBib3JkZXI6IHNvbGlkIDBweCAjY2NjO1xuICAgIGJvcmRlci1yYWRpdXM6IDBweDtcbiAgICBtaW4td2lkdGg6IDEwMHZ3ICFpbXBvcnRhbnQ7XG4gICAgd2lkdGg6IDEwMHZ3ICFpbXBvcnRhbnQ7XG4gICAgbWluLWhlaWdodDogMTAwdmggIWltcG9ydGFudDtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZTNkKDBweCwgMHB4LCAwcHgpICFpbXBvcnRhbnQ7XG59XG4udGl0bGUge1xuICAgIG1hcmdpbjogLTEuNXJlbSAtMS41cmVtIDJyZW0gLTEuNXJlbTtcbiAgICB3aWR0aDogaW5pdGlhbCAhaW1wb3J0YW50O1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xufVxuXG4uZGV0YWlsLWNvbnRhaW5lciB0YWJsZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG59XG4uZGV0YWlsLWNvbnRhaW5lciB0YWJsZSB0ciB7XG4gICAgLyogdHJhbnNpdGlvbjogYmFja2dyb3VuZC1jb2xvciAwLjNzOyAqL1xufVxuLmRldGFpbC1jb250YWluZXIgdGFibGUgdHI6aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMC4xMik7XG5cbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5pbnNpZGUtY29udGVudCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIGxlZnQ6IDAuM3JlbTtcbiAgICByaWdodDogMC4zcmVtO1xuICAgIHRvcDogNHJlbTtcbiAgICBib3R0b206IDAuM3JlbTtcbn1cblxuLyogcmVzaXplIGNvbnRyb2xzIGVsZW1lbnRzICovXG4uYW5pbWF0aW9uLW9mZiB7XG4gICAgdHJhbnNpdGlvbjogbm9uZTtcbn1cbi5yZXNpemUge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbn1cbi5yZXNpemUucmlnaHQge1xuICAgIHdpZHRoOiAwLjVyZW07XG4gICAgcmlnaHQ6IDA7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHRvcDogMDtcbiAgICBjdXJzb3I6IGV3LXJlc2l6ZTtcbn1cbi5yZXNpemUuYm90dG9tIHtcbiAgICBib3R0b206IDA7XG4gICAgaGVpZ2h0OiAwLjVyZW07XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbGVmdDogMDtcbiAgICBjdXJzb3I6IG5zLXJlc2l6ZTtcbn1cbi5yZXNpemUubGVmdCB7XG4gICAgd2lkdGg6IDAuNXJlbTtcbiAgICBsZWZ0OiAwO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB0b3A6IDA7XG4gICAgY3Vyc29yOiBldy1yZXNpemU7XG59XG4ucmVzaXplLnRvcCB7XG4gICAgdG9wOiAwO1xuICAgIGhlaWdodDogMC41cmVtO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGxlZnQ6IDA7XG4gICAgY3Vyc29yOiBucy1yZXNpemU7XG59XG5cbi5yZXNpemUuY29ybmVyIHtcbiAgICB3aWR0aDogMXJlbTtcbiAgICBoZWlnaHQ6IDFyZW07XG4gICAgY3Vyc29yOiBud3NlLXJlc2l6ZTtcbn1cbi5yZXNpemUuY29ybmVyLnRsIHtcbiAgICB0b3A6IDA7XG4gICAgbGVmdDogMDtcbn1cbi5yZXNpemUuY29ybmVyLnRyIHtcbiAgICB0b3A6IDA7XG4gICAgcmlnaHQ6IDA7XG4gICAgY3Vyc29yOiBuZXN3LXJlc2l6ZTtcbn1cbi5yZXNpemUuY29ybmVyLmJsIHtcbiAgICBib3R0b206IDA7XG4gICAgbGVmdDogMDtcbiAgICBjdXJzb3I6IG5lc3ctcmVzaXplO1xufVxuLnJlc2l6ZS5jb3JuZXIuYnIge1xuICAgIHJpZ2h0OiAwO1xuICAgIGJvdHRvbTogMDtcbn1cbiJdfQ== */"
+module.exports = ".on-top {\n    position: absolute;\n    top: 0;\n    left: 0;\n    bottom: 0;\n    right: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    /* debug */ \n        /* background-color: rgba(0,0,0,0.2); */\n    width: 1px;\n    height: 1px;\n    margin: auto;\n}\n\n.detail-container .title {\n    cursor: move;\n}\n\n.detail-container {\n    position: relative;\n    min-width: 200px;\n    min-height: 200px;\n    width: 60vw;\n    border: solid 1px #ccc;\n    color: rgba(0, 0, 0, 0.87);\n    /* -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none; */\n    justify-content: center;\n    padding: 1.5rem;\n    overflow: hidden;\n    background: #fff;\n    border-radius: 4px;\n    z-index: 1;\n    opacity: 1;\n    /* transition: all 0.3s cubic-bezier(0, 0, 0.2, 1); */\n    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),\n                0 2px 2px 0 rgba(0, 0, 0, 0.14),\n                0 1px 5px 0 rgba(0, 0, 0, 0.12)\n}\n\n.detail-container:active {\n    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),\n                0 8px 10px 1px rgba(0, 0, 0, 0.14),\n                0 3px 14px 2px rgba(0, 0, 0, 0.12);\n}\n\n.detail-container.full-page {\n    border: solid 0px #ccc;\n    border-radius: 0px;\n    min-width: 100vw !important;\n    width: 100vw !important;\n    min-height: 100vh !important;\n    -webkit-transform: translate3d(0px, 0px, 0px) !important;\n            transform: translate3d(0px, 0px, 0px) !important;\n}\n\n.title {\n    margin: -1.5rem -1.5rem 0 -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.detail-container table {\n    width: 100%;\n    overflow: auto;\n}\n\n.detail-container table tr {\n    /* transition: background-color 0.3s; */\n}\n\n.detail-container table tr:hover {\n    background-color: rgba(0, 0, 0, 0.12);\n\n    cursor: pointer;\n}\n\n.inside-content {\n    position: absolute;\n    left: 0.3rem;\n    right: 0.3rem;\n    top: 45px;\n    bottom: 0.3rem;\n}\n\n/* resize controls elements */\n\n.animation-off {\n    transition: none;\n}\n\n.resize {\n    position: absolute;\n}\n\n.resize.right {\n    width: 0.5rem;\n    right: 0;\n    height: 100%;\n    top: 0;\n    cursor: ew-resize;\n}\n\n.resize.bottom {\n    bottom: 0;\n    height: 0.5rem;\n    width: 100%;\n    left: 0;\n    cursor: ns-resize;\n}\n\n.resize.left {\n    width: 0.5rem;\n    left: 0;\n    height: 100%;\n    top: 0;\n    cursor: ew-resize;\n}\n\n.resize.top {\n    top: 0;\n    height: 0.5rem;\n    width: 100%;\n    left: 0;\n    cursor: ns-resize;\n}\n\n.resize.corner {\n    width: 1rem;\n    height: 1rem;\n    cursor: nwse-resize;\n}\n\n.resize.corner.tl {\n    top: 0;\n    left: 0;\n}\n\n.resize.corner.tr {\n    top: 0;\n    right: 0;\n    cursor: nesw-resize;\n}\n\n.resize.corner.bl {\n    bottom: 0;\n    left: 0;\n    cursor: nesw-resize;\n}\n\n.resize.corner.br {\n    right: 0;\n    bottom: 0;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tb2RhbC1yZXNpemFibGUvbW9kYWwtcmVzaXphYmxlLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7SUFDbEIsTUFBTTtJQUNOLE9BQU87SUFDUCxTQUFTO0lBQ1QsUUFBUTtJQUNSLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsdUJBQXVCO0lBQ3ZCLFVBQVU7UUFDTix1Q0FBdUM7SUFDM0MsVUFBVTtJQUNWLFdBQVc7SUFDWCxZQUFZO0FBQ2hCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLFdBQVc7SUFDWCxzQkFBc0I7SUFDdEIsMEJBQTBCO0lBQzFCOzs7d0JBR29CO0lBQ3BCLHVCQUF1QjtJQUN2QixlQUFlO0lBQ2YsZ0JBQWdCO0lBQ2hCLGdCQUFnQjtJQUNoQixrQkFBa0I7SUFDbEIsVUFBVTtJQUNWLFVBQVU7SUFDVixxREFBcUQ7SUFDckQ7OztBQUdKOztBQUVBO0lBQ0k7O2tEQUU4QztBQUNsRDs7QUFFQTtJQUNJLHNCQUFzQjtJQUN0QixrQkFBa0I7SUFDbEIsMkJBQTJCO0lBQzNCLHVCQUF1QjtJQUN2Qiw0QkFBNEI7SUFDNUIsd0RBQWdEO1lBQWhELGdEQUFnRDtBQUNwRDs7QUFDQTtJQUNJLGlDQUFpQztJQUNqQyx5QkFBeUI7SUFDekIsYUFBYTtJQUNiLDhCQUE4QjtBQUNsQzs7QUFFQTtJQUNJLFdBQVc7SUFDWCxjQUFjO0FBQ2xCOztBQUNBO0lBQ0ksdUNBQXVDO0FBQzNDOztBQUNBO0lBQ0kscUNBQXFDOztJQUVyQyxlQUFlO0FBQ25COztBQUVBO0lBQ0ksa0JBQWtCO0lBQ2xCLFlBQVk7SUFDWixhQUFhO0lBQ2IsU0FBUztJQUNULGNBQWM7QUFDbEI7O0FBRUEsNkJBQTZCOztBQUM3QjtJQUNJLGdCQUFnQjtBQUNwQjs7QUFDQTtJQUNJLGtCQUFrQjtBQUN0Qjs7QUFDQTtJQUNJLGFBQWE7SUFDYixRQUFRO0lBQ1IsWUFBWTtJQUNaLE1BQU07SUFDTixpQkFBaUI7QUFDckI7O0FBQ0E7SUFDSSxTQUFTO0lBQ1QsY0FBYztJQUNkLFdBQVc7SUFDWCxPQUFPO0lBQ1AsaUJBQWlCO0FBQ3JCOztBQUNBO0lBQ0ksYUFBYTtJQUNiLE9BQU87SUFDUCxZQUFZO0lBQ1osTUFBTTtJQUNOLGlCQUFpQjtBQUNyQjs7QUFDQTtJQUNJLE1BQU07SUFDTixjQUFjO0lBQ2QsV0FBVztJQUNYLE9BQU87SUFDUCxpQkFBaUI7QUFDckI7O0FBRUE7SUFDSSxXQUFXO0lBQ1gsWUFBWTtJQUNaLG1CQUFtQjtBQUN2Qjs7QUFDQTtJQUNJLE1BQU07SUFDTixPQUFPO0FBQ1g7O0FBQ0E7SUFDSSxNQUFNO0lBQ04sUUFBUTtJQUNSLG1CQUFtQjtBQUN2Qjs7QUFDQTtJQUNJLFNBQVM7SUFDVCxPQUFPO0lBQ1AsbUJBQW1CO0FBQ3ZCOztBQUNBO0lBQ0ksUUFBUTtJQUNSLFNBQVM7QUFDYiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvbW9kYWwtcmVzaXphYmxlL21vZGFsLXJlc2l6YWJsZS5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm9uLXRvcCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogMDtcbiAgICBsZWZ0OiAwO1xuICAgIGJvdHRvbTogMDtcbiAgICByaWdodDogMDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgLyogZGVidWcgKi8gXG4gICAgICAgIC8qIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsMC4yKTsgKi9cbiAgICB3aWR0aDogMXB4O1xuICAgIGhlaWdodDogMXB4O1xuICAgIG1hcmdpbjogYXV0bztcbn1cblxuLmRldGFpbC1jb250YWluZXIgLnRpdGxlIHtcbiAgICBjdXJzb3I6IG1vdmU7XG59XG4uZGV0YWlsLWNvbnRhaW5lciB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIG1pbi13aWR0aDogMjAwcHg7XG4gICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgd2lkdGg6IDYwdnc7XG4gICAgYm9yZGVyOiBzb2xpZCAxcHggI2NjYztcbiAgICBjb2xvcjogcmdiYSgwLCAwLCAwLCAwLjg3KTtcbiAgICAvKiAtd2Via2l0LXVzZXItc2VsZWN0OiBub25lO1xuICAgIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgLW1zLXVzZXItc2VsZWN0OiBub25lO1xuICAgIHVzZXItc2VsZWN0OiBub25lOyAqL1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIHBhZGRpbmc6IDEuNXJlbTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGJhY2tncm91bmQ6ICNmZmY7XG4gICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgIHotaW5kZXg6IDE7XG4gICAgb3BhY2l0eTogMTtcbiAgICAvKiB0cmFuc2l0aW9uOiBhbGwgMC4zcyBjdWJpYy1iZXppZXIoMCwgMCwgMC4yLCAxKTsgKi9cbiAgICBib3gtc2hhZG93OiAwIDNweCAxcHggLTJweCByZ2JhKDAsIDAsIDAsIDAuMiksXG4gICAgICAgICAgICAgICAgMCAycHggMnB4IDAgcmdiYSgwLCAwLCAwLCAwLjE0KSxcbiAgICAgICAgICAgICAgICAwIDFweCA1cHggMCByZ2JhKDAsIDAsIDAsIDAuMTIpXG59XG5cbi5kZXRhaWwtY29udGFpbmVyOmFjdGl2ZSB7XG4gICAgYm94LXNoYWRvdzogMCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgICAgICAgICAgICAgIDAgOHB4IDEwcHggMXB4IHJnYmEoMCwgMCwgMCwgMC4xNCksXG4gICAgICAgICAgICAgICAgMCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjEyKTtcbn1cblxuLmRldGFpbC1jb250YWluZXIuZnVsbC1wYWdlIHtcbiAgICBib3JkZXI6IHNvbGlkIDBweCAjY2NjO1xuICAgIGJvcmRlci1yYWRpdXM6IDBweDtcbiAgICBtaW4td2lkdGg6IDEwMHZ3ICFpbXBvcnRhbnQ7XG4gICAgd2lkdGg6IDEwMHZ3ICFpbXBvcnRhbnQ7XG4gICAgbWluLWhlaWdodDogMTAwdmggIWltcG9ydGFudDtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZTNkKDBweCwgMHB4LCAwcHgpICFpbXBvcnRhbnQ7XG59XG4udGl0bGUge1xuICAgIG1hcmdpbjogLTEuNXJlbSAtMS41cmVtIDAgLTEuNXJlbTtcbiAgICB3aWR0aDogaW5pdGlhbCAhaW1wb3J0YW50O1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xufVxuXG4uZGV0YWlsLWNvbnRhaW5lciB0YWJsZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG59XG4uZGV0YWlsLWNvbnRhaW5lciB0YWJsZSB0ciB7XG4gICAgLyogdHJhbnNpdGlvbjogYmFja2dyb3VuZC1jb2xvciAwLjNzOyAqL1xufVxuLmRldGFpbC1jb250YWluZXIgdGFibGUgdHI6aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMC4xMik7XG5cbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5pbnNpZGUtY29udGVudCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIGxlZnQ6IDAuM3JlbTtcbiAgICByaWdodDogMC4zcmVtO1xuICAgIHRvcDogNDVweDtcbiAgICBib3R0b206IDAuM3JlbTtcbn1cblxuLyogcmVzaXplIGNvbnRyb2xzIGVsZW1lbnRzICovXG4uYW5pbWF0aW9uLW9mZiB7XG4gICAgdHJhbnNpdGlvbjogbm9uZTtcbn1cbi5yZXNpemUge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbn1cbi5yZXNpemUucmlnaHQge1xuICAgIHdpZHRoOiAwLjVyZW07XG4gICAgcmlnaHQ6IDA7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHRvcDogMDtcbiAgICBjdXJzb3I6IGV3LXJlc2l6ZTtcbn1cbi5yZXNpemUuYm90dG9tIHtcbiAgICBib3R0b206IDA7XG4gICAgaGVpZ2h0OiAwLjVyZW07XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbGVmdDogMDtcbiAgICBjdXJzb3I6IG5zLXJlc2l6ZTtcbn1cbi5yZXNpemUubGVmdCB7XG4gICAgd2lkdGg6IDAuNXJlbTtcbiAgICBsZWZ0OiAwO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB0b3A6IDA7XG4gICAgY3Vyc29yOiBldy1yZXNpemU7XG59XG4ucmVzaXplLnRvcCB7XG4gICAgdG9wOiAwO1xuICAgIGhlaWdodDogMC41cmVtO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGxlZnQ6IDA7XG4gICAgY3Vyc29yOiBucy1yZXNpemU7XG59XG5cbi5yZXNpemUuY29ybmVyIHtcbiAgICB3aWR0aDogMXJlbTtcbiAgICBoZWlnaHQ6IDFyZW07XG4gICAgY3Vyc29yOiBud3NlLXJlc2l6ZTtcbn1cbi5yZXNpemUuY29ybmVyLnRsIHtcbiAgICB0b3A6IDA7XG4gICAgbGVmdDogMDtcbn1cbi5yZXNpemUuY29ybmVyLnRyIHtcbiAgICB0b3A6IDA7XG4gICAgcmlnaHQ6IDA7XG4gICAgY3Vyc29yOiBuZXN3LXJlc2l6ZTtcbn1cbi5yZXNpemUuY29ybmVyLmJsIHtcbiAgICBib3R0b206IDA7XG4gICAgbGVmdDogMDtcbiAgICBjdXJzb3I6IG5lc3ctcmVzaXplO1xufVxuLnJlc2l6ZS5jb3JuZXIuYnIge1xuICAgIHJpZ2h0OiAwO1xuICAgIGJvdHRvbTogMDtcbn1cbiJdfQ== */"
 
 /***/ }),
 
@@ -3395,7 +3384,6 @@ module.exports = ".loading {\n    position: absolute;\n    left: 0;\n    right: 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DetailDialogComponent", function() { return DetailDialogComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
-/* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../helpers/functions */ "./src/app/helpers/functions.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3406,12 +3394,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-
 var DetailDialogComponent = /** @class */ (function () {
     function DetailDialogComponent() {
         this._isLoaded = false;
+        this.openMessage = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.close = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.arrMessageDetail = [];
     }
     Object.defineProperty(DetailDialogComponent.prototype, "isLoaded", {
         get: function () {
@@ -3435,12 +3422,13 @@ var DetailDialogComponent = /** @class */ (function () {
         this.close.emit();
     };
     DetailDialogComponent.prototype.addWindow = function (data) {
-        data.messageDetaiTableData = Object.keys(data).map(function (i) { return ({ name: i, value: data[i] }); }).filter(function (i) { return typeof i.value !== 'object'; });
-        data.headerColor = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_1__["Functions"].getColorByString(data.method);
-        this.arrMessageDetail.push(data);
-    };
-    DetailDialogComponent.prototype.closeWindow = function (id) {
-        this.arrMessageDetail.splice(id, 1);
+        console.log(data);
+        if (data.method === 'LOG') {
+            this.openMessage.emit({ data: data, isLog: true });
+        }
+        else {
+            this.openMessage.emit({ data: data.item });
+        }
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -3459,6 +3447,10 @@ var DetailDialogComponent = /** @class */ (function () {
         __metadata("design:type", Boolean),
         __metadata("design:paramtypes", [Object])
     ], DetailDialogComponent.prototype, "isLoaded", null);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"])
+    ], DetailDialogComponent.prototype, "openMessage", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"])
@@ -3565,6 +3557,7 @@ var TabExportComponent = /** @class */ (function () {
         var _this = this;
         this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
             var request = _this.queryBuilder(dtr);
+            console.log({ request: request });
             var subscription = _this._ecs.postMessagesText(request).subscribe(function (data) {
                 subscription.unsubscribe();
                 _this.saveToFile(data, "export_" + _this.id + ".txt", 'text/plain;charset=utf-8');
@@ -3793,20 +3786,18 @@ var TabLogsComponent = /** @class */ (function () {
             return this._data;
         },
         set: function (val) {
-            this._data = val;
+            this._data = JSON.parse(JSON.stringify(val));
+            // Compact Objects
             this._data.forEach(function (i) {
                 try {
                     i.payload.raw = JSON.parse(i.payload.raw);
                 }
                 catch (e) { }
-            });
-            // Compact Objects
-            this._data.forEach(function (i) {
                 try {
                     i.payload = {
-                        "message": i.payload.raw,
-                        "timestamp": new Date(i.payload.create_date),
-                        "raw": i.payload
+                        message: i.payload.raw,
+                        timestamp: new Date(i.payload.create_date),
+                        raw: i.payload
                     };
                     delete i.payload.raw.raw;
                 }
@@ -3845,7 +3836,7 @@ var TabLogsComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "table {\n    width: 100%;\n    overflow: auto;\n}\ntable tr {\n    transition: background-color 0.3s;\n}\ntable tr:hover {\n    background-color: rgba(0, 0, 0, 0.12);\n    cursor: pointer;\n}\n.mat-row:nth-child(2n+1){\n  background-color: #e4f0ec;\n}\n.mat-row:not(:nth-child(2n+1)){\n  background-color:#ffffff;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLW1lc3NhZ2VzL3RhYi1tZXNzYWdlcy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksV0FBVztJQUNYLGNBQWM7QUFDbEI7QUFDQTtJQUNJLGlDQUFpQztBQUNyQztBQUNBO0lBQ0kscUNBQXFDO0lBQ3JDLGVBQWU7QUFDbkI7QUFFQTtFQUNFLHlCQUF5QjtBQUMzQjtBQUNBO0VBQ0Usd0JBQXdCO0FBQzFCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLW1lc3NhZ2VzL3RhYi1tZXNzYWdlcy5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsidGFibGUge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIG92ZXJmbG93OiBhdXRvO1xufVxudGFibGUgdHIge1xuICAgIHRyYW5zaXRpb246IGJhY2tncm91bmQtY29sb3IgMC4zcztcbn1cbnRhYmxlIHRyOmhvdmVyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDAsIDAsIDAsIDAuMTIpO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLm1hdC1yb3c6bnRoLWNoaWxkKDJuKzEpe1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZTRmMGVjO1xufVxuLm1hdC1yb3c6bm90KDpudGgtY2hpbGQoMm4rMSkpe1xuICBiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmY7XG59Il19 */"
+module.exports = "table {\n    width: 100%;\n    overflow: auto;\n}\ntable tr {\n    transition: background-color 0.3s;\n    height: 38px;\n}\ntable tr:hover {\n    background-color: rgba(0, 0, 0, 0.12);\n    cursor: pointer;\n}\n.mat-row:nth-child(2n+1){\n  background-color: #e4f0ec;\n}\n.mat-row:not(:nth-child(2n+1)){\n  background-color:#ffffff;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLW1lc3NhZ2VzL3RhYi1tZXNzYWdlcy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksV0FBVztJQUNYLGNBQWM7QUFDbEI7QUFDQTtJQUNJLGlDQUFpQztJQUNqQyxZQUFZO0FBQ2hCO0FBQ0E7SUFDSSxxQ0FBcUM7SUFDckMsZUFBZTtBQUNuQjtBQUVBO0VBQ0UseUJBQXlCO0FBQzNCO0FBQ0E7RUFDRSx3QkFBd0I7QUFDMUIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3NlYXJjaC1ncmlkLWNhbGwvZGV0YWlsLWRpYWxvZy90YWItbWVzc2FnZXMvdGFiLW1lc3NhZ2VzLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJ0YWJsZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG59XG50YWJsZSB0ciB7XG4gICAgdHJhbnNpdGlvbjogYmFja2dyb3VuZC1jb2xvciAwLjNzO1xuICAgIGhlaWdodDogMzhweDtcbn1cbnRhYmxlIHRyOmhvdmVyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDAsIDAsIDAsIDAuMTIpO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLm1hdC1yb3c6bnRoLWNoaWxkKDJuKzEpe1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZTRmMGVjO1xufVxuLm1hdC1yb3c6bm90KDpudGgtY2hpbGQoMm4rMSkpe1xuICBiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmY7XG59Il19 */"
 
 /***/ }),
 
@@ -3887,6 +3878,7 @@ var TabMessagesComponent = /** @class */ (function () {
         this.dataSource = _helpers_functions__WEBPACK_IMPORTED_MODULE_1__["Functions"].messageFormatter(this.dataItem.data.messages);
     };
     TabMessagesComponent.prototype.onClickMessageRow = function (row) {
+        console.log('tab-message:: onClickMessageRow', row);
         this.messageWindow.emit(row);
     };
     __decorate([
@@ -4309,7 +4301,7 @@ var DialogSettingsGridDialog = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n.message-container {\n    height: 100%;\n}\n.message-container .ngx-json-viewer {\n    height: initial !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL21lc3NhZ2UtY29udGVudC9tZXNzYWdlLWNvbnRlbnQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQ0E7SUFDSSxZQUFZO0FBQ2hCO0FBQ0E7SUFDSSwwQkFBMEI7QUFDOUIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3NlYXJjaC1ncmlkLWNhbGwvbWVzc2FnZS1jb250ZW50L21lc3NhZ2UtY29udGVudC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiXG4ubWVzc2FnZS1jb250YWluZXIge1xuICAgIGhlaWdodDogMTAwJTtcbn1cbi5tZXNzYWdlLWNvbnRhaW5lciAubmd4LWpzb24tdmlld2VyIHtcbiAgICBoZWlnaHQ6IGluaXRpYWwgIWltcG9ydGFudDtcbn0iXX0= */"
+module.exports = "\n.message-container {\n    height: 100%;\n}\n.message-container .ngx-json-viewer {\n    height: initial !important;\n}\ntable tr {\n    height: 38px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL21lc3NhZ2UtY29udGVudC9tZXNzYWdlLWNvbnRlbnQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQ0E7SUFDSSxZQUFZO0FBQ2hCO0FBQ0E7SUFDSSwwQkFBMEI7QUFDOUI7QUFDQTtJQUNJLFlBQVk7QUFDaEIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3NlYXJjaC1ncmlkLWNhbGwvbWVzc2FnZS1jb250ZW50L21lc3NhZ2UtY29udGVudC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiXG4ubWVzc2FnZS1jb250YWluZXIge1xuICAgIGhlaWdodDogMTAwJTtcbn1cbi5tZXNzYWdlLWNvbnRhaW5lciAubmd4LWpzb24tdmlld2VyIHtcbiAgICBoZWlnaHQ6IGluaXRpYWwgIWltcG9ydGFudDtcbn1cbnRhYmxlIHRyIHtcbiAgICBoZWlnaHQ6IDM4cHg7XG59Il19 */"
 
 /***/ }),
 
@@ -4614,6 +4606,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./renderer/column-method-renderer.component */ "./src/app/components/search-grid-call/renderer/column-method-renderer.component.ts");
 /* harmony import */ var _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./renderer/header-action-renderer.component */ "./src/app/components/search-grid-call/renderer/header-action-renderer.component.ts");
 /* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../helpers/functions */ "./src/app/helpers/functions.ts");
+/* harmony import */ var _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../services/export/call.service */ "./src/app/services/export/call.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4633,11 +4626,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var SearchGridCallComponent = /** @class */ (function () {
-    function SearchGridCallComponent(_scs, _sss, _cts, changeDetectorRefs) {
+    function SearchGridCallComponent(_scs, _sss, _cts, _ecs, changeDetectorRefs) {
         this._scs = _scs;
         this._sss = _sss;
         this._cts = _cts;
+        this._ecs = _ecs;
         this.changeDetectorRefs = changeDetectorRefs;
         this.showPortal = false;
         this.isOpenDialog = false;
@@ -4839,35 +4834,74 @@ var SearchGridCallComponent = /** @class */ (function () {
         if ((this.arrMessageDetail.filter(function (i) { return i.id === row.data.id; })[0] != null)) {
             return;
         }
-        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.method);
-        var request = {
-            param: this.config.param || {},
-            timestamp: this.config.timestamp
-        };
-        request.param.search[this.protocol_profile] = {
-            id: row.data.id,
-            callid: [row.data.callid],
-            uuid: []
-        };
-        request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
-        };
+        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.method || 'LOG');
         var mData = {
             loaded: false,
             data: null,
             id: row.data.id,
             headerColor: color || ''
         };
-        this.arrMessageDetail.push(mData);
-        var getTransactionSubscription = this._cts.getTransaction(request).subscribe(function (data) {
-            getTransactionSubscription.unsubscribe();
-            var dataSource = _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].messageFormatter(data.data.messages);
-            mData.data = dataSource.filter(function (i) { return i.id === row.data.id; })[0];
+        if (row.isLog) {
+            console.log('=== LOG ===', row);
+            var data = row.data.item;
+            mData.data = data;
+            mData.data.item = {
+                raw: mData.data.raw
+            };
             mData.data.messageDetaiTableData = Object.keys(mData.data)
-                .map(function (i) { return ({ name: i, value: mData.data[i] }); })
-                .filter(function (i) { return typeof i.value !== 'object'; });
+                .map(function (i) {
+                var val;
+                if (i === 'create_date') {
+                    val = moment__WEBPACK_IMPORTED_MODULE_1__(mData.data[i]).format('DD-MM-YYYY');
+                }
+                else if (i === 'timeSeconds') {
+                    val = moment__WEBPACK_IMPORTED_MODULE_1__(mData.data[i]).format('hh:mm:ss.SSS');
+                }
+                else {
+                    val = mData.data[i];
+                }
+                return { name: i, value: val };
+            })
+                .filter(function (i) { return typeof i.value !== 'object' && i.name !== 'raw'; });
+            this.changeDetectorRefs.detectChanges();
+            mData.loaded = true;
+            this.arrMessageDetail.push(mData);
+            return;
+        }
+        var request = {
+            param: this.config.param || {},
+            timestamp: this.config.timestamp
+        };
+        request.param.limit = 1;
+        request.param.search[this.protocol_profile] = { id: row.data.id };
+        request.param.transaction = {
+            call: this.protocol_profile === '1_call',
+            registration: this.protocol_profile === '1_registration',
+            rest: this.protocol_profile === '1_default'
+        };
+        this.arrMessageDetail.push(mData);
+        var getMessageSubscription = this._scs.getMessage(request).subscribe(function (data) {
+            getMessageSubscription.unsubscribe();
+            console.log('get message data::', data);
+            mData.data = data.data[0];
+            mData.data.item = {
+                raw: mData.data.raw
+            };
+            mData.data.messageDetaiTableData = Object.keys(mData.data)
+                .map(function (i) {
+                var val;
+                if (i === 'create_date') {
+                    val = moment__WEBPACK_IMPORTED_MODULE_1__(mData.data[i]).format('DD-MM-YYYY');
+                }
+                else if (i === 'timeSeconds') {
+                    val = moment__WEBPACK_IMPORTED_MODULE_1__(mData.data[i]).format('hh:mm:ss.SSS');
+                }
+                else {
+                    val = mData.data[i];
+                }
+                return { name: i, value: val };
+            })
+                .filter(function (i) { return typeof i.value !== 'object' && i.name !== 'raw'; });
             _this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
         });
@@ -4883,6 +4917,7 @@ var SearchGridCallComponent = /** @class */ (function () {
         { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"] },
         { type: _app_services_session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"] },
         { type: _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"] },
+        { type: _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__["ExportCallService"] },
         { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"] }
     ]; };
     SearchGridCallComponent = __decorate([
@@ -4894,6 +4929,7 @@ var SearchGridCallComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"],
             _app_services_session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"],
             _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"],
+            _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__["ExportCallService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"]])
     ], SearchGridCallComponent);
     return SearchGridCallComponent;
@@ -5311,6 +5347,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                 yAxes: [{
                         stacked: true,
                         ticks: {
+                            callback: this.yAxisFormatter.bind(this),
                             beginAtZero: true
                         }
                     }]
@@ -5333,6 +5370,32 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
     }
     InfluxdbchartWidgetComponent.prototype.ngOnInit = function () {
         var _this = this;
+        console.log({ config_init: this.config });
+        if (!this.config) {
+            this.config = {
+                title: 'Chart',
+                chart: { type: { value: 'line' } },
+                format: { value: 'number' },
+                dataquery: { data: [{
+                            sum: false,
+                            main: { name: 'cpu', value: 'cpu' },
+                            database: { name: 'telegraf' },
+                            retention: { name: 'autogen' },
+                            type: [{ name: 'usage_system', value: 'usage_system' }],
+                            tag: [],
+                            rawpath: [],
+                            rawquery: []
+                        }] },
+                panel: { queries: [{
+                            name: 'A1',
+                            type: { name: 'influxDB', alias: 'influxDB' },
+                            database: { name: 'telegraf' },
+                            retention: { name: 'autogen' },
+                            value: 'query'
+                        }] }
+            };
+            this.changeSettings.emit(this.config);
+        }
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
             _this.timeRange = {
                 from: dtr.range.dates[0].unix(),
@@ -5388,10 +5451,10 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
         }
         this.requestData = this.querybuilder(this.config);
         var subscription = this._ss.getStatisticData(this.requestData).subscribe(function (res) {
-            var data = res.data[0];
-            _this.noChartData = data.length === 0;
+            var data = res.data.reduce(function (a, b) { return a.concat(b); }, []);
             _this.chartLabels = [];
             _this.chartData = [];
+            _this.noChartData = data.length === 0;
             var formattedData = data.map(function (i) {
                 return {
                     label: i.table + '.' + i.countername,
@@ -5406,8 +5469,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
             }, {});
             _this.chartLabels = data
                 // .map(item => moment(item.reporttime).format('HH:mm'))
-                // .map(item => moment(item.reporttime * 1000).format('DD-MM-YYYY HH:mm'))
-                .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('HH:mm'); })
+                .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('DD-MM-YYYY HH:mm'); })
                 .filter(function (i, k, a) { return i !== a[k + 1]; });
             var fillKey = 0;
             Object.keys(formattedData).forEach(function (key) {
@@ -5479,6 +5541,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                     },
                     value: 'query'
                 }); });
+                console.log('== this.config ==', _this.config);
                 _this.update(result.chartType);
                 _this.changeSettings.emit(_this.config);
             }
@@ -5490,6 +5553,25 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
     };
     InfluxdbchartWidgetComponent.prototype.chartHovered = function (_a) {
         var event = _a.event, active = _a.active;
+    };
+    InfluxdbchartWidgetComponent.prototype.yAxisFormatter = function (label) {
+        switch (this.config.format.value) {
+            case 'short':
+                return (function (num) {
+                    var f = function (i) { return Math.pow(1024, i); };
+                    var n = 4;
+                    while (n-- && !(f(n) < num)) { }
+                    return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
+                })(label);
+            case 'bytes':
+                return (function (num) {
+                    var f = function (i) { return Math.pow(1024, i); };
+                    var n = 6;
+                    while (n-- && !(f(n) < num)) { }
+                    return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
+                })(label);
+        }
+        return label; // DEFAULT: type == 'number' | 'row':
     };
     InfluxdbchartWidgetComponent.prototype.ngOnDestroy = function () {
         this.subscription.unsubscribe();
@@ -5638,8 +5720,13 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
     SettingInfluxdbchartWidgetComponent.prototype.addRecord = function () {
         var _this = this;
         if (this.panelDataSource && this.database && this.retentionPolicy) {
+            var n = 1;
+            var arr = this.dataSource.map(function (i) { return i.id; });
+            while (arr.indexOf('A' + n) !== -1) {
+                n++;
+            }
             var row = {
-                id: "A" + (this.dataSource.length + 1),
+                id: "A" + n,
                 panelDataSource: this.panelDataSource,
                 database: this.database,
                 retentionPolicy: this.retentionPolicy,
@@ -5989,10 +6076,15 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
         this.selecedEditQuery.detail.sum = this.isSum;
         this.updateResult();
     };
+    SettingInfluxdbchartWidgetComponent.prototype.onFormat = function () {
+        console.log('onFormat::this.format', this.format);
+        this.updateResult();
+    };
     SettingInfluxdbchartWidgetComponent.prototype.updateResult = function () {
         if (this.selecedEditQuery) {
             this.dataSource[this.dataSource.map(function (i) { return i.id; }).indexOf(this.selecedEditQuery.id)] = this.selecedEditQuery;
         }
+        console.log('this.format', this.format);
         this.outputObject.chartType = this.chartType;
         this.outputObject.chartTitle = this.chartTitle;
         this.outputObject.format = this.format;
@@ -6987,8 +7079,8 @@ var Functions = /** @class */ (function () {
         var dataSource = [];
         dist.forEach(function (item) { return dataSource.push({
             id: item.id,
-            create_date: moment__WEBPACK_IMPORTED_MODULE_0__(item.create_date).format('DD-MM-YYYY'),
-            timeSeconds: moment__WEBPACK_IMPORTED_MODULE_0__(item.timeSeconds).format('hh:mm:ss.SSS'),
+            create_date: moment__WEBPACK_IMPORTED_MODULE_0__(item.create_date).format('YYYY-MM-DD'),
+            timeSeconds: moment__WEBPACK_IMPORTED_MODULE_0__(item.timeSeconds * 1000).format('hh:mm:ss.SSS'),
             timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
             method: item.method || 'LOG',
             Msg_Size: (item.raw + '').length,
@@ -7433,11 +7525,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var CallTransactionService = /** @class */ (function () {
     function CallTransactionService(http) {
         this.http = http;
-        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].apiUrl + "/call/transaction";
+        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].apiUrl + "/call";
     }
     // return call transaction
     CallTransactionService.prototype.getTransaction = function (data) {
-        return this.http.post(this.url, data);
+        return this.http.post(this.url + "/transaction", data);
     };
     CallTransactionService.ctorParameters = function () { return [
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"] }
@@ -8680,8 +8772,8 @@ var SearchCallService = /** @class */ (function () {
         this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].apiUrl + "/search/call";
     }
     // Return search call message
-    SearchCallService.prototype.getMessage = function () {
-        return this.http.get(this.url + "/message");
+    SearchCallService.prototype.getMessage = function (data) {
+        return this.http.post(this.url + "/message", data);
     };
     // Return search call data
     SearchCallService.prototype.getData = function (searchConfig) {
@@ -8954,6 +9046,7 @@ var SessionStorageService = /** @class */ (function () {
         this.DATA_TIME_RANGE = 'data-time-range';
         this.FULL = 'full';
         this.PROTO_SEARCH = 'proto-search';
+        this.USER_SETTINGS = 'user-settings';
         this.userSettings = {
             updateType: this.FULL,
             dateTimeRange: {
@@ -8964,11 +9057,11 @@ var SessionStorageService = /** @class */ (function () {
         };
         this.authenticationService.currentUser.subscribe(function (currentUser) {
             if (currentUser) {
-                _this.userSettings = JSON.parse(localStorage.getItem('user-settings')) || _this.userSettings;
+                _this.userSettings = JSON.parse(localStorage.getItem(_this.USER_SETTINGS)) || _this.userSettings;
                 if (_this.userSettings.protosearchSettings instanceof Array) {
                     _this.userSettings.protosearchSettings = {};
                 }
-                if (!_this.userSettings.updateType) {
+                if (!_this.userSettings.updateType || _this.userSettings.updateType === _this.PROTO_SEARCH) {
                     _this.userSettings.updateType = _this.FULL;
                 }
                 _this.localUserSettings = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](_this.userSettings);
@@ -8982,9 +9075,11 @@ var SessionStorageService = /** @class */ (function () {
     };
     SessionStorageService.prototype.saveUserData = function (updateType) {
         if (updateType === void 0) { updateType = this.FULL; }
-        localStorage.setItem('user-settings', JSON.stringify(this.userSettings));
         this.userSettings.updateType = updateType;
+        console.log('sessionStorage::update::', this.userSettings);
         this.localUserSettings.next(this.userSettings);
+        this.userSettings.updateType = this.FULL;
+        localStorage.setItem(this.USER_SETTINGS, JSON.stringify(this.userSettings));
     };
     SessionStorageService.prototype.removeProtoSearchConfig = function (widgetId) {
         delete this.userSettings.protosearchSettings[widgetId];
@@ -9140,7 +9235,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
 var environment = {
     production: true,
-    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
+    apiUrl: "http://" + (window.location.hostname || "localhost") + "/api/v3"
 };
 
 
@@ -9161,7 +9256,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 var environment = {
     production: false,
-    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
+    apiUrl: "http://" + (window.location.hostname || "localhost") + "/api/v3"
 };
 /*
  * For easier debugging in development mode, you can import the following file

@@ -120,6 +120,8 @@ export default function statistics(server) {
           param: {
             limit: Joi.number().integer().min(0),
             search: Joi.object(),
+            query: Joi.array(),
+            total: Joi.bool(),
           },
           timestamp: {
             from: Joi.date().timestamp().required(),
@@ -134,7 +136,7 @@ export default function statistics(server) {
       let userObject = request.auth.credentials;
       const stats = new Stats(server, userObject.username);
       
-      stats.getTagsKeys(search).then(function(data) {
+      stats.getTagsKeys(query).then(function(data) {
         if (!data) {
           return reply(Boom.notFound('tags keys have been not found'));
         }

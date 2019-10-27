@@ -29,11 +29,12 @@ export default function ui(server) {
     handler: function (request, reply) {
 
         var path = request.params.path;
-        var match = path.match(/(.+\/)?(.+\.js)$/);
-        if (match) {
-            var filename = match[2];
+        var matchJs = path.match(/(.+\/)?(.+\.js)$/);
+	var matchCss = path.match(/(.+\/)?(.+\.css)$/);
+        if (matchJs || matchCss) {
+            var filename = matchJs ? matchJs[2] : matchCss[2];
 	    reply.file('public/'+ filename);
-        } else {
+	} else {
             reply.file('public/index.html');
 	}
 	return;

@@ -23,6 +23,7 @@ const routes = {
   agent_subscribe: require('./routes/agent_subscribe'),
   api: require('./routes/any'),
   ui: require('./routes/ui'),
+  proxy: require('./routes/proxy'),
 };
 
 const databases = {
@@ -36,7 +37,6 @@ const server = new Hapi.Server({
     request: ['debug', 'warn', 'error', 'implementation', 'internal'],
   },
 });
-
 
 const Influx = require('influx');
 const influx = new Influx.InfluxDB({
@@ -54,6 +54,7 @@ const prometheusClient = new RequestClient({
 });
 
 databases.prometheus = prometheusClient;
+const proxyConfig = config.proxyConfig;
 
 pem.createCertificate({
   days: config.certificate.days,

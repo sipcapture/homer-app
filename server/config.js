@@ -30,7 +30,7 @@ const mysql = {
 };
 
 const influxdb = {
-  host: 'influxdb',
+  host: '127.0.0.1',
   port: 8086,
   database: 'homer'
 }
@@ -40,6 +40,16 @@ const prometheus = {
   host: 'prometheus',
   port: 9090,
   api: '/api/v1/'
+}
+
+const proxyConfig = {
+  host: '127.0.0.1',
+  port: 3000,  
+  protocol: 'http',
+  path: '/api/v1/',
+  headers: {
+       'Authorization': 'Bearer eyJrIjoiR0o5VmMzS1IyM0pUWVFFbUNoUFZkNTVJRUNaUlBVMXAiLCJuIjoidGVzdCIsImlkIjoxfQ=='
+  }  
 }
 
 const ldapauth = {
@@ -54,9 +64,9 @@ const ldapauth = {
 
 export default {
   http_host: '0.0.0.0',
-  http_port: 80,
+  http_port: 8080,
   https_host: '0.0.0.0',
-  https_port: 443,
+  https_port: 8443,
   certificate: {
     self_signed: true,
     days: 1,
@@ -67,6 +77,7 @@ export default {
   bcrypt: {
     saltRounds: 10,
   },
+  proxyConfig: proxyConfig,
   db: {
     type: { // only one type can be true
       mysql: false,

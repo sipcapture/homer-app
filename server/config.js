@@ -30,7 +30,7 @@ const mysql = {
 };
 
 const influxdb = {
-  host: '127.0.0.1',
+  host: 'influxdb',
   port: 8086,
   database: 'homer'
 }
@@ -64,9 +64,9 @@ const ldapauth = {
 
 export default {
   http_host: '0.0.0.0',
-  http_port: 8080,
+  http_port: 80,
   https_host: '0.0.0.0',
-  https_port: 8443,
+  https_port: 443,
   certificate: {
     self_signed: true,
     days: 1,

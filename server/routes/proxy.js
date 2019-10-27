@@ -33,6 +33,32 @@ export default function proxy(server, config) {
       },
     },
   });
+  
+  server.route({
+    method: 'GET',
+    path: '/api/v3/proxy/grafana/url',
+    handler: function(request, reply) {
+        let url = {data: `${protocol}://${host}:${port}`};        
+        return reply(url);
+    },
+  });
+  
+  
+  server.route({
+    method: 'GET',
+    path: '/api/v3/proxy/grafana/org',
+    handler: {
+      proxy: {
+        mapUri: function(req, cb) {
+          const url = `${protocol}://${host}:${port}`+`/api/org`          
+          return cb(null, url, headers);
+        },
+        onResponse: function(err, res, req, reply) {
+          return reply(res);
+        },
+      },
+    },
+  });
 
   server.route({
     method: 'POST',

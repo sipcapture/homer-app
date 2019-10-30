@@ -272,7 +272,7 @@ export default function users(server) {
       const settings = new UserSettings({server, guid});
 
       try {
-        await settings.delete();
+        await settings.delete({"guid": guid});
         return reply({
           data: guid,
           message: 'successfully deleted user settings',

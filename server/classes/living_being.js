@@ -112,6 +112,10 @@ class LivingBeing {
    */
   async delete(properties) {
     try {
+
+      console.log("TABLE1", this.table);
+      console.log("GUID2", this.guid);
+      
       return await this.db(this.table)
         .where(properties)
         .delete();

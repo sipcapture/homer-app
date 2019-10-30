@@ -79,9 +79,9 @@ class Alias extends LivingBeing {
    *
    * @return {object} confirm
    */
-  async delete() {
+  async delete(properties) {
     try {
-      return await super.delete();
+      return await super.delete(properties);
     } catch (err) {
       throw new Error(`delete alias: ${err.message}`);
     }

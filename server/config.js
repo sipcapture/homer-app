@@ -30,7 +30,7 @@ const mysql = {
 };
 
 const influxdb = {
-  host: 'influxdb',
+  host: '127.0.0.1',
   port: 8086,
   database: 'homer'
 }
@@ -48,7 +48,7 @@ const proxyConfig = {
   protocol: 'http',
   path: '/api/v1/',
   headers: {
-       'Authorization': 'Bearer eyJrIjoiR0o5VmMzS1IyM0pUWVFFbUNoUFZkNTVJRUNaUlBVMXAiLCJuIjoidGVzdCIsImlkIjoxfQ=='
+       'Authorization': 'Bearer eyJrIjoiQjFIeWVacjA2YzVyOXltd3JvNzE0d1BMeTFlVFRuOFEiLCJuIjoiaG9tZXIyIiwiaWQiOjF9'
   }  
 }
 

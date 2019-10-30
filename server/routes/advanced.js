@@ -225,6 +225,7 @@ export default function advanced(server) {
         {
           method: async function(request, reply) {
             const {guid} = request.params;
+
             const settings = new Advanced({server, guid});
 
             try {
@@ -244,9 +245,8 @@ export default function advanced(server) {
     handler: async function(request, reply) {
       const {guid} = request.params;
       const settings = new Advanced({server, guid});
-
       try {
-        await settings.delete();
+        await settings.delete({"guid": guid});
         return reply({
           data: guid,
           message: 'successfully deleted advanced settings',

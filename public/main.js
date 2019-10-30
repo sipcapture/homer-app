@@ -337,7 +337,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Wi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"options\" (drop)=\"onDrop($event)\" >\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler {box-header-hover: hoverme}\" \n\t\t\tng-class=\"'{box-header-hover: hoverme}'\" \n\t\t\tng-mouseenter=\"hoverme=true\" \n\t\t\tng-mouseleave=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\">\n\t\t\t<app-clock-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\" #widgets></app-clock-widget>\n\t\t\t<app-influxdbchart-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\" #widgets></app-influxdbchart-widget>\n\t\t\t<app-protosearch-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\" #widgets></app-protosearch-widget>\n\t\t\t<app-rsearch-widget [id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\" #widgets></app-rsearch-widget>\n\t\t\t<app-iframe-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\" #widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
+module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"gridOptions\">\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler\" \n\t\t\t(mouseenter)=\"hoverme=true\" \n\t\t\t(mouseleave)=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\" [id]=\"item.id\">\n\t\t\t<div class=\"shadow-polygon\" style=\"display: none;\"></div>\n\t\t\t<app-clock-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\"\n\t\t\t\t#widgets></app-clock-widget>\n\n\t\t\t<app-influxdbchart-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\"\n\t\t\t\t#widgets></app-influxdbchart-widget>\n\n\t\t\t<app-protosearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\"\n\t\t\t\t#widgets></app-protosearch-widget>\n\n\t\t\t<app-rsearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\"\n\t\t\t\t#widgets></app-rsearch-widget>\n\n\t\t\t<app-iframe-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\"\n\t\t\t\t#widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
 
 /***/ }),
 
@@ -1436,7 +1436,7 @@ var AddDialogComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".widget-block {\n    padding: 0.5rem;\n    height: calc(100% - 2rem);\n}\n.top-tool {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    box-shadow: 0px 3px 4px rgba(0,0,0,0.2);\n    z-index: 12;\n    position: relative;\n}\n.top-tool > h3 {\n    margin: 0 0.5rem;\n}\niframe {\n    width: 100%;\n    height: calc(100vh - 85px);\n    border: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxlQUFlO0lBQ2YseUJBQXlCO0FBQzdCO0FBQ0E7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLDhCQUE4QjtJQUM5Qix1Q0FBdUM7SUFDdkMsV0FBVztJQUNYLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksZ0JBQWdCO0FBQ3BCO0FBQ0E7SUFDSSxXQUFXO0lBQ1gsMEJBQTBCO0lBQzFCLFNBQVM7QUFDYiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLndpZGdldC1ibG9jayB7XG4gICAgcGFkZGluZzogMC41cmVtO1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMnJlbSk7XG59XG4udG9wLXRvb2wge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgYm94LXNoYWRvdzogMHB4IDNweCA0cHggcmdiYSgwLDAsMCwwLjIpO1xuICAgIHotaW5kZXg6IDEyO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbn1cbi50b3AtdG9vbCA+IGgzIHtcbiAgICBtYXJnaW46IDAgMC41cmVtO1xufVxuaWZyYW1lIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA4NXB4KTtcbiAgICBib3JkZXI6IDA7XG59Il19 */"
+module.exports = ".widget-block {\n    position: relative;\n    padding: 0.5rem;\n    height: calc(100% - 2rem);\n}\n.top-tool {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    box-shadow: 0px 3px 4px rgba(0,0,0,0.2);\n    z-index: 12;\n    position: relative;\n}\n.top-tool > h3 {\n    margin: 0 0.5rem;\n}\niframe {\n    width: 100%;\n    height: calc(100vh - 85px);\n    border: 0;\n}\n.shadow-polygon {\n    position: absolute;\n    top: 0;\n    left: 0;\n    bottom: 0;\n    right: 0;\n    background-color: rgba(255,255,255,0.1);\n    z-index: 2;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7SUFDbEIsZUFBZTtJQUNmLHlCQUF5QjtBQUM3QjtBQUNBO0lBQ0ksYUFBYTtJQUNiLG1CQUFtQjtJQUNuQiw4QkFBOEI7SUFDOUIsdUNBQXVDO0lBQ3ZDLFdBQVc7SUFDWCxrQkFBa0I7QUFDdEI7QUFDQTtJQUNJLGdCQUFnQjtBQUNwQjtBQUNBO0lBQ0ksV0FBVztJQUNYLDBCQUEwQjtJQUMxQixTQUFTO0FBQ2I7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixNQUFNO0lBQ04sT0FBTztJQUNQLFNBQVM7SUFDVCxRQUFRO0lBQ1IsdUNBQXVDO0lBQ3ZDLFVBQVU7QUFDZCIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLndpZGdldC1ibG9jayB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIHBhZGRpbmc6IDAuNXJlbTtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDJyZW0pO1xufVxuLnRvcC10b29sIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICAgIGJveC1zaGFkb3c6IDBweCAzcHggNHB4IHJnYmEoMCwwLDAsMC4yKTtcbiAgICB6LWluZGV4OiAxMjtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG4udG9wLXRvb2wgPiBoMyB7XG4gICAgbWFyZ2luOiAwIDAuNXJlbTtcbn1cbmlmcmFtZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMHZoIC0gODVweCk7XG4gICAgYm9yZGVyOiAwO1xufVxuLnNoYWRvdy1wb2x5Z29uIHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiAwO1xuICAgIGxlZnQ6IDA7XG4gICAgYm90dG9tOiAwO1xuICAgIHJpZ2h0OiAwO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsMC4xKTtcbiAgICB6LWluZGV4OiAyO1xufSJdfQ== */"
 
 /***/ }),
 
@@ -1487,13 +1487,12 @@ var DashboardComponent = /** @class */ (function () {
     }
     DashboardComponent.prototype.ngOnInit = function () {
         // Grid options
-        this.options = {
+        this.gridOptions = {
             gridType2: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["GridType"].VerticalFixed,
             gridType: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["GridType"].Fit,
             enableEmptyCellDrop: true,
-            emptyCellDropCallback: this.onDrop,
+            // emptyCellDropCallback: this.onDrop,
             useTransformPositioning: true,
-            pushItems: true,
             mobileBreakpoint: 640,
             disableWindowResize: false,
             swap: true,
@@ -1501,11 +1500,11 @@ var DashboardComponent = /** @class */ (function () {
             margin: 10,
             scrollSensitivity: 10,
             scrollSpeed: 20,
-            pushDirections: { north: true, east: true, south: true, west: true },
             resizable: {
                 enabled: true
             },
             itemChangeCallback: this.itemChange.bind(this),
+            itemResizeCallback: this.itemChange.bind(this),
             draggable: {
                 enabled: true,
                 ignoreContent: true,
@@ -1513,32 +1512,70 @@ var DashboardComponent = /** @class */ (function () {
                 dragHandleClass: 'drag-handler',
                 ignoreContentClass: 'no-drag',
             },
+            /* Pushig elements */
+            pushItems: true,
             disablePushOnDrag: false,
             disablePushOnResize: false,
-            scrollToNewItems: false,
+            pushResizeItems: true,
+            pushDirections: { north: true, east: true, south: true, west: true },
+            /*  */
+            scrollToNewItems: true,
             displayGrid: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["DisplayGrid"].OnDragAndResize,
             minCols: 5,
+            maxCols: 5,
             minRows: 5,
+            maxRows: 5,
         };
         this.getData();
+    };
+    DashboardComponent.prototype.ngAfterViewInit = function () {
+        this.updateTrigger();
+    };
+    DashboardComponent.prototype.updateTrigger = function () {
+        setTimeout(function () {
+            var elList = document.body.querySelectorAll('.gridster-item-resizable-handler.ng-star-inserted');
+            Array.from(elList).forEach(function (i) {
+                i.onmouseup = window.document.body.onmouseleave = function (e) {
+                    Array.from(document.body.querySelectorAll('.widget-block .shadow-polygon')).forEach(function (j) {
+                        j.style.display = 'none';
+                    });
+                };
+                i.onmousedown = function (e) {
+                    var el = e.target.parentElement.querySelector('.widget-block');
+                    if (el.id.indexOf('iframe') !== -1) {
+                        el.querySelector('.shadow-polygon').style.display = 'block';
+                    }
+                };
+            });
+        }, 500);
+    };
+    DashboardComponent.prototype.onEvent = function (e) {
+        console.log(e);
+        return true;
     };
     DashboardComponent.prototype.getData = function () {
         var _this = this;
         this._route.params.subscribe(function (params) {
-            // DashboardComponent.dashboardId = params['id'];
             _this._ds.setCurrentDashBoardId(params['id']);
             var dashboardStoreSubscription = _this._ds.getDashboardStore(_this._ds.getCurrentDashBoardId()).subscribe(function (dashboard) {
                 _this.dashboardCollection = dashboard;
                 _this.isIframe = _this.dashboardCollection.data.type === 2;
-                console.log({ dashboard: dashboard, iframe: _this.isIframe });
                 if (_this.isIframe) {
                     _this.iframeUrl = _this.dashboardCollection.data.param;
-                    console.log('this.iframeUrl', _this.iframeUrl);
                 }
                 _this.dashboardTitle = _this.dashboardCollection &&
                     _this.dashboardCollection.data ?
                     _this.dashboardCollection.data.name : '';
                 if (_this.dashboardCollection) {
+                    (function (g, c) {
+                        g.maxRows = g.minRows = c.maxrows;
+                        g.maxCols = g.minCols = c.columns;
+                        g.pushItems = c.pushing;
+                        g.disablePushOnDrag = !c.pushing;
+                        g.disablePushOnResize = !c.pushing;
+                        g.pushResizeItems = c.pushing;
+                    })(_this.gridOptions, _this.dashboardCollection.data.config);
+                    _this.changedOptions();
                     var widgets = _this.dashboardCollection.data.widgets;
                     // sync old version and new version
                     _this.dashboardArray = widgets.map(function (item, i) {
@@ -1556,29 +1593,31 @@ var DashboardComponent = /** @class */ (function () {
                     _this.dashboardArray = [];
                 }
                 _this.dashboardCollection.data.widgets = _this.dashboardArray;
+                _this.updateTrigger();
                 dashboardStoreSubscription.unsubscribe();
             });
         });
     };
-    DashboardComponent.prototype.itemChange = function () {
-        var _this = this;
-        setTimeout(function () {
-            var subscription = _this.onDashboardSave().subscribe(function () {
-                subscription.unsubscribe();
-            });
-        }, 10);
+    DashboardComponent.prototype.onStartChange = function (e) {
+        console.log('onStartChange::', e);
     };
-    DashboardComponent.prototype.onDrop = function (ev) {
+    DashboardComponent.prototype.onStopChange = function (e) {
+        console.log('onStopChange::', e);
+    };
+    DashboardComponent.prototype.itemChange = function (item) {
         var _this = this;
         setTimeout(function () {
             var subscription = _this.onDashboardSave().subscribe(function () {
                 subscription.unsubscribe();
-                _this.getData();
+                if (item.name === 'iframe') {
+                    _this.getWidgetById(item.id).refresh();
+                }
             });
         }, 10);
+        return true;
     };
     DashboardComponent.prototype.changedOptions = function () {
-        this.options.api.optionsChanged();
+        this.gridOptions.api.optionsChanged();
     };
     DashboardComponent.prototype.openSettings = function (item) {
         this.getWidgetById(item.id).openDialog();
@@ -1647,14 +1686,25 @@ var DashboardComponent = /** @class */ (function () {
         });
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
             if (data) {
-                _this.dashboardCollection.param = data.param || _this.dashboardCollection.param;
-                _this.dashboardCollection.data.param = data.param || _this.dashboardCollection.data.param;
-                _this.dashboardCollection.data.name = data.name || _this.dashboardTitle;
-                _this.dashboardCollection.data.type = data.type || _this.dashboardCollection.data.type;
-                _this.dashboardCollection.data.shared = data.shared || _this.dashboardCollection.data.shared;
-                _this.dashboardCollection.data.config.columns = data.columns || _this.dashboardCollection.data.config.columns;
-                _this.dashboardCollection.data.config.maxrows = data.maxrows || _this.dashboardCollection.data.config.maxrows;
-                _this.dashboardCollection.data.config.pushing = data.pushing || _this.dashboardCollection.data.config.pushing;
+                (function (d, dd) {
+                    d.param = data.param;
+                    dd.param = data.param;
+                    dd.name = data.name;
+                    dd.type = data.type;
+                    dd.shared = data.shared;
+                    dd.config.columns = data.columns;
+                    dd.config.maxrows = data.maxrows;
+                    dd.config.pushing = data.pushing;
+                    (function (g, c) {
+                        g.maxRows = g.minRows = c.maxrows;
+                        g.maxCols = g.minCols = c.columns;
+                        g.pushItems = c.pushing;
+                        g.disablePushOnDrag = !c.pushing;
+                        g.disablePushOnResize = !c.pushing;
+                        g.pushResizeItems = c.pushing;
+                    })(_this.gridOptions, dd.config);
+                    _this.changedOptions();
+                })(_this.dashboardCollection, _this.dashboardCollection.data);
                 var subscription_2 = _this.onDashboardSave().subscribe(function () {
                     subscription_2.unsubscribe();
                     _this.getData();
@@ -1682,14 +1732,6 @@ var DashboardComponent = /** @class */ (function () {
         });
     };
     DashboardComponent.prototype.onDashboardSave = function () {
-        // for old version homer-app
-        this.dashboardArray = this.dashboardArray.map(function (item) {
-            item['sizeX'] = item.cols;
-            item['sizeY'] = item.rows;
-            item['col'] = item.x;
-            item['row'] = item.y;
-            return item;
-        });
         this.dashboardCollection.data.widgets = this.dashboardArray;
         return this._ds.postDashboardStore(this._ds.getCurrentDashBoardId(), this.dashboardCollection.data);
     };
@@ -5592,8 +5634,15 @@ var IframeWidgetComponent = /** @class */ (function () {
             }
         });
     };
-    IframeWidgetComponent.prototype.buildUrl = function () {
+    IframeWidgetComponent.prototype.refresh = function () {
+        this.buildUrl(true);
+    };
+    IframeWidgetComponent.prototype.buildUrl = function (noCache) {
+        if (noCache === void 0) { noCache = false; }
         var params = this._config.params;
+        if (noCache) {
+            params.rand = (Math.random() * 999999).toFixed(0);
+        }
         this.url = [this._config.url, Object.keys(params).map(function (i) { return i + "=" + params[i]; }).join('&')].join('?');
         console.log('this.url', this.url);
     };

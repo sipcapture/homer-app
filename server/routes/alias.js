@@ -278,7 +278,7 @@ export default function alias(server) {
       const settings = new Alias({server, guid});
 
       try {
-        await settings.delete();
+        await settings.delete({"guid": guid});
         return reply({
           data: guid,
           message: 'successfully deleted alias',

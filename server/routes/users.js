@@ -238,7 +238,7 @@ export default function users(server) {
       const user = new User({server, guid: userGuid});
 
       try {
-        await user.delete();
+        await user.delete({"guid": userGuid});
         return reply({
           data: userGuid,
           message: 'successfully deleted user',

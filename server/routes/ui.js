@@ -37,6 +37,7 @@ export default function ui(server) {
 	} else {
             reply.file('public/index.html');
 	}
+
 	return;
     }
   });

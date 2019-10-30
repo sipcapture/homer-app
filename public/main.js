@@ -326,7 +326,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n    <div>Add 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Widget</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n  \n<div mat-dialog-content style=\"text-align: center\">\n  <mat-grid-list cols=\"2\" rowHeight=\"5:1\">\n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Visualize</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>World Clock</h3>\n        <p>Display date and time</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'clock'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Metrics</h3>\n        <p>Display InfluxDB/Prometheus Metrics</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'influxdbchart'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Search</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Proto Search</h3>\n        <p>Display Protocol Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'protosearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Loki Search</h3>\n        <p>Display Loki Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'rsearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n  </mat-grid-list>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n</div>"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Widget</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n  \n<div mat-dialog-content style=\"text-align: center\">\n  <mat-grid-list cols=\"2\" rowHeight=\"5:1\">\n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Visualize</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>World Clock</h3>\n        <p>Display date and time</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'clock'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Metrics</h3>\n        <p>Display InfluxDB/Prometheus Metrics</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'influxdbchart'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Iframe component</h3>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'iframe'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    \n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Search</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Proto Search</h3>\n        <p>Display Protocol Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'protosearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Loki Search</h3>\n        <p>Display Loki Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'rsearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n  </mat-grid-list>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n</div>"
 
 /***/ }),
 
@@ -337,7 +337,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Wi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n<!-- Gridster grid -->\n<gridster [options]=\"options\" (drop)=\"onDrop($event)\" >\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler {box-header-hover: hoverme}\" \n\t\t\tng-class=\"'{box-header-hover: hoverme}'\" \n\t\t\tng-mouseenter=\"hoverme=true\" \n\t\t\tng-mouseleave=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\">\n\t\t\t<app-clock-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\" #widgets></app-clock-widget>\n\t\t\t<app-influxdbchart-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\" #widgets></app-influxdbchart-widget>\n\t\t\t<app-protosearch-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\" #widgets></app-protosearch-widget>\n\t\t\t<app-rsearch-widget [id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\" #widgets></app-rsearch-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
+module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"options\" (drop)=\"onDrop($event)\" >\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler {box-header-hover: hoverme}\" \n\t\t\tng-class=\"'{box-header-hover: hoverme}'\" \n\t\t\tng-mouseenter=\"hoverme=true\" \n\t\t\tng-mouseleave=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\">\n\t\t\t<app-clock-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\" #widgets></app-clock-widget>\n\t\t\t<app-influxdbchart-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\" #widgets></app-influxdbchart-widget>\n\t\t\t<app-protosearch-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\" #widgets></app-protosearch-widget>\n\t\t\t<app-rsearch-widget [id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\" #widgets></app-rsearch-widget>\n\t\t\t<app-iframe-widget [id]=\"item.id\" [config]=\"item.config\" (changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\" #widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
 
 /***/ }),
 
@@ -381,7 +381,7 @@ module.exports = "<mat-card>\n    <mat-card-header>\n        <mat-card-title>\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button [matMenuTriggerFor]=\"panels\" [(ngModel)]=\"panelName\" name=\"panelName\" ngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item *ngFor=\"let dashboardItem of dashboards | filter : searchText\" (click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t</span>\n\t\t\t\t\n\t\t\t<button mat-button name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t<mat-icon>refresh</mat-icon>{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>logout</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
+module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button [matMenuTriggerFor]=\"panels\" [(ngModel)]=\"panelName\" name=\"panelName\" ngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item *ngFor=\"let dashboardItem of dashboards | filter : searchText\" (click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t\n\t\t\t</span>\n\t\t\t<button mat-button (click)=\"refresh()\" class=\"btn-refrash\">\n\t\t\t\t<mat-icon>refresh</mat-icon>\n\t\t\t</button>\n\t\t\t<button mat-button class=\"btn-refrash-timer\" name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>exit_to_app</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
 
 /***/ }),
 
@@ -392,7 +392,7 @@ module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"on-top modal-resizable\" #layerZIndex>\n  <div [className]=\"isFullPage ? 'detail-container full-page' : 'detail-container'\" (mousedown)=\"onFocus()\" #containerWindow>\n    <mat-toolbar\n      class=\"title\"\n      color=\"primary\"\n      (dblclick)=\"onFullPage()\"\n      [ngStyle]=\"{'background-color': headerColor}\"\n      (mousedown)=\"onStartMove($event)\">\n      <div> {{ title }} </div>\n      <div style=\"display: flex\">\n        <button mat-icon-button (click)=\"onFullPage()\">\n          <mat-icon *ngIf=\"!isFullPage\">fullscreen</mat-icon>\n          <mat-icon *ngIf=\"isFullPage\">fullscreen_exit</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"newWindow()\">\n          <mat-icon>flip_to_front</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"onClose()\">\n          <mat-icon>close</mat-icon>\n        </button>\n      </div>\n    </mat-toolbar>\n    <div class=\"inside-content\">\n      <span #inWindow>\n        <ng-content></ng-content>\n      </span>\n    </div>\n\n    <!-- \n      Resizable conrols \n    -->\n    <div class=\"resize left\"      (mousedown)=\"onResize($event, 'left')\"></div>\n    <div class=\"resize right\"     (mousedown)=\"onResize($event, 'right')\"></div>\n    <div class=\"resize bottom\"    (mousedown)=\"onResize($event, 'bottom')\"></div>\n    <div class=\"resize top\"       (mousedown)=\"onResize($event, 'top')\"></div>\n    <div class=\"resize corner tl\" (mousedown)=\"onResize($event, 'tl')\"></div>\n    <div class=\"resize corner tr\" (mousedown)=\"onResize($event, 'tr')\"></div>\n    <div class=\"resize corner bl\" (mousedown)=\"onResize($event, 'bl')\"></div>\n    <div class=\"resize corner br\" (mousedown)=\"onResize($event, 'br')\"></div>\n  </div>\n</div>\n\n<app-window [isWindow]=\"isBrowserWindow\"\n  [width]=\"width\"\n  [height]=\"height\"\n  (close)=\"onWindowClose($event)\">\n  <div class=\"out-window\" #outWindow></div>\n  <!-- <ng-content *ngIf=\"isBrowserWindow\"></ng-content> -->\n</app-window>"
+module.exports = "<div class=\"on-top modal-resizable\" #layerZIndex>\n  <div [className]=\"isFullPage ? 'detail-container full-page' : 'detail-container'\" (mousedown)=\"onFocus()\" #containerWindow>\n    <mat-toolbar\n      class=\"title\"\n      color=\"primary\"\n      (dblclick)=\"onFullPage()\"\n      [ngStyle]=\"{'background-color': headerColor}\"\n      (mousedown)=\"onStartMove($event)\">\n      <div> {{ title }} </div>\n      <div style=\"display: flex\">\n        <button mat-icon-button (click)=\"onFullPage()\">\n          <mat-icon *ngIf=\"!isFullPage\">fullscreen</mat-icon>\n          <mat-icon *ngIf=\"isFullPage\">fullscreen_exit</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"newWindow()\">\n          <mat-icon>flip_to_front</mat-icon>\n        </button>\n        <button mat-icon-button (click)=\"onClose()\">\n          <mat-icon>close</mat-icon>\n        </button>\n      </div>\n    </mat-toolbar>\n    <div class=\"inside-content\">\n      <span #inWindow>\n        <ng-content></ng-content>\n      </span>\n    </div>\n\n    <!-- \n      Resizable conrols \n    -->\n    <div class=\"resize left\"      (mousedown)=\"onResize($event, 'left')\"></div>\n    <div class=\"resize right\"     (mousedown)=\"onResize($event, 'right')\"></div>\n    <div class=\"resize bottom\"    (mousedown)=\"onResize($event, 'bottom')\"></div>\n    <div class=\"resize top\"       (mousedown)=\"onResize($event, 'top')\"></div>\n    <div class=\"resize corner tl\" (mousedown)=\"onResize($event, 'tl')\"></div>\n    <div class=\"resize corner tr\" (mousedown)=\"onResize($event, 'tr')\"></div>\n    <div class=\"resize corner bl\" (mousedown)=\"onResize($event, 'bl')\"></div>\n    <div class=\"resize corner br\" (mousedown)=\"onResize($event, 'br')\"></div>\n  </div>\n</div>\n\n<app-window [isWindow]=\"__isBrowserWindow\"\n  [width]=\"width\"\n  [height]=\"height\"\n  (close)=\"onWindowClose($event)\">\n  <div class=\"out-window\" #outWindow></div>\n</app-window>"
 
 /***/ }),
 
@@ -502,7 +502,7 @@ module.exports = "<div style=\"display: flex; height: 100%\">\n  <!-- menu -->\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal-resizable \n  [title]=\"'[SIP] Call-ID: ' + titleId\"\n  [headerColor]=\"headerColor\"\n  (close)=\"onClose()\" \n  [width]=\"1000\"\n  [height]=\"800\"\n  [minWidth]=\"600\"\n  [minHeight]=\"400\">\n  <div *ngIf=\"!_isLoaded\" class=\"loading\">\n      <mat-spinner></mat-spinner>\n  </div>\n  <mat-tab-group *ngIf=\"_isLoaded\" style=\"height: 100%;\">\n    <mat-tab label=\"Messages\">\n      <app-tab-messages [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-messages>\n    </mat-tab>\n    <mat-tab label=\"Flow\">\n      <app-tab-flow [callid]=\"titleId\" [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-flow>\n    </mat-tab>\n    <mat-tab label=\"QoS\">\n      <app-tab-qos [callid]=\"titleId\" [dataItem]=\"sipDataItem\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-qos>\n    </mat-tab>\n    <mat-tab *ngIf=\"dataLogs.length > 0\" label=\"Logs\">\n      <app-tab-logs [data]=\"dataLogs\"></app-tab-logs>\n    </mat-tab>\n    <!-- <mat-tab label=\"Loki\">\n      <mat-spinner></mat-spinner>\n    </mat-tab> -->\n    <mat-tab label=\"Export\">\n      <app-tab-export [callid]=\"titleId\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-export>\n    </mat-tab>\n  </mat-tab-group>\n</app-modal-resizable>\n"
+module.exports = "<app-modal-resizable \n  [title]=\"'[SIP] Call-ID: ' + titleId\"\n  [headerColor]=\"headerColor\"\n  (close)=\"onClose()\" \n  [width]=\"1000\"\n  [height]=\"800\"\n  [minWidth]=\"600\"\n  [minHeight]=\"400\"\n  (browserWindow)=\"onBrowserWindow($event)\">\n  <div *ngIf=\"!_isLoaded\" class=\"loading\">\n      <mat-spinner></mat-spinner>\n  </div>\n  <mat-tab-group *ngIf=\"_isLoaded\" style=\"height: 100%;\">\n    <mat-tab *ngIf=\"tabs.messages\" label=\"Messages\">\n      <app-tab-messages [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-messages>\n    </mat-tab>\n    <mat-tab *ngIf=\"tabs.flow\" label=\"Flow\">\n      <app-tab-flow [callid]=\"titleId\" [dataItem]=\"sipDataItem\" (messageWindow)=\"addWindow($event)\"></app-tab-flow>\n    </mat-tab>\n    <mat-tab *ngIf=\"tabs.qos\" label=\"QoS\">\n      <app-tab-qos [callid]=\"titleId\" [dataItem]=\"sipDataItem\"\n        [id]=\"sipDataItem.data.messages[0].id\"\n        (haveData)=\"onTabQos($event)\"></app-tab-qos>\n    </mat-tab>\n    <mat-tab *ngIf=\"tabs.logs\" label=\"Logs\">\n      <app-tab-logs [data]=\"dataLogs\"></app-tab-logs>\n    </mat-tab>\n    <!-- <mat-tab *ngIf=\"tabs\" label=\"Loki\">\n      <mat-spinner></mat-spinner>\n    </mat-tab> -->\n    <mat-tab *ngIf=\"tabs.export\" label=\"Export\">\n      <app-tab-export [callid]=\"titleId\" [id]=\"sipDataItem.data.messages[0].id\"></app-tab-export>\n    </mat-tab>\n  </mat-tab-group>\n</app-modal-resizable>\n"
 
 /***/ }),
 
@@ -557,7 +557,7 @@ module.exports = "<table mat-table [dataSource]=\"dataSource\" class=\"mat-eleva
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"responcive\">\n  <div class=\"chart-container\">\n    <canvas baseChart\n      [datasets]=\"chartData\"\n      [labels]=\"chartLabels\"\n      [options]=\"chartOptions\"\n      [legend]=\"chartLegend\"\n      [colors]=\"lineChartColors\"\n      [chartType]=\"chartType\">\n    </canvas>\n  </div>\n  \n\n</div>\n<div class=\"responcive\">\n    <div class=\"item-container\">\n        <div [className]=\"'item ' + item.color\" *ngFor=\"let item of list\">\n          <div class=\"text\" >{{ item.name | uppercase }}</div>\n          <div class=\"text-badge\">{{ item.value }}</div>\n        </div>\n      </div>\n    \n  <mat-card *ngFor=\"let item of streams\" class=\"cardStreem\">\n    <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBox(item, true)\">\n      <div style=\"display: flex; align-items: center; align-content: center;\">\n        <span>{{ item.srcIp }}</span>\n        <mat-icon>trending_flat</mat-icon>\n        <span>{{ item.dstIp }}</span>\n      </div>\n    </mat-checkbox>\n    <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n      <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.packets\">\n        <span class=\"color-bable color1\"></span>\n        packets\n      </mat-checkbox>\n      <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.octets\">\n        <span class=\"color-bable color2\"></span>\n        octets\n      </mat-checkbox>\n      <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.highest_seq_no\">\n        <span class=\"color-bable color3\"></span>\n        highest_seq_no\n      </mat-checkbox>\n      <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.ia_jitter\">\n        <span class=\"color-bable color4\"></span>\n        ia_jitter\n      </mat-checkbox>\n      <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.lsr\">\n        <span class=\"color-bable color5\"></span>\n        lsr\n      </mat-checkbox>\n    </div>\n  </mat-card>\n</div>\n  \n  \n"
+module.exports = "<div *ngIf=\"isRTP\"><!-- RTP -->\n  <h5 *ngIf=\"isRTCP\">RTP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartDataRTP\"\n        [labels]=\"chartLabelsRTP\"\n        [colors]=\"lineChartColorsRTP\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [chartType]=\"chartType\">\n      </canvas>\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlagRTP = !hideLabelsFlagRTP\">{{ hideLabelsFlagRTP ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlagRTP\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of listRTP\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n    <mat-card *ngFor=\"let item of streamsRTP\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBoxRTP(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.TOTAL_PK\">\n          <span class=\"color-bable color1\"></span>\n          TOTAL_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.EXPECTED_PK\">\n          <span class=\"color-bable color2\"></span>\n          EXPECTED_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.JITTER\">\n          <span class=\"color-bable color3\"></span>\n          JITTER\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.MOS\">\n          <span class=\"color-bable color4\"></span>\n          MOS\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.DELTA\">\n          <span class=\"color-bable color5\"></span>\n          DELTA\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.PACKET_LOSS\">\n          <span class=\"color-bable color6\"></span>\n          PACKET_LOSS\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>  \n</div>\n<div *ngIf=\"isRTCP\"><!-- RTCP -->\n  <h5 *ngIf=\"isRTP\">RTCP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartData\"\n        [labels]=\"chartLabels\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [colors]=\"lineChartColors\"\n        [chartType]=\"chartType\">\n      </canvas>\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlag = !hideLabelsFlag\">{{ hideLabelsFlag ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlag\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of list\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n      \n    <mat-card *ngFor=\"let item of streams\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBox(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.packets\">\n          <span class=\"color-bable color1\"></span>\n          packets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.octets\">\n          <span class=\"color-bable color2\"></span>\n          octets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.highest_seq_no\">\n          <span class=\"color-bable color3\"></span>\n          highest_seq_no\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.ia_jitter\">\n          <span class=\"color-bable color4\"></span>\n          ia_jitter\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.lsr\">\n          <span class=\"color-bable color5\"></span>\n          lsr\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -590,7 +590,7 @@ module.exports = "<mat-tab-group class=\"message-container\">\n  <mat-tab label=
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"resalt-top-tools\">\n    <h3>Search Results</h3>\n    \n    <mat-form-field>\n        <button mat-button matSuffix mat-stroked-button aria-label=\"search\">Refresh Search</button>\n        <mat-placeholder>Regex Results Filter</mat-placeholder>\n        <input matInput type=\"search\">\n    </mat-form-field>\n\n</div>\n\n<ag-grid-angular \n    style=\"height: calc(100vh - 119px); width: 100%;\" \n    class=\"ag-theme-material\"\n    [defaultColDef]=\"defaultColDef\"\n    [gridOptions]=\"gridOptions\"\n    [rowData]=\"rowData\" \n    [columnDefs]=\"columnDefs\"\n    [enableRangeSelection]=\"true\"\n    [rowMultiSelectWithClick]=\"true\"\n    [pagination]=\"true\"\n    (gridReady)=\"onGridReady($event)\"\n    [context]=\"context\"\n    [enableCellTextSelection]=\"true\"\n    [frameworkComponents]=\"frameworkComponents\"\n></ag-grid-angular>\n\n<app-detail-dialog\n    *ngFor=\"let item of arrWindow; let idx = index\"\n    [titleId]=\"item.id\"\n    [sipDataItem]=\"item.data\"\n    [headerColor]=\"item.headerColor\"\n    [isLoaded]=\"item.loaded\"\n    (openMessage)=\"addWindowMessage($event)\"\n    (close)=\"closeWindow(idx)\"\n></app-detail-dialog>\n\n<app-modal-resizable\n    *ngFor=\"let item of arrMessageDetail; let idx = index\" \n    [title]=\"'Message ID: ' + item.id\" \n    [headerColor]=\"item.headerColor\"\n    (close)=\"closeWindowMessage(idx)\"\n    [minWidth]=\"500\"\n    [minHeight]=\"400\"\n    [width]=\"500\" [height]=\"400\">\n  <div *ngIf=\"!item.loaded\" class=\"loading\"><mat-spinner></mat-spinner></div>\n  <app-message-content *ngIf=\"item.loaded\" [data]=\"item.data\"></app-message-content>\n</app-modal-resizable>\n\n<div *ngIf=\"isLoading\" class=\"loading\">\n    <mat-spinner></mat-spinner>\n</div>"
+module.exports = "<input class=\"regex-filter\" placeholder=\"Regex Results Filter\" type=\"search\" [(ngModel)]=\"filterGridValue\" (keyup)=\"setQuickFilter()\">\n<ag-grid-angular \n    style=\"height: calc(100vh - 45px); width: 100%;\" \n    class=\"ag-theme-material\"\n    [defaultColDef]=\"defaultColDef\"\n    [gridOptions]=\"gridOptions\"\n    [rowData]=\"rowData\" \n    [columnDefs]=\"columnDefs\"\n    [enableRangeSelection]=\"true\"\n    [rowMultiSelectWithClick]=\"true\"\n    [pagination]=\"true\"\n    (gridReady)=\"onGridReady($event)\"\n    [context]=\"context\"\n    [enableCellTextSelection]=\"true\"\n    [frameworkComponents]=\"frameworkComponents\"\n></ag-grid-angular>\n\n<app-detail-dialog\n    *ngFor=\"let item of arrWindow; let idx = index\"\n    [titleId]=\"item.id\"\n    [sipDataItem]=\"item.data\"\n    [headerColor]=\"item.headerColor\"\n    [isLoaded]=\"item.loaded\"\n    (openMessage)=\"addWindowMessage($event)\"\n    (close)=\"closeWindow(idx)\"\n></app-detail-dialog>\n\n<app-modal-resizable\n    *ngFor=\"let item of arrMessageDetail; let idx = index\" \n    [title]=\"'Message ID: ' + item.id\" \n    [headerColor]=\"item.headerColor\"\n    (close)=\"closeWindowMessage(idx)\"\n    [minWidth]=\"500\"\n    [minHeight]=\"400\"\n    [isBrowserWindow]=\"item.isBrowserWindow\"\n    [width]=\"500\" [height]=\"400\">\n  <div *ngIf=\"!item.loaded\" class=\"loading\"><mat-spinner></mat-spinner></div>\n  <app-message-content *ngIf=\"item.loaded\" [data]=\"item.data\"></app-message-content>\n</app-modal-resizable>\n\n<div *ngIf=\"isLoading\" class=\"loading\">\n    <mat-spinner></mat-spinner>\n</div>"
 
 /***/ }),
 
@@ -616,6 +616,28 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settin
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/iframe-widget/iframe-widget.component.html":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/app/components/widgets/iframe-widget/iframe-widget.component.html ***!
+  \*********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<iframe class=\"frame-base\" [src]=\"url | safe\" (load)=\"onLoadIframe()\"\n    [ngStyle]=\"{'display' : iframeLoaded ? 'block' : 'none' }\"></iframe>\n"
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.html":
+/*!*****************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.html ***!
+  \*****************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <mat-form-field>\n      <mat-label>Title</mat-label>\n      <input matInput [(ngModel)]=\"data.title\">\n    </mat-form-field>\n\n    \n    <div>\n      <label>Theme: </label>\n      <mat-radio-group\n        aria-labelledby=\"example-radio-group-label\"\n        class=\"example-radio-group\"\n        [(ngModel)]=\"data.params.theme\">\n        <mat-radio-button style=\"padding-left: 0.5rem;\" *ngFor=\"let season of ['light', 'dark']\" [value]=\"season\">\n          {{season}}\n        </mat-radio-button>\n      </mat-radio-group>\n    </div>\n    \n    <div>\n      <label>Time range: </label>\n      <mat-radio-group\n        aria-labelledby=\"example-radio-group-label\"\n        class=\"example-radio-group\"\n        [(ngModel)]=\"data.typeDataRange\">\n        <mat-radio-button style=\"padding-left: 0.5rem;\" \n          *ngFor=\"let season of [\n            {name: 'Dashboard', value: 'global'},\n            {name: 'Grafana', value: 'grafana'}\n          ]\" [value]=\"season.value\">\n          {{season.name}}\n        </mat-radio-button>\n      </mat-radio-group>\n      \n    </div>\n    <div *ngIf=\"data.typeDataRange === 'grafana'\">\n      <mat-form-field>\n        <mat-label>From:</mat-label>\n        <input matInput [(ngModel)]=\"data.params.from\">\n      </mat-form-field>\n    \n      <mat-form-field style=\"padding-left: 0.5rem;\">\n        <mat-label>To: </mat-label>\n        <input matInput [(ngModel)]=\"data.params.to\">\n      </mat-form-field>\n\n      \n      <mat-form-field style=\"padding-left: 0.5rem;\">\n        <mat-label>Refresh delay: </mat-label>\n        <input matInput [(ngModel)]=\"data.params.refresh\">\n      </mat-form-field>\n      <p>if empty field that onrefresh, or (2s, 5m, 10h, etc...)</p>\n\n      <div>\n        <a href=\"https://grafana.com/docs/reference/timerange/\" target=\"_blank\">Grafana timerange docs</a>\n      </div>\n      <hr>\n    </div>\n\n    <div>\n      <mat-form-field>\n        <mat-label>Dashboard</mat-label>\n        <mat-select\n          [compareWith]=\"compareDashboard\"\n          [(ngModel)]=\"dashboardSource\"\n          (selectionChange)=\"onDashboardChange()\">            \n          <mat-option *ngFor=\"let item of dashboardList\" [value]=\"item\">\n                  {{ item.title }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field style=\"padding-left: 0.5rem;\">\n        <mat-label>Panel</mat-label>\n        <mat-select\n          [compareWith]=\"comparePanel\"\n          [(ngModel)]=\"panelListValue\"\n          (selectionChange)=\"onPanelSelect()\">\n            <mat-option *ngFor=\"let item of panelList\" [value]=\"item\">\n              {{ item.title }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n    </div>\n\n    <div class=\"example-container\">\n      <mat-form-field>\n        <mat-label>Link</mat-label>\n        <input matInput [(ngModel)]=\"data.url\">\n      </mat-form-field>\n    </div>\n\n    <div class=\"example-container\">\n      <mat-form-field>\n        <mat-label>Description</mat-label>\n        <input matInput [(ngModel)]=\"data.desc\">\n      </mat-form-field>\n    </div>\n\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"data\" cdkFocusInitial>Ok</button>\n</div>\n"
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/influxdbchart-widget/influxdbchart-widget.component.html":
 /*!***********************************************************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/app/components/widgets/influxdbchart-widget/influxdbchart-widget.component.html ***!
@@ -634,7 +656,7 @@ module.exports = "<div class=\"chart-container\">\n    <div *ngIf=\"!_isLoaded\"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\" (selectionChange)=\"onFormat()\">\n          <mat-option value=\"row\">Default</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n          <mat-option value=\"short\">Short</mat-option>\n          <mat-option value=\"bytes\">Bytes</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\" (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\" (click)=\"editRecord(element.id)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Path</mat-label>\n                <input matInput [(ngModel)]=\"apiQueryPath\" >\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\" (selectionChange)=\"onFormat()\">\n          <mat-option value=\"row\">Default</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n          <mat-option value=\"short\">Short</mat-option>\n          <mat-option value=\"bytes\">Bytes</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\" (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\" (click)=\"editRecord(element.id)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <!-- <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Path</mat-label>\n                <input matInput [(ngModel)]=\"apiQueryPath\" (change)=\"onRawPath()\">\n              </mat-form-field>\n            </div> -->\n              <label>Variables:</label>\n              <blockquote>:retention:</blockquote>\n              <blockquote>:measurement:</blockquote>\n              <blockquote>:from:</blockquote>\n              <blockquote>:to:</blockquote>\n              <blockquote>:interval:</blockquote>\n              <blockquote>:limit:</blockquote>\n            \n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" (change)=\"onRawValue()\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
 
 /***/ }),
 
@@ -656,7 +678,7 @@ module.exports = "<div style=\"display: flex\">\n  <div class=\"example-containe
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<form>\n    <div class=\"example-container\">\n    <mat-form-field *ngFor=\"let item of fields\">\n        <mat-label>{{item.selection}}</mat-label>\n        <input matInput [(ngModel)]=\"item.value\" value=\"\" [ngModelOptions]=\"{standalone: true}\" (change)=\"onChangeField($event)\">\n    </mat-form-field>\n    </div>\n    <div style=\"float: right;\" [className]=\"buttonState\">\n        <button mat-raised-button (click)=\"onClearFields()\">Clear</button>\n        <button mat-raised-button color=\"primary\" (click)=\"doSearchResult()\">Search</button>\n    </div>\n</form>"
+module.exports = "<form>\n    <div class=\"example-container\">\n    <mat-form-field *ngFor=\"let item of fields\">\n        <mat-label>{{item.selection}}</mat-label>\n        <input matInput\n            [(ngModel)]=\"item.value\"\n            [ngModelOptions]=\"{standalone: true}\"\n            (change)=\"onChangeField($event)\"\n            (keydown.enter)=\"handleEnterKeyPress($event)\"\n        >\n    </mat-form-field>\n    </div>\n    <div style=\"float: right;\" [className]=\"buttonState\">\n        <button mat-raised-button (click)=\"onClearFields()\">Clear</button>\n        <button mat-raised-button color=\"primary\" (click)=\"doSearchResult()\">Search</button>\n    </div>\n</form>"
 
 /***/ }),
 
@@ -667,7 +689,7 @@ module.exports = "<form>\n    <div class=\"example-container\">\n    <mat-form-f
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <mat-form-field>\n      <mat-label>Panel Title</mat-label>\n      <input matInput [(ngModel)]=\"resultConfig.title\" (keydown)=\"onChange()\">\n    </mat-form-field>\n    <mat-checkbox [(ngModel)]=\"resultConfig.isButton\" labelPosition=\"Before\" (click)=\"onChange()\">Search Button</mat-checkbox>\n    <mat-form-field>\n      <mat-label>Proto</mat-label>\n      <mat-select\n        [compareWith]=\"compareProto\"\n        [(ngModel)]=\"proto\"\n        name=\"hep_alias\"\n        ngDefaultControl>\n        <mat-option *ngFor=\"let protoItem of data.mapping.data\" [value]=\"protoItem\">\n          {{protoItem.hep_alias}} - {{protoItem.profile}}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n    <div *ngIf=\"proto\">\n      <app-drag-drop-list [list]=\"proto.fields_mapping\" (change)=\"onUpdateProto($event)\"></app-drag-drop-list>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"resultConfig\" cdkFocusInitial>Saves</button>\n</div> "
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <mat-form-field>\n      <mat-label>Panel Title</mat-label>\n      <input matInput [(ngModel)]=\"resultConfig.title\" (keydown)=\"onChange()\">\n    </mat-form-field>\n    <mat-checkbox [(ngModel)]=\"resultConfig.isButton\" labelPosition=\"Before\" (click)=\"onChange()\">Search Button</mat-checkbox>\n    <mat-form-field>\n      <mat-label>Proto</mat-label>\n      <mat-select\n        [compareWith]=\"compareProto\"\n        [(ngModel)]=\"proto\"\n        (valueChange)=\"validate()\"\n        (selectionChange)=\"validate()\"\n        name=\"hep_alias\"\n        ngDefaultControl>\n        <mat-option *ngFor=\"let protoItem of data.mapping.data\" [value]=\"protoItem\">\n          {{protoItem.hep_alias}} - {{protoItem.profile}}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n    <div *ngIf=\"proto\">\n      <app-drag-drop-list\n        [sortlistactive]=\"data.config.fields\"\n        [list]=\"proto.fields_mapping\"\n        (change)=\"onUpdateProto($event)\"\n      ></app-drag-drop-list>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"resultConfig\" [disabled]=\"!isValidForm\" cdkFocusInitial>Saves</button>\n</div> "
 
 /***/ }),
 
@@ -1021,6 +1043,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ng2_ace_editor__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ng2-ace-editor */ "./node_modules/ng2-ace-editor/__ivy_ngcc__/index.js");
 /* harmony import */ var _components_widgets_protosearch_widget_drag_drop_list_drag_drop_list_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components/widgets/protosearch-widget/drag-drop-list/drag-drop-list.component */ "./src/app/components/widgets/protosearch-widget/drag-drop-list/drag-drop-list.component.ts");
 /* harmony import */ var _components_search_grid_call_message_content_message_content_component__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./components/search-grid-call/message-content/message-content.component */ "./src/app/components/search-grid-call/message-content/message-content.component.ts");
+/* harmony import */ var _safe_pipe__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./safe.pipe */ "./src/app/safe.pipe.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1064,6 +1087,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
 var DEFAULT_ACE_CONFIG = {};
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -1083,14 +1107,17 @@ var AppModule = /** @class */ (function () {
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["InfluxdbchartWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["ProtosearchWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["RsearchWidgetComponent"],
+                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["IframeWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingClockWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingInfluxdbchartWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingProtosearchWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingRsearchWidgetComponent"],
+                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingIframeWidgetComponent"],
                 _components_dashboard_add_dialog_add_dialog_component__WEBPACK_IMPORTED_MODULE_18__["AddDialogComponent"],
                 _components_dashboard_delete_dialog_delete_dialog_component__WEBPACK_IMPORTED_MODULE_19__["DeleteDialogComponent"],
                 _components_dashboard_edit_dialog_edit_dialog_component__WEBPACK_IMPORTED_MODULE_20__["EditDialogComponent"],
                 _filter_pipe__WEBPACK_IMPORTED_MODULE_21__["FilterPipe"],
+                _safe_pipe__WEBPACK_IMPORTED_MODULE_35__["SafePipe"],
                 _components_dashboard_add_dashboard_dialog_add_dashboard_dialog_component__WEBPACK_IMPORTED_MODULE_22__["AddDashboardDialogComponent"],
                 _app_components__WEBPACK_IMPORTED_MODULE_13__["WindowComponent"],
                 _components_search_grid_call_detail_dialog_detail_dialog_component__WEBPACK_IMPORTED_MODULE_23__["DetailDialogComponent"],
@@ -1136,6 +1163,7 @@ var AppModule = /** @class */ (function () {
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingInfluxdbchartWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingProtosearchWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingRsearchWidgetComponent"],
+                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingIframeWidgetComponent"],
                 _components_dashboard_add_dialog_add_dialog_component__WEBPACK_IMPORTED_MODULE_18__["AddDialogComponent"],
                 _components_dashboard_delete_dialog_delete_dialog_component__WEBPACK_IMPORTED_MODULE_19__["DeleteDialogComponent"],
                 _components_dashboard_edit_dialog_edit_dialog_component__WEBPACK_IMPORTED_MODULE_20__["EditDialogComponent"],
@@ -1408,7 +1436,7 @@ var AddDialogComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".widget-block {\n    padding: 0.5rem;\n    height: calc(100% - 2rem);\n}\n.top-tool {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    box-shadow: 0px 3px 4px rgba(0,0,0,0.2);\n    z-index: 12;\n    position: relative;\n}\n.top-tool > h3 {\n    margin: 0 0.5rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxlQUFlO0lBQ2YseUJBQXlCO0FBQzdCO0FBQ0E7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLDhCQUE4QjtJQUM5Qix1Q0FBdUM7SUFDdkMsV0FBVztJQUNYLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksZ0JBQWdCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIud2lkZ2V0LWJsb2NrIHtcbiAgICBwYWRkaW5nOiAwLjVyZW07XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAycmVtKTtcbn1cbi50b3AtdG9vbCB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICBib3gtc2hhZG93OiAwcHggM3B4IDRweCByZ2JhKDAsMCwwLDAuMik7XG4gICAgei1pbmRleDogMTI7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xufVxuLnRvcC10b29sID4gaDMge1xuICAgIG1hcmdpbjogMCAwLjVyZW07XG59Il19 */"
+module.exports = ".widget-block {\n    padding: 0.5rem;\n    height: calc(100% - 2rem);\n}\n.top-tool {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    box-shadow: 0px 3px 4px rgba(0,0,0,0.2);\n    z-index: 12;\n    position: relative;\n}\n.top-tool > h3 {\n    margin: 0 0.5rem;\n}\niframe {\n    width: 100%;\n    height: calc(100vh - 85px);\n    border: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxlQUFlO0lBQ2YseUJBQXlCO0FBQzdCO0FBQ0E7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLDhCQUE4QjtJQUM5Qix1Q0FBdUM7SUFDdkMsV0FBVztJQUNYLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksZ0JBQWdCO0FBQ3BCO0FBQ0E7SUFDSSxXQUFXO0lBQ1gsMEJBQTBCO0lBQzFCLFNBQVM7QUFDYiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLndpZGdldC1ibG9jayB7XG4gICAgcGFkZGluZzogMC41cmVtO1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMnJlbSk7XG59XG4udG9wLXRvb2wge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgYm94LXNoYWRvdzogMHB4IDNweCA0cHggcmdiYSgwLDAsMCwwLjIpO1xuICAgIHotaW5kZXg6IDEyO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbn1cbi50b3AtdG9vbCA+IGgzIHtcbiAgICBtYXJnaW46IDAgMC41cmVtO1xufVxuaWZyYW1lIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA4NXB4KTtcbiAgICBib3JkZXI6IDA7XG59Il19 */"
 
 /***/ }),
 
@@ -1455,6 +1483,7 @@ var DashboardComponent = /** @class */ (function () {
         this._ds = _ds;
         this.router = router;
         this.dialog = dialog;
+        this.isIframe = false;
     }
     DashboardComponent.prototype.ngOnInit = function () {
         // Grid options
@@ -1500,6 +1529,12 @@ var DashboardComponent = /** @class */ (function () {
             _this._ds.setCurrentDashBoardId(params['id']);
             var dashboardStoreSubscription = _this._ds.getDashboardStore(_this._ds.getCurrentDashBoardId()).subscribe(function (dashboard) {
                 _this.dashboardCollection = dashboard;
+                _this.isIframe = _this.dashboardCollection.data.type === 2;
+                console.log({ dashboard: dashboard, iframe: _this.isIframe });
+                if (_this.isIframe) {
+                    _this.iframeUrl = _this.dashboardCollection.data.param;
+                    console.log('this.iframeUrl', _this.iframeUrl);
+                }
                 _this.dashboardTitle = _this.dashboardCollection &&
                     _this.dashboardCollection.data ?
                     _this.dashboardCollection.data.name : '';
@@ -1603,7 +1638,7 @@ var DashboardComponent = /** @class */ (function () {
             data: {
                 name: this.dashboardTitle,
                 type: this.dashboardCollection.data.type,
-                param: this.dashboardCollection.param || '',
+                param: this.dashboardCollection.data.param || '',
                 shared: !!this.dashboardCollection.data.shared,
                 columns: this.dashboardCollection.data.config.columns || 1,
                 maxrows: this.dashboardCollection.data.config.maxrows || 1,
@@ -1613,6 +1648,7 @@ var DashboardComponent = /** @class */ (function () {
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
             if (data) {
                 _this.dashboardCollection.param = data.param || _this.dashboardCollection.param;
+                _this.dashboardCollection.data.param = data.param || _this.dashboardCollection.data.param;
                 _this.dashboardCollection.data.name = data.name || _this.dashboardTitle;
                 _this.dashboardCollection.data.type = data.type || _this.dashboardCollection.data.type;
                 _this.dashboardCollection.data.shared = data.shared || _this.dashboardCollection.data.shared;
@@ -1824,7 +1860,7 @@ var EditDialogComponent = /** @class */ (function () {
 /*!*************************************!*\
   !*** ./src/app/components/index.ts ***!
   \*************************************/
-/*! exports provided: AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent */
+/*! exports provided: AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1869,6 +1905,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RsearchWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["RsearchWidgetComponent"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingRsearchWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["SettingRsearchWidgetComponent"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["IframeWidgetComponent"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["SettingIframeWidgetComponent"]; });
 
 /* harmony import */ var _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./preference/preference.component */ "./src/app/components/preference/preference.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PreferenceComponent", function() { return _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__["PreferenceComponent"]; });
@@ -2010,7 +2050,7 @@ var LoginComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".logo-base {\n    display: flex;\n    align-items: center;\n    cursor: pointer;\n}\n.logo-text {\n    border-bottom-color: rgb(255, 255, 255);\n    border-bottom-style: none;\n    border-bottom-width: 0px;\n    border-image-outset: 0px;\n    border-image-repeat: stretch;\n    border-image-slice: 100%;\n    border-image-source: none;\n    border-image-width: 1;\n    border-left-color: rgb(255, 255, 255);\n    border-left-style: none;\n    border-left-width: 0px;\n    border-right-color: rgb(255, 255, 255);\n    border-right-style: none;\n    border-right-width: 0px;\n    border-top-color: rgb(255, 255, 255);\n    border-top-style: none;\n    border-top-width: 0px;\n    box-sizing: border-box;\n    color: rgb(255, 255, 255);\n    display: inline-block;\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 32px;\n    height: 42px;\n    line-height: 32px;\n    margin-bottom: 0px;\n    margin-left: 0px;\n    margin-right: 0px;\n    margin-top: 0px;\n    outline-color: rgb(255, 255, 255);\n    outline-style: none;\n    outline-width: 0px;\n    padding-bottom: 5px;\n    padding-left: 5px;\n    padding-right: 5px;\n    padding-top: 5px;\n    -webkit-text-size-adjust: 100%;\n       -moz-text-size-adjust: 100%;\n        -ms-text-size-adjust: 100%;\n            text-size-adjust: 100%;\n    vertical-align: baseline;\n    width: 120.906px;\n    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\n.logo-text:first-letter {\n    color: #EE3324;\n}\n.logo-base > img {\n    width: 32px;\n}\n.header {\n    justify-content: space-between;\n}\n.header .ng-star-inserted .md-drppicker .buttons {\n    position: absolute;\n    right: 1rem;\n    bottom: 1rem;\n}\n.time-range-icon {\n    margin: -34px !important;\n    height: 24px;\n    top: 7px;\n    margin-left: 0 !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksdUNBQXVDO0lBQ3ZDLHlCQUF5QjtJQUN6Qix3QkFBd0I7SUFDeEIsd0JBQXdCO0lBQ3hCLDRCQUE0QjtJQUM1Qix3QkFBd0I7SUFDeEIseUJBQXlCO0lBQ3pCLHFCQUFxQjtJQUNyQixxQ0FBcUM7SUFDckMsdUJBQXVCO0lBQ3ZCLHNCQUFzQjtJQUN0QixzQ0FBc0M7SUFDdEMsd0JBQXdCO0lBQ3hCLHVCQUF1QjtJQUN2QixvQ0FBb0M7SUFDcEMsc0JBQXNCO0lBQ3RCLHFCQUFxQjtJQUNyQixzQkFBc0I7SUFDdEIseUJBQXlCO0lBQ3pCLHFCQUFxQjtJQUNyQixrSkFBa0o7SUFDbEosZUFBZTtJQUNmLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsa0JBQWtCO0lBQ2xCLGdCQUFnQjtJQUNoQixpQkFBaUI7SUFDakIsZUFBZTtJQUNmLGlDQUFpQztJQUNqQyxtQkFBbUI7SUFDbkIsa0JBQWtCO0lBQ2xCLG1CQUFtQjtJQUNuQixpQkFBaUI7SUFDakIsa0JBQWtCO0lBQ2xCLGdCQUFnQjtJQUNoQiw4QkFBc0I7T0FBdEIsMkJBQXNCO1FBQXRCLDBCQUFzQjtZQUF0QixzQkFBc0I7SUFDdEIsd0JBQXdCO0lBQ3hCLGdCQUFnQjtJQUNoQiw2Q0FBNkM7QUFDakQ7QUFDQTtJQUNJLGNBQWM7QUFDbEI7QUFDQTtJQUNJLFdBQVc7QUFDZjtBQUNBO0lBQ0ksOEJBQThCO0FBQ2xDO0FBQ0E7SUFDSSxrQkFBa0I7SUFDbEIsV0FBVztJQUNYLFlBQVk7QUFDaEI7QUFDQTtJQUNJLHdCQUF3QjtJQUN4QixZQUFZO0lBQ1osUUFBUTtJQUNSLHlCQUF5QjtBQUM3QiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvbWVudS9tZW51LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubG9nby1iYXNlIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxuLmxvZ28tdGV4dCB7XG4gICAgYm9yZGVyLWJvdHRvbS1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGJvcmRlci1ib3R0b20tc3R5bGU6IG5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbS13aWR0aDogMHB4O1xuICAgIGJvcmRlci1pbWFnZS1vdXRzZXQ6IDBweDtcbiAgICBib3JkZXItaW1hZ2UtcmVwZWF0OiBzdHJldGNoO1xuICAgIGJvcmRlci1pbWFnZS1zbGljZTogMTAwJTtcbiAgICBib3JkZXItaW1hZ2Utc291cmNlOiBub25lO1xuICAgIGJvcmRlci1pbWFnZS13aWR0aDogMTtcbiAgICBib3JkZXItbGVmdC1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGJvcmRlci1sZWZ0LXN0eWxlOiBub25lO1xuICAgIGJvcmRlci1sZWZ0LXdpZHRoOiAwcHg7XG4gICAgYm9yZGVyLXJpZ2h0LWNvbG9yOiByZ2IoMjU1LCAyNTUsIDI1NSk7XG4gICAgYm9yZGVyLXJpZ2h0LXN0eWxlOiBub25lO1xuICAgIGJvcmRlci1yaWdodC13aWR0aDogMHB4O1xuICAgIGJvcmRlci10b3AtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItdG9wLXN0eWxlOiBub25lO1xuICAgIGJvcmRlci10b3Atd2lkdGg6IDBweDtcbiAgICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xuICAgIGNvbG9yOiByZ2IoMjU1LCAyNTUsIDI1NSk7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIGZvbnQtZmFtaWx5OiAtYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsIFwiU2Vnb2UgVUlcIiwgSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiwgXCJBcHBsZSBDb2xvciBFbW9qaVwiLCBcIlNlZ29lIFVJIEVtb2ppXCIsIFwiU2Vnb2UgVUkgU3ltYm9sXCI7XG4gICAgZm9udC1zaXplOiAzMnB4O1xuICAgIGhlaWdodDogNDJweDtcbiAgICBsaW5lLWhlaWdodDogMzJweDtcbiAgICBtYXJnaW4tYm90dG9tOiAwcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDBweDtcbiAgICBtYXJnaW4tcmlnaHQ6IDBweDtcbiAgICBtYXJnaW4tdG9wOiAwcHg7XG4gICAgb3V0bGluZS1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIG91dGxpbmUtc3R5bGU6IG5vbmU7XG4gICAgb3V0bGluZS13aWR0aDogMHB4O1xuICAgIHBhZGRpbmctYm90dG9tOiA1cHg7XG4gICAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gICAgcGFkZGluZy1yaWdodDogNXB4O1xuICAgIHBhZGRpbmctdG9wOiA1cHg7XG4gICAgdGV4dC1zaXplLWFkanVzdDogMTAwJTtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogYmFzZWxpbmU7XG4gICAgd2lkdGg6IDEyMC45MDZweDtcbiAgICAtd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7XG59XG4ubG9nby10ZXh0OmZpcnN0LWxldHRlciB7XG4gICAgY29sb3I6ICNFRTMzMjQ7XG59XG4ubG9nby1iYXNlID4gaW1nIHtcbiAgICB3aWR0aDogMzJweDtcbn1cbi5oZWFkZXIge1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2Vlbjtcbn1cbi5oZWFkZXIgLm5nLXN0YXItaW5zZXJ0ZWQgLm1kLWRycHBpY2tlciAuYnV0dG9ucyB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHJpZ2h0OiAxcmVtO1xuICAgIGJvdHRvbTogMXJlbTtcbn1cbi50aW1lLXJhbmdlLWljb24ge1xuICAgIG1hcmdpbjogLTM0cHggIWltcG9ydGFudDtcbiAgICBoZWlnaHQ6IDI0cHg7XG4gICAgdG9wOiA3cHg7XG4gICAgbWFyZ2luLWxlZnQ6IDAgIWltcG9ydGFudDtcbn0iXX0= */"
+module.exports = ".logo-base {\n    display: flex;\n    align-items: center;\n    cursor: pointer;\n}\n.btn-refrash {\n    z-index: 1;\n    border-right: 1px solid #fff;\n    border-radius: 0;\n    margin: 0;\n    padding: 0px;\n    min-width: initial;\n    margin-right: 4px;\n    padding-right: 2px;\n}\n.btn-refrash-timer {\n    margin-left: 0;\n    min-width: initial;\n    padding-left: 0;\n}\n.logo-text {\n    border-bottom-color: rgb(255, 255, 255);\n    border-bottom-style: none;\n    border-bottom-width: 0px;\n    border-image-outset: 0px;\n    border-image-repeat: stretch;\n    border-image-slice: 100%;\n    border-image-source: none;\n    border-image-width: 1;\n    border-left-color: rgb(255, 255, 255);\n    border-left-style: none;\n    border-left-width: 0px;\n    border-right-color: rgb(255, 255, 255);\n    border-right-style: none;\n    border-right-width: 0px;\n    border-top-color: rgb(255, 255, 255);\n    border-top-style: none;\n    border-top-width: 0px;\n    box-sizing: border-box;\n    color: rgb(255, 255, 255);\n    display: inline-block;\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 32px;\n    height: 42px;\n    line-height: 32px;\n    margin-bottom: 0px;\n    margin-left: 0px;\n    margin-right: 0px;\n    margin-top: 0px;\n    outline-color: rgb(255, 255, 255);\n    outline-style: none;\n    outline-width: 0px;\n    padding-bottom: 5px;\n    padding-left: 5px;\n    padding-right: 5px;\n    padding-top: 5px;\n    -webkit-text-size-adjust: 100%;\n       -moz-text-size-adjust: 100%;\n        -ms-text-size-adjust: 100%;\n            text-size-adjust: 100%;\n    vertical-align: baseline;\n    width: 120.906px;\n    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\n.logo-text:first-letter {\n    color: #EE3324;\n}\n.logo-base > img {\n    width: 32px;\n}\n.header {\n    justify-content: space-between;\n}\n.header .ng-star-inserted .md-drppicker .buttons {\n    position: absolute;\n    right: 1rem;\n    bottom: 1rem;\n}\n.time-range-icon {\n    margin: -34px !important;\n    height: 24px;\n    top: 7px;\n    margin-left: 0 !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksVUFBVTtJQUNWLDRCQUE0QjtJQUM1QixnQkFBZ0I7SUFDaEIsU0FBUztJQUNULFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksY0FBYztJQUNkLGtCQUFrQjtJQUNsQixlQUFlO0FBQ25CO0FBQ0E7SUFDSSx1Q0FBdUM7SUFDdkMseUJBQXlCO0lBQ3pCLHdCQUF3QjtJQUN4Qix3QkFBd0I7SUFDeEIsNEJBQTRCO0lBQzVCLHdCQUF3QjtJQUN4Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLHFDQUFxQztJQUNyQyx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLHNDQUFzQztJQUN0Qyx3QkFBd0I7SUFDeEIsdUJBQXVCO0lBQ3ZCLG9DQUFvQztJQUNwQyxzQkFBc0I7SUFDdEIscUJBQXFCO0lBQ3JCLHNCQUFzQjtJQUN0Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLGtKQUFrSjtJQUNsSixlQUFlO0lBQ2YsWUFBWTtJQUNaLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLGlCQUFpQjtJQUNqQixlQUFlO0lBQ2YsaUNBQWlDO0lBQ2pDLG1CQUFtQjtJQUNuQixrQkFBa0I7SUFDbEIsbUJBQW1CO0lBQ25CLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLDhCQUFzQjtPQUF0QiwyQkFBc0I7UUFBdEIsMEJBQXNCO1lBQXRCLHNCQUFzQjtJQUN0Qix3QkFBd0I7SUFDeEIsZ0JBQWdCO0lBQ2hCLDZDQUE2QztBQUNqRDtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksV0FBVztBQUNmO0FBQ0E7SUFDSSw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixXQUFXO0lBQ1gsWUFBWTtBQUNoQjtBQUNBO0lBQ0ksd0JBQXdCO0lBQ3hCLFlBQVk7SUFDWixRQUFRO0lBQ1IseUJBQXlCO0FBQzdCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2dvLWJhc2Uge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG4uYnRuLXJlZnJhc2gge1xuICAgIHotaW5kZXg6IDE7XG4gICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQgI2ZmZjtcbiAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBwYWRkaW5nOiAwcHg7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDJweDtcbn1cbi5idG4tcmVmcmFzaC10aW1lciB7XG4gICAgbWFyZ2luLWxlZnQ6IDA7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIHBhZGRpbmctbGVmdDogMDtcbn1cbi5sb2dvLXRleHQge1xuICAgIGJvcmRlci1ib3R0b20tY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItYm90dG9tLXN0eWxlOiBub25lO1xuICAgIGJvcmRlci1ib3R0b20td2lkdGg6IDBweDtcbiAgICBib3JkZXItaW1hZ2Utb3V0c2V0OiAwcHg7XG4gICAgYm9yZGVyLWltYWdlLXJlcGVhdDogc3RyZXRjaDtcbiAgICBib3JkZXItaW1hZ2Utc2xpY2U6IDEwMCU7XG4gICAgYm9yZGVyLWltYWdlLXNvdXJjZTogbm9uZTtcbiAgICBib3JkZXItaW1hZ2Utd2lkdGg6IDE7XG4gICAgYm9yZGVyLWxlZnQtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItbGVmdC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItbGVmdC13aWR0aDogMHB4O1xuICAgIGJvcmRlci1yaWdodC1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGJvcmRlci1yaWdodC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItcmlnaHQtd2lkdGg6IDBweDtcbiAgICBib3JkZXItdG9wLWNvbG9yOiByZ2IoMjU1LCAyNTUsIDI1NSk7XG4gICAgYm9yZGVyLXRvcC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItdG9wLXdpZHRoOiAwcHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbiAgICBjb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICBmb250LWZhbWlseTogLWFwcGxlLXN5c3RlbSwgQmxpbmtNYWNTeXN0ZW1Gb250LCBcIlNlZ29lIFVJXCIsIEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYsIFwiQXBwbGUgQ29sb3IgRW1vamlcIiwgXCJTZWdvZSBVSSBFbW9qaVwiLCBcIlNlZ29lIFVJIFN5bWJvbFwiO1xuICAgIGZvbnQtc2l6ZTogMzJweDtcbiAgICBoZWlnaHQ6IDQycHg7XG4gICAgbGluZS1oZWlnaHQ6IDMycHg7XG4gICAgbWFyZ2luLWJvdHRvbTogMHB4O1xuICAgIG1hcmdpbi1sZWZ0OiAwcHg7XG4gICAgbWFyZ2luLXJpZ2h0OiAwcHg7XG4gICAgbWFyZ2luLXRvcDogMHB4O1xuICAgIG91dGxpbmUtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBvdXRsaW5lLXN0eWxlOiBub25lO1xuICAgIG91dGxpbmUtd2lkdGg6IDBweDtcbiAgICBwYWRkaW5nLWJvdHRvbTogNXB4O1xuICAgIHBhZGRpbmctbGVmdDogNXB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgICBwYWRkaW5nLXRvcDogNXB4O1xuICAgIHRleHQtc2l6ZS1hZGp1c3Q6IDEwMCU7XG4gICAgdmVydGljYWwtYWxpZ246IGJhc2VsaW5lO1xuICAgIHdpZHRoOiAxMjAuOTA2cHg7XG4gICAgLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApO1xufVxuLmxvZ28tdGV4dDpmaXJzdC1sZXR0ZXIge1xuICAgIGNvbG9yOiAjRUUzMzI0O1xufVxuLmxvZ28tYmFzZSA+IGltZyB7XG4gICAgd2lkdGg6IDMycHg7XG59XG4uaGVhZGVyIHtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG4uaGVhZGVyIC5uZy1zdGFyLWluc2VydGVkIC5tZC1kcnBwaWNrZXIgLmJ1dHRvbnMge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXJlbTtcbiAgICBib3R0b206IDFyZW07XG59XG4udGltZS1yYW5nZS1pY29uIHtcbiAgICBtYXJnaW46IC0zNHB4ICFpbXBvcnRhbnQ7XG4gICAgaGVpZ2h0OiAyNHB4O1xuICAgIHRvcDogN3B4O1xuICAgIG1hcmdpbi1sZWZ0OiAwICFpbXBvcnRhbnQ7XG59Il19 */"
 
 /***/ }),
 
@@ -2074,35 +2114,18 @@ var MenuComponent = /** @class */ (function () {
             { value: 3600000, name: '60 min', title: 'Refresh @ 60 min' }
         ];
         this.isRangeClicked = false;
-        this.ranges = {
-            'Today': [moment__WEBPACK_IMPORTED_MODULE_6__().startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().endOf('day')],
-            'Yesterday': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(1, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().subtract(1, 'days').endOf('day')],
-            'Tomorrow': [moment__WEBPACK_IMPORTED_MODULE_6__().add(1, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().add(1, 'days').endOf('day')],
-            'Last 7 Days': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(6, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().endOf('day')],
-            'Next 7 Days': [moment__WEBPACK_IMPORTED_MODULE_6__().startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().add(6, 'days').endOf('day')],
-            'Last 30 Days': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(29, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_6__().endOf('day')],
-            'This Month': [moment__WEBPACK_IMPORTED_MODULE_6__().startOf('month'), moment__WEBPACK_IMPORTED_MODULE_6__().endOf('month')],
-            'Last Month': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(1, 'month').startOf('month'), moment__WEBPACK_IMPORTED_MODULE_6__().subtract(1, 'month').endOf('month')],
-            'last 5 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(5, 'minutes'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 10 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(10, 'minutes'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 30 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(30, 'minutes'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last hour': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(1, 'hour'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 3 hours': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(3, 'hours'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 6 hours': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(6, 'hours'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 12 hours': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(12, 'hours'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'last 24 hours': [moment__WEBPACK_IMPORTED_MODULE_6__().subtract(24, 'hours'), moment__WEBPACK_IMPORTED_MODULE_6__()],
-            'next 5 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__(), moment__WEBPACK_IMPORTED_MODULE_6__().add(5, 'minutes')],
-            'next 10 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__(), moment__WEBPACK_IMPORTED_MODULE_6__().add(10, 'minutes')],
-            'next 30 minutes': [moment__WEBPACK_IMPORTED_MODULE_6__(), moment__WEBPACK_IMPORTED_MODULE_6__().add(30, 'minutes')],
-            'next hour': [moment__WEBPACK_IMPORTED_MODULE_6__(), moment__WEBPACK_IMPORTED_MODULE_6__().add(1, 'hour')],
-        };
-        this.selectedDateTimeRangeTitle = 'Today';
-        this.selectedDateTimeRange = this.ranges['Today'];
         this.authenticationService.currentUser.subscribe(function (x) { return _this.currentUser = x; });
         router.events.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["filter"])(function (e) { return e instanceof _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivationEnd"]; })).subscribe(function (evt) {
             _this.currentPath = evt.snapshot.routeConfig.path;
         });
     }
+    Object.defineProperty(MenuComponent.prototype, "ranges", {
+        get: function () {
+            return this._dtrs.getRangeByLabel(null, true);
+        },
+        enumerable: true,
+        configurable: true
+    });
     // On component init we store Widget Marketplace in a WidgetModel array
     MenuComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -2110,17 +2133,14 @@ var MenuComponent = /** @class */ (function () {
             if (data.updateType !== 'proto-search') {
                 if (data && data.dateTimeRange.dates) {
                     _this.selectedDateTimeRangeTitle = data.dateTimeRange.title;
-                    _this.selectedDateTimeRange = data.dateTimeRange.dates.map(function (i) { return moment__WEBPACK_IMPORTED_MODULE_6__(i); });
+                    _this.selectedDateTimeRange = (data.dateTimeRange.title)
+                        || data.dateTimeRange.dates.map(function (i) { return moment__WEBPACK_IMPORTED_MODULE_6__(i); });
                 }
-                _this._dtrs.updateDataRange({
-                    title: _this.selectedDateTimeRangeTitle,
-                    dates: _this.selectedDateTimeRange
-                });
             }
         });
         if (!this.selectedDateTimeRangeTitle) {
             this.selectedDateTimeRangeTitle = 'Today';
-            this.selectedDateTimeRange = this.ranges['Today'];
+            this.selectedDateTimeRange = this._dtrs.getRangeByLabel(this.selectedDateTimeRangeTitle);
         }
         this._ds.dashboardEvent.subscribe(function (data) {
             _this.updateDashboardList();
@@ -2163,7 +2183,7 @@ var MenuComponent = /** @class */ (function () {
                     name: data.nameNewPanel,
                     selectedItem: '',
                     type: data.type,
-                    param: data.nameNewPanel.toLowerCase(),
+                    param: data.param || data.nameNewPanel.toLowerCase(),
                     shared: 0,
                     weight: 10,
                     widgets: []
@@ -2196,16 +2216,15 @@ var MenuComponent = /** @class */ (function () {
             title: this.selectedDateTimeRangeTitle,
             dates: this.selectedDateTimeRange
         });
-        this._sss.saveDateTimeRange({
-            title: this.selectedDateTimeRangeTitle,
-            dates: this.selectedDateTimeRange
-        });
     };
     MenuComponent.prototype.onRefrasher = function (delay) {
         this._dtrs.setDelay(delay);
     };
     MenuComponent.prototype.onPreference = function () {
         this.router.navigate(['preference/users']);
+    };
+    MenuComponent.prototype.refresh = function () {
+        this._dtrs.refrash();
     };
     MenuComponent.prototype.ngOnDestroy = function () {
         this.sessionStorageSubscription.unsubscribe();
@@ -2277,7 +2296,9 @@ var ModalResizableComponent = /** @class */ (function () {
         this.minWidth = 300;
         this.minHeight = 300;
         this.isBrowserWindow = false;
+        this.__isBrowserWindow = false;
         this.close = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.browserWindow = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.isFullPage = false;
     }
     ModalResizableComponent_1 = ModalResizableComponent;
@@ -2286,9 +2307,22 @@ var ModalResizableComponent = /** @class */ (function () {
         this.isFullPage = !this.isFullPage;
     };
     ModalResizableComponent.prototype.ngAfterViewInit = function () {
-        this.containerWindow.nativeElement.style.minWidth = Math.max(this.minWidth, this.width) + 'px';
-        this.containerWindow.nativeElement.style.minHeight = Math.max(this.minHeight, this.height) + 'px';
+        var _this = this;
+        /* clculation max windows size */
+        var maxWidth = window.innerWidth * 0.8;
+        var maxHeight = window.innerHeight * 0.8;
+        this.minWidth = Math.min(this.minWidth, maxWidth);
+        this.minHeight = Math.min(this.minWidth, maxHeight);
+        (function (s) {
+            s.minWidth = Math.min(maxWidth, Math.max(_this.minWidth, _this.width)) + 'px';
+            s.minHeight = Math.min(maxHeight, Math.max(_this.minHeight, _this.height)) + 'px';
+            s.width = Math.min(_this.width, maxWidth) + 'px';
+            s.height = Math.min(_this.height, maxHeight) + 'px';
+        })(this.containerWindow.nativeElement.style);
         this.onFocus();
+        if (this.isBrowserWindow) {
+            this.newWindow();
+        }
     };
     ModalResizableComponent.prototype.onClose = function () {
         this.close.emit();
@@ -2362,15 +2396,17 @@ var ModalResizableComponent = /** @class */ (function () {
     };
     ModalResizableComponent.prototype.onWindowClose = function (event) {
         this._content.appendChild(this.inWindow.nativeElement);
-        this.isBrowserWindow = false;
+        this.__isBrowserWindow = false;
         this.layerZIndex.nativeElement.style.display = null;
         this.onFocus();
+        this.browserWindow.emit(this.__isBrowserWindow);
     };
     ModalResizableComponent.prototype.newWindow = function () {
-        this.isBrowserWindow = true;
+        this.__isBrowserWindow = true;
         this._content = this.inWindow.nativeElement.parentElement;
         this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
         this.layerZIndex.nativeElement.style.display = 'none';
+        this.browserWindow.emit(this.__isBrowserWindow);
     };
     var ModalResizableComponent_1;
     ModalResizableComponent.ZIndex = 0;
@@ -2422,6 +2458,10 @@ var ModalResizableComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"])
     ], ModalResizableComponent.prototype, "close", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"])
+    ], ModalResizableComponent.prototype, "browserWindow", void 0);
     ModalResizableComponent = ModalResizableComponent_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-modal-resizable',
@@ -2541,7 +2581,11 @@ var DialogAdvancedComponent = /** @class */ (function () {
                 data: {},
             };
         }
-        data.data.data = data.isnew ? '' : JSON.stringify(data.data.data, null, 4);
+        data.data.data = data.isnew ?
+            '' :
+            (typeof data.data.data === 'string' ?
+                data.data.data :
+                JSON.stringify(data.data.data, null, 4));
     }
     DialogAdvancedComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
@@ -2755,7 +2799,11 @@ var DialogHepsubComponent = /** @class */ (function () {
                 data: {}
             };
         }
-        data.data.data = data.isnew ? '' : JSON.stringify(data.data.data, null, 4);
+        data.data.data = data.isnew ?
+            '' :
+            (typeof data.data.data === 'string' ?
+                data.data.data :
+                JSON.stringify(data.data.data, null, 4));
     }
     DialogHepsubComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
@@ -2842,8 +2890,16 @@ var DialogMappingComponent = /** @class */ (function () {
                 fields_mapping: {}
             };
         }
-        data.data.correlation_mapping = data.isnew ? '{}' : JSON.stringify(data.data.correlation_mapping, null, 4);
-        data.data.fields_mapping = data.isnew ? '[]' : JSON.stringify(data.data.fields_mapping, null, 4);
+        data.data.correlation_mapping = data.isnew ?
+            '{}' :
+            (typeof data.data.correlation_mapping === 'string' ?
+                data.data.correlation_mapping :
+                JSON.stringify(data.data.correlation_mapping, null, 4));
+        data.data.fields_mapping = data.isnew ?
+            '[]' :
+            (typeof data.data.fields_mapping === 'string' ?
+                data.data.fields_mapping :
+                JSON.stringify(data.data.fields_mapping, null, 4));
     }
     DialogMappingComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
@@ -2918,7 +2974,11 @@ var DialogUserSettingsComponent = /** @class */ (function () {
                 username: ''
             };
         }
-        data.data.data = data.isnew ? '' : JSON.stringify(data.data.data, null, 4);
+        data.data.data = data.isnew ?
+            '' :
+            (typeof data.data.data === 'string' ?
+                data.data.data :
+                JSON.stringify(data.data.data, null, 4));
     }
     DialogUserSettingsComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
@@ -3396,6 +3456,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var DetailDialogComponent = /** @class */ (function () {
     function DetailDialogComponent() {
+        this.tabs = {
+            messages: false,
+            flow: false,
+            qos: true,
+            logs: false,
+            export: false
+        };
+        this.isBrowserWindow = false;
         this._isLoaded = false;
         this.openMessage = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.close = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
@@ -3408,6 +3476,7 @@ var DetailDialogComponent = /** @class */ (function () {
             this._isLoaded = val;
             if (this.sipDataItem) {
                 this.dataLogs = this.sipDataItem.data.messages.filter(function (i) { return !i.method; }).map(function (i) { return ({ payload: i }); });
+                this.checkStatusTabs();
             }
         },
         enumerable: true,
@@ -3416,7 +3485,16 @@ var DetailDialogComponent = /** @class */ (function () {
     DetailDialogComponent.prototype.ngOnInit = function () {
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(function (i) { return !i.method; }).map(function (i) { return ({ payload: i }); });
+            this.checkStatusTabs();
         }
+    };
+    DetailDialogComponent.prototype.checkStatusTabs = function () {
+        this.tabs.logs = this.dataLogs.length > 0;
+        this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
+        this.tabs.export = this.sipDataItem.data.messages && !!this.sipDataItem.data.messages[0].id;
+    };
+    DetailDialogComponent.prototype.onTabQos = function (isVisible) {
+        this.tabs.qos = isVisible;
     };
     DetailDialogComponent.prototype.onClose = function () {
         this.close.emit();
@@ -3424,11 +3502,14 @@ var DetailDialogComponent = /** @class */ (function () {
     DetailDialogComponent.prototype.addWindow = function (data) {
         console.log(data);
         if (data.method === 'LOG') {
-            this.openMessage.emit({ data: data, isLog: true });
+            this.openMessage.emit({ data: data, isLog: true, isBrowserWindow: this.isBrowserWindow });
         }
         else {
-            this.openMessage.emit({ data: data.item });
+            this.openMessage.emit({ data: data.item, isBrowserWindow: this.isBrowserWindow });
         }
+    };
+    DetailDialogComponent.prototype.onBrowserWindow = function (event) {
+        this.isBrowserWindow = event;
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -3513,7 +3594,7 @@ var TabExportComponent = /** @class */ (function () {
     }
     TabExportComponent.prototype.ngOnInit = function () {
     };
-    TabExportComponent.prototype.queryBuilder = function (dtr) {
+    TabExportComponent.prototype.queryBuilder = function () {
         var localData = JSON.parse(localStorage.getItem('searchQuery'));
         // const protocol_profile = localData.map(i => i.profile)[0]; // 1_call | 1_default | 1_registration
         var search = {};
@@ -3523,10 +3604,7 @@ var TabExportComponent = /** @class */ (function () {
             uuid: []
         };
         return {
-            timestamp: {
-                from: dtr.range.dates[0].unix() * 1000,
-                to: dtr.range.dates[1].unix() * 1000
-            },
+            timestamp: this._dtrs.getDatesForQuery(true),
             param: {
                 search: search,
                 location: {},
@@ -3545,23 +3623,19 @@ var TabExportComponent = /** @class */ (function () {
     };
     TabExportComponent.prototype.exportPCAP = function () {
         var _this = this;
-        this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
-            var request = _this.queryBuilder(dtr);
-            var subscription = _this._ecs.postMessagesPcap(request).subscribe(function (data) {
-                subscription.unsubscribe();
-                _this.saveToFile(data, "export_" + _this.id + ".pcap");
-            });
+        var request = this.queryBuilder();
+        var subscription = this._ecs.postMessagesPcap(request).subscribe(function (data) {
+            subscription.unsubscribe();
+            _this.saveToFile(data, "export_" + _this.id + ".pcap");
         });
     };
     TabExportComponent.prototype.exportTEXT = function () {
         var _this = this;
-        this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
-            var request = _this.queryBuilder(dtr);
-            console.log({ request: request });
-            var subscription = _this._ecs.postMessagesText(request).subscribe(function (data) {
-                subscription.unsubscribe();
-                _this.saveToFile(data, "export_" + _this.id + ".txt", 'text/plain;charset=utf-8');
-            });
+        var request = this.queryBuilder();
+        console.log({ request: request });
+        var subscription = this._ecs.postMessagesText(request).subscribe(function (data) {
+            subscription.unsubscribe();
+            _this.saveToFile(data, "export_" + _this.id + ".txt", 'text/plain;charset=utf-8');
         });
     };
     TabExportComponent.prototype.saveToFile = function (data, filename, type) {
@@ -3911,7 +3985,7 @@ var TabMessagesComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".chart-container {\n    position: relative;\n    height: calc(100% - 8.5rem);\n    width:100%;\n    min-width: 500px;\n    min-height: 400px;\n    flex: 2;\n}\n.item-container {\n    display: flex;\n    flex-wrap: wrap;\n    justify-content: left;\n    min-width: 600px;\n    width: 600px;\n}\n.item {\n    background-color: #673ab7;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.4rem;\n    margin: 2px;\n    flex: 0.5;\n    min-width: 190px;\n    border-radius: 4px;\n    font-size: 0.8em;\n    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);\n}\n.item > .text {\n    color: #000;\n}\n.item > .text-badge {\n    margin: 0 0.3rem;\n    padding: 0 5px;\n    min-width: 30px;\n    text-align: center;\n    background-color: white;\n    border-radius: 4px;\n    font-weight: bold;\n    color: #000;\n    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);\n    \n}\n.labels {\n    flex: 1;\n    min-width: 650px;\n}\n.responcive {\n    width: 100%;\n    flex-wrap: wrap;\n    display: flex;\n    justify-content: baseline;\n}\n.color-bable {\n    min-width: 27px;\n    min-height: 5px;\n    padding-bottom: 8px;\n    margin: 0 5px;\n    display: inline-block;\n    border-radius: 1rem;\n    box-shadow: 0px 1px 3px rgba(0,0,0,0.6);\n}\n.color1 {\n    background-color: rgba(255, 127, 127, 0.5);\n}\n.color2 {\n    background-color: rgba(124, 249, 177, 0.5);\n}\n.color3 {\n    background-color: rgba(0, 255, 255, 0.5);\n}\n.color4 {\n    background-color: rgba(222, 184, 135, 0.5);\n}\n.color5 {\n    background-color: rgba(100, 149, 237, 0.5);\n}\n.cardStreem {\n    margin: 0.3rem;\n    min-width: 300px;\n    flex: 0.3;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLXFvcy90YWItcW9zLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7SUFDbEIsMkJBQTJCO0lBQzNCLFVBQVU7SUFDVixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLE9BQU87QUFDWDtBQUNBO0lBQ0ksYUFBYTtJQUNiLGVBQWU7SUFDZixxQkFBcUI7SUFDckIsZ0JBQWdCO0lBQ2hCLFlBQVk7QUFDaEI7QUFDQTtJQUNJLHlCQUF5QjtJQUN6QixhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLG1CQUFtQjtJQUNuQixlQUFlO0lBQ2YsV0FBVztJQUNYLFNBQVM7SUFDVCxnQkFBZ0I7SUFDaEIsa0JBQWtCO0lBQ2xCLGdCQUFnQjtJQUNoQix1Q0FBdUM7QUFDM0M7QUFFQTtJQUNJLFdBQVc7QUFDZjtBQUVBO0lBQ0ksZ0JBQWdCO0lBQ2hCLGNBQWM7SUFDZCxlQUFlO0lBQ2Ysa0JBQWtCO0lBQ2xCLHVCQUF1QjtJQUN2QixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLFdBQVc7SUFDWCw2Q0FBNkM7O0FBRWpEO0FBRUE7SUFDSSxPQUFPO0lBQ1AsZ0JBQWdCO0FBQ3BCO0FBQ0E7SUFDSSxXQUFXO0lBQ1gsZUFBZTtJQUNmLGFBQWE7SUFDYix5QkFBeUI7QUFDN0I7QUFFQTtJQUNJLGVBQWU7SUFDZixlQUFlO0lBQ2YsbUJBQW1CO0lBQ25CLGFBQWE7SUFDYixxQkFBcUI7SUFDckIsbUJBQW1CO0lBQ25CLHVDQUF1QztBQUMzQztBQUNBO0lBQ0ksMENBQTBDO0FBQzlDO0FBQ0E7SUFDSSwwQ0FBMEM7QUFDOUM7QUFDQTtJQUNJLHdDQUF3QztBQUM1QztBQUNBO0lBQ0ksMENBQTBDO0FBQzlDO0FBQ0E7SUFDSSwwQ0FBMEM7QUFDOUM7QUFDQTtJQUNJLGNBQWM7SUFDZCxnQkFBZ0I7SUFDaEIsU0FBUztBQUNiIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLXFvcy90YWItcW9zLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhcnQtY29udGFpbmVyIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSA4LjVyZW0pO1xuICAgIHdpZHRoOjEwMCU7XG4gICAgbWluLXdpZHRoOiA1MDBweDtcbiAgICBtaW4taGVpZ2h0OiA0MDBweDtcbiAgICBmbGV4OiAyO1xufVxuLml0ZW0tY29udGFpbmVyIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtd3JhcDogd3JhcDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGxlZnQ7XG4gICAgbWluLXdpZHRoOiA2MDBweDtcbiAgICB3aWR0aDogNjAwcHg7XG59XG4uaXRlbSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzY3M2FiNztcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcGFkZGluZzogMC40cmVtO1xuICAgIG1hcmdpbjogMnB4O1xuICAgIGZsZXg6IDAuNTtcbiAgICBtaW4td2lkdGg6IDE5MHB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBmb250LXNpemU6IDAuOGVtO1xuICAgIGJveC1zaGFkb3c6IDFweCAxcHggMnB4IHJnYmEoMCwwLDAsMC40KTtcbn1cblxuLml0ZW0gPiAudGV4dCB7XG4gICAgY29sb3I6ICMwMDA7XG59XG5cbi5pdGVtID4gLnRleHQtYmFkZ2Uge1xuICAgIG1hcmdpbjogMCAwLjNyZW07XG4gICAgcGFkZGluZzogMCA1cHg7XG4gICAgbWluLXdpZHRoOiAzMHB4O1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcbiAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgY29sb3I6ICMwMDA7XG4gICAgYm94LXNoYWRvdzogaW5zZXQgMXB4IDFweCAycHggcmdiYSgwLDAsMCwwLjMpO1xuICAgIFxufVxuXG4ubGFiZWxzIHtcbiAgICBmbGV4OiAxO1xuICAgIG1pbi13aWR0aDogNjUwcHg7XG59XG4ucmVzcG9uY2l2ZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgZmxleC13cmFwOiB3cmFwO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBiYXNlbGluZTtcbn1cblxuLmNvbG9yLWJhYmxlIHtcbiAgICBtaW4td2lkdGg6IDI3cHg7XG4gICAgbWluLWhlaWdodDogNXB4O1xuICAgIHBhZGRpbmctYm90dG9tOiA4cHg7XG4gICAgbWFyZ2luOiAwIDVweDtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMXJlbTtcbiAgICBib3gtc2hhZG93OiAwcHggMXB4IDNweCByZ2JhKDAsMCwwLDAuNik7XG59XG4uY29sb3IxIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDI1NSwgMTI3LCAxMjcsIDAuNSk7XG59XG4uY29sb3IyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDEyNCwgMjQ5LCAxNzcsIDAuNSk7XG59XG4uY29sb3IzIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDAsIDI1NSwgMjU1LCAwLjUpO1xufVxuLmNvbG9yNCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSgyMjIsIDE4NCwgMTM1LCAwLjUpO1xufVxuLmNvbG9yNSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSgxMDAsIDE0OSwgMjM3LCAwLjUpO1xufVxuLmNhcmRTdHJlZW0ge1xuICAgIG1hcmdpbjogMC4zcmVtO1xuICAgIG1pbi13aWR0aDogMzAwcHg7XG4gICAgZmxleDogMC4zO1xufSJdfQ== */"
+module.exports = ".chart-container {\n    position: relative;\n    height: calc(100% - 8.5rem);\n    width:100%;\n    min-width: 500px;\n    min-height: 400px;\n    flex: 2;\n}\nh5 {\n    text-align: center;\n    background-color: rgba(0,0,0,0.03);\n}\n.item-container {\n    display: flex;\n    flex-wrap: wrap;\n    justify-content: left;\n    min-width: 600px;\n    width: 600px;\n}\n.item {\n    background-color: #673ab7;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.4rem;\n    margin: 2px;\n    flex: 0.5;\n    min-width: 190px;\n    border-radius: 4px;\n    font-size: 0.8em;\n    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);\n}\n.hide-button {\n    width: 149px;\n    padding: 0;\n    background: #eee;\n    border: 0;\n    border-radius: 4px;\n    height: 20px;\n    margin: 67px -62px 67px -60px;\n    outline: none;\n    cursor: pointer;\n    font-size: .9em;\n}\n.hide-button.rotate90deg {\n    -moz-transform: rotate(-90.0deg);\n    -o-transform: rotate(-90.0deg);\n    -webkit-transform: rotate(-90.0deg);\n    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.083);\n    -ms-filter: \"progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)\";\n    transform: rotate(-90.0deg);\n}\n.item > .text {\n    color: #000;\n}\n.item > .text-badge {\n    margin: 0 0.3rem;\n    padding: 0 5px;\n    min-width: 30px;\n    text-align: center;\n    background-color: white;\n    border-radius: 4px;\n    font-weight: bold;\n    color: #000;\n    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);\n    \n}\n.labels {\n    flex: 1;\n    min-width: 650px;\n}\n.responcive {\n    width: 100%;\n    flex-wrap: wrap;\n    display: flex;\n    justify-content: baseline;\n}\n.color-bable {\n    min-width: 27px;\n    min-height: 5px;\n    padding-bottom: 8px;\n    margin: 0 5px;\n    display: inline-block;\n    border-radius: 1rem;\n    box-shadow: 0px 1px 3px rgba(0,0,0,0.6);\n}\n.color1 {\n    background-color: rgba(255, 127, 127, 0.5);\n}\n.color2 {\n    background-color: rgba(124, 249, 177, 0.5);\n}\n.color3 {\n    background-color: rgba(0, 255, 255, 0.5);\n}\n.color4 {\n    background-color: rgba(222, 184, 135, 0.5);\n}\n.color5 {\n    background-color: rgba(100, 149, 237, 0.5);\n}\n.color6 {\n    background-color: rgba(7, 136, 24, 0.5);\n}\n.cardStreem {\n    margin: 0.3rem;\n    min-width: 300px;\n    flex: 0.3;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLXFvcy90YWItcW9zLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7SUFDbEIsMkJBQTJCO0lBQzNCLFVBQVU7SUFDVixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLE9BQU87QUFDWDtBQUNBO0lBQ0ksa0JBQWtCO0lBQ2xCLGtDQUFrQztBQUN0QztBQUNBO0lBQ0ksYUFBYTtJQUNiLGVBQWU7SUFDZixxQkFBcUI7SUFDckIsZ0JBQWdCO0lBQ2hCLFlBQVk7QUFDaEI7QUFDQTtJQUNJLHlCQUF5QjtJQUN6QixhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLG1CQUFtQjtJQUNuQixlQUFlO0lBQ2YsV0FBVztJQUNYLFNBQVM7SUFDVCxnQkFBZ0I7SUFDaEIsa0JBQWtCO0lBQ2xCLGdCQUFnQjtJQUNoQix1Q0FBdUM7QUFDM0M7QUFDQTtJQUNJLFlBQVk7SUFDWixVQUFVO0lBQ1YsZ0JBQWdCO0lBQ2hCLFNBQVM7SUFDVCxrQkFBa0I7SUFDbEIsWUFBWTtJQUNaLDZCQUE2QjtJQUM3QixhQUFhO0lBQ2IsZUFBZTtJQUNmLGVBQWU7QUFDbkI7QUFDQTtJQUNJLGdDQUFnQztJQUNoQyw4QkFBOEI7SUFDOUIsbUNBQW1DO0lBQ25DLHFFQUFxRTtJQUNyRSwwRUFBMEU7SUFDMUUsMkJBQTJCO0FBQy9CO0FBQ0E7SUFDSSxXQUFXO0FBQ2Y7QUFFQTtJQUNJLGdCQUFnQjtJQUNoQixjQUFjO0lBQ2QsZUFBZTtJQUNmLGtCQUFrQjtJQUNsQix1QkFBdUI7SUFDdkIsa0JBQWtCO0lBQ2xCLGlCQUFpQjtJQUNqQixXQUFXO0lBQ1gsNkNBQTZDOztBQUVqRDtBQUVBO0lBQ0ksT0FBTztJQUNQLGdCQUFnQjtBQUNwQjtBQUNBO0lBQ0ksV0FBVztJQUNYLGVBQWU7SUFDZixhQUFhO0lBQ2IseUJBQXlCO0FBQzdCO0FBRUE7SUFDSSxlQUFlO0lBQ2YsZUFBZTtJQUNmLG1CQUFtQjtJQUNuQixhQUFhO0lBQ2IscUJBQXFCO0lBQ3JCLG1CQUFtQjtJQUNuQix1Q0FBdUM7QUFDM0M7QUFDQTtJQUNJLDBDQUEwQztBQUM5QztBQUNBO0lBQ0ksMENBQTBDO0FBQzlDO0FBQ0E7SUFDSSx3Q0FBd0M7QUFDNUM7QUFDQTtJQUNJLDBDQUEwQztBQUM5QztBQUNBO0lBQ0ksMENBQTBDO0FBQzlDO0FBQ0E7SUFDSSx1Q0FBdUM7QUFDM0M7QUFFQTtJQUNJLGNBQWM7SUFDZCxnQkFBZ0I7SUFDaEIsU0FBUztBQUNiIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL2RldGFpbC1kaWFsb2cvdGFiLXFvcy90YWItcW9zLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhcnQtY29udGFpbmVyIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSA4LjVyZW0pO1xuICAgIHdpZHRoOjEwMCU7XG4gICAgbWluLXdpZHRoOiA1MDBweDtcbiAgICBtaW4taGVpZ2h0OiA0MDBweDtcbiAgICBmbGV4OiAyO1xufVxuaDUge1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDAsMCwwLDAuMDMpO1xufVxuLml0ZW0tY29udGFpbmVyIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtd3JhcDogd3JhcDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGxlZnQ7XG4gICAgbWluLXdpZHRoOiA2MDBweDtcbiAgICB3aWR0aDogNjAwcHg7XG59XG4uaXRlbSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzY3M2FiNztcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcGFkZGluZzogMC40cmVtO1xuICAgIG1hcmdpbjogMnB4O1xuICAgIGZsZXg6IDAuNTtcbiAgICBtaW4td2lkdGg6IDE5MHB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBmb250LXNpemU6IDAuOGVtO1xuICAgIGJveC1zaGFkb3c6IDFweCAxcHggMnB4IHJnYmEoMCwwLDAsMC40KTtcbn1cbi5oaWRlLWJ1dHRvbiB7XG4gICAgd2lkdGg6IDE0OXB4O1xuICAgIHBhZGRpbmc6IDA7XG4gICAgYmFja2dyb3VuZDogI2VlZTtcbiAgICBib3JkZXI6IDA7XG4gICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgIGhlaWdodDogMjBweDtcbiAgICBtYXJnaW46IDY3cHggLTYycHggNjdweCAtNjBweDtcbiAgICBvdXRsaW5lOiBub25lO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBmb250LXNpemU6IC45ZW07XG59XG4uaGlkZS1idXR0b24ucm90YXRlOTBkZWcge1xuICAgIC1tb3otdHJhbnNmb3JtOiByb3RhdGUoLTkwLjBkZWcpO1xuICAgIC1vLXRyYW5zZm9ybTogcm90YXRlKC05MC4wZGVnKTtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKC05MC4wZGVnKTtcbiAgICBmaWx0ZXI6IHByb2dpZDogRFhJbWFnZVRyYW5zZm9ybS5NaWNyb3NvZnQuQmFzaWNJbWFnZShyb3RhdGlvbj0wLjA4Myk7XG4gICAgLW1zLWZpbHRlcjogXCJwcm9naWQ6RFhJbWFnZVRyYW5zZm9ybS5NaWNyb3NvZnQuQmFzaWNJbWFnZShyb3RhdGlvbj0wLjA4MylcIjtcbiAgICB0cmFuc2Zvcm06IHJvdGF0ZSgtOTAuMGRlZyk7XG59XG4uaXRlbSA+IC50ZXh0IHtcbiAgICBjb2xvcjogIzAwMDtcbn1cblxuLml0ZW0gPiAudGV4dC1iYWRnZSB7XG4gICAgbWFyZ2luOiAwIDAuM3JlbTtcbiAgICBwYWRkaW5nOiAwIDVweDtcbiAgICBtaW4td2lkdGg6IDMwcHg7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBmb250LXdlaWdodDogYm9sZDtcbiAgICBjb2xvcjogIzAwMDtcbiAgICBib3gtc2hhZG93OiBpbnNldCAxcHggMXB4IDJweCByZ2JhKDAsMCwwLDAuMyk7XG4gICAgXG59XG5cbi5sYWJlbHMge1xuICAgIGZsZXg6IDE7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbn1cbi5yZXNwb25jaXZlIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBmbGV4LXdyYXA6IHdyYXA7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGJhc2VsaW5lO1xufVxuXG4uY29sb3ItYmFibGUge1xuICAgIG1pbi13aWR0aDogMjdweDtcbiAgICBtaW4taGVpZ2h0OiA1cHg7XG4gICAgcGFkZGluZy1ib3R0b206IDhweDtcbiAgICBtYXJnaW46IDAgNXB4O1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICBib3JkZXItcmFkaXVzOiAxcmVtO1xuICAgIGJveC1zaGFkb3c6IDBweCAxcHggM3B4IHJnYmEoMCwwLDAsMC42KTtcbn1cbi5jb2xvcjEge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMjU1LCAxMjcsIDEyNywgMC41KTtcbn1cbi5jb2xvcjIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMTI0LCAyNDksIDE3NywgMC41KTtcbn1cbi5jb2xvcjMge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwgMjU1LCAyNTUsIDAuNSk7XG59XG4uY29sb3I0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDIyMiwgMTg0LCAxMzUsIDAuNSk7XG59XG4uY29sb3I1IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDEwMCwgMTQ5LCAyMzcsIDAuNSk7XG59XG4uY29sb3I2IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDcsIDEzNiwgMjQsIDAuNSk7XG59XG5cbi5jYXJkU3RyZWVtIHtcbiAgICBtYXJnaW46IDAuM3JlbTtcbiAgICBtaW4td2lkdGg6IDMwMHB4O1xuICAgIGZsZXg6IDAuMztcbn0iXX0= */"
 
 /***/ }),
 
@@ -3947,7 +4021,52 @@ var TabQosComponent = /** @class */ (function () {
     function TabQosComponent(_ers, _dtrs) {
         this._ers = _ers;
         this._dtrs = _dtrs;
+        this.haveData = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.labels = [];
+        this.isRTCP = false;
+        this.isRTP = false;
+        this.chartDataRTP = [{
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'TOTAL_PK'
+            }, {
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'EXPECTED_PK'
+            }, {
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'JITTER'
+            }, {
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'MOS'
+            }, {
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'DELTA'
+            }, {
+                data: [1, 2, 3, 4, 5, 6],
+                label: 'PACKET_LOSS'
+            },
+        ];
+        this.chartLabelsRTP = [];
+        this.lineChartColorsRTP = [
+            {
+                backgroundColor: 'rgba(255, 127, 127, 0.5)',
+                borderColor: 'rgba(255, 127, 127, 1)'
+            }, {
+                backgroundColor: 'rgba(124, 249, 177, 0.5)',
+                borderColor: 'rgba(124, 249, 177, 1)'
+            }, {
+                backgroundColor: 'rgba(0, 255, 255, 0.5)',
+                borderColor: 'rgba(0, 255, 255, 1)'
+            }, {
+                backgroundColor: 'rgba(222, 184, 135, 0.5)',
+                borderColor: 'rgba(222, 184, 135, 1)'
+            }, {
+                backgroundColor: 'rgba(100, 149, 237, 0.5)',
+                borderColor: 'rgba(100, 149, 237, 1)'
+            }, {
+                backgroundColor: 'rgba(7, 136, 24, 0.5)',
+                borderColor: 'rgba(7, 136, 24, 1)'
+            }
+        ];
         this.chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -3961,10 +4080,6 @@ var TabQosComponent = /** @class */ (function () {
             legend: {
                 display: false
             }
-        };
-        this.timeRange = {
-            from: 0,
-            to: 0
         };
         this.chartLabels = [];
         this.chartType = 'bar';
@@ -4004,6 +4119,26 @@ var TabQosComponent = /** @class */ (function () {
                 label: 'lsr'
             },
         ];
+        this.listRTP = [
+            { name: 'min TOTAL_PK', value: Number.MAX_VALUE, color: 'color1' },
+            { name: 'avg TOTAL_PK', value: 0, color: 'color1' },
+            { name: 'max TOTAL_PK', value: 0, color: 'color1' },
+            { name: 'min EXPECTED_PK', value: Number.MAX_VALUE, color: 'color2' },
+            { name: 'avg EXPECTED_PK', value: 0, color: 'color2' },
+            { name: 'max EXPECTED_PK', value: 0, color: 'color2' },
+            { name: 'min JITTER', value: Number.MAX_VALUE, color: 'color3' },
+            { name: 'avg JITTER', value: 0, color: 'color3' },
+            { name: 'max JITTER', value: 0, color: 'color3' },
+            { name: 'min MOS', value: Number.MAX_VALUE, color: 'color4' },
+            { name: 'avg MOS', value: 0, color: 'color4' },
+            { name: 'max MOS', value: 0, color: 'color4' },
+            { name: 'min DELTA', value: Number.MAX_VALUE, color: 'color5' },
+            { name: 'avg DELTA', value: 0, color: 'color5' },
+            { name: 'max DELTA', value: 0, color: 'color5' },
+            { name: 'min PACKET_LOSS', value: Number.MAX_VALUE, color: 'color6' },
+            { name: 'avg PACKET_LOSS', value: 0, color: 'color6' },
+            { name: 'max PACKET_LOSS', value: 0, color: 'color6' },
+        ];
         this.list = [
             { name: 'min packets', value: Number.MAX_VALUE, color: 'color1' },
             { name: 'avg packets', value: 0, color: 'color1' },
@@ -4021,7 +4156,10 @@ var TabQosComponent = /** @class */ (function () {
             { name: 'avg lsr', value: 0, color: 'color5' },
             { name: 'max lsr', value: 0, color: 'color5' },
         ];
+        this.hideLabelsFlag = true;
+        this.hideLabelsFlagRTP = true;
         this.streams = [];
+        this.streamsRTP = [];
     }
     TabQosComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -4031,106 +4169,199 @@ var TabQosComponent = /** @class */ (function () {
             }
             return a;
         }, []);
-        this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
-            _this.chartLabels = [];
-            var request = _this.queryBuilder(dtr);
-            var subscription = _this._ers.postQOS(request).subscribe(function (data) {
-                subscription.unsubscribe();
-                data.rtcp.data.forEach(function (item) {
-                    item.raw = JSON.parse(item.raw);
-                    var i = item.raw;
-                    _this.chartLabels.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('DD-MM-YYYY hh:mm:ss.SSS'));
-                    if (_this.streams.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
-                        _this.streams.push({
-                            dstIp: item.dstIp,
-                            srcIp: item.srcIp,
-                            _indeterminate: false,
-                            _chacked: true,
-                            packetsData: [],
-                            packets: true,
-                            octetsData: [],
-                            octets: true,
-                            highest_seq_noData: [],
-                            highest_seq_no: true,
-                            ia_jitterData: [],
-                            ia_jitter: true,
-                            lsrData: [],
-                            lsr: true
-                        });
-                    }
-                    _this.streams.forEach(function (k) {
-                        if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
-                            // packets
-                            k.packetsData.push(i.sender_information.packets);
-                            // octets
-                            k.octetsData.push(i.sender_information.octets);
-                            if (i.report_blocks[0]) {
-                                /**
-                                 * render chart
-                                 */
-                                // highest_seq_no
-                                k.highest_seq_noData.push(i.report_blocks[0].highest_seq_no);
-                                // ia_jitter
-                                k.ia_jitterData.push(i.report_blocks[0].ia_jitter);
-                                // lsr
-                                k.lsrData.push(i.report_blocks[0].lsr * 1);
-                                /* end chart */
-                                // min packets
-                                _this.list[0].value = Math.min(_this.list[0].value, i.sender_information.packets);
-                                // max packets
-                                _this.list[2].value = Math.max(_this.list[2].value, i.sender_information.packets);
-                                // min octets
-                                _this.list[3].value = Math.min(_this.list[3].value, i.sender_information.octets);
-                                // max octets
-                                _this.list[5].value = Math.max(_this.list[5].value, i.sender_information.octets);
-                                // min highest_seq_no
-                                _this.list[6].value = Math.min(_this.list[5].value, i.report_blocks[0].highest_seq_no);
-                                // max highest_seq_no
-                                _this.list[8].value = Math.max(_this.list[8].value, i.report_blocks[0].highest_seq_no);
-                                // min ia_jitter
-                                _this.list[9].value = Math.min(_this.list[9].value, i.report_blocks[0].ia_jitter);
-                                // max ia_jitter
-                                _this.list[11].value = Math.max(_this.list[11].value, i.report_blocks[0].ia_jitter);
-                                // min lsr
-                                _this.list[12].value = Math.min(_this.list[12].value, i.report_blocks[0].lsr * 1);
-                                // max lsr
-                                _this.list[14].value = Math.max(_this.list[14].value, i.report_blocks[0].lsr * 1);
-                            }
-                            else {
-                                // highest_seq_no
-                                k.highest_seq_noData.push(0);
-                                // ia_jitter
-                                k.ia_jitterData.push(0);
-                                // lsr
-                                k.lsrData.push(0);
-                            }
-                        }
-                    });
-                });
-                _this.list.forEach(function (item) {
-                    item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
-                });
-                // avg packets
-                _this.list[1].value = Math.floor((_this.list[0].value + _this.list[2].value) / 2);
-                // avg octets
-                _this.list[4].value = Math.floor((_this.list[3].value + _this.list[5].value) / 2);
-                // avg highest_seq_no
-                _this.list[7].value = Math.floor((_this.list[6].value + _this.list[8].value) / 2);
-                // avg ia_jitter
-                _this.list[10].value = Math.floor((_this.list[9].value + _this.list[11].value) / 2);
-                // avg lsr
-                _this.list[13].value = Math.floor((_this.list[12].value + _this.list[14].value) / 2);
-                _this.renderChartData();
-            });
+        var request = this.queryBuilder();
+        var subscription = this._ers.postQOS(request).subscribe(function (data) {
+            subscription.unsubscribe();
+            _this.parseRTCP(data.rtcp.data);
+            _this.parseRTP(data.rtp.data);
+            _this.haveData.emit(data.rtcp.data.length > 0 || data.rtp.data.length > 0);
         });
     };
-    TabQosComponent.prototype.renderChartData = function () {
+    TabQosComponent.prototype.parseRTP = function (data) {
         var _this = this;
-        this.chartData.forEach(function (i) {
+        if (!data || data.length === 0) {
+            this.isRTP = false;
+            return;
+        }
+        this.chartLabelsRTP = [];
+        data.forEach(function (item) {
+            item.raw = JSON.parse(item.raw);
+            var i = item.raw;
+            _this.chartLabelsRTP.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('DD-MM-YYYY hh:mm:ss.SSS'));
+            if (_this.streamsRTP.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
+                _this.streamsRTP.push({
+                    dstIp: item.dstIp,
+                    srcIp: item.srcIp,
+                    _indeterminate: false,
+                    _chacked: true,
+                    TOTAL_PKData: [],
+                    TOTAL_PK: true,
+                    EXPECTED_PKData: [],
+                    EXPECTED_PK: true,
+                    JITTERData: [],
+                    JITTER: true,
+                    MOSData: [],
+                    MOS: true,
+                    DELTAData: [],
+                    DELTA: true,
+                    PACKET_LOSSData: [],
+                    PACKET_LOSS: true,
+                });
+            }
+            _this.streamsRTP.forEach(function (k) {
+                if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
+                    // TOTAL_PK
+                    k.TOTAL_PKData.push(i.TOTAL_PK);
+                    // EXPECTED_PK
+                    k.EXPECTED_PKData.push(i.EXPECTED_PK);
+                    // JITTER
+                    k.JITTERData.push(i.JITTER);
+                    // MOS
+                    k.MOSData.push(i.MOS);
+                    // DELTA
+                    k.DELTAData.push(i.DELTA);
+                    // PACKET_LOSS
+                    k.PACKET_LOSSData.push(i.PACKET_LOSS);
+                    // min TOTAL_PK
+                    _this.listRTP[0].value = Math.min(_this.listRTP[0].value, i.TOTAL_PK * 1);
+                    // max packets
+                    _this.listRTP[2].value = Math.max(_this.listRTP[2].value, i.TOTAL_PK * 1);
+                    // min EXPECTED_PK
+                    _this.listRTP[3].value = Math.min(_this.listRTP[3].value, i.EXPECTED_PK * 1);
+                    // max EXPECTED_PK
+                    _this.listRTP[5].value = Math.max(_this.listRTP[5].value, i.EXPECTED_PK * 1);
+                    // min JITTER
+                    _this.listRTP[6].value = Math.min(_this.listRTP[5].value, i.JITTER * 1);
+                    // max JITTER
+                    _this.listRTP[8].value = Math.max(_this.listRTP[8].value, i.JITTER * 1);
+                    // min MOS
+                    _this.listRTP[9].value = Math.min(_this.listRTP[9].value, i.MOS * 1);
+                    // max MOS
+                    _this.listRTP[11].value = Math.max(_this.listRTP[11].value, i.MOS * 1);
+                    // min DELTA
+                    _this.listRTP[12].value = Math.min(_this.listRTP[12].value, i.DELTA * 1);
+                    // max DELTA
+                    _this.listRTP[14].value = Math.max(_this.listRTP[14].value, i.DELTA * 1);
+                    // min PACKET_LOSS
+                    _this.listRTP[15].value = Math.min(_this.listRTP[15].value, i.PACKET_LOSS * 1);
+                    // max PACKET_LOSS
+                    _this.listRTP[17].value = Math.max(_this.listRTP[17].value, i.PACKET_LOSS * 1);
+                }
+            });
+        });
+        this.listRTP.forEach(function (item) {
+            item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
+        });
+        this.listRTP[1].value = ((this.listRTP[0].value + this.listRTP[2].value) / 2);
+        this.listRTP[4].value = ((this.listRTP[3].value + this.listRTP[5].value) / 2);
+        this.listRTP[7].value = ((this.listRTP[6].value + this.listRTP[8].value) / 2);
+        this.listRTP[10].value = ((this.listRTP[9].value + this.listRTP[11].value) / 2);
+        this.listRTP[13].value = ((this.listRTP[12].value + this.listRTP[14].value) / 2);
+        this.listRTP[16].value = ((this.listRTP[15].value + this.listRTP[17].value) / 2);
+        this.renderChartData(this.streamsRTP, this.chartDataRTP);
+        this.isRTP = true;
+    };
+    TabQosComponent.prototype.parseRTCP = function (data) {
+        var _this = this;
+        if (!data || data.length === 0) {
+            this.isRTCP = false;
+            return;
+        }
+        this.chartLabels = [];
+        data.forEach(function (item) {
+            item.raw = JSON.parse(item.raw);
+            var i = item.raw;
+            _this.chartLabels.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('DD-MM-YYYY hh:mm:ss.SSS'));
+            if (_this.streams.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
+                _this.streams.push({
+                    dstIp: item.dstIp,
+                    srcIp: item.srcIp,
+                    _indeterminate: false,
+                    _chacked: true,
+                    packetsData: [],
+                    packets: true,
+                    octetsData: [],
+                    octets: true,
+                    highest_seq_noData: [],
+                    highest_seq_no: true,
+                    ia_jitterData: [],
+                    ia_jitter: true,
+                    lsrData: [],
+                    lsr: true
+                });
+            }
+            _this.streams.forEach(function (k) {
+                if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
+                    // packets
+                    k.packetsData.push(i.sender_information.packets);
+                    // octets
+                    k.octetsData.push(i.sender_information.octets);
+                    if (i.report_blocks[0]) {
+                        /**
+                         * render chart
+                         */
+                        // highest_seq_no
+                        k.highest_seq_noData.push(i.report_blocks[0].highest_seq_no);
+                        // ia_jitter
+                        k.ia_jitterData.push(i.report_blocks[0].ia_jitter);
+                        // lsr
+                        k.lsrData.push(i.report_blocks[0].lsr * 1);
+                        /* end chart */
+                        // min packets
+                        _this.list[0].value = Math.min(_this.list[0].value, i.sender_information.packets);
+                        // max packets
+                        _this.list[2].value = Math.max(_this.list[2].value, i.sender_information.packets);
+                        // min octets
+                        _this.list[3].value = Math.min(_this.list[3].value, i.sender_information.octets);
+                        // max octets
+                        _this.list[5].value = Math.max(_this.list[5].value, i.sender_information.octets);
+                        // min highest_seq_no
+                        _this.list[6].value = Math.min(_this.list[5].value, i.report_blocks[0].highest_seq_no);
+                        // max highest_seq_no
+                        _this.list[8].value = Math.max(_this.list[8].value, i.report_blocks[0].highest_seq_no);
+                        // min ia_jitter
+                        _this.list[9].value = Math.min(_this.list[9].value, i.report_blocks[0].ia_jitter);
+                        // max ia_jitter
+                        _this.list[11].value = Math.max(_this.list[11].value, i.report_blocks[0].ia_jitter);
+                        // min lsr
+                        _this.list[12].value = Math.min(_this.list[12].value, i.report_blocks[0].lsr * 1);
+                        // max lsr
+                        _this.list[14].value = Math.max(_this.list[14].value, i.report_blocks[0].lsr * 1);
+                    }
+                    else {
+                        // highest_seq_no
+                        k.highest_seq_noData.push(0);
+                        // ia_jitter
+                        k.ia_jitterData.push(0);
+                        // lsr
+                        k.lsrData.push(0);
+                    }
+                }
+            });
+        });
+        this.list.forEach(function (item) {
+            item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
+        });
+        // avg packets
+        this.list[1].value = Math.floor((this.list[0].value + this.list[2].value) / 2);
+        // avg octets
+        this.list[4].value = Math.floor((this.list[3].value + this.list[5].value) / 2);
+        // avg highest_seq_no
+        this.list[7].value = Math.floor((this.list[6].value + this.list[8].value) / 2);
+        // avg ia_jitter
+        this.list[10].value = Math.floor((this.list[9].value + this.list[11].value) / 2);
+        // avg lsr
+        this.list[13].value = Math.floor((this.list[12].value + this.list[14].value) / 2);
+        this.renderChartData(this.streams, this.chartData);
+        this.isRTCP = true;
+    };
+    TabQosComponent.prototype.renderChartData = function (streams, chartData) {
+        var _this = this;
+        chartData.forEach(function (i) {
             i.data = [];
         });
-        this.streams.forEach(function (item) {
-            _this.chartData.forEach(function (val) {
+        streams.forEach(function (item) {
+            chartData.forEach(function (val) {
                 var arrData = val.data || [];
                 val.data = arrData.concat(_this.getData(item, val.label));
             });
@@ -4143,7 +4374,7 @@ var TabQosComponent = /** @class */ (function () {
         }
         return Array.from({ length: data.length }, function (i) { return 0; });
     };
-    TabQosComponent.prototype.queryBuilder = function (dtr) {
+    TabQosComponent.prototype.queryBuilder = function () {
         var localData = JSON.parse(localStorage.getItem('searchQuery'));
         // const protocol_profile = localData.map(i => i.profile)[0]; // 1_call | 1_ default | 1_registration
         var search = {};
@@ -4153,10 +4384,7 @@ var TabQosComponent = /** @class */ (function () {
             uuid: []
         };
         return {
-            timestamp: {
-                from: dtr.range.dates[0].unix() * 1000,
-                to: dtr.range.dates[1].unix() * 1000
-            },
+            timestamp: this._dtrs.getDatesForQuery(true),
             param: {
                 search: search,
                 location: {},
@@ -4184,7 +4412,20 @@ var TabQosComponent = /** @class */ (function () {
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr);
         }
-        this.renderChartData();
+        this.renderChartData(this.streams, this.chartData);
+    };
+    TabQosComponent.prototype.onChangeChackBoxRTP = function (item, base) {
+        if (base === void 0) { base = false; }
+        if (base) {
+            item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._chacked;
+            item._indeterminate = false;
+        }
+        else {
+            item._chacked = item.TOTAL_PK && item.EXPECTED_PK && item.JITTER && item.MOS && item.DELTA && item.PACKET_LOSS;
+            item._indeterminate = !item._chacked &&
+                !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
+        }
+        this.renderChartData(this.streamsRTP, this.chartDataRTP);
     };
     TabQosComponent.ctorParameters = function () { return [
         { type: _services_call_report_service__WEBPACK_IMPORTED_MODULE_2__["CallReportService"] },
@@ -4202,6 +4443,10 @@ var TabQosComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
     ], TabQosComponent.prototype, "id", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", Object)
+    ], TabQosComponent.prototype, "haveData", void 0);
     TabQosComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-tab-qos',
@@ -4581,7 +4826,7 @@ var HeaderActionRenderer = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".resalt-top-tools {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    align-content: center;\n    margin: 0 1rem;\n}\n.loading {\n    position: absolute;\n    left: 0;\n    right: 0;\n    top: 0;\n    bottom: 0;\n    background-color: rgba(255,255,255,0.6);\n    display: flex;\n    justify-content: center;\n    align-content: center;\n    align-items: center;\n    z-index: 9999999;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL3NlYXJjaC1ncmlkLWNhbGwuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYiw4QkFBOEI7SUFDOUIsbUJBQW1CO0lBQ25CLHFCQUFxQjtJQUNyQixjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxrQkFBa0I7SUFDbEIsT0FBTztJQUNQLFFBQVE7SUFDUixNQUFNO0lBQ04sU0FBUztJQUNULHVDQUF1QztJQUN2QyxhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLHFCQUFxQjtJQUNyQixtQkFBbUI7SUFDbkIsZ0JBQWdCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL3NlYXJjaC1ncmlkLWNhbGwuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5yZXNhbHQtdG9wLXRvb2xzIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGFsaWduLWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBtYXJnaW46IDAgMXJlbTtcbn1cbi5sb2FkaW5nIHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgbGVmdDogMDtcbiAgICByaWdodDogMDtcbiAgICB0b3A6IDA7XG4gICAgYm90dG9tOiAwO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsMC42KTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIHotaW5kZXg6IDk5OTk5OTk7XG59Il19 */"
+module.exports = ".resalt-top-tools {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    align-content: center;\n    margin: 0 1rem;\n}\n.loading {\n    position: absolute;\n    left: 0;\n    right: 0;\n    top: 0;\n    bottom: 0;\n    background-color: rgba(255,255,255,0.6);\n    display: flex;\n    justify-content: center;\n    align-content: center;\n    align-items: center;\n    z-index: 9999999;\n}\n.regex-filter {\n    position: fixed;\n    top: 5px;\n    background: white;\n    width: 250px;\n    margin: auto;\n    right: 311px;\n    left: 0;\n    border: 0;\n    padding: 5px 10px;\n    border-radius: 6px;\n    outline: none;\n    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.4);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtZ3JpZC1jYWxsL3NlYXJjaC1ncmlkLWNhbGwuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYiw4QkFBOEI7SUFDOUIsbUJBQW1CO0lBQ25CLHFCQUFxQjtJQUNyQixjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxrQkFBa0I7SUFDbEIsT0FBTztJQUNQLFFBQVE7SUFDUixNQUFNO0lBQ04sU0FBUztJQUNULHVDQUF1QztJQUN2QyxhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLHFCQUFxQjtJQUNyQixtQkFBbUI7SUFDbkIsZ0JBQWdCO0FBQ3BCO0FBQ0E7SUFDSSxlQUFlO0lBQ2YsUUFBUTtJQUNSLGlCQUFpQjtJQUNqQixZQUFZO0lBQ1osWUFBWTtJQUNaLFlBQVk7SUFDWixPQUFPO0lBQ1AsU0FBUztJQUNULGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsYUFBYTtJQUNiLDZDQUE2QztBQUNqRCIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvc2VhcmNoLWdyaWQtY2FsbC9zZWFyY2gtZ3JpZC1jYWxsLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucmVzYWx0LXRvcC10b29scyB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBhbGlnbi1jb250ZW50OiBjZW50ZXI7XG4gICAgbWFyZ2luOiAwIDFyZW07XG59XG4ubG9hZGluZyB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIGxlZnQ6IDA7XG4gICAgcmlnaHQ6IDA7XG4gICAgdG9wOiAwO1xuICAgIGJvdHRvbTogMDtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDI1NSwyNTUsMjU1LDAuNik7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBhbGlnbi1jb250ZW50OiBjZW50ZXI7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICB6LWluZGV4OiA5OTk5OTk5O1xufVxuLnJlZ2V4LWZpbHRlciB7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNXB4O1xuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xuICAgIHdpZHRoOiAyNTBweDtcbiAgICBtYXJnaW46IGF1dG87XG4gICAgcmlnaHQ6IDMxMXB4O1xuICAgIGxlZnQ6IDA7XG4gICAgYm9yZGVyOiAwO1xuICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDZweDtcbiAgICBvdXRsaW5lOiBub25lO1xuICAgIGJveC1zaGFkb3c6IGluc2V0IDFweCAxcHggM3B4IHJnYmEoMCwwLDAsMC40KTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -4599,14 +4844,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
-/* harmony import */ var _app_services_session_storage_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @app/services/session-storage.service */ "./src/app/services/session-storage.service.ts");
-/* harmony import */ var _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/call/transaction.service */ "./src/app/services/call/transaction.service.ts");
-/* harmony import */ var _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./renderer/column-action-renderer.component */ "./src/app/components/search-grid-call/renderer/column-action-renderer.component.ts");
-/* harmony import */ var _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderer/column-callid-renderer.component */ "./src/app/components/search-grid-call/renderer/column-callid-renderer.component.ts");
-/* harmony import */ var _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./renderer/column-method-renderer.component */ "./src/app/components/search-grid-call/renderer/column-method-renderer.component.ts");
-/* harmony import */ var _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./renderer/header-action-renderer.component */ "./src/app/components/search-grid-call/renderer/header-action-renderer.component.ts");
-/* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../helpers/functions */ "./src/app/helpers/functions.ts");
-/* harmony import */ var _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../services/export/call.service */ "./src/app/services/export/call.service.ts");
+/* harmony import */ var _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/call/transaction.service */ "./src/app/services/call/transaction.service.ts");
+/* harmony import */ var _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./renderer/column-action-renderer.component */ "./src/app/components/search-grid-call/renderer/column-action-renderer.component.ts");
+/* harmony import */ var _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./renderer/column-callid-renderer.component */ "./src/app/components/search-grid-call/renderer/column-callid-renderer.component.ts");
+/* harmony import */ var _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderer/column-method-renderer.component */ "./src/app/components/search-grid-call/renderer/column-method-renderer.component.ts");
+/* harmony import */ var _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./renderer/header-action-renderer.component */ "./src/app/components/search-grid-call/renderer/header-action-renderer.component.ts");
+/* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../helpers/functions */ "./src/app/helpers/functions.ts");
+/* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4626,13 +4870,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var SearchGridCallComponent = /** @class */ (function () {
-    function SearchGridCallComponent(_scs, _sss, _cts, _ecs, changeDetectorRefs) {
+    function SearchGridCallComponent(_scs, _cts, _dtrs, changeDetectorRefs) {
         this._scs = _scs;
-        this._sss = _sss;
         this._cts = _cts;
-        this._ecs = _ecs;
+        this._dtrs = _dtrs;
         this.changeDetectorRefs = changeDetectorRefs;
         this.showPortal = false;
         this.isOpenDialog = false;
@@ -4648,6 +4890,7 @@ var SearchGridCallComponent = /** @class */ (function () {
             },
             rowHeight: 38,
             rowSelection: 'multiple',
+            suppressRowClickSelection: true,
             getRowStyle: this.getBkgColorTable.bind(this),
             suppressCellSelection: true
         };
@@ -4662,59 +4905,78 @@ var SearchGridCallComponent = /** @class */ (function () {
                     name: 'Local'
                 }
             },
-            timestamp: {
-                from: 1566432000000,
-                to: 1566464683445
-            }
+            timestamp: { from: 0, to: 0 }
         };
         this.columnDefs = [];
         this.myPredefColumns = [
-            { headerName: '', field: '', minWidth: 60, maxWidth: 60, cellRenderer: 'columnActionRenderer', pinned: 'left', cellClass: 'no-border', headerComponentFramework: _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_8__["HeaderActionRenderer"] },
+            { headerName: '',
+                field: '',
+                minWidth: 60,
+                maxWidth: 60,
+                //cellRenderer: 'columnActionRenderer',
+                checkboxSelection: true,
+                cellRendererParams: { checkbox: true },
+                pinned: 'left',
+                cellClass: 'no-border',
+                headerComponentFramework: _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_7__["HeaderActionRenderer"]
+            },
         ];
         this.context = { componentParent: this };
         this.frameworkComponents = {
-            columnActionRenderer: _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_5__["ColumnActionRenderer"],
-            columnCallidRenderer: _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_6__["ColumnCallidRenderer"],
-            columnMethodRenderer: _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_7__["ColumnMethodRenderer"]
+            columnActionRenderer: _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_4__["ColumnActionRenderer"],
+            columnCallidRenderer: _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_5__["ColumnCallidRenderer"],
+            columnMethodRenderer: _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_6__["ColumnMethodRenderer"]
         };
     }
     SearchGridCallComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.subscriptionStorage = this._sss.sessionStorage.subscribe(function (data) {
-            _this.config.timestamp = {
-                from: moment__WEBPACK_IMPORTED_MODULE_1__(data.dateTimeRange.dates[0]).unix() * 1000,
-                to: moment__WEBPACK_IMPORTED_MODULE_1__(data.dateTimeRange.dates[1]).unix() * 1000
-            };
-            if (localStorage.getItem('searchQuery')) {
-                var localData = JSON.parse(localStorage.getItem('searchQuery'));
-                _this.protocol_profile = localData.protocol_id;
-                _this.config.param.search[localData.protocol_id] = localData.fields;
+        this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(function () { return _this.update(); });
+    };
+    SearchGridCallComponent.prototype.update = function () {
+        var _this = this;
+        console.log('== update() ==');
+        this.config.timestamp = this._dtrs.getDatesForQuery(true);
+        if (localStorage.getItem('searchQuery')) {
+            var localData = JSON.parse(localStorage.getItem('searchQuery'));
+            this.protocol_profile = localData.protocol_id;
+            this.config.param.search[localData.protocol_id] = localData.fields;
+        }
+        /* this is normaly not needed - just a workaround to copy from search param */
+        for (var item in this.config.param.search) {
+            var elem = this.config.param.search[item];
+            if (elem.filter(function (it) { return it.name === 'limit'; }).length > 1) {
+                this.config.param.limit = parseInt(elem.filter(function (it) { return it.name === 'limit'; })[0]['value']);
             }
-            var getDataSubscribe = _this._scs.getData(_this.config).subscribe(function (result) {
-                getDataSubscribe.unsubscribe();
-                var myColumnDefs = [
-                    { headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true },
-                    { headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true, valueFormatter: function (data) { return data.value ? moment__WEBPACK_IMPORTED_MODULE_1__(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null; } },
-                    { headerName: 'SID', field: 'sid', filter: true, resizable: true, cellRenderer: 'columnCallidRenderer', cellStyle: _this.getCallIDColor.bind(_this) },
-                    { headerName: 'Call-ID', field: 'callid', filter: true, resizable: true, cellRenderer: 'columnCallidRenderer', cellStyle: _this.getCallIDColor.bind(_this) },
-                    { headerName: 'Method', field: 'method', filter: true, cellRenderer: 'columnMethodRenderer', resizable: true, cellStyle: _this.getMethodColor.bind(_this) },
-                    { headerName: 'From User', field: 'from_user', filter: true, resizable: true },
-                    { headerName: 'RURI User', field: 'ruri_user', filter: true, resizable: true },
-                    { headerName: 'TO User', field: 'to_user', filter: true, resizable: true },
-                    { headerName: 'Source IP', field: 'srcIp', filter: true, resizable: true },
-                    { headerName: 'Destination IP', field: 'dstIp', filter: true, resizable: true },
-                    { headerName: 'Protocol', field: 'protocol', filter: true, resizable: true },
-                    { headerName: 'Capture id', field: 'captureId', filter: true, resizable: true }
-                ];
-                _this.columnDefs = _this.myPredefColumns.concat(myColumnDefs);
-                setTimeout(function () {
-                    _this.sizeToFit();
-                }, 100);
-                _this.rowData = result['data'];
-                setTimeout(function () {
-                    _this.sizeToFit();
-                }, 200);
-            });
+        }
+        var getDataSubscribe = this._scs.getData(this.config).subscribe(function (result) {
+            getDataSubscribe.unsubscribe();
+            console.log('==this._scs.getData(this.config).subscribe==', result);
+            var myColumnDefs = [
+                { headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true },
+                { headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
+                    valueFormatter: function (data) { return data.value ? moment__WEBPACK_IMPORTED_MODULE_1__(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null; } },
+                { headerName: 'SID', field: 'sid', filter: true, resizable: true,
+                    cellRenderer: 'columnCallidRenderer', cellStyle: _this.getCallIDColor.bind(_this) },
+                { headerName: 'Call-ID', field: 'callid', filter: true, resizable: true,
+                    cellRenderer: 'columnCallidRenderer', cellStyle: _this.getCallIDColor.bind(_this) },
+                { headerName: 'Method', field: 'method', filter: true, cellRenderer: 'columnMethodRenderer',
+                    resizable: true, cellStyle: _this.getMethodColor.bind(_this) },
+                { headerName: 'From User', field: 'from_user', filter: true, resizable: true },
+                { headerName: 'RURI User', field: 'ruri_user', filter: true, resizable: true },
+                { headerName: 'TO User', field: 'to_user', filter: true, resizable: true },
+                { headerName: 'Source IP', field: 'srcIp', filter: true, resizable: true },
+                { headerName: 'Destination IP', field: 'dstIp', filter: true, resizable: true },
+                { headerName: 'Protocol', field: 'protocol', filter: true, resizable: true },
+                { headerName: 'Capture id', field: 'captureId', filter: true, resizable: true }
+            ];
+            _this.columnDefs = _this.myPredefColumns.concat(myColumnDefs);
+            setTimeout(function () {
+                _this.sizeToFit();
+            }, 100);
+            _this.rowData = result['data'];
+            setTimeout(function () {
+                _this.sizeToFit();
+            }, 200);
         });
     };
     SearchGridCallComponent.prototype.ngAfterViewInit = function () {
@@ -4740,10 +5002,10 @@ var SearchGridCallComponent = /** @class */ (function () {
         return ((i >> 24) & 0xFF);
     };
     SearchGridCallComponent.prototype.getCallIDColor = function (params) {
-        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(params.value) };
+        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(params.value) };
     };
     SearchGridCallComponent.prototype.getMethodColor = function (params) {
-        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(params.value) };
+        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(params.value) };
     };
     SearchGridCallComponent.prototype.getBkgColorTable = function (params) {
         var callid = params.data.callid;
@@ -4773,6 +5035,10 @@ var SearchGridCallComponent = /** @class */ (function () {
         this.gridColumnApi.autoSizeColumns(allColumnIds);
         this.sizeToFit();
     };
+    SearchGridCallComponent.prototype.setQuickFilter = function () {
+        console.log(this.filterGridValue);
+        this.gridApi.setQuickFilter(this.filterGridValue);
+    };
     SearchGridCallComponent.prototype.onGridReady = function (params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
@@ -4798,7 +5064,7 @@ var SearchGridCallComponent = /** @class */ (function () {
             }
             return a;
         }, []);
-        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.callid);
+        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(row.data.callid);
         var request = {
             param: this.config.param || {},
             timestamp: this.config.timestamp
@@ -4834,12 +5100,13 @@ var SearchGridCallComponent = /** @class */ (function () {
         if ((this.arrMessageDetail.filter(function (i) { return i.id === row.data.id; })[0] != null)) {
             return;
         }
-        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.method || 'LOG');
+        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(row.data.method || 'LOG');
         var mData = {
             loaded: false,
             data: null,
             id: row.data.id,
-            headerColor: color || ''
+            headerColor: color || '',
+            isBrowserWindow: row.isBrowserWindow
         };
         if (row.isLog) {
             console.log('=== LOG ===', row);
@@ -4910,14 +5177,13 @@ var SearchGridCallComponent = /** @class */ (function () {
         this.arrMessageDetail.splice(id, 1);
     };
     SearchGridCallComponent.prototype.ngOnDestroy = function () {
-        this.subscriptionStorage.unsubscribe();
+        this.subscriptionRangeUpdateTimeout.unsubscribe();
         clearInterval(this._interval);
     };
     SearchGridCallComponent.ctorParameters = function () { return [
         { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"] },
-        { type: _app_services_session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"] },
-        { type: _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"] },
-        { type: _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__["ExportCallService"] },
+        { type: _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__["CallTransactionService"] },
+        { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__["DateTimeRangeService"] },
         { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"] }
     ]; };
     SearchGridCallComponent = __decorate([
@@ -4927,9 +5193,8 @@ var SearchGridCallComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./search-grid-call.component.css */ "./src/app/components/search-grid-call/search-grid-call.component.css")]
         }),
         __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"],
-            _app_services_session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"],
-            _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"],
-            _services_export_call_service__WEBPACK_IMPORTED_MODULE_10__["ExportCallService"],
+            _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__["CallTransactionService"],
+            _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__["DateTimeRangeService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"]])
     ], SearchGridCallComponent);
     return SearchGridCallComponent;
@@ -5242,11 +5507,306 @@ var SettingClockWidgetComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/widgets/iframe-widget/iframe-widget.component.css":
+/*!******************************************************************************!*\
+  !*** ./src/app/components/widgets/iframe-widget/iframe-widget.component.css ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "iframe {\n    width: 100%;\n    height: calc(100% - 1rem);\n    border: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL2lmcmFtZS13aWRnZXQvaWZyYW1lLXdpZGdldC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksV0FBVztJQUNYLHlCQUF5QjtJQUN6QixTQUFTO0FBQ2IiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dpZGdldHMvaWZyYW1lLXdpZGdldC9pZnJhbWUtd2lkZ2V0LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJpZnJhbWUge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMXJlbSk7XG4gICAgYm9yZGVyOiAwO1xufSJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/components/widgets/iframe-widget/iframe-widget.component.ts":
+/*!*****************************************************************************!*\
+  !*** ./src/app/components/widgets/iframe-widget/iframe-widget.component.ts ***!
+  \*****************************************************************************/
+/*! exports provided: IframeWidgetComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return IframeWidgetComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./setting-iframe-widget.component */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts");
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+/* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var IframeWidgetComponent = /** @class */ (function () {
+    function IframeWidgetComponent(dialog, _dtrs) {
+        this.dialog = dialog;
+        this._dtrs = _dtrs;
+        this.changeSettings = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.iframeLoaded = true;
+    }
+    IframeWidgetComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        var time = this._dtrs.getDatesForQuery(true);
+        this._config = {
+            id: this.id,
+            title: 'Frame title',
+            typeDataRange: 'grafana',
+            desc: 'Some description',
+            // panelListValue: 'CPU',
+            // dashboardSource: 'disk',
+            url: 'http://de9.sipcapture.io:3000/d-solo/VF_3OvKZz/test',
+            serverUrl: 'http://localhost:3000/',
+            params: {
+                orgId: 1,
+                panelId: 2,
+                refresh: '',
+                from: 'now-5m',
+                to: 'now',
+                theme: 'light'
+            }
+        };
+        if (this.config) {
+            this._config.url = this.config.url || this._config.url;
+            this._config.serverUrl = this.config.serverUrl || this._config.serverUrl;
+            this._config.params = this.config.params || this._config.params;
+            this.dashboardSource = this.config.dashboardSource;
+            this.panelListValue = this.config.panelListValue;
+            this._config.typeDataRange = this.config.typeDataRange || this._config.typeDataRange;
+            this._config.title = this.config.title || 'IFrame';
+        }
+        this.buildUrl();
+        this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
+            if (_this._config.typeDataRange !== 'grafana') {
+                _this.timeRange = _this._dtrs.getDatesForQuery(true);
+                _this._config.params.from = _this.timeRange.from + '';
+                _this._config.params.to = _this.timeRange.to + '';
+                _this.buildUrl();
+            }
+        });
+    };
+    IframeWidgetComponent.prototype.buildUrl = function () {
+        var params = this._config.params;
+        this.url = [this._config.url, Object.keys(params).map(function (i) { return i + "=" + params[i]; }).join('&')].join('?');
+        console.log('this.url', this.url);
+    };
+    IframeWidgetComponent.prototype.onLoadIframe = function () {
+        this.iframeLoaded = true;
+    };
+    IframeWidgetComponent.prototype.openDialog = function () {
+        var _this = this;
+        var dialogRef = this.dialog.open(_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_1__["SettingIframeWidgetComponent"], {
+            width: '610px',
+            data: {
+                name: this.name,
+                desc: this.desc,
+                panelListValue: this.panelListValue,
+                dashboardSource: this.dashboardSource,
+                title: this._config.title,
+                url: this._config.url,
+                params: this._config.params,
+                typeDataRange: this._config.typeDataRange
+            }
+        });
+        var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
+            if (data) {
+                console.log('dialogRefSubscription=>>', { data: data });
+                _this.desc = data.desc;
+                _this._config.dashboardSource = _this.dashboardSource = data.dashboardSource;
+                _this._config.panelListValue = _this.panelListValue = data.panelListValue;
+                _this._config.title = data.title;
+                _this._config.url = data.url;
+                _this._config.serverUrl = data.serverUrl;
+                _this._config.params = data.params;
+                _this._config.typeDataRange = data.typeDataRange;
+                if (data.typeDataRange !== 'grafana') {
+                    _this._config.params.refresh = '';
+                }
+                _this.buildUrl();
+                _this.changeSettings.emit(_this._config);
+            }
+            dialogRefSubscription.unsubscribe();
+        });
+    };
+    IframeWidgetComponent.prototype.ngOnDestroy = function () {
+        this.subscription.unsubscribe();
+    };
+    IframeWidgetComponent.ctorParameters = function () { return [
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MatDialog"] },
+        { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_3__["DateTimeRangeService"] }
+    ]; };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], IframeWidgetComponent.prototype, "config", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], IframeWidgetComponent.prototype, "id", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", Object)
+    ], IframeWidgetComponent.prototype, "changeSettings", void 0);
+    IframeWidgetComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-iframe-widget',
+            template: __webpack_require__(/*! raw-loader!./iframe-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/iframe-widget/iframe-widget.component.html"),
+            styles: [__webpack_require__(/*! ./iframe-widget.component.css */ "./src/app/components/widgets/iframe-widget/iframe-widget.component.css")]
+        }),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MatDialog"],
+            _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_3__["DateTimeRangeService"]])
+    ], IframeWidgetComponent);
+    return IframeWidgetComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.css":
+/*!**************************************************************************************!*\
+  !*** ./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.css ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".title {\n    margin: -1.5rem -1.5rem 2rem -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.example-container > * {\n    width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL2lmcmFtZS13aWRnZXQvc2V0dGluZy1pZnJhbWUtd2lkZ2V0LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxvQ0FBb0M7SUFDcEMseUJBQXlCO0lBQ3pCLGFBQWE7SUFDYiw4QkFBOEI7QUFDbEM7O0FBRUE7SUFDSSxXQUFXO0FBQ2YiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dpZGdldHMvaWZyYW1lLXdpZGdldC9zZXR0aW5nLWlmcmFtZS13aWRnZXQuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi50aXRsZSB7XG4gICAgbWFyZ2luOiAtMS41cmVtIC0xLjVyZW0gMnJlbSAtMS41cmVtO1xuICAgIHdpZHRoOiBpbml0aWFsICFpbXBvcnRhbnQ7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG5cbi5leGFtcGxlLWNvbnRhaW5lciA+ICoge1xuICAgIHdpZHRoOiAxMDAlO1xufSJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts":
+/*!*************************************************************************************!*\
+  !*** ./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts ***!
+  \*************************************************************************************/
+/*! exports provided: SettingIframeWidgetComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return SettingIframeWidgetComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _services_proxy_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/proxy.service */ "./src/app/services/proxy.service.ts");
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+
+
+
+var SettingIframeWidgetComponent = /** @class */ (function () {
+    function SettingIframeWidgetComponent(dialogRef, _ps, data) {
+        this.dialogRef = dialogRef;
+        this._ps = _ps;
+        this.data = data;
+        this.dashboardList = [];
+        this.panelList = [];
+    }
+    SettingIframeWidgetComponent.prototype.onNoClick = function () {
+        this.dialogRef.close();
+    };
+    SettingIframeWidgetComponent.prototype.ngOnInit = function () {
+        /* need get URL for grafana and orgID before we start edit */
+        this.onGetGrafanaUrl();
+    };
+    SettingIframeWidgetComponent.prototype.onGetGrafanaUrl = function () {
+        var _this = this;
+        var getUrlSubscription = this._ps.getProxyGrafanaUrl().subscribe(function (res) {
+            getUrlSubscription.unsubscribe();
+            _this.data.serverUrl = res.data;
+            console.log("this.data.serverUrl", _this.data.serverUrl);
+            _this.onGetGrafanaOrg();
+        });
+    };
+    SettingIframeWidgetComponent.prototype.onGetGrafanaOrg = function () {
+        var _this = this;
+        var getOrgSubscription = this._ps.getProxyGrafanaOrg().subscribe(function (res) {
+            getOrgSubscription.unsubscribe();
+            _this.data.params.orgId = res.id;
+            _this.onSyncDashboard();
+        });
+    };
+    SettingIframeWidgetComponent.prototype.onSyncDashboard = function () {
+        var _this = this;
+        var getDashboardSubscription = this._ps.getProxyGrafanaFolders().subscribe(function (res) {
+            getDashboardSubscription.unsubscribe();
+            _this.dashboardList = res;
+            _this.dashboardSource = _this.dashboardList.filter(function (i) { return i.uid === _this.data.dashboardSource; })[0];
+            if (_this.dashboardSource) {
+                _this.onDashboardChange();
+            }
+        });
+    };
+    SettingIframeWidgetComponent.prototype.onDashboardChange = function () {
+        var _this = this;
+        this.data.dashboardSource = this.dashboardSource.uid;
+        var getStatisticDbListSubscription = this._ps.getProxyGrafanaDashboards(this.data.dashboardSource).subscribe(function (res) {
+            getStatisticDbListSubscription.unsubscribe();
+            var localPanelList = [];
+            res.dashboard.panels.forEach(function (panelId) {
+                localPanelList.push({ title: panelId.title, pid: panelId.id, uid: res.dashboard.uid });
+            });
+            _this.panelListValue = localPanelList.filter(function (i) { return i.title === _this.data.panelListValue; })[0];
+            _this.data.panelListValue = _this.panelListValue;
+            _this.panelList = localPanelList;
+        });
+    };
+    SettingIframeWidgetComponent.prototype.onPanelSelect = function () {
+        this.data.panelListValue = this.panelListValue.title;
+        this.data.url = this.data.serverUrl + "/d-solo/" + this.panelListValue.uid + "/" + this.panelListValue.title;
+        this.data.params.panelId = this.panelListValue.pid;
+    };
+    SettingIframeWidgetComponent.prototype.compareDashboard = function (a, b) {
+        // data.dashboardSource
+        // this.data.panelListValue 
+        return a.uid === b.uid && a.id === b.id;
+    };
+    SettingIframeWidgetComponent.prototype.comparePanel = function (a, b) {
+        // data.panelListValue
+        return a.title === b.title;
+    };
+    SettingIframeWidgetComponent.ctorParameters = function () { return [
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"] },
+        { type: _services_proxy_service__WEBPACK_IMPORTED_MODULE_1__["ProxyService"] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"],] }] }
+    ]; };
+    SettingIframeWidgetComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-iframe-rsearch-widget-component',
+            template: __webpack_require__(/*! raw-loader!./setting-iframe-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.html"),
+            styles: [__webpack_require__(/*! ./setting-iframe-widget.component.css */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.css")]
+        }),
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"],
+            _services_proxy_service__WEBPACK_IMPORTED_MODULE_1__["ProxyService"], Object])
+    ], SettingIframeWidgetComponent);
+    return SettingIframeWidgetComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/widgets/index.ts":
 /*!*********************************************!*\
   !*** ./src/app/components/widgets/index.ts ***!
   \*********************************************/
-/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent */
+/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5274,6 +5834,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _rsearch_widget_setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./rsearch-widget/setting-rsearch-widget.component */ "./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingRsearchWidgetComponent", function() { return _rsearch_widget_setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_7__["SettingRsearchWidgetComponent"]; });
+
+/* harmony import */ var _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./iframe-widget/iframe-widget.component */ "./src/app/components/widgets/iframe-widget/iframe-widget.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__["IframeWidgetComponent"]; });
+
+/* harmony import */ var _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./iframe-widget/setting-iframe-widget.component */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__["SettingIframeWidgetComponent"]; });
+
+
 
 
 
@@ -5341,7 +5909,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
-                duration: 250
+                duration: 0
             },
             scales: {
                 yAxes: [{
@@ -5353,10 +5921,6 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                     }]
             }
         };
-        this.timeRange = {
-            from: 0,
-            to: 0
-        };
         this.chartLabels = [];
         this.chartType = 'line';
         this.chartLegend = true;
@@ -5367,10 +5931,10 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                 label: ''
             }];
         this.noChartData = true;
+        this.multiDataArr = [];
     }
     InfluxdbchartWidgetComponent.prototype.ngOnInit = function () {
         var _this = this;
-        console.log({ config_init: this.config });
         if (!this.config) {
             this.config = {
                 title: 'Chart',
@@ -5383,8 +5947,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                             retention: { name: 'autogen' },
                             type: [{ name: 'usage_system', value: 'usage_system' }],
                             tag: [],
-                            rawpath: [],
-                            rawquery: []
+                            raw: ''
                         }] },
                 panel: { queries: [{
                             name: 'A1',
@@ -5397,10 +5960,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
             this.changeSettings.emit(this.config);
         }
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe(function (dtr) {
-            _this.timeRange = {
-                from: dtr.range.dates[0].unix(),
-                to: dtr.range.dates[1].unix()
-            };
+            _this.timeRange = _this._dtrs.getDatesForQuery();
             _this.update(_this.config.chart.type.value);
         });
     };
@@ -5412,33 +5972,63 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                 main: item.main.value + '',
                 database: "\"" + item.database.name + "\"",
                 retention: "\"" + item.retention.name + "\"",
-                rawquery: item.rawquery.map(function (i) { return i.name; }),
-                rawpath: item.rawpath.map(function (i) { return i.name; }),
+                rawquery: item.raw,
                 type: item.type.map(function (i) { return i.name; }),
                 tag: item.tag.map(function (i) { return i.name; })
             });
         });
         return {
-            timestamp: {
-                from: this.timeRange.from * 1000,
-                to: this.timeRange.to * 1000
-            },
+            timestamp: this._dtrs.getDatesForQuery(true),
             param: {
                 filter: ['@filters'],
                 limit: 500,
                 total: false,
                 precision: 3600,
-                bfrom: this.timeRange.from,
+                bfrom: this._dtrs.getDatesForQuery().from,
                 query: formattedQuery,
             }
         };
     };
     InfluxdbchartWidgetComponent.prototype.update = function (chartType) {
-        var _this = this;
         if (!this.config) {
             return;
         }
-        this._isLoaded = false;
+        this.requestData = this.querybuilder(this.config);
+        var queryStack = this.querySeporetor(this.requestData);
+        this.multiDataArr = [];
+        this.getDataByQuery(queryStack, chartType);
+    };
+    InfluxdbchartWidgetComponent.prototype.getDataByQuery = function (requestList, chartType) {
+        var _this = this;
+        var request = requestList.shift();
+        if (requestList.length > 0 || request) {
+            var subscription_1 = this._ss.getStatisticData(request).subscribe(function (res) {
+                subscription_1.unsubscribe();
+                _this.multiDataArr = _this.multiDataArr.concat(res.data[0]);
+                _this.getDataByQuery(requestList, chartType);
+            }, function (err) {
+                console.error('err >> ', err);
+                _this._isLoaded = true;
+                _this.noChartData = true;
+            });
+        }
+        else {
+            this.renderingChart(this.multiDataArr, chartType);
+        }
+    };
+    InfluxdbchartWidgetComponent.prototype.querySeporetor = function (request) {
+        var count = request.param.query.length;
+        var querys = [];
+        var query;
+        for (var index = 0; index < count; index++) {
+            query = JSON.parse(JSON.stringify(request));
+            query.param.query = [request.param.query[index]];
+            querys.push(query);
+        }
+        return querys;
+    };
+    InfluxdbchartWidgetComponent.prototype.renderingChart = function (data, chartType) {
+        var _this = this;
         var isFill;
         if (chartType === 'area') {
             this.chartOptions.scales.yAxes[0].stacked = true;
@@ -5449,47 +6039,40 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
             isFill = false;
             this.chartOptions.scales.yAxes[0].stacked = false;
         }
-        this.requestData = this.querybuilder(this.config);
-        var subscription = this._ss.getStatisticData(this.requestData).subscribe(function (res) {
-            var data = res.data.reduce(function (a, b) { return a.concat(b); }, []);
-            _this.chartLabels = [];
-            _this.chartData = [];
-            _this.noChartData = data.length === 0;
-            var formattedData = data.map(function (i) {
-                return {
-                    label: i.table + '.' + i.countername,
-                    value: i.value
-                };
-            }).reduce(function (a, b) {
-                if (!a[b.label]) {
-                    a[b.label] = [];
-                }
-                a[b.label].push(b.value);
-                return a;
-            }, {});
-            _this.chartLabels = data
-                // .map(item => moment(item.reporttime).format('HH:mm'))
-                // .map(item => moment(item.reporttime * 1000).format('DD-MM-YYYY HH:mm'))
-                .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('HH:mm'); })
-                .filter(function (i, k, a) { return i !== a[k + 1]; });
-            var fillKey = 0;
-            Object.keys(formattedData).forEach(function (key) {
-                var value = formattedData[key];
-                _this.chartData.push({
-                    fill: isFill ? (fillKey === 0 ? 'origin' : fillKey - 1) : false,
-                    label: key,
-                    data: value
-                });
-                fillKey++;
+        this.chartLabels = [];
+        this.chartData = [];
+        this.noChartData = data.length === 0;
+        var formattedData = data.map(function (i) {
+            return {
+                label: i.table + '.' + i.countername,
+                value: i.value
+            };
+        }).reduce(function (a, b) {
+            if (!a[b.label]) {
+                a[b.label] = [];
+            }
+            a[b.label].push(b.value);
+            return a;
+        }, {});
+        this.chartLabels = data
+            .map(function (item) { return moment__WEBPACK_IMPORTED_MODULE_5__(item.reporttime * 1000).format('HH:mm'); })
+            .filter(function (i, k, a) { return i !== a[k + 1]; });
+        var fillKey = 0;
+        Object.keys(formattedData).forEach(function (key) {
+            var value = formattedData[key];
+            _this.chartData.push({
+                fill: isFill ? (fillKey === 0 ? 'origin' : fillKey - 1) : false,
+                label: key,
+                data: value
             });
-            setTimeout(function () {
-                if (chartType) {
-                    _this.chartType = chartType;
-                    _this._isLoaded = true;
-                }
-            }, 0);
-            subscription.unsubscribe();
+            fillKey++;
         });
+        setTimeout(function () {
+            if (chartType) {
+                _this.chartType = chartType;
+                _this._isLoaded = true;
+            }
+        }, 0);
     };
     InfluxdbchartWidgetComponent.prototype.openDialog = function () {
         var _this = this;
@@ -5525,8 +6108,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                     tag: item.detail.tags.map(function (i) { return ({
                         name: i, value: i
                     }); }),
-                    rawpath: [],
-                    rawquery: [],
+                    raw: item.detail.raw || '',
                 }); });
                 _this.config.panel.queries = result.dataSource.map(function (item) { return ({
                     name: item.id,
@@ -5542,7 +6124,6 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
                     },
                     value: 'query'
                 }); });
-                console.log('== this.config ==', _this.config);
                 _this.update(result.chartType);
                 _this.changeSettings.emit(_this.config);
             }
@@ -5618,7 +6199,7 @@ var InfluxdbchartWidgetComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".chack-list {\n    margin-right: 1.3rem;\n}\n\n.title {\n    margin: -1.5rem -1.5rem 2rem -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.example-container {\n    display: flex;\n    flex-direction: column;\n}\n\n.example-container > * {\n    width: 100%;\n}\n\n.example-container > div > .mat-form-field {\n    padding-right: 0.5rem;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL2luZmx1eGRiY2hhcnQtd2lkZ2V0L3NldHRpbmctaW5mbHV4ZGJjaGFydC13aWRnZXQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLG9CQUFvQjtBQUN4Qjs7QUFFQTtJQUNJLG9DQUFvQztJQUNwQyx5QkFBeUI7SUFDekIsYUFBYTtJQUNiLDhCQUE4QjtBQUNsQzs7QUFFQTtJQUNJLGFBQWE7SUFDYixzQkFBc0I7QUFDMUI7O0FBRUE7SUFDSSxXQUFXO0FBQ2Y7O0FBRUE7SUFDSSxxQkFBcUI7QUFDekIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dpZGdldHMvaW5mbHV4ZGJjaGFydC13aWRnZXQvc2V0dGluZy1pbmZsdXhkYmNoYXJ0LXdpZGdldC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmNoYWNrLWxpc3Qge1xuICAgIG1hcmdpbi1yaWdodDogMS4zcmVtO1xufVxuXG4udGl0bGUge1xuICAgIG1hcmdpbjogLTEuNXJlbSAtMS41cmVtIDJyZW0gLTEuNXJlbTtcbiAgICB3aWR0aDogaW5pdGlhbCAhaW1wb3J0YW50O1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xufVxuXG4uZXhhbXBsZS1jb250YWluZXIge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbn1cblxuLmV4YW1wbGUtY29udGFpbmVyID4gKiB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5leGFtcGxlLWNvbnRhaW5lciA+IGRpdiA+IC5tYXQtZm9ybS1maWVsZCB7XG4gICAgcGFkZGluZy1yaWdodDogMC41cmVtO1xufVxuIl19 */"
+module.exports = ".chack-list {\n    margin-right: 1.3rem;\n}\n\n.title {\n    margin: -1.5rem -1.5rem 2rem -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.example-container {\n    display: flex;\n    flex-direction: column;\n}\n\n.example-container > * {\n    width: 100%;\n}\n\n.example-container > div > .mat-form-field {\n    padding-right: 0.5rem;\n}\n\n.example-container blockquote {\n    display: inline-block;\n    margin: 4px;\n    background-color: bisque;\n    font-family: monospace;\n    padding: 0 5px;\n    border-radius: 4px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL2luZmx1eGRiY2hhcnQtd2lkZ2V0L3NldHRpbmctaW5mbHV4ZGJjaGFydC13aWRnZXQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLG9CQUFvQjtBQUN4Qjs7QUFFQTtJQUNJLG9DQUFvQztJQUNwQyx5QkFBeUI7SUFDekIsYUFBYTtJQUNiLDhCQUE4QjtBQUNsQzs7QUFFQTtJQUNJLGFBQWE7SUFDYixzQkFBc0I7QUFDMUI7O0FBRUE7SUFDSSxXQUFXO0FBQ2Y7O0FBRUE7SUFDSSxxQkFBcUI7QUFDekI7O0FBQ0E7SUFDSSxxQkFBcUI7SUFDckIsV0FBVztJQUNYLHdCQUF3QjtJQUN4QixzQkFBc0I7SUFDdEIsY0FBYztJQUNkLGtCQUFrQjtBQUN0QiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd2lkZ2V0cy9pbmZsdXhkYmNoYXJ0LXdpZGdldC9zZXR0aW5nLWluZmx1eGRiY2hhcnQtd2lkZ2V0LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhY2stbGlzdCB7XG4gICAgbWFyZ2luLXJpZ2h0OiAxLjNyZW07XG59XG5cbi50aXRsZSB7XG4gICAgbWFyZ2luOiAtMS41cmVtIC0xLjVyZW0gMnJlbSAtMS41cmVtO1xuICAgIHdpZHRoOiBpbml0aWFsICFpbXBvcnRhbnQ7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG5cbi5leGFtcGxlLWNvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xufVxuXG4uZXhhbXBsZS1jb250YWluZXIgPiAqIHtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuLmV4YW1wbGUtY29udGFpbmVyID4gZGl2ID4gLm1hdC1mb3JtLWZpZWxkIHtcbiAgICBwYWRkaW5nLXJpZ2h0OiAwLjVyZW07XG59XG4uZXhhbXBsZS1jb250YWluZXIgYmxvY2txdW90ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIG1hcmdpbjogNHB4O1xuICAgIGJhY2tncm91bmQtY29sb3I6IGJpc3F1ZTtcbiAgICBmb250LWZhbWlseTogbW9ub3NwYWNlO1xuICAgIHBhZGRpbmc6IDAgNXB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbn0iXX0= */"
 
 /***/ }),
 
@@ -5638,6 +6219,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_material_table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/table */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/table.es5.js");
 /* harmony import */ var _services_statistic_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/statistic.service */ "./src/app/services/statistic.service.ts");
 /* harmony import */ var _services_alert_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/alert.service */ "./src/app/services/alert.service.ts");
+/* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5656,10 +6238,12 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 
 
 
+
 var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
-    function SettingInfluxdbchartWidgetComponent(_ss, alertService, dialogRef, data) {
+    function SettingInfluxdbchartWidgetComponent(_ss, _dtrs, alertService, dialogRef, data) {
         var _this = this;
         this._ss = _ss;
+        this._dtrs = _dtrs;
         this.alertService = alertService;
         this.dialogRef = dialogRef;
         this.data = data;
@@ -5678,10 +6262,6 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
         this.counter = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]();
         this.tags = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]();
         this.values = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]();
-        this.timestamp = {
-            from: 1567555200000,
-            to: 1567576262580
-        };
         this.outputObject = {};
         if (data.empty) {
             return;
@@ -5708,7 +6288,8 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
                         counter: item2.type.map(function (i) { return i.name; }),
                         tags: item2.tag.map(function (i) { return i.name; }),
                         values: [],
-                        sum: item2.sum
+                        sum: item2.sum,
+                        raw: item2.raw || ''
                     }
                 });
             });
@@ -5754,7 +6335,8 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
                 counter: [],
                 sum: false,
                 tags: [],
-                values: []
+                values: [],
+                raw: ''
             };
         }
         else {
@@ -5762,6 +6344,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             this.isSum = this.selecedEditQuery.detail.sum;
             this.onMeasurement();
             this.values.setValue(this.selecedEditQuery.detail.values);
+            this.apiQueryValue = this.selecedEditQuery.detail.raw || '';
         }
         var getStatisticMeasurementsSubscription = this._ss.getStatisticMeasurements(this.selecedEditQuery.database).subscribe(function (res) {
             if (res && res.data) {
@@ -5789,7 +6372,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
     SettingInfluxdbchartWidgetComponent.prototype.onDatabase = function () {
         var _this = this;
         var reqData = {
-            timestamp: this.timestamp,
+            timestamp: this._dtrs.getDatesForQuery(),
             param: {
                 search: {
                     main: {
@@ -6023,7 +6606,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
     SettingInfluxdbchartWidgetComponent.prototype.onMeasurement = function () {
         var _this = this;
         var reqData = {
-            timestamp: this.timestamp,
+            timestamp: this._dtrs.getDatesForQuery(),
             param: {
                 search: {},
                 limit: 100,
@@ -6036,7 +6619,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             }
         };
         var reqDataTags = {
-            timestamp: this.timestamp,
+            timestamp: this._dtrs.getDatesForQuery(),
             param: {
                 search: {},
                 limit: 100,
@@ -6087,11 +6670,14 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
         console.log('onFormat::this.format', this.format);
         this.updateResult();
     };
+    SettingInfluxdbchartWidgetComponent.prototype.onRawValue = function () {
+        this.selecedEditQuery.detail.raw = this.apiQueryValue;
+        this.updateResult();
+    };
     SettingInfluxdbchartWidgetComponent.prototype.updateResult = function () {
         if (this.selecedEditQuery) {
             this.dataSource[this.dataSource.map(function (i) { return i.id; }).indexOf(this.selecedEditQuery.id)] = this.selecedEditQuery;
         }
-        console.log('this.format', this.format);
         this.outputObject.chartType = this.chartType;
         this.outputObject.chartTitle = this.chartTitle;
         this.outputObject.format = this.format;
@@ -6100,6 +6686,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
     };
     SettingInfluxdbchartWidgetComponent.ctorParameters = function () { return [
         { type: _services_statistic_service__WEBPACK_IMPORTED_MODULE_4__["StatisticService"] },
+        { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__["DateTimeRangeService"] },
         { type: _services_alert_service__WEBPACK_IMPORTED_MODULE_5__["AlertService"] },
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
         { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
@@ -6114,8 +6701,9 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./setting-influxdbchart-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/influxdbchart-widget/setting-influxdbchart-widget.component.html"),
             styles: [__webpack_require__(/*! ./setting-influxdbchart-widget.component.css */ "./src/app/components/widgets/influxdbchart-widget/setting-influxdbchart-widget.component.css")]
         }),
-        __param(3, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __param(4, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
         __metadata("design:paramtypes", [_services_statistic_service__WEBPACK_IMPORTED_MODULE_4__["StatisticService"],
+            _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__["DateTimeRangeService"],
             _services_alert_service__WEBPACK_IMPORTED_MODULE_5__["AlertService"],
             _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
     ], SettingInfluxdbchartWidgetComponent);
@@ -6187,6 +6775,16 @@ var DragDropListComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    DragDropListComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        if (this.sortlistactive && this.sortlistactive.length > 0) {
+            var _activeList_1 = [];
+            this.sortlistactive.forEach(function (item) {
+                _activeList_1.push(_this.activeList.filter(function (i) { return i.id === item.field_name; })[0]);
+            });
+            this.activeList = _activeList_1;
+        }
+    };
     DragDropListComponent.prototype.drop = function (event) {
         if (event.previousContainer === event.container) {
             Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
@@ -6207,6 +6805,10 @@ var DragDropListComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
         __metadata("design:type", Object)
     ], DragDropListComponent.prototype, "change", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Array)
+    ], DragDropListComponent.prototype, "sortlistactive", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])('list'),
         __metadata("design:type", Object),
@@ -6324,19 +6926,16 @@ var ProtosearchWidgetComponent = /** @class */ (function () {
         });
         this.updateButtonState();
         this.subscriptionStorage = this._sss.sessionStorage.subscribe(function (data) {
-            if (data.updateType === 'proto-search') {
-                var _cache_1 = data.protosearchSettings[_this.widgetId];
-                if (_cache_1 && _cache_1.fields) {
-                    _this.fields.forEach(function (item) {
-                        item.value = (_cache_1.fields.filter(function (i) { return i.name === item.field_name; })[0] || { value: '' }).value;
-                    });
-                }
+            var _cache = data.protosearchSettings[_this.widgetId];
+            if (_cache && _cache.fields) {
+                _this.fields.forEach(function (item) {
+                    item.value = (_cache.fields.filter(function (i) { return i.name === item.field_name; })[0] || { value: '' }).value;
+                });
             }
         });
     };
     ProtosearchWidgetComponent.prototype.updateButtonState = function () {
         this.buttonState = this.config.config.searchbutton ? 'show' : 'hide';
-        // this.fields = this.config.fields;
         /* clone Object */
         this.fields = JSON.parse(JSON.stringify(this.config.fields));
     };
@@ -6410,8 +7009,16 @@ var ProtosearchWidgetComponent = /** @class */ (function () {
         localStorage.setItem('searchQuery', JSON.stringify(this.searchQuery));
         this.router.navigate(['call/result']);
     };
+    ProtosearchWidgetComponent.prototype.handleEnterKeyPress = function (event) {
+        var tagName = event.target.tagName.toLowerCase();
+        if (tagName !== 'textarea') {
+            return false;
+        }
+    };
     ProtosearchWidgetComponent.prototype.ngOnDestroy = function () {
-        this.subscriptionStorage.unsubscribe();
+        if (this.subscriptionStorage) {
+            this.subscriptionStorage.unsubscribe();
+        }
     };
     ProtosearchWidgetComponent.ctorParameters = function () { return [
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"] },
@@ -6490,6 +7097,7 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
     function SettingProtosearchWidgetComponent(dialogRef, data) {
         this.dialogRef = dialogRef;
         this.data = data;
+        this.isValidForm = true;
         this.proto = {
             hep_alias: '',
             fields_mapping: []
@@ -6504,6 +7112,17 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
                 value: 100
             }
         };
+        this.defaultFields = [
+            {
+                id: "limit",
+                name: "Query Limit",
+                type: "integer",
+                index: "none",
+                form_type: "input",
+                form_default: "100",
+                disabled: false,
+            }
+        ];
         if (!data) {
             return;
         }
@@ -6511,6 +7130,14 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
         this.resultConfig.isButton = data.isButton;
         this.resultConfig.profile = data.config.config.protocol_profile.value;
         this.resultConfig.protocol_id = data.config.protocol_id;
+        console.log({ data: data });
+        for (var _i = 0, _a = data.mapping.data; _i < _a.length; _i++) {
+            var item = _a[_i];
+            /* check if we have default fields inside */
+            if (item.fields_mapping.filter(function (it) { return it.id === 'limit'; }).length == 0) {
+                item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
+            }
+        }
         if (data.config.protocol_id) {
             this.proto.hep_alias = data.config.protocol_id.name;
             this.proto.profile = this.resultConfig.profile;
@@ -6521,8 +7148,11 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
                 return i;
             });
         }
+        this.validate();
     }
-    SettingProtosearchWidgetComponent.prototype.ngOnInit = function () { };
+    SettingProtosearchWidgetComponent.prototype.ngOnInit = function () {
+        this.validate();
+    };
     SettingProtosearchWidgetComponent.prototype.compareProto = function (a, b) {
         return a.hep_alias === b.hep_alias && a.profile === b.profile;
     };
@@ -6539,6 +7169,7 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
                 };
                 _this.resultConfig.profile = _this.proto.profile && _this.proto.profile !== '' ?
                     _this.proto.profile : _this.resultConfig.profile;
+                _this.validate();
                 _this.resultConfig.fields = _this.proto.fields_mapping.filter(function (item) { return item.selected === true; }).map(function (item) {
                     item.proto = _this.proto.hep_alias + '-' + _this.proto.profile;
                     return item;
@@ -6546,8 +7177,12 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
             }
         }, 50);
     };
+    SettingProtosearchWidgetComponent.prototype.validate = function () {
+        this.isValidForm = this.proto.fields_mapping.filter(function (item) { return item.selected === true; }).length > 0;
+    };
     SettingProtosearchWidgetComponent.prototype.onUpdateProto = function (event) {
         this.proto.fields_mapping = event;
+        this.validate();
         this.onChange();
     };
     SettingProtosearchWidgetComponent.ctorParameters = function () { return [
@@ -6757,10 +7392,16 @@ var WindowComponent = /** @class */ (function () {
         this.externalWindow = window.open('', '', 'toolbar=no, location=no, directories=no, ' +
             'status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' +
             this.width + ', height=' + this.height + ', top=' + top + ', left=' + left);
-        this.externalWindow.onbeforeunload = function (evt) {
-            _this._isWindow = false;
-            _this.close.emit(evt);
-        };
+        try {
+            this.externalWindow.onbeforeunload = function (evt) {
+                _this._isWindow = false;
+                _this.close.emit(evt);
+            };
+        }
+        catch (e) {
+            this._isWindow = false;
+            this.close.emit(e);
+        }
         this.externalWindow.document.body.style.opacity = '0';
         this.externalWindow.onload = function (evt) {
             _this.externalWindow.document.head.innerHTML = window.document.head.innerHTML;
@@ -7087,7 +7728,7 @@ var Functions = /** @class */ (function () {
         dist.forEach(function (item) { return dataSource.push({
             id: item.id,
             create_date: moment__WEBPACK_IMPORTED_MODULE_0__(item.create_date).format('YYYY-MM-DD'),
-            timeSeconds: moment__WEBPACK_IMPORTED_MODULE_0__(item.timeSeconds * 1000).format('hh:mm:ss.SSS'),
+            timeSeconds: moment__WEBPACK_IMPORTED_MODULE_0__(item.timeSeconds * 1000).format('HH:mm:ss.SSS'),
             timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
             method: item.method || 'LOG',
             Msg_Size: (item.raw + '').length,
@@ -7176,6 +7817,52 @@ var JwtInterceptor = /** @class */ (function () {
         __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_1__["AuthenticationService"]])
     ], JwtInterceptor);
     return JwtInterceptor;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/safe.pipe.ts":
+/*!******************************!*\
+  !*** ./src/app/safe.pipe.ts ***!
+  \******************************/
+/*! exports provided: SafePipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SafePipe", function() { return SafePipe; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/__ivy_ngcc__/fesm5/platform-browser.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var SafePipe = /** @class */ (function () {
+    function SafePipe(sanitizer) {
+        this.sanitizer = sanitizer;
+    }
+    SafePipe.prototype.transform = function (value) {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(value);
+    };
+    SafePipe.ctorParameters = function () { return [
+        { type: _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["DomSanitizer"] }
+    ]; };
+    SafePipe = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({
+            name: 'safe'
+        }),
+        __metadata("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["DomSanitizer"]])
+    ], SafePipe);
+    return SafePipe;
 }());
 
 
@@ -7664,6 +8351,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _session_storage_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./session-storage.service */ "./src/app/services/session-storage.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7676,8 +8364,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var DateTimeRangeService = /** @class */ (function () {
-    function DateTimeRangeService() {
+    function DateTimeRangeService(_sss) {
+        this._sss = _sss;
         this.refresher = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         this.castRefresher = this.refresher.asObservable();
         this.rangeUpdateTimeout = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]({
@@ -7687,6 +8377,14 @@ var DateTimeRangeService = /** @class */ (function () {
         this.castRangeUpdateTimeout = this.rangeUpdateTimeout.asObservable();
         this.delayRefresher = 0;
         this.setDelay(this.delayRefresher);
+        this._sss.sessionStorage.subscribe(function (data) {
+            if (data.updateType !== 'proto-search') {
+                if (data && data.dateTimeRange.dates) {
+                    DateTimeRangeService_1.dateTimeRangr.title = data.dateTimeRange.title;
+                    DateTimeRangeService_1.dateTimeRangr.dates = data.dateTimeRange.dates.map(function (i) { return moment__WEBPACK_IMPORTED_MODULE_2__(i); });
+                }
+            }
+        });
     }
     DateTimeRangeService_1 = DateTimeRangeService;
     /**
@@ -7694,7 +8392,6 @@ var DateTimeRangeService = /** @class */ (function () {
      * @param delay number of milliseconds
      */
     DateTimeRangeService.prototype.setDelay = function (delay) {
-        var _this = this;
         this.delayRefresher = delay;
         if (this._interval) {
             clearInterval(this._interval);
@@ -7703,18 +8400,36 @@ var DateTimeRangeService = /** @class */ (function () {
         if (delay === 0) {
             return;
         }
-        this._interval = setInterval(function () {
-            DateTimeRangeService_1.dateTimeRangr.dates =
-                _this.getRangeByLabel(DateTimeRangeService_1.dateTimeRangr.title) ||
-                    DateTimeRangeService_1.dateTimeRangr.dates;
-            _this.rangeUpdateTimeout.next({
-                _id: Date.now(),
-                range: DateTimeRangeService_1.dateTimeRangr
-            });
-        }, this.delayRefresher);
+        this._interval = setInterval(this.refrash.bind(this), this.delayRefresher);
     };
-    DateTimeRangeService.prototype.getRangeByLabel = function (label) {
-        var ranges = {
+    DateTimeRangeService.prototype.refrash = function () {
+        DateTimeRangeService_1.dateTimeRangr.dates =
+            this.getRangeByLabel(DateTimeRangeService_1.dateTimeRangr.title) ||
+                DateTimeRangeService_1.dateTimeRangr.dates;
+        console.log('DateTimeRangeService.dateTimeRangr', DateTimeRangeService_1.dateTimeRangr.dates.map(function (i) { return i.format('YYYY-MM-DD HH:mm:ss.SSS'); }));
+        this.rangeUpdateTimeout.next({
+            _id: Date.now(),
+            range: DateTimeRangeService_1.dateTimeRangr
+        });
+    };
+    DateTimeRangeService.prototype.getDatesForQuery = function (isUnixFormat) {
+        if (isUnixFormat === void 0) { isUnixFormat = false; }
+        var _dates = (this.getRangeByLabel(DateTimeRangeService_1.dateTimeRangr.title) ||
+            DateTimeRangeService_1.dateTimeRangr.dates).map(function (d) {
+            d = d.unix() * 1;
+            if (isUnixFormat) {
+                d *= 1000;
+            }
+            return d;
+        });
+        return {
+            from: _dates[0],
+            to: _dates[1]
+        };
+    };
+    DateTimeRangeService.prototype.getRangeByLabel = function (label, isAll) {
+        if (isAll === void 0) { isAll = false; }
+        var arr = {
             'Today': [moment__WEBPACK_IMPORTED_MODULE_2__().startOf('day'), moment__WEBPACK_IMPORTED_MODULE_2__().endOf('day')],
             'Yesterday': [moment__WEBPACK_IMPORTED_MODULE_2__().subtract(1, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_2__().subtract(1, 'days').endOf('day')],
             'Tomorrow': [moment__WEBPACK_IMPORTED_MODULE_2__().add(1, 'days').startOf('day'), moment__WEBPACK_IMPORTED_MODULE_2__().add(1, 'days').endOf('day')],
@@ -7736,7 +8451,10 @@ var DateTimeRangeService = /** @class */ (function () {
             'next 30 minutes': [moment__WEBPACK_IMPORTED_MODULE_2__(), moment__WEBPACK_IMPORTED_MODULE_2__().add(30, 'minutes')],
             'next hour': [moment__WEBPACK_IMPORTED_MODULE_2__(), moment__WEBPACK_IMPORTED_MODULE_2__().add(1, 'hour')],
         };
-        return ranges[label];
+        if (isAll) {
+            return arr;
+        }
+        return arr[label];
     };
     /**
      * ReNew DataRange
@@ -7744,23 +8462,27 @@ var DateTimeRangeService = /** @class */ (function () {
      */
     DateTimeRangeService.prototype.updateDataRange = function (dtr) {
         DateTimeRangeService_1.dateTimeRangr.title = dtr.title;
-        console.log(dtr.title);
         DateTimeRangeService_1.dateTimeRangr.dates = this.getRangeByLabel(dtr.title) || dtr.dates;
-        this.rangeUpdateTimeout.next({
-            _id: Date.now(),
-            range: DateTimeRangeService_1.dateTimeRangr
+        console.log(dtr);
+        this._sss.saveDateTimeRange({
+            title: DateTimeRangeService_1.dateTimeRangr.title,
+            dates: DateTimeRangeService_1.dateTimeRangr.dates
         });
+        this.refrash();
     };
     var DateTimeRangeService_1;
     DateTimeRangeService.dateTimeRangr = {
         title: '',
         dates: []
     };
+    DateTimeRangeService.ctorParameters = function () { return [
+        { type: _session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"] }
+    ]; };
     DateTimeRangeService = DateTimeRangeService_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_session_storage_service__WEBPACK_IMPORTED_MODULE_3__["SessionStorageService"]])
     ], DateTimeRangeService);
     return DateTimeRangeService;
 }());
@@ -8692,6 +9414,66 @@ var ProtoTransactionService = /** @class */ (function () {
         __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
     ], ProtoTransactionService);
     return ProtoTransactionService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/services/proxy.service.ts":
+/*!*******************************************!*\
+  !*** ./src/app/services/proxy.service.ts ***!
+  \*******************************************/
+/*! exports provided: ProxyService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProxyService", function() { return ProxyService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/__ivy_ngcc__/fesm5/http.js");
+/* harmony import */ var _environments_environment_prod__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @environments/environment.prod */ "./src/environments/environment.prod.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var ProxyService = /** @class */ (function () {
+    function ProxyService(_http) {
+        this._http = _http;
+        this.url = _environments_environment_prod__WEBPACK_IMPORTED_MODULE_2__["environment"].apiUrl + "/proxy";
+    }
+    // Get Folders list
+    ProxyService.prototype.getProxyGrafanaFolders = function () {
+        return this._http.get(this.url + "/grafana/folders");
+    };
+    // Get Dashboard list
+    ProxyService.prototype.getProxyGrafanaDashboards = function (folder) {
+        return this._http.get(this.url + "/grafana/dashboards/uid/" + folder);
+    };
+    // Get Grafana URL
+    ProxyService.prototype.getProxyGrafanaUrl = function () {
+        return this._http.get(this.url + "/grafana/url");
+    };
+    // Get Grafana OrgID
+    ProxyService.prototype.getProxyGrafanaOrg = function () {
+        return this._http.get(this.url + "/grafana/org");
+    };
+    ProxyService.ctorParameters = function () { return [
+        { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"] }
+    ]; };
+    ProxyService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({ providedIn: 'root' }),
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
+    ], ProxyService);
+    return ProxyService;
 }());
 
 

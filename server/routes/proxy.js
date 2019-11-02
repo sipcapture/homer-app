@@ -1,3 +1,5 @@
+import Advanced from '../classes/advanced';
+
 export default function proxy(server, config) {
   const {host, port, protocol, path, headers} = config;
 
@@ -6,8 +8,14 @@ export default function proxy(server, config) {
     path: '/api/v3/proxy/grafana/folders',
     handler: {
       proxy: {
-        mapUri: function(req, cb) {
-          const url = `${protocol}://${host}:${port}`+`/api/search?folderIds=0`          
+        mapUri: async function(req, cb) {
+        
+          const advancedDB = new Advanced({server});
+          const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
+          let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
+          let url = `${protocol}://${host}:${port}`;
+          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;
+          url += `/api/search?folderIds=0`;
           return cb(null, url, headers);
         },
         onResponse: function(err, res, req, reply) {
@@ -22,9 +30,15 @@ export default function proxy(server, config) {
     path: '/api/v3/proxy/grafana/dashboards/uid/{uid}',
     handler: {
       proxy: {
-        mapUri: function(req, cb) {
+        mapUri: async function(req, cb) {
           const {uid} = req.params;
-          const url = `${protocol}://${host}:${port}`+`/api/dashboards/uid/`+uid;          
+          const advancedDB = new Advanced({server});
+          const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
+          let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
+          let url = `${protocol}://${host}:${port}`;
+          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;
+          url += `/api/dashboards/uid/`+uid;
+
           return cb(null, url, headers);
         },
         onResponse: function(err, res, req, reply) {
@@ -37,8 +51,12 @@ export default function proxy(server, config) {
   server.route({
     method: 'GET',
     path: '/api/v3/proxy/grafana/url',
-    handler: function(request, reply) {
-        let url = {data: `${protocol}://${host}:${port}`};        
+    handler: async function(request, reply) {    
+        const advancedDB = new Advanced({server});            
+        const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
+        let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
+        let url = {data: `${protocol}://${host}:${port}`};                
+        if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = {data: dataGrafana.data.host};
         return reply(url);
     },
   });
@@ -49,8 +67,15 @@ export default function proxy(server, config) {
     path: '/api/v3/proxy/grafana/org',
     handler: {
       proxy: {
-        mapUri: function(req, cb) {
-          const url = `${protocol}://${host}:${port}`+`/api/org`          
+        mapUri: async function(req, cb) {
+        
+          const advancedDB = new Advanced({server});
+          const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
+          let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
+          let url = `${protocol}://${host}:${port}`;
+          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;          
+          url += `/api/org`;      
+
           return cb(null, url, headers);
         },
         onResponse: function(err, res, req, reply) {
@@ -71,9 +96,13 @@ export default function proxy(server, config) {
     path: '/api/v3/proxy',
     handler: {
       proxy: {
-        mapUri: function(req, cb) {
-
-          const url = `${protocol}://${host}:${port}${path}`;
+        mapUri: async function(req, cb) {
+        
+          const advancedDB = new Advanced({server});
+          const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
+          let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
+          let url = `${protocol}://${host}:${port}`;
+          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;          
           headers.cookie = authCookie;
           return cb(null, url, headers);
         },

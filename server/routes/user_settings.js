@@ -182,6 +182,7 @@ export default function users(server) {
           category: Joi.string().min(3).max(50),
           param: Joi.string().min(3).max(50),
           data: Joi.string(),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [

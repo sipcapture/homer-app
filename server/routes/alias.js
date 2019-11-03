@@ -188,6 +188,7 @@ export default function alias(server) {
           mask: Joi.number(),
           captureID: Joi.string().min(0).max(20),
           status: Joi.boolean(),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [

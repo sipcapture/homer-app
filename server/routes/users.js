@@ -145,6 +145,7 @@ export default function users(server) {
           partid: Joi.number(),
           usergroup: Joi.string().min(2).max(250),
           department: Joi.string().min(2).max(250),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [

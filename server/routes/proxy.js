@@ -14,9 +14,13 @@ export default function proxy(server, config) {
           const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
           let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
           let url = `${protocol}://${host}:${port}`;
-          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;
+          let localHeaders = headers;
+          if(dataGrafana && dataGrafana.data) {
+              if(dataGrafana.data.host) url = dataGrafana.data.host;
+              if(dataGrafana.data.token) localHeaders['Authorization'] = 'Bearer ' + dataGrafana.data.token;          
+          }
           url += `/api/search?folderIds=0`;
-          return cb(null, url, headers);
+          return cb(null, url, localHeaders);
         },
         onResponse: function(err, res, req, reply) {
           return reply(res);
@@ -35,11 +39,15 @@ export default function proxy(server, config) {
           const advancedDB = new Advanced({server});
           const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
           let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
-          let url = `${protocol}://${host}:${port}`;
-          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;
+          let url = `${protocol}://${host}:${port}`;          
+          let localHeaders = headers;
+          if(dataGrafana && dataGrafana.data) {
+              if(dataGrafana.data.host) url = dataGrafana.data.host;
+              if(dataGrafana.data.token) localHeaders['Authorization'] = 'Bearer ' + dataGrafana.data.token;          
+          }
           url += `/api/dashboards/uid/`+uid;
 
-          return cb(null, url, headers);
+          return cb(null, url, localHeaders);
         },
         onResponse: function(err, res, req, reply) {
           return reply(res);
@@ -55,7 +63,7 @@ export default function proxy(server, config) {
         const advancedDB = new Advanced({server});            
         const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
         let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
-        let url = {data: `${protocol}://${host}:${port}`};                
+        let url = {data: `${protocol}://${host}:${port}`};            
         if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = {data: dataGrafana.data.host};
         return reply(url);
     },
@@ -73,10 +81,14 @@ export default function proxy(server, config) {
           const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
           let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
           let url = `${protocol}://${host}:${port}`;
-          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;          
+          let localHeaders = headers;
+          if(dataGrafana && dataGrafana.data) {
+              if(dataGrafana.data.host) url = dataGrafana.data.host;
+              if(dataGrafana.data.token) localHeaders['Authorization'] = 'Bearer ' + dataGrafana.data.token;          
+          }
           url += `/api/org`;      
 
-          return cb(null, url, headers);
+          return cb(null, url, localHeaders);
         },
         onResponse: function(err, res, req, reply) {
           return reply(res);
@@ -102,9 +114,14 @@ export default function proxy(server, config) {
           const advancedData = await advancedDB.getAll(['guid', 'partid', 'category', 'param', 'data']);
           let dataGrafana = advancedData.filter(item => item.param === "grafana")[0];
           let url = `${protocol}://${host}:${port}`;
-          if(dataGrafana && dataGrafana.data && dataGrafana.data.host) url = dataGrafana.data.host;          
-          headers.cookie = authCookie;
-          return cb(null, url, headers);
+          let localHeaders = headers;
+          if(dataGrafana && dataGrafana.data) {
+              if(dataGrafana.data.host) url = dataGrafana.data.host;
+              if(dataGrafana.data.token) localHeaders['Authorization'] = 'Bearer ' + dataGrafana.data.token;          
+          }
+          
+          localHeaders.cookie = authCookie;
+          return cb(null, url, localHeaders);
         },
         onResponse: function(err, res, req, reply) {
           return reply(res);

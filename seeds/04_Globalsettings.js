@@ -30,7 +30,7 @@ exports.seed = function seed(knex) {
       param: 'grafana',
       partid: 1,
       category: 'search',
-      data: grafanaURL,
+      data: grafURL,
       create_date: new Date(),
     },
   ];

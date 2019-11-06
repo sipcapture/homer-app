@@ -315,7 +315,7 @@ module.exports = "<div *ngIf=\"message\" [ngClass]=\"{ 'alert': message, 'alert-
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n    <div>Add New Panel</div>\n    <button mat-icon-button (click)=\"onNoClick()\">\n      <mat-icon>close</mat-icon>\n    </button>\n  </mat-toolbar>\n  <div mat-dialog-content style=\"display: flex; flex-direction: column\">\n    <mat-form-field>\n      <mat-label>Name your panel</mat-label>\n      <input matInput [(ngModel)]=\"nameNewPanel\" (keyup)=\"onChange()\">\n    </mat-form-field>\n    \n    <mat-form-field>\n      <mat-label>Type</mat-label>\n      <mat-select [(ngModel)]=\"type\" (keyup)=\"onChange()\">\n        <mat-option [value]=\"1\">Custom</mat-option>\n        <mat-option [value]=\"2\">Frame</mat-option>\n        <mat-option [value]=\"3\">HOME</mat-option>\n        <mat-option [value]=\"4\">SEARCH</mat-option>\n        <mat-option [value]=\"5\">ALARM</mat-option>\n      </mat-select>\n    </mat-form-field>\n    \n    <mat-form-field>\n      <mat-label>Param</mat-label>\n      <input matInput [(ngModel)]=\"param\" (keyup)=\"onChange()\">\n    </mat-form-field>\n  </div>\n  <div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n    <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n    <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"resultConfig\" cdkFocusInitial>Ok</button>\n  </div> \n"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n    <div>Add New Panel</div>\n    <button mat-icon-button (click)=\"onNoClick()\">\n      <mat-icon>close</mat-icon>\n    </button>\n  </mat-toolbar>\n  <div mat-dialog-content style=\"display: flex; flex-direction: column\">\n    <mat-form-field>\n      <mat-label>Name your panel</mat-label>\n      <input matInput [(ngModel)]=\"data.nameNewPanel\">\n    </mat-form-field>\n    \n    <mat-form-field>\n      <mat-label>Type</mat-label>\n      <mat-select [(ngModel)]=\"data.type\">\n        <mat-option *ngFor=\"let itemlist of typeList\" [value]=\"itemlist.index\">{{ itemlist.name }}</mat-option>\n      </mat-select>\n    </mat-form-field>\n    \n    <mat-form-field>\n      <mat-label>Param</mat-label>\n      <input matInput [(ngModel)]=\"data.param\">\n    </mat-form-field>\n  </div>\n  <div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n    <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n    <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"data\" cdkFocusInitial>Ok</button>\n  </div> \n"
 
 /***/ }),
 
@@ -337,7 +337,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Wi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"gridOptions\">\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler\" \n\t\t\t(mouseenter)=\"hoverme=true\" \n\t\t\t(mouseleave)=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\" [id]=\"item.id\">\n\t\t\t<div class=\"shadow-polygon\" style=\"display: none;\"></div>\n\t\t\t<app-clock-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\"\n\t\t\t\t#widgets></app-clock-widget>\n\n\t\t\t<app-influxdbchart-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\"\n\t\t\t\t#widgets></app-influxdbchart-widget>\n\n\t\t\t<app-protosearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\"\n\t\t\t\t#widgets></app-protosearch-widget>\n\n\t\t\t<app-rsearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\"\n\t\t\t\t#widgets></app-rsearch-widget>\n\n\t\t\t<app-iframe-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\"\n\t\t\t\t#widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
+module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button *ngIf=\"!isHome\" (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"gridOptions\">\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler\" \n\t\t\t(mouseenter)=\"hoverme=true\" \n\t\t\t(mouseleave)=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\" [id]=\"item.id\">\n\t\t\t<div class=\"shadow-polygon\" style=\"display: none;\"></div>\n\t\t\t<app-clock-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\"\n\t\t\t\t#widgets></app-clock-widget>\n\n\t\t\t<app-influxdbchart-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\"\n\t\t\t\t#widgets></app-influxdbchart-widget>\n\n\t\t\t<app-protosearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\"\n\t\t\t\t#widgets></app-protosearch-widget>\n\n\t\t\t<app-rsearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\"\n\t\t\t\t#widgets></app-rsearch-widget>\n\n\t\t\t<app-iframe-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\"\n\t\t\t\t#widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
 
 /***/ }),
 
@@ -348,7 +348,7 @@ module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div mat-dialog-content style=\"text-align: center\">\n  <mat-icon class=\"alarm\">error_outline</mat-icon>\n  <h1 mat-dialog-title>Are you sure?</h1>\n  <p>Your will not be able to recover this!</p>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"warn\" [mat-dialog-close]=\"true\" cdkFocusInitial>Yes, delete it!</button>\n</div>"
+module.exports = "<div mat-dialog-content style=\"text-align: center\">\n  <mat-icon class=\"alarm\">warning</mat-icon>\n  <h1 mat-dialog-title>Are you sure?</h1>\n  <p>Your will not be able to recover this!</p>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"warn\" [mat-dialog-close]=\"true\" cdkFocusInitial>Yes, delete it!</button>\n</div>"
 
 /***/ }),
 
@@ -359,7 +359,7 @@ module.exports = "<div mat-dialog-content style=\"text-align: center\">\n  <mat-
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Edit Panel</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n<div mat-dialog-content style=\"display: flex; flex-direction: column\">\n  <h4>Panel Details</h4>\n  \n  <mat-form-field>\n    <mat-label>Name your panel</mat-label>\n    <input matInput [(ngModel)]=\"data.name\">\n  </mat-form-field>\n  \n  <mat-form-field>\n    <mat-label>Type</mat-label>\n    <mat-select [(ngModel)]=\"data.type\">\n      <mat-option [value]=\"1\">Custom</mat-option>\n      <mat-option [value]=\"2\">Frame</mat-option>\n      <mat-option [value]=\"3\">HOME</mat-option>\n      <mat-option [value]=\"4\">SEARCH</mat-option>\n      <mat-option [value]=\"5\">ALARM</mat-option>\n    </mat-select>\n  </mat-form-field>\n  \n  <mat-form-field>\n    <mat-label>Param</mat-label>\n    <input matInput [(ngModel)]=\"data.param\">\n  </mat-form-field>\n  \n  <mat-checkbox labelPosition=\"Before\" [(ngModel)]=\"data.shared\">Shared</mat-checkbox>\n  \n  <h4>Grid Configuration</h4>\n  \n  <mat-form-field>\n    <mat-label>Columns</mat-label>\n    <input matInput type=\"number\" min=\"1\" [(ngModel)]=\"data.columns\">\n  </mat-form-field>\n  <mat-form-field>\n    <mat-label>MaxRows</mat-label>\n    <input matInput type=\"number\" min=\"1\" [(ngModel)]=\"data.maxrows\">\n  </mat-form-field>\n  <mat-checkbox labelPosition=\"Before\" [(ngModel)]=\"data.pushing\">Pushing</mat-checkbox>\n</div>\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"data\" cdkFocusInitial>Ok</button>\n</div> \n"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Edit Panel</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n<div mat-dialog-content style=\"display: flex; flex-direction: column\">\n  <h4>Panel Details</h4>\n  \n  <mat-form-field>\n    <mat-label>Name your panel</mat-label>\n    <input matInput [(ngModel)]=\"data.name\">\n  </mat-form-field>\n  \n  <mat-form-field >\n    <mat-label>Type</mat-label>\n    <mat-select [(ngModel)]=\"data.type\" [disabled]=\"isHomeOrSearch\">\n      <mat-option\n        *ngFor=\"let itemlist of typeList\"\n        [value]=\"itemlist.index\"\n        [disabled]=\"itemlist.disabled\">{{ itemlist.name }}</mat-option>\n    </mat-select>\n  </mat-form-field>\n  \n  <mat-form-field>\n    <mat-label>Param</mat-label>\n    <input matInput [(ngModel)]=\"data.param\">\n  </mat-form-field>\n  \n  <mat-checkbox labelPosition=\"Before\" [(ngModel)]=\"data.shared\">Shared</mat-checkbox>\n  <div *ngIf=\"data.type !== 2\" style=\"display: flex; flex-direction: column\">\n    <h4>Grid Configuration</h4>\n    <div>\n      <mat-form-field style=\"display: inline-block; min-width: 100px;\">\n        <mat-label>Columns</mat-label>\n        <input matInput type=\"number\" min=\"1\" [(ngModel)]=\"data.columns\">\n      </mat-form-field>\n      <mat-form-field style=\"display: inline-block; min-width: 100px; padding-left: 1rem;\">\n        <mat-label>MaxRows</mat-label>\n        <input matInput type=\"number\" min=\"1\" [(ngModel)]=\"data.maxrows\">\n      </mat-form-field>\n    </div>\n    <mat-form-field>\n      <mat-label>Grid Type</mat-label>\n      <mat-select [(ngModel)]=\"data.gridType\">\n        <mat-option [value]=\"'fit'\">Fit to screen</mat-option>\n        <mat-option [value]=\"'scrollVertical'\">Scroll Vertical</mat-option>\n        <mat-option [value]=\"'scrollHorizontal'\">Scroll Horizontal</mat-option>\n        <mat-option [value]=\"'fixed'\">Fixed</mat-option>\n        <mat-option [value]=\"'verticalFixed'\">Vertical Fixed</mat-option>\n        <mat-option [value]=\"'horizontalFixed'\">Horizontal Fixed</mat-option>\n      </mat-select>\n    </mat-form-field>\n    <mat-checkbox labelPosition=\"Before\" [(ngModel)]=\"data.pushing\">Pushing</mat-checkbox>\n  </div>\n</div>\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"data\" cdkFocusInitial>Ok</button>\n</div> \n"
 
 /***/ }),
 
@@ -381,7 +381,7 @@ module.exports = "<mat-card>\n    <mat-card-header>\n        <mat-card-title>\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button [matMenuTriggerFor]=\"panels\" [(ngModel)]=\"panelName\" name=\"panelName\" ngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item *ngFor=\"let dashboardItem of dashboards | filter : searchText\" (click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t\n\t\t\t</span>\n\t\t\t<button mat-button (click)=\"refresh()\" class=\"btn-refrash\">\n\t\t\t\t<mat-icon>refresh</mat-icon>\n\t\t\t</button>\n\t\t\t<button mat-button class=\"btn-refrash-timer\" name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>exit_to_app</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
+module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button\n\t\t\t\t[matMenuTriggerFor]=\"panels\"\n\t\t\t\t[(ngModel)]=\"panelName\" name=\"panelName\"\n\t\t\t\tngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item \n\t\t\t\t\t*ngFor=\"let dashboardItem of dashboards | filter : searchText\"\n\t\t\t\t\t[className]=\"'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')\"\n\t\t\t\t\t(click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\"\n\t\t\t\t\t[title]=\"dashboardItem.name + ' (' + dashboardItem.id + ')'\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t\n\t\t\t</span>\n\t\t\t<button mat-button (click)=\"refresh()\" class=\"btn-refrash\">\n\t\t\t\t<mat-icon>refresh</mat-icon>\n\t\t\t</button>\n\t\t\t<button mat-button class=\"btn-refrash-timer\" name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>exit_to_app</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
 
 /***/ }),
 
@@ -491,7 +491,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Accoun
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"display: flex; height: 100%\">\n  <!-- menu -->\n  <div class=\"nav-list\">\n    <h3 class=\"menu-title\">Admin Settings</h3>\n    <mat-nav-list>\n      <a mat-list-item (click)=\"preferenceGo(link)\" style=\"text-align: right; float: right;\"\n        *ngFor=\"let link of links\"> {{ link | titlecase }} </a>\n    </mat-nav-list>\n  </div>\n  <!-- body -->\n  <div style=\"background-color: #fff; flex: 1; padding: 2rem\">\n    <div style=\"display: flex\">\n      <button mat-flat-button color=\"primary\" (click)=\"settingDialog()\">\n        <mat-icon>add_circle_outline</mat-icon>\n        Add\n      </button>\n      <h2 style=\"padding-left: 2rem;\">{{ pageId | titlecase }}</h2>\n    </div>\n    <div>\n      <mat-form-field>\n        <input matInput (keyup)=\"applyFilter($event.target.value)\" placeholder=\"Filter\">\n      </mat-form-field>\n      <div *ngIf=\"isLoading\" class=\"loading\">\n        <mat-spinner></mat-spinner>\n      </div>\n      <table *ngIf=\"!isLoading\" mat-table [dataSource]=\"dataSource\" class=\"mat-elevation-z8\">\n      \n        <ng-container *ngFor=\"let item of pagesStructure[pageId]; let i = index\" [matColumnDef]=\"item\">\n\n          <ng-container *ngIf=\"item !== 'tools'\" >\n            <th mat-header-cell *matHeaderCellDef> {{ item }} </th>\n            <td mat-cell *matCellDef=\"let element\"> {{ element[item] }} </td>\n          </ng-container>\n\n          <ng-container *ngIf=\"item === 'tools'\" >\n            <th mat-header-cell style=\"text-align: right\" *matHeaderCellDef> Action </th>\n            <td mat-cell *matCellDef=\"let element\" style=\"text-align: right\"> \n              <button mat-icon-button color=\"primary\" (click)=\"settingDialog(element.item)\"><mat-icon>edit</mat-icon></button>\n              <button mat-icon-button color=\"warn\" style=\"margin-left: 1rem;\" (click)=\"onDelete( element.item )\"><mat-icon>delete</mat-icon></button>\n            </td>\n          </ng-container>\n\n        </ng-container>\n\n        <tr mat-header-row *matHeaderRowDef=\"pagesStructure[pageId]\"></tr>\n        <tr mat-row *matRowDef=\"let row; columns: pagesStructure[pageId];\"></tr>\n      </table>\n    </div>\n  </div>\n\n</div>"
+module.exports = "<div style=\"display: flex; height: calc(100vh - 45px);\">\n  <!-- menu -->\n  <div class=\"nav-list\">\n    <h3 class=\"menu-title\">Admin Settings</h3>\n    <mat-nav-list>\n      <a mat-list-item (click)=\"preferenceGo(link)\" style=\"text-align: right; float: right;\"\n        *ngFor=\"let link of links\"> {{ link | titlecase }} </a>\n    </mat-nav-list>\n  </div>\n  <!-- body -->\n  <div style=\"background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;\">\n    <div style=\"display: flex\">\n      <button mat-flat-button color=\"primary\" (click)=\"settingDialog()\">\n        <mat-icon>add_circle_outline</mat-icon>\n        Add\n      </button>\n      <h2 style=\"padding-left: 2rem;\">{{ pageId | titlecase }}</h2>\n    </div>\n    <div>\n      <mat-form-field>\n        <input matInput (keyup)=\"applyFilter($event.target.value)\" placeholder=\"Filter\">\n      </mat-form-field>\n      <div *ngIf=\"isLoading\" class=\"loading\">\n        <mat-spinner></mat-spinner>\n      </div>\n      <table *ngIf=\"!isLoading\" mat-table [dataSource]=\"dataSource\" class=\"mat-elevation-z8\">\n      \n        <ng-container *ngFor=\"let item of pagesStructure[pageId]; let i = index\" [matColumnDef]=\"item\">\n\n          <ng-container *ngIf=\"item !== 'tools'\" >\n            <th mat-header-cell *matHeaderCellDef> {{ item }} </th>\n            <td mat-cell *matCellDef=\"let element\"> {{ element[item] }} </td>\n          </ng-container>\n\n          <ng-container *ngIf=\"item === 'tools'\" >\n            <th mat-header-cell style=\"text-align: right\" *matHeaderCellDef> Action </th>\n            <td mat-cell *matCellDef=\"let element\" style=\"text-align: right\"> \n              <button mat-icon-button color=\"primary\" (click)=\"settingDialog(element.item)\"><mat-icon>edit</mat-icon></button>\n              <button mat-icon-button color=\"warn\" style=\"margin-left: 1rem;\" (click)=\"onDelete( element.item )\"><mat-icon>delete</mat-icon></button>\n            </td>\n          </ng-container>\n\n        </ng-container>\n\n        <tr mat-header-row *matHeaderRowDef=\"pagesStructure[pageId]\"></tr>\n        <tr mat-row *matRowDef=\"let row; columns: pagesStructure[pageId];\"></tr>\n      </table>\n    </div>\n  </div>\n\n</div>"
 
 /***/ }),
 
@@ -557,7 +557,7 @@ module.exports = "<table mat-table [dataSource]=\"dataSource\" class=\"mat-eleva
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"isRTP\"><!-- RTP -->\n  <h5 *ngIf=\"isRTCP\">RTP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartDataRTP\"\n        [labels]=\"chartLabelsRTP\"\n        [colors]=\"lineChartColorsRTP\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [chartType]=\"chartType\">\n      </canvas>\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlagRTP = !hideLabelsFlagRTP\">{{ hideLabelsFlagRTP ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlagRTP\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of listRTP\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n    <mat-card *ngFor=\"let item of streamsRTP\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBoxRTP(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.TOTAL_PK\">\n          <span class=\"color-bable color1\"></span>\n          TOTAL_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.EXPECTED_PK\">\n          <span class=\"color-bable color2\"></span>\n          EXPECTED_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.JITTER\">\n          <span class=\"color-bable color3\"></span>\n          JITTER\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.MOS\">\n          <span class=\"color-bable color4\"></span>\n          MOS\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.DELTA\">\n          <span class=\"color-bable color5\"></span>\n          DELTA\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.PACKET_LOSS\">\n          <span class=\"color-bable color6\"></span>\n          PACKET_LOSS\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>  \n</div>\n<div *ngIf=\"isRTCP\"><!-- RTCP -->\n  <h5 *ngIf=\"isRTP\">RTCP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartData\"\n        [labels]=\"chartLabels\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [colors]=\"lineChartColors\"\n        [chartType]=\"chartType\">\n      </canvas>\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlag = !hideLabelsFlag\">{{ hideLabelsFlag ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlag\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of list\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n      \n    <mat-card *ngFor=\"let item of streams\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBox(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.packets\">\n          <span class=\"color-bable color1\"></span>\n          packets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.octets\">\n          <span class=\"color-bable color2\"></span>\n          octets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.highest_seq_no\">\n          <span class=\"color-bable color3\"></span>\n          highest_seq_no\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.ia_jitter\">\n          <span class=\"color-bable color4\"></span>\n          ia_jitter\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.lsr\">\n          <span class=\"color-bable color5\"></span>\n          lsr\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>\n</div>"
+module.exports = "<div *ngIf=\"isRTP\"><!-- RTP -->\n  <h5 *ngIf=\"isRTCP\">RTP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartDataRTP\"\n        [labels]=\"chartLabelsRTP\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [chartType]=\"chartType\">\n      </canvas>\n      <!-- [colors]=\"lineChartColorsRTP\" -->\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlagRTP = !hideLabelsFlagRTP\">{{ hideLabelsFlagRTP ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlagRTP\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of listRTP\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n    <mat-card *ngFor=\"let item of streamsRTP\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBoxRTP(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.TOTAL_PK\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.TOTAL_PK_color }\"></span>\n          TOTAL_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.EXPECTED_PK\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.EXPECTED_PK_color }\"></span>\n          EXPECTED_PK\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.JITTER\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.JITTER_color }\"></span>\n          JITTER\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.MOS\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.MOS_color }\"></span>\n          MOS\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.DELTA\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.DELTA_color }\"></span>\n          DELTA\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBoxRTP(item)\" [(ngModel)]=\"item.PACKET_LOSS\">\n          <span class=\"color-bable\" [ngStyle]=\"{'backgroundColor': item.PACKET_LOSS_color }\"></span>\n          PACKET_LOSS\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>  \n</div>\n<div *ngIf=\"isRTCP\"><!-- RTCP -->\n  <h5 *ngIf=\"isRTP\">RTCP</h5>\n  <div class=\"responcive\">\n    <div class=\"chart-container\">\n      <canvas baseChart\n        [datasets]=\"chartData\"\n        [labels]=\"chartLabels\"\n        [options]=\"chartOptions\"\n        [legend]=\"chartLegend\"\n        [chartType]=\"chartType\">\n      </canvas>\n      <!-- [colors]=\"lineChartColors\" -->\n    </div>\n    \n\n  </div>\n  <div class=\"responcive\">\n    <button class=\"hide-button rotate90deg\" (click)=\"hideLabelsFlag = !hideLabelsFlag\">{{ hideLabelsFlag ?  'show' : 'hide' }} labels</button>\n    <div *ngIf=\"!hideLabelsFlag\" class=\"item-container\">\n      <div [className]=\"'item ' + item.color\" *ngFor=\"let item of list\">\n        <div class=\"text\" >{{ item.name | uppercase }}</div>\n        <div class=\"text-badge\">{{ item.value }}</div>\n      </div>\n    </div>\n      \n    <mat-card *ngFor=\"let item of streams\" class=\"cardStreem\">\n      <mat-checkbox [(ngModel)]=\"item._chacked\" [(indeterminate)]=\"item._indeterminate\" (change)=\"onChangeChackBox(item, true)\">\n        <div style=\"display: flex; align-items: center; align-content: center;\">\n          <span>{{ item.srcIp }}</span>\n          <mat-icon>trending_flat</mat-icon>\n          <span>{{ item.dstIp }}</span>\n        </div>\n      </mat-checkbox>\n      <div style=\"padding-left: 2rem; display: flex; flex-direction: column;\">\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.packets\">\n          <span class=\"color-bable\" [ngStyle]=\"{'background-color': item.packets_color}\"></span>\n          packets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.octets\">\n          <span class=\"color-bable\" [ngStyle]=\"{'background-color': item.octets_color}\"></span>\n          octets\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.highest_seq_no\">\n          <span class=\"color-bable\" [ngStyle]=\"{'background-color': item.highest_seq_no_color}\"></span>\n          highest_seq_no\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.ia_jitter\">\n          <span class=\"color-bable\" [ngStyle]=\"{'background-color': item.ia_jitter_color}\"></span>\n          ia_jitter\n        </mat-checkbox>\n        <mat-checkbox (change)=\"onChangeChackBox(item)\" [(ngModel)]=\"item.lsr\">\n          <span class=\"color-bable\" [ngStyle]=\"{'background-color': item.lsr_color}\"></span>\n          lsr\n        </mat-checkbox>\n      </div>\n    </mat-card>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -616,6 +616,17 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settin
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/dialog-alarm/dialog-alarm.component.html":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/app/components/widgets/dialog-alarm/dialog-alarm.component.html ***!
+  \*******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n    <div>Settings</div>\n    <button mat-icon-button (click)=\"onNoClick()\">\n        <mat-icon>close</mat-icon>\n    </button>\n</mat-toolbar>\n\n<div mat-dialog-content style=\"text-align: center\">\n    <mat-icon class=\"alarm\">error_outline</mat-icon>\n    <h1 mat-dialog-title>OOPS!</h1>\n    <p>It seems that the settings are corrupted.</p>\n    <p>We recommend that you remove the widget and recreate it.</p>\n</div>\n\n<div mat-dialog-actions style=\"margin: 0\">\n    <button mat-raised-button style=\"left: 0; right: 0; margin: auto;\" (click)=\"onNoClick()\">Close</button>\n</div> "
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/iframe-widget/iframe-widget.component.html":
 /*!*********************************************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/app/components/widgets/iframe-widget/iframe-widget.component.html ***!
@@ -623,7 +634,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settin
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<iframe class=\"frame-base\" [src]=\"url | safe\" (load)=\"onLoadIframe()\"\n    [ngStyle]=\"{'display' : iframeLoaded ? 'block' : 'none' }\"></iframe>\n"
+module.exports = "<iframe class=\"frame-base\" [src]=\"url | safe\" (load)=\"onLoadIframe()\"\n    [ngStyle]=\"{'display' : iframeLoaded ? 'block' : 'none' }\"></iframe>\n<div *ngIf=\"!iframeLoaded\">\n    <button mat-icon-button (click)=\"openDialog()\">\n        <mat-icon style=\"font-size: 3em;\">settings</mat-icon>\n        <span style=\"padding: 1.5rem;\">Widget Settings</span>\n    </button>\n</div>\n"
 
 /***/ }),
 
@@ -656,7 +667,7 @@ module.exports = "<div class=\"chart-container\">\n    <div *ngIf=\"!_isLoaded\"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\" (selectionChange)=\"onFormat()\">\n          <mat-option value=\"row\">Default</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n          <mat-option value=\"short\">Short</mat-option>\n          <mat-option value=\"bytes\">Bytes</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\" (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\" (click)=\"editRecord(element.id)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <!-- <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Path</mat-label>\n                <input matInput [(ngModel)]=\"apiQueryPath\" (change)=\"onRawPath()\">\n              </mat-form-field>\n            </div> -->\n              <label>Variables:</label>\n              <blockquote>:retention:</blockquote>\n              <blockquote>:measurement:</blockquote>\n              <blockquote>:from:</blockquote>\n              <blockquote>:to:</blockquote>\n              <blockquote>:interval:</blockquote>\n              <blockquote>:limit:</blockquote>\n            \n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" (change)=\"onRawValue()\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settings</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n\n<div mat-dialog-content>\n  <div class=\"example-container\">\n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Chart Title</mat-label>\n        <input matInput [(ngModel)]=\"chartTitle\" >\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label >Chart Type</mat-label>\n        <mat-select [(ngModel)]=\"chartType\" (selectionChange)=\"onChartType()\">\n          <mat-option *ngFor=\"let type of chartTypeList\" [value]=\"type\">\n            {{ type | titlecase }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n      \n      <mat-form-field appearance=\"fill\">\n        <mat-label >Format</mat-label>\n        <mat-select [(ngModel)]=\"format\" (selectionChange)=\"onFormat()\">\n          <mat-option value=\"row\">Default</mat-option>\n          <mat-option value=\"number\">Numbers</mat-option>\n          <mat-option value=\"short\">Short</mat-option>\n          <mat-option value=\"bytes\">Bytes</mat-option>\n        </mat-select>\n      </mat-form-field>\n    </div>\n    \n    <div>\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Panel Datasource</mat-label>\n        <mat-select [(ngModel)]=\"panelDataSource\" (selectionChange)=\"onPanelDatasource()\">\n          <mat-option value=\"influxDB\">InfluxDB</mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Database</mat-label>\n        <mat-select [(ngModel)]=\"database\" (selectionChange)=\"onDatabase()\">\n            <mat-option *ngFor=\"let item of databaseList\" [value]=\"item.value\">\n              {{ item.name }}\n            </mat-option>\n          </mat-select>\n      </mat-form-field>\n\n      <mat-form-field appearance=\"fill\">\n        <mat-label>Retention Policy</mat-label>\n        <mat-select [(ngModel)]=\"retentionPolicy\">\n          <mat-option *ngFor=\"let item of retentionPolicyList\" [value]=\"item.value\">\n            {{ item.name }}\n          </mat-option>\n        </mat-select>\n      </mat-form-field>\n\n      <button mat-raised-button color=\"primary\" (click)=\"addRecord()\">Add</button>\n    </div>\n\n    <div>\n      <h5>Query</h5>\n      <table mat-table [dataSource]=\"dataSource\" style=\"width: 100%;\" #table> \n\n        <ng-container matColumnDef=\"id\">\n          <th mat-header-cell *matHeaderCellDef> No. </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.id}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"panelDataSource\">\n          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.panelDataSource}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"database\">\n          <th mat-header-cell *matHeaderCellDef> Database </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.database}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"retentionPolicy\">\n          <th mat-header-cell *matHeaderCellDef> Retention Policy </th>\n          <td mat-cell *matCellDef=\"let element\"> {{element.retentionPolicy}} </td>\n        </ng-container>\n\n        <ng-container matColumnDef=\"buttons\">\n          <th mat-header-cell *matHeaderCellDef> \n            <mat-icon>edit</mat-icon>\n          </th>\n          <td mat-cell *matCellDef=\"let element\" style=\"text-align: right;\">\n            <button mat-icon-button color=\"primary\" aria-label=\"Delete\"\n              (click)=\"deleteRecord(element.id)\">\n              <mat-icon>delete</mat-icon>\n            </button>\n            <button mat-icon-button color=\"primary\" aria-label=\"Edit\"\n              (click)=\"editRecord(element)\">\n              <mat-icon>edit</mat-icon>\n            </button>\n          </td>\n        </ng-container>\n        \n        <!-- <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr> -->\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n      </table>\n \n      <mat-tab-group mat-stretch-tabs class=\"mat-elevation-z4\" *ngIf=\"detailShow\">\n        <mat-tab label=\"Fields\"> \n          <div style=\"padding: 1rem\">\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label >Measurement</mat-label>\n              <mat-select [(ngModel)]=\"measurement\" (selectionChange)=\"onMeasurement()\">\n                <mat-option *ngFor=\"let item of measurementList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            \n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Counter</mat-label>\n              <mat-select [formControl]=\"counter\" multiple (selectionChange)=\"onCounter()\">\n                <mat-option *ngFor=\"let item of counterList\" [value]=\"item.value\">\n                  {{ item.name }}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Tag</mat-label>\n              <mat-select [formControl]=\"tags\" multiple>\n                <mat-option *ngFor=\"let item of tagsList\" [value]=\"item.value\">\n                  {{item.name}}\n                </mat-option>\n              </mat-select>\n            </mat-form-field>\n            <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n              <mat-label>Values</mat-label>\n              <mat-select [formControl]=\"values\" multiple>\n                <mat-option value=\"default\">Default</mat-option>\n              </mat-select>\n            </mat-form-field>\n            <div>\n              <mat-checkbox [(ngModel)]=\"isSum\" (change)=\"onSum()\">Sum</mat-checkbox>\n            </div>\n          </div>\n        </mat-tab>\n        <mat-tab label=\"Query\">\n          <div style=\"padding: 1rem\">\n            <label>Variables:</label>\n            <blockquote>:retention:</blockquote>\n            <blockquote>:measurement:</blockquote>\n            <blockquote>:from:</blockquote>\n            <blockquote>:to:</blockquote>\n            <blockquote>:interval:</blockquote>\n            <blockquote>:limit:</blockquote>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>API Query Value</mat-label>\n                <textarea  matInput [(ngModel)]=\"apiQueryValue\" (change)=\"onRawValue()\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab>\n        <!-- <mat-tab label=\"Debug\">\n          <div style=\"padding: 1rem\">\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Debug:</mat-label>\n                <textarea matInput [(ngModel)]=\"curlDebug\" ></textarea>\n              </mat-form-field>\n            </div>\n            <div>\n              <mat-form-field appearance=\"fill\" style=\"width: 100%;\">\n                <mat-label>CURL Response:</mat-label>\n                <textarea  matInput [(ngModel)]=\"curlResponse\" ></textarea>\n              </mat-form-field>\n            </div>\n          </div>\n        </mat-tab> -->\n      </mat-tab-group>\n    </div>\n  </div>\n</div>\n\n<div mat-dialog-actions style=\"float: right; margin-bottom: 0rem;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"outputObject\" cdkFocusInitial>Save</button>\n</div>\n"
 
 /***/ }),
 
@@ -1136,7 +1147,8 @@ var AppModule = /** @class */ (function () {
                 _app_components_preference_dialogs__WEBPACK_IMPORTED_MODULE_15__["DialogUserSettingsComponent"],
                 _app_components_preference_dialogs__WEBPACK_IMPORTED_MODULE_15__["DialogUsersComponent"],
                 _components_widgets_protosearch_widget_drag_drop_list_drag_drop_list_component__WEBPACK_IMPORTED_MODULE_33__["DragDropListComponent"],
-                _components_search_grid_call_message_content_message_content_component__WEBPACK_IMPORTED_MODULE_34__["MessageContentComponent"]
+                _components_search_grid_call_message_content_message_content_component__WEBPACK_IMPORTED_MODULE_34__["MessageContentComponent"],
+                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["DialogAlarmComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"],
@@ -1315,6 +1327,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddDashboardDialogComponent", function() { return AddDashboardDialogComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
 /* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+/* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1329,23 +1342,40 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 };
 
 
+
 var AddDashboardDialogComponent = /** @class */ (function () {
-    function AddDashboardDialogComponent(dialogRef, data) {
+    function AddDashboardDialogComponent(dialogRef, _ds, data) {
+        var _this = this;
         this.dialogRef = dialogRef;
+        this._ds = _ds;
         this.data = data;
+        this.typeList = [];
+        this.typeBoolean = {
+            CUSTOM: true,
+            FRAME: true,
+            HOME: true,
+            SEARCH: true,
+            ALARM: true
+        };
+        var subscription = this._ds.getDashboardInfo().subscribe(function (list) {
+            subscription.unsubscribe();
+            if (list && list.data && list.data.length > 0) {
+                _this.typeBoolean.HOME = list.data.filter(function (i) { return i.id === 'home'; }).length === 0;
+                _this.typeBoolean.SEARCH = list.data.filter(function (i) { return i.id === 'search'; }).length === 0;
+            }
+            _this.typeList = Object.keys(_this.typeBoolean).map(function (v, k) { return ({
+                index: k + 1,
+                name: v
+            }); }).filter(function (i) { return _this.typeBoolean[i.name]; });
+            console.log(_this.typeList);
+        });
     }
     AddDashboardDialogComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
     };
-    AddDashboardDialogComponent.prototype.onChange = function () {
-        this.resultConfig = {
-            nameNewPanel: this.nameNewPanel,
-            type: this.type,
-            param: this.param
-        };
-    };
     AddDashboardDialogComponent.ctorParameters = function () { return [
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
+        { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["DashboardService"] },
         { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
     ]; };
     AddDashboardDialogComponent = __decorate([
@@ -1354,8 +1384,9 @@ var AddDashboardDialogComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./add-dashboard-dialog.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/dashboard/add-dashboard-dialog/add-dashboard-dialog.component.html"),
             styles: [__webpack_require__(/*! ./add-dashboard-dialog.component.css */ "./src/app/components/dashboard/add-dashboard-dialog/add-dashboard-dialog.component.css")]
         }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"],
+            _app_services__WEBPACK_IMPORTED_MODULE_2__["DashboardService"], Object])
     ], AddDashboardDialogComponent);
     return AddDashboardDialogComponent;
 }());
@@ -1458,6 +1489,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _delete_dialog_delete_dialog_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./delete-dialog/delete-dialog.component */ "./src/app/components/dashboard/delete-dialog/delete-dialog.component.ts");
 /* harmony import */ var _add_dialog_add_dialog_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./add-dialog/add-dialog.component */ "./src/app/components/dashboard/add-dialog/add-dialog.component.ts");
 /* harmony import */ var _edit_dialog_edit_dialog_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./edit-dialog/edit-dialog.component */ "./src/app/components/dashboard/edit-dialog/edit-dialog.component.ts");
+/* harmony import */ var ts_md5__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ts-md5 */ "./node_modules/ts-md5/dist/md5.js");
+/* harmony import */ var ts_md5__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(ts_md5__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1476,6 +1510,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 // import { Subscription } from 'rxjs';
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(_route, _ds, router, dialog) {
@@ -1484,20 +1520,19 @@ var DashboardComponent = /** @class */ (function () {
         this.router = router;
         this.dialog = dialog;
         this.isIframe = false;
+        this.isHome = false;
     }
     DashboardComponent.prototype.ngOnInit = function () {
         // Grid options
         this.gridOptions = {
-            gridType2: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["GridType"].VerticalFixed,
             gridType: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["GridType"].Fit,
             enableEmptyCellDrop: true,
-            // emptyCellDropCallback: this.onDrop,
             useTransformPositioning: true,
             mobileBreakpoint: 640,
             disableWindowResize: false,
             swap: true,
             swapWhileDragging: true,
-            margin: 10,
+            margin: 6,
             scrollSensitivity: 10,
             scrollSpeed: 20,
             resizable: {
@@ -1520,7 +1555,7 @@ var DashboardComponent = /** @class */ (function () {
             pushDirections: { north: true, east: true, south: true, west: true },
             /*  */
             scrollToNewItems: true,
-            displayGrid: angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["DisplayGrid"].OnDragAndResize,
+            displayGrid: 'none',
             minCols: 5,
             maxCols: 5,
             minRows: 5,
@@ -1534,31 +1569,33 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.updateTrigger = function () {
         setTimeout(function () {
             var elList = document.body.querySelectorAll('.gridster-item-resizable-handler.ng-star-inserted');
+            var shadows = Array.from(document.body.querySelectorAll('.widget-block .shadow-polygon'));
             Array.from(elList).forEach(function (i) {
                 i.onmouseup = window.document.body.onmouseleave = function (e) {
-                    Array.from(document.body.querySelectorAll('.widget-block .shadow-polygon')).forEach(function (j) {
+                    shadows.forEach(function (j) {
                         j.style.display = 'none';
                     });
                 };
                 i.onmousedown = function (e) {
-                    var el = e.target.parentElement.querySelector('.widget-block');
-                    if (el.id.indexOf('iframe') !== -1) {
-                        el.querySelector('.shadow-polygon').style.display = 'block';
-                    }
+                    shadows.forEach(function (j) {
+                        j.style.display = 'block';
+                    });
                 };
             });
         }, 500);
-    };
-    DashboardComponent.prototype.onEvent = function (e) {
-        console.log(e);
-        return true;
     };
     DashboardComponent.prototype.getData = function () {
         var _this = this;
         this._route.params.subscribe(function (params) {
             _this._ds.setCurrentDashBoardId(params['id']);
+            _this.isHome = params['id'] === 'home';
             var dashboardStoreSubscription = _this._ds.getDashboardStore(_this._ds.getCurrentDashBoardId()).subscribe(function (dashboard) {
+                if (dashboard == null) {
+                    dashboardStoreSubscription.unsubscribe();
+                    return;
+                }
                 _this.dashboardCollection = dashboard;
+                _this.gridOptions.gridType = _this.dashboardCollection.data.gridType;
                 _this.isIframe = _this.dashboardCollection.data.type === 2;
                 if (_this.isIframe) {
                     _this.iframeUrl = _this.dashboardCollection.data.param;
@@ -1567,27 +1604,17 @@ var DashboardComponent = /** @class */ (function () {
                     _this.dashboardCollection.data ?
                     _this.dashboardCollection.data.name : '';
                 if (_this.dashboardCollection) {
-                    (function (g, c) {
-                        g.maxRows = g.minRows = c.maxrows;
-                        g.maxCols = g.minCols = c.columns;
-                        g.pushItems = c.pushing;
-                        g.disablePushOnDrag = !c.pushing;
-                        g.disablePushOnResize = !c.pushing;
-                        g.pushResizeItems = c.pushing;
-                    })(_this.gridOptions, _this.dashboardCollection.data.config);
-                    _this.changedOptions();
-                    var widgets = _this.dashboardCollection.data.widgets;
-                    // sync old version and new version
-                    _this.dashboardArray = widgets.map(function (item, i) {
-                        item.id = item.name + '' + i;
-                        item.cols = item.cols || item.sizeX;
-                        item.rows = item.rows || item.sizeY;
-                        item.sizeX = item.sizeX || item.cols;
-                        item.sizeY = item.sizeY || item.rows;
-                        item.x = item.x || item.col;
-                        item.y = item.y || item.row;
-                        return item;
-                    });
+                    if (_this.dashboardCollection.data.config) {
+                        (function (g, c) {
+                            g.maxRows = g.minRows = c.maxrows;
+                            g.maxCols = g.minCols = c.columns;
+                            g.pushItems = c.pushing;
+                            g.disablePushOnDrag = !c.pushing;
+                            g.disablePushOnResize = !c.pushing;
+                            g.pushResizeItems = c.pushing;
+                        })(_this.gridOptions, _this.dashboardCollection.data.config);
+                    }
+                    _this.dashboardArray = _this.dashboardCollection.data.widgets;
                 }
                 else {
                     _this.dashboardArray = [];
@@ -1606,12 +1633,15 @@ var DashboardComponent = /** @class */ (function () {
     };
     DashboardComponent.prototype.itemChange = function (item) {
         var _this = this;
+        if (item.name === 'iframe') {
+            var w = this.getWidgetById(item.id);
+            if (w && w.refresh) {
+                w.refresh();
+            }
+        }
         setTimeout(function () {
             var subscription = _this.onDashboardSave().subscribe(function () {
                 subscription.unsubscribe();
-                if (item.name === 'iframe') {
-                    _this.getWidgetById(item.id).refresh();
-                }
             });
         }, 10);
         return true;
@@ -1670,18 +1700,19 @@ var DashboardComponent = /** @class */ (function () {
     };
     DashboardComponent.prototype.onDashboardSettings = function () {
         var _this = this;
-        this.dashboardCollection.data = this.dashboardCollection.data || {};
-        this.dashboardCollection.data.config = this.dashboardCollection.data.config || {};
+        var _d = this.dashboardCollection.data = this.dashboardCollection.data || {};
+        _d.config = _d.config || {};
         var dialogRef = this.dialog.open(_edit_dialog_edit_dialog_component__WEBPACK_IMPORTED_MODULE_7__["EditDialogComponent"], {
             width: '650px',
             data: {
                 name: this.dashboardTitle,
-                type: this.dashboardCollection.data.type,
-                param: this.dashboardCollection.data.param || '',
-                shared: !!this.dashboardCollection.data.shared,
-                columns: this.dashboardCollection.data.config.columns || 1,
-                maxrows: this.dashboardCollection.data.config.maxrows || 1,
-                pushing: !!this.dashboardCollection.data.config.pushing
+                type: _d.type,
+                param: _d.param || '',
+                shared: !!_d.shared,
+                columns: _d.config.columns || 5,
+                maxrows: _d.config.maxrows || 5,
+                pushing: !!_d.config.pushing,
+                gridType: _d.config.gridType || angular_gridster2__WEBPACK_IMPORTED_MODULE_1__["GridType"].Fit,
             }
         });
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
@@ -1695,6 +1726,7 @@ var DashboardComponent = /** @class */ (function () {
                     dd.config.columns = data.columns;
                     dd.config.maxrows = data.maxrows;
                     dd.config.pushing = data.pushing;
+                    dd.config.gridType = data.gridType;
                     (function (g, c) {
                         g.maxRows = g.minRows = c.maxrows;
                         g.maxCols = g.minCols = c.columns;
@@ -1702,9 +1734,10 @@ var DashboardComponent = /** @class */ (function () {
                         g.disablePushOnDrag = !c.pushing;
                         g.disablePushOnResize = !c.pushing;
                         g.pushResizeItems = c.pushing;
+                        g.gridType = c.gridType;
                     })(_this.gridOptions, dd.config);
                     _this.changedOptions();
-                })(_this.dashboardCollection, _this.dashboardCollection.data);
+                })(_this.dashboardCollection, _d);
                 var subscription_2 = _this.onDashboardSave().subscribe(function () {
                     subscription_2.unsubscribe();
                     _this.getData();
@@ -1722,7 +1755,7 @@ var DashboardComponent = /** @class */ (function () {
         });
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
             if (data) {
-                var deleteDashboardStoreSubscription_1 = _this._ds.deleteDashboardStore(_this.dashboardCollection.data.id).subscribe(function () {
+                var deleteDashboardStoreSubscription_1 = _this._ds.deleteDashboardStore(_this._ds.getCurrentDashBoardId()).subscribe(function () {
                     deleteDashboardStoreSubscription_1.unsubscribe();
                     _this.router.navigateByUrl('/');
                     _this._ds.update();
@@ -1733,12 +1766,16 @@ var DashboardComponent = /** @class */ (function () {
     };
     DashboardComponent.prototype.onDashboardSave = function () {
         this.dashboardCollection.data.widgets = this.dashboardArray;
+        var _hash = ts_md5__WEBPACK_IMPORTED_MODULE_8__["Md5"].hashStr(JSON.stringify(this.dashboardCollection)) + '';
+        if (this.postSaveHash === _hash) {
+            return new rxjs__WEBPACK_IMPORTED_MODULE_9__["Observable"]();
+        }
+        this.postSaveHash = _hash;
         return this._ds.postDashboardStore(this._ds.getCurrentDashBoardId(), this.dashboardCollection.data);
     };
     DashboardComponent.prototype.ngOnDestroy = function () {
         // this.subscription.unsubscribe();
     };
-    ;
     DashboardComponent.ctorParameters = function () { return [
         { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"] },
         { type: _app_services__WEBPACK_IMPORTED_MODULE_3__["DashboardService"] },
@@ -1775,7 +1812,7 @@ var DashboardComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".alarm {\n    font-size: 54pt;\n    color: red;\n    height: 71px;\n    width: 71px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGVsZXRlLWRpYWxvZy9kZWxldGUtZGlhbG9nLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxlQUFlO0lBQ2YsVUFBVTtJQUNWLFlBQVk7SUFDWixXQUFXO0FBQ2YiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2Rhc2hib2FyZC9kZWxldGUtZGlhbG9nL2RlbGV0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5hbGFybSB7XG4gICAgZm9udC1zaXplOiA1NHB0O1xuICAgIGNvbG9yOiByZWQ7XG4gICAgaGVpZ2h0OiA3MXB4O1xuICAgIHdpZHRoOiA3MXB4O1xufSJdfQ== */"
+module.exports = ".alarm {\n    font-size: 54pt;\n    color: orange;\n    height: 71px;\n    width: 71px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kYXNoYm9hcmQvZGVsZXRlLWRpYWxvZy9kZWxldGUtZGlhbG9nLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxlQUFlO0lBQ2YsYUFBYTtJQUNiLFlBQVk7SUFDWixXQUFXO0FBQ2YiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2Rhc2hib2FyZC9kZWxldGUtZGlhbG9nL2RlbGV0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5hbGFybSB7XG4gICAgZm9udC1zaXplOiA1NHB0O1xuICAgIGNvbG9yOiBvcmFuZ2U7XG4gICAgaGVpZ2h0OiA3MXB4O1xuICAgIHdpZHRoOiA3MXB4O1xufSJdfQ== */"
 
 /***/ }),
 
@@ -1856,6 +1893,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditDialogComponent", function() { return EditDialogComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
 /* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+/* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1870,16 +1908,47 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 };
 
 
+
 var EditDialogComponent = /** @class */ (function () {
-    function EditDialogComponent(dialogRef, data) {
+    function EditDialogComponent(dialogRef, _ds, data) {
+        var _this = this;
         this.dialogRef = dialogRef;
+        this._ds = _ds;
         this.data = data;
+        this.typeList = [];
+        this.typeBoolean = {
+            CUSTOM: true,
+            FRAME: true,
+            HOME: true,
+            SEARCH: true,
+            ALARM: true
+        };
+        this.isHomeOrSearch = false;
+        this.isSEARCH = false;
+        this.isSEARCH = this._ds.getCurrentDashBoardId() === 'search';
+        this.isHomeOrSearch = this.isSEARCH || this._ds.getCurrentDashBoardId() === 'home';
+        var subscription = this._ds.getDashboardInfo().subscribe(function (list) {
+            subscription.unsubscribe();
+            if (list && list.data && list.data.length > 0) {
+                _this.typeBoolean.HOME = list.data.filter(function (i) { return i.id === 'home'; }).length === 0;
+                if (!_this.isSEARCH) {
+                    _this.typeBoolean.SEARCH = list.data.filter(function (i) { return i.id === 'search'; }).length === 0;
+                }
+            }
+            _this.typeList = Object.keys(_this.typeBoolean).map(function (v, k) { return ({
+                index: k + 1,
+                name: v,
+                disabled: !_this.typeBoolean[v]
+            }); });
+            console.log(_this.typeList);
+        });
     }
     EditDialogComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
     };
     EditDialogComponent.ctorParameters = function () { return [
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
+        { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["DashboardService"] },
         { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
     ]; };
     EditDialogComponent = __decorate([
@@ -1888,8 +1957,9 @@ var EditDialogComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./edit-dialog.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/dashboard/edit-dialog/edit-dialog.component.html"),
             styles: [__webpack_require__(/*! ./edit-dialog.component.css */ "./src/app/components/dashboard/edit-dialog/edit-dialog.component.css")]
         }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"],
+            _app_services__WEBPACK_IMPORTED_MODULE_2__["DashboardService"], Object])
     ], EditDialogComponent);
     return EditDialogComponent;
 }());
@@ -1902,7 +1972,7 @@ var EditDialogComponent = /** @class */ (function () {
 /*!*************************************!*\
   !*** ./src/app/components/index.ts ***!
   \*************************************/
-/*! exports provided: AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent */
+/*! exports provided: AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1951,6 +2021,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["IframeWidgetComponent"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["SettingIframeWidgetComponent"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DialogAlarmComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["DialogAlarmComponent"]; });
 
 /* harmony import */ var _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./preference/preference.component */ "./src/app/components/preference/preference.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PreferenceComponent", function() { return _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__["PreferenceComponent"]; });
@@ -2092,7 +2164,7 @@ var LoginComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".logo-base {\n    display: flex;\n    align-items: center;\n    cursor: pointer;\n}\n.btn-refrash {\n    z-index: 1;\n    border-right: 1px solid #fff;\n    border-radius: 0;\n    margin: 0;\n    padding: 0px;\n    min-width: initial;\n    margin-right: 4px;\n    padding-right: 2px;\n}\n.btn-refrash-timer {\n    margin-left: 0;\n    min-width: initial;\n    padding-left: 0;\n}\n.logo-text {\n    border-bottom-color: rgb(255, 255, 255);\n    border-bottom-style: none;\n    border-bottom-width: 0px;\n    border-image-outset: 0px;\n    border-image-repeat: stretch;\n    border-image-slice: 100%;\n    border-image-source: none;\n    border-image-width: 1;\n    border-left-color: rgb(255, 255, 255);\n    border-left-style: none;\n    border-left-width: 0px;\n    border-right-color: rgb(255, 255, 255);\n    border-right-style: none;\n    border-right-width: 0px;\n    border-top-color: rgb(255, 255, 255);\n    border-top-style: none;\n    border-top-width: 0px;\n    box-sizing: border-box;\n    color: rgb(255, 255, 255);\n    display: inline-block;\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 32px;\n    height: 42px;\n    line-height: 32px;\n    margin-bottom: 0px;\n    margin-left: 0px;\n    margin-right: 0px;\n    margin-top: 0px;\n    outline-color: rgb(255, 255, 255);\n    outline-style: none;\n    outline-width: 0px;\n    padding-bottom: 5px;\n    padding-left: 5px;\n    padding-right: 5px;\n    padding-top: 5px;\n    -webkit-text-size-adjust: 100%;\n       -moz-text-size-adjust: 100%;\n        -ms-text-size-adjust: 100%;\n            text-size-adjust: 100%;\n    vertical-align: baseline;\n    width: 120.906px;\n    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\n.logo-text:first-letter {\n    color: #EE3324;\n}\n.logo-base > img {\n    width: 32px;\n}\n.header {\n    justify-content: space-between;\n}\n.header .ng-star-inserted .md-drppicker .buttons {\n    position: absolute;\n    right: 1rem;\n    bottom: 1rem;\n}\n.time-range-icon {\n    margin: -34px !important;\n    height: 24px;\n    top: 7px;\n    margin-left: 0 !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksVUFBVTtJQUNWLDRCQUE0QjtJQUM1QixnQkFBZ0I7SUFDaEIsU0FBUztJQUNULFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksY0FBYztJQUNkLGtCQUFrQjtJQUNsQixlQUFlO0FBQ25CO0FBQ0E7SUFDSSx1Q0FBdUM7SUFDdkMseUJBQXlCO0lBQ3pCLHdCQUF3QjtJQUN4Qix3QkFBd0I7SUFDeEIsNEJBQTRCO0lBQzVCLHdCQUF3QjtJQUN4Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLHFDQUFxQztJQUNyQyx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLHNDQUFzQztJQUN0Qyx3QkFBd0I7SUFDeEIsdUJBQXVCO0lBQ3ZCLG9DQUFvQztJQUNwQyxzQkFBc0I7SUFDdEIscUJBQXFCO0lBQ3JCLHNCQUFzQjtJQUN0Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLGtKQUFrSjtJQUNsSixlQUFlO0lBQ2YsWUFBWTtJQUNaLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLGlCQUFpQjtJQUNqQixlQUFlO0lBQ2YsaUNBQWlDO0lBQ2pDLG1CQUFtQjtJQUNuQixrQkFBa0I7SUFDbEIsbUJBQW1CO0lBQ25CLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLDhCQUFzQjtPQUF0QiwyQkFBc0I7UUFBdEIsMEJBQXNCO1lBQXRCLHNCQUFzQjtJQUN0Qix3QkFBd0I7SUFDeEIsZ0JBQWdCO0lBQ2hCLDZDQUE2QztBQUNqRDtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksV0FBVztBQUNmO0FBQ0E7SUFDSSw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixXQUFXO0lBQ1gsWUFBWTtBQUNoQjtBQUNBO0lBQ0ksd0JBQXdCO0lBQ3hCLFlBQVk7SUFDWixRQUFRO0lBQ1IseUJBQXlCO0FBQzdCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2dvLWJhc2Uge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG4uYnRuLXJlZnJhc2gge1xuICAgIHotaW5kZXg6IDE7XG4gICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQgI2ZmZjtcbiAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBwYWRkaW5nOiAwcHg7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDJweDtcbn1cbi5idG4tcmVmcmFzaC10aW1lciB7XG4gICAgbWFyZ2luLWxlZnQ6IDA7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIHBhZGRpbmctbGVmdDogMDtcbn1cbi5sb2dvLXRleHQge1xuICAgIGJvcmRlci1ib3R0b20tY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItYm90dG9tLXN0eWxlOiBub25lO1xuICAgIGJvcmRlci1ib3R0b20td2lkdGg6IDBweDtcbiAgICBib3JkZXItaW1hZ2Utb3V0c2V0OiAwcHg7XG4gICAgYm9yZGVyLWltYWdlLXJlcGVhdDogc3RyZXRjaDtcbiAgICBib3JkZXItaW1hZ2Utc2xpY2U6IDEwMCU7XG4gICAgYm9yZGVyLWltYWdlLXNvdXJjZTogbm9uZTtcbiAgICBib3JkZXItaW1hZ2Utd2lkdGg6IDE7XG4gICAgYm9yZGVyLWxlZnQtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItbGVmdC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItbGVmdC13aWR0aDogMHB4O1xuICAgIGJvcmRlci1yaWdodC1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGJvcmRlci1yaWdodC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItcmlnaHQtd2lkdGg6IDBweDtcbiAgICBib3JkZXItdG9wLWNvbG9yOiByZ2IoMjU1LCAyNTUsIDI1NSk7XG4gICAgYm9yZGVyLXRvcC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItdG9wLXdpZHRoOiAwcHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbiAgICBjb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICBmb250LWZhbWlseTogLWFwcGxlLXN5c3RlbSwgQmxpbmtNYWNTeXN0ZW1Gb250LCBcIlNlZ29lIFVJXCIsIEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYsIFwiQXBwbGUgQ29sb3IgRW1vamlcIiwgXCJTZWdvZSBVSSBFbW9qaVwiLCBcIlNlZ29lIFVJIFN5bWJvbFwiO1xuICAgIGZvbnQtc2l6ZTogMzJweDtcbiAgICBoZWlnaHQ6IDQycHg7XG4gICAgbGluZS1oZWlnaHQ6IDMycHg7XG4gICAgbWFyZ2luLWJvdHRvbTogMHB4O1xuICAgIG1hcmdpbi1sZWZ0OiAwcHg7XG4gICAgbWFyZ2luLXJpZ2h0OiAwcHg7XG4gICAgbWFyZ2luLXRvcDogMHB4O1xuICAgIG91dGxpbmUtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBvdXRsaW5lLXN0eWxlOiBub25lO1xuICAgIG91dGxpbmUtd2lkdGg6IDBweDtcbiAgICBwYWRkaW5nLWJvdHRvbTogNXB4O1xuICAgIHBhZGRpbmctbGVmdDogNXB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgICBwYWRkaW5nLXRvcDogNXB4O1xuICAgIHRleHQtc2l6ZS1hZGp1c3Q6IDEwMCU7XG4gICAgdmVydGljYWwtYWxpZ246IGJhc2VsaW5lO1xuICAgIHdpZHRoOiAxMjAuOTA2cHg7XG4gICAgLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApO1xufVxuLmxvZ28tdGV4dDpmaXJzdC1sZXR0ZXIge1xuICAgIGNvbG9yOiAjRUUzMzI0O1xufVxuLmxvZ28tYmFzZSA+IGltZyB7XG4gICAgd2lkdGg6IDMycHg7XG59XG4uaGVhZGVyIHtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG4uaGVhZGVyIC5uZy1zdGFyLWluc2VydGVkIC5tZC1kcnBwaWNrZXIgLmJ1dHRvbnMge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXJlbTtcbiAgICBib3R0b206IDFyZW07XG59XG4udGltZS1yYW5nZS1pY29uIHtcbiAgICBtYXJnaW46IC0zNHB4ICFpbXBvcnRhbnQ7XG4gICAgaGVpZ2h0OiAyNHB4O1xuICAgIHRvcDogN3B4O1xuICAgIG1hcmdpbi1sZWZ0OiAwICFpbXBvcnRhbnQ7XG59Il19 */"
+module.exports = ".logo-base {\n    display: flex;\n    align-items: center;\n    cursor: pointer;\n}\n.btn-refrash {\n    z-index: 1;\n    border-right: 1px solid #fff;\n    border-radius: 0;\n    margin: 0;\n    padding: 0px;\n    min-width: initial;\n    margin-right: 4px;\n    padding-right: 2px;\n}\n.btn-refrash-timer {\n    margin-left: 0;\n    min-width: initial;\n    padding-left: 0;\n}\nbutton:focus {\n    outline: none;\n}\n.menu-item-active {\n    font-weight: bold;\n    box-shadow: inset 0 0 8px -4px #000;\n}\n.logo-text {\n    border-bottom-color: rgb(255, 255, 255);\n    border-bottom-style: none;\n    border-bottom-width: 0px;\n    border-image-outset: 0px;\n    border-image-repeat: stretch;\n    border-image-slice: 100%;\n    border-image-source: none;\n    border-image-width: 1;\n    border-left-color: rgb(255, 255, 255);\n    border-left-style: none;\n    border-left-width: 0px;\n    border-right-color: rgb(255, 255, 255);\n    border-right-style: none;\n    border-right-width: 0px;\n    border-top-color: rgb(255, 255, 255);\n    border-top-style: none;\n    border-top-width: 0px;\n    box-sizing: border-box;\n    color: rgb(255, 255, 255);\n    display: inline-block;\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 32px;\n    height: 42px;\n    line-height: 32px;\n    margin-bottom: 0px;\n    margin-left: 0px;\n    margin-right: 0px;\n    margin-top: 0px;\n    outline-color: rgb(255, 255, 255);\n    outline-style: none;\n    outline-width: 0px;\n    padding-bottom: 5px;\n    padding-left: 5px;\n    padding-right: 5px;\n    padding-top: 5px;\n    -webkit-text-size-adjust: 100%;\n       -moz-text-size-adjust: 100%;\n        -ms-text-size-adjust: 100%;\n            text-size-adjust: 100%;\n    vertical-align: baseline;\n    width: 120.906px;\n    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\n.logo-text:first-letter {\n    color: #EE3324;\n}\n.logo-base > img {\n    width: 32px;\n}\n.header {\n    justify-content: space-between;\n}\n.header .ng-star-inserted .md-drppicker .buttons {\n    position: absolute;\n    right: 1rem;\n    bottom: 1rem;\n}\n.time-range-icon {\n    margin: -34px !important;\n    height: 24px;\n    top: 7px;\n    margin-left: 0 !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksVUFBVTtJQUNWLDRCQUE0QjtJQUM1QixnQkFBZ0I7SUFDaEIsU0FBUztJQUNULFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLGtCQUFrQjtBQUN0QjtBQUNBO0lBQ0ksY0FBYztJQUNkLGtCQUFrQjtJQUNsQixlQUFlO0FBQ25CO0FBQ0E7SUFDSSxhQUFhO0FBQ2pCO0FBQ0E7SUFDSSxpQkFBaUI7SUFDakIsbUNBQW1DO0FBQ3ZDO0FBQ0E7SUFDSSx1Q0FBdUM7SUFDdkMseUJBQXlCO0lBQ3pCLHdCQUF3QjtJQUN4Qix3QkFBd0I7SUFDeEIsNEJBQTRCO0lBQzVCLHdCQUF3QjtJQUN4Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLHFDQUFxQztJQUNyQyx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLHNDQUFzQztJQUN0Qyx3QkFBd0I7SUFDeEIsdUJBQXVCO0lBQ3ZCLG9DQUFvQztJQUNwQyxzQkFBc0I7SUFDdEIscUJBQXFCO0lBQ3JCLHNCQUFzQjtJQUN0Qix5QkFBeUI7SUFDekIscUJBQXFCO0lBQ3JCLGtKQUFrSjtJQUNsSixlQUFlO0lBQ2YsWUFBWTtJQUNaLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLGlCQUFpQjtJQUNqQixlQUFlO0lBQ2YsaUNBQWlDO0lBQ2pDLG1CQUFtQjtJQUNuQixrQkFBa0I7SUFDbEIsbUJBQW1CO0lBQ25CLGlCQUFpQjtJQUNqQixrQkFBa0I7SUFDbEIsZ0JBQWdCO0lBQ2hCLDhCQUFzQjtPQUF0QiwyQkFBc0I7UUFBdEIsMEJBQXNCO1lBQXRCLHNCQUFzQjtJQUN0Qix3QkFBd0I7SUFDeEIsZ0JBQWdCO0lBQ2hCLDZDQUE2QztBQUNqRDtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksV0FBVztBQUNmO0FBQ0E7SUFDSSw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQixXQUFXO0lBQ1gsWUFBWTtBQUNoQjtBQUNBO0lBQ0ksd0JBQXdCO0lBQ3hCLFlBQVk7SUFDWixRQUFRO0lBQ1IseUJBQXlCO0FBQzdCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9tZW51L21lbnUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2dvLWJhc2Uge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG4uYnRuLXJlZnJhc2gge1xuICAgIHotaW5kZXg6IDE7XG4gICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQgI2ZmZjtcbiAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBwYWRkaW5nOiAwcHg7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDJweDtcbn1cbi5idG4tcmVmcmFzaC10aW1lciB7XG4gICAgbWFyZ2luLWxlZnQ6IDA7XG4gICAgbWluLXdpZHRoOiBpbml0aWFsO1xuICAgIHBhZGRpbmctbGVmdDogMDtcbn1cbmJ1dHRvbjpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cbi5tZW51LWl0ZW0tYWN0aXZlIHtcbiAgICBmb250LXdlaWdodDogYm9sZDtcbiAgICBib3gtc2hhZG93OiBpbnNldCAwIDAgOHB4IC00cHggIzAwMDtcbn1cbi5sb2dvLXRleHQge1xuICAgIGJvcmRlci1ib3R0b20tY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItYm90dG9tLXN0eWxlOiBub25lO1xuICAgIGJvcmRlci1ib3R0b20td2lkdGg6IDBweDtcbiAgICBib3JkZXItaW1hZ2Utb3V0c2V0OiAwcHg7XG4gICAgYm9yZGVyLWltYWdlLXJlcGVhdDogc3RyZXRjaDtcbiAgICBib3JkZXItaW1hZ2Utc2xpY2U6IDEwMCU7XG4gICAgYm9yZGVyLWltYWdlLXNvdXJjZTogbm9uZTtcbiAgICBib3JkZXItaW1hZ2Utd2lkdGg6IDE7XG4gICAgYm9yZGVyLWxlZnQtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBib3JkZXItbGVmdC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItbGVmdC13aWR0aDogMHB4O1xuICAgIGJvcmRlci1yaWdodC1jb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGJvcmRlci1yaWdodC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItcmlnaHQtd2lkdGg6IDBweDtcbiAgICBib3JkZXItdG9wLWNvbG9yOiByZ2IoMjU1LCAyNTUsIDI1NSk7XG4gICAgYm9yZGVyLXRvcC1zdHlsZTogbm9uZTtcbiAgICBib3JkZXItdG9wLXdpZHRoOiAwcHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbiAgICBjb2xvcjogcmdiKDI1NSwgMjU1LCAyNTUpO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICBmb250LWZhbWlseTogLWFwcGxlLXN5c3RlbSwgQmxpbmtNYWNTeXN0ZW1Gb250LCBcIlNlZ29lIFVJXCIsIEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYsIFwiQXBwbGUgQ29sb3IgRW1vamlcIiwgXCJTZWdvZSBVSSBFbW9qaVwiLCBcIlNlZ29lIFVJIFN5bWJvbFwiO1xuICAgIGZvbnQtc2l6ZTogMzJweDtcbiAgICBoZWlnaHQ6IDQycHg7XG4gICAgbGluZS1oZWlnaHQ6IDMycHg7XG4gICAgbWFyZ2luLWJvdHRvbTogMHB4O1xuICAgIG1hcmdpbi1sZWZ0OiAwcHg7XG4gICAgbWFyZ2luLXJpZ2h0OiAwcHg7XG4gICAgbWFyZ2luLXRvcDogMHB4O1xuICAgIG91dGxpbmUtY29sb3I6IHJnYigyNTUsIDI1NSwgMjU1KTtcbiAgICBvdXRsaW5lLXN0eWxlOiBub25lO1xuICAgIG91dGxpbmUtd2lkdGg6IDBweDtcbiAgICBwYWRkaW5nLWJvdHRvbTogNXB4O1xuICAgIHBhZGRpbmctbGVmdDogNXB4O1xuICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgICBwYWRkaW5nLXRvcDogNXB4O1xuICAgIHRleHQtc2l6ZS1hZGp1c3Q6IDEwMCU7XG4gICAgdmVydGljYWwtYWxpZ246IGJhc2VsaW5lO1xuICAgIHdpZHRoOiAxMjAuOTA2cHg7XG4gICAgLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApO1xufVxuLmxvZ28tdGV4dDpmaXJzdC1sZXR0ZXIge1xuICAgIGNvbG9yOiAjRUUzMzI0O1xufVxuLmxvZ28tYmFzZSA+IGltZyB7XG4gICAgd2lkdGg6IDMycHg7XG59XG4uaGVhZGVyIHtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG4uaGVhZGVyIC5uZy1zdGFyLWluc2VydGVkIC5tZC1kcnBwaWNrZXIgLmJ1dHRvbnMge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXJlbTtcbiAgICBib3R0b206IDFyZW07XG59XG4udGltZS1yYW5nZS1pY29uIHtcbiAgICBtYXJnaW46IC0zNHB4ICFpbXBvcnRhbnQ7XG4gICAgaGVpZ2h0OiAyNHB4O1xuICAgIHRvcDogN3B4O1xuICAgIG1hcmdpbi1sZWZ0OiAwICFpbXBvcnRhbnQ7XG59Il19 */"
 
 /***/ }),
 
@@ -2197,6 +2269,7 @@ var MenuComponent = /** @class */ (function () {
                 _this.panelList = _this.dashboards.map(function (item) { return item.name; });
                 try {
                     _this.panelName = _this.dashboards.filter(function (item) { return item.href === _this._ds.getCurrentDashBoardId(); })[0].name;
+                    _this.currentDashboardId = _this._ds.getCurrentDashBoardId();
                 }
                 catch (e) { }
                 subscription.unsubscribe();
@@ -2215,13 +2288,25 @@ var MenuComponent = /** @class */ (function () {
     };
     MenuComponent.prototype.onAddDashboard = function () {
         var _this = this;
-        var dialogRef = this.dialog.open(_dashboard_add_dashboard_dialog_add_dashboard_dialog_component__WEBPACK_IMPORTED_MODULE_4__["AddDashboardDialogComponent"], { width: '650px', data: {} });
+        var dialogRef = this.dialog.open(_dashboard_add_dashboard_dialog_add_dashboard_dialog_component__WEBPACK_IMPORTED_MODULE_4__["AddDashboardDialogComponent"], { width: '650px',
+            data: {
+                nameNewPanel: '',
+                type: 1,
+                param: ''
+            }
+        });
         var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (data) {
             if (data) {
-                var id_1 = '_' + new Date().getTime();
-                var dashboardStoreSubscription_1 = _this._ds.postDashboardStore(id_1, {
-                    id: id_1,
-                    alias: id_1,
+                var id = '_' + new Date().getTime();
+                if (data.type === 3) {
+                    id = 'home';
+                }
+                else if (data.type === 4) {
+                    id = 'search';
+                }
+                var dashboardData_1 = {
+                    id: id,
+                    alias: id,
                     name: data.nameNewPanel,
                     selectedItem: '',
                     type: data.type,
@@ -2229,11 +2314,12 @@ var MenuComponent = /** @class */ (function () {
                     shared: 0,
                     weight: 10,
                     widgets: []
-                }).subscribe(function (res) {
+                };
+                var dashboardStoreSubscription_1 = _this._ds.postDashboardStore(dashboardData_1.id, dashboardData_1).subscribe(function (res) {
                     dashboardStoreSubscription_1.unsubscribe();
                     _this.updateDashboardList();
                     if (res && res.status === 'ok') {
-                        _this.router.navigate(["/dashboard/" + id_1]);
+                        _this.router.navigate(["/dashboard/" + dashboardData_1.id]);
                     }
                 });
             }
@@ -4046,6 +4132,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_call_report_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../services/call/report.service */ "./src/app/services/call/report.service.ts");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _app_helpers_functions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @app/helpers/functions */ "./src/app/helpers/functions.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4059,6 +4146,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var TabQosComponent = /** @class */ (function () {
     function TabQosComponent(_ers, _dtrs) {
         this._ers = _ers;
@@ -4067,54 +4155,19 @@ var TabQosComponent = /** @class */ (function () {
         this.labels = [];
         this.isRTCP = false;
         this.isRTP = false;
-        this.chartDataRTP = [{
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'TOTAL_PK'
-            }, {
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'EXPECTED_PK'
-            }, {
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'JITTER'
-            }, {
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'MOS'
-            }, {
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'DELTA'
-            }, {
-                data: [1, 2, 3, 4, 5, 6],
-                label: 'PACKET_LOSS'
-            },
-        ];
+        this.chartDataRTP = [];
         this.chartLabelsRTP = [];
-        this.lineChartColorsRTP = [
-            {
-                backgroundColor: 'rgba(255, 127, 127, 0.5)',
-                borderColor: 'rgba(255, 127, 127, 1)'
-            }, {
-                backgroundColor: 'rgba(124, 249, 177, 0.5)',
-                borderColor: 'rgba(124, 249, 177, 1)'
-            }, {
-                backgroundColor: 'rgba(0, 255, 255, 0.5)',
-                borderColor: 'rgba(0, 255, 255, 1)'
-            }, {
-                backgroundColor: 'rgba(222, 184, 135, 0.5)',
-                borderColor: 'rgba(222, 184, 135, 1)'
-            }, {
-                backgroundColor: 'rgba(100, 149, 237, 0.5)',
-                borderColor: 'rgba(100, 149, 237, 1)'
-            }, {
-                backgroundColor: 'rgba(7, 136, 24, 0.5)',
-                borderColor: 'rgba(7, 136, 24, 1)'
-            }
-        ];
+        this.lineChartColorsRTP = [];
         this.chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                duration: 200
+            },
             scales: {
                 yAxes: [{
                         ticks: {
+                            callback: this.yAxisFormatter.bind(this),
                             beginAtZero: true
                         }
                     }]
@@ -4126,41 +4179,8 @@ var TabQosComponent = /** @class */ (function () {
         this.chartLabels = [];
         this.chartType = 'bar';
         this.chartLegend = true;
-        this.lineChartColors = [
-            {
-                backgroundColor: 'rgba(255, 127, 127, 0.5)',
-                borderColor: 'rgba(255, 127, 127, 1)'
-            }, {
-                backgroundColor: 'rgba(124, 249, 177, 0.5)',
-                borderColor: 'rgba(124, 249, 177, 1)'
-            }, {
-                backgroundColor: 'rgba(0, 255, 255, 0.5)',
-                borderColor: 'rgba(0, 255, 255, 1)'
-            }, {
-                backgroundColor: 'rgba(222, 184, 135, 0.5)',
-                borderColor: 'rgba(222, 184, 135, 1)'
-            }, {
-                backgroundColor: 'rgba(100, 149, 237, 0.5)',
-                borderColor: 'rgba(100, 149, 237, 1)'
-            }
-        ];
-        this.chartData = [{
-                data: [],
-                label: 'packets'
-            }, {
-                data: [],
-                label: 'octets'
-            }, {
-                data: [],
-                label: 'highest_seq_no'
-            }, {
-                data: [],
-                label: 'ia_jitter'
-            }, {
-                data: [],
-                label: 'lsr'
-            },
-        ];
+        this.lineChartColors = [];
+        this.chartData = [];
         this.listRTP = [
             { name: 'min TOTAL_PK', value: Number.MAX_VALUE, color: 'color1' },
             { name: 'avg TOTAL_PK', value: 0, color: 'color1' },
@@ -4227,13 +4247,18 @@ var TabQosComponent = /** @class */ (function () {
         }
         this.chartLabelsRTP = [];
         data.forEach(function (item) {
+            var _a;
             item.raw = JSON.parse(item.raw);
             var i = item.raw;
-            _this.chartLabelsRTP.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('DD-MM-YYYY hh:mm:ss.SSS'));
+            // this.chartLabelsRTP.push(moment( item.create_date ).format('hh:mm'));
+            var _d = moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('HH:mm:ss.SSS');
+            var _arrD = [_d, _d, _d, _d, _d];
+            (_a = _this.chartLabelsRTP).push.apply(_a, _arrD);
             if (_this.streamsRTP.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
                 _this.streamsRTP.push({
                     dstIp: item.dstIp,
                     srcIp: item.srcIp,
+                    create_date: [],
                     _indeterminate: false,
                     _chacked: true,
                     TOTAL_PKData: [],
@@ -4252,6 +4277,7 @@ var TabQosComponent = /** @class */ (function () {
             }
             _this.streamsRTP.forEach(function (k) {
                 if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
+                    k.create_date.push(item.create_date);
                     // TOTAL_PK
                     k.TOTAL_PKData.push(i.TOTAL_PK);
                     // EXPECTED_PK
@@ -4294,13 +4320,13 @@ var TabQosComponent = /** @class */ (function () {
         this.listRTP.forEach(function (item) {
             item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
         });
-        this.listRTP[1].value = ((this.listRTP[0].value + this.listRTP[2].value) / 2);
-        this.listRTP[4].value = ((this.listRTP[3].value + this.listRTP[5].value) / 2);
-        this.listRTP[7].value = ((this.listRTP[6].value + this.listRTP[8].value) / 2);
-        this.listRTP[10].value = ((this.listRTP[9].value + this.listRTP[11].value) / 2);
-        this.listRTP[13].value = ((this.listRTP[12].value + this.listRTP[14].value) / 2);
-        this.listRTP[16].value = ((this.listRTP[15].value + this.listRTP[17].value) / 2);
-        this.renderChartData(this.streamsRTP, this.chartDataRTP);
+        this.listRTP[1].value = Math.floor((this.listRTP[0].value + this.listRTP[2].value) / 2);
+        this.listRTP[4].value = Math.floor((this.listRTP[3].value + this.listRTP[5].value) / 2);
+        this.listRTP[7].value = Math.floor((this.listRTP[6].value + this.listRTP[8].value) / 2);
+        this.listRTP[10].value = Math.floor((this.listRTP[9].value + this.listRTP[11].value) / 2);
+        this.listRTP[13].value = Math.floor((this.listRTP[12].value + this.listRTP[14].value) / 2);
+        this.listRTP[16].value = Math.floor((this.listRTP[15].value + this.listRTP[17].value) / 2);
+        this.renderChartData(this.streamsRTP, 'RTP');
         this.isRTP = true;
     };
     TabQosComponent.prototype.parseRTCP = function (data) {
@@ -4311,13 +4337,19 @@ var TabQosComponent = /** @class */ (function () {
         }
         this.chartLabels = [];
         data.forEach(function (item) {
+            var _a;
             item.raw = JSON.parse(item.raw);
             var i = item.raw;
-            _this.chartLabels.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('DD-MM-YYYY hh:mm:ss.SSS'));
+            // this.chartLabels.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss.SSS'));
+            var _d = moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('HH:mm:ss.SSS');
+            var _arrD = [_d, _d, _d, _d, _d];
+            (_a = _this.chartLabels).push.apply(_a, _arrD);
+            console.log(_d);
             if (_this.streams.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
                 _this.streams.push({
                     dstIp: item.dstIp,
                     srcIp: item.srcIp,
+                    create_date: [],
                     _indeterminate: false,
                     _chacked: true,
                     packetsData: [],
@@ -4334,6 +4366,7 @@ var TabQosComponent = /** @class */ (function () {
             }
             _this.streams.forEach(function (k) {
                 if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
+                    k.create_date.push(item.create_date);
                     // packets
                     k.packetsData.push(i.sender_information.packets);
                     // octets
@@ -4394,25 +4427,101 @@ var TabQosComponent = /** @class */ (function () {
         this.list[10].value = Math.floor((this.list[9].value + this.list[11].value) / 2);
         // avg lsr
         this.list[13].value = Math.floor((this.list[12].value + this.list[14].value) / 2);
-        this.renderChartData(this.streams, this.chartData);
+        this.renderChartData(this.streams, 'RTCP');
         this.isRTCP = true;
     };
-    TabQosComponent.prototype.renderChartData = function (streams, chartData) {
+    TabQosComponent.prototype.renderChartData = function (streams, typeChartData) {
         var _this = this;
-        chartData.forEach(function (i) {
-            i.data = [];
-        });
+        var chartData = [{
+                data: [],
+                backgroundColor: [],
+                borderColor: [],
+                fill: false,
+                borderWidth: 0
+            }];
+        if (typeChartData === 'RTCP') {
+            this.lineChartColors = [];
+        }
+        else {
+            this.lineChartColorsRTP = [];
+        }
+        console.log(streams);
         streams.forEach(function (item) {
-            chartData.forEach(function (val) {
-                var arrData = val.data || [];
-                val.data = arrData.concat(_this.getData(item, val.label));
+            var __sortableData = [];
+            _this.formatterStream(item).forEach(function (val) {
+                var label = val.index;
+                var unique = item.srcIp + label + item.dstIp;
+                var rColor = _this.setColor(label, unique, typeChartData);
+                item[label + '_color'] = rColor.backgroundColor;
+                var d = _this.getData(item, label);
+                d.forEach(function (i, k) {
+                    __sortableData.push({
+                        data: i,
+                        lable: label,
+                        backgroundColor: rColor.backgroundColor,
+                        borderColor: rColor.borderColor,
+                        date_time: item.create_date[k]
+                    });
+                });
             });
+            (function (c) {
+                var __colors = {
+                    backgroundColor: c.backgroundColor || [],
+                    borderColor: c.hoverBackgroundColor || []
+                };
+                __sortableData.sort(function (a, b) {
+                    a = a.date_time;
+                    b = b.date_time;
+                    return a > b ? -1 : a < b ? 1 : 0;
+                }).forEach(function (d) {
+                    c.data.push(d.data);
+                    __colors.backgroundColor.push(d.backgroundColor);
+                    __colors.borderColor.push(d.borderColor);
+                });
+                c.borderColor = c.backgroundColor = __colors.backgroundColor;
+                c.hoverBorderColor = c.hoverBackgroundColor = __colors.borderColor;
+            })(chartData[0]);
         });
+        console.log(chartData);
+        if (typeChartData === 'RTCP') {
+            this.chartData = chartData;
+        }
+        else if (typeChartData === 'RTP') {
+            this.chartDataRTP = chartData;
+        }
+        else {
+            // error
+            throw new Error('[408::]renderChartData - typeChartData should be equel RTP or RTCP');
+        }
+    };
+    TabQosComponent.prototype.setColor = function (labelName, str, typeChartData) {
+        var rColor = _app_helpers_functions__WEBPACK_IMPORTED_MODULE_4__["Functions"]
+            .getColorByString(str)
+            .match(/.{2}/g)
+            .map(function (i) { return parseInt(i, 16); })
+            .join(', ');
+        var rColor100 = "rgba(" + rColor + ", 1)";
+        var rColor50 = "rgba(" + rColor + ", 0.5)";
+        return {
+            backgroundColor: rColor50,
+            borderColor: rColor100
+        };
+    };
+    TabQosComponent.prototype.formatterStream = function (streamItem) {
+        var _temp = Object.keys(streamItem)
+            .map(function (i) { return i.replace('Data', '').replace('_color', ''); })
+            .reduce(function (a, b) { return (a[b] = (a[b] || 1) + 1, a); }, {});
+        return Object.keys(_temp).filter(function (i) { return _temp[i] >= 3; }).map(function (i) { return ({
+            index: i,
+            bool: streamItem[i],
+            data: streamItem[i + 'Data'],
+            color: streamItem[i + '_color']
+        }); });
     };
     TabQosComponent.prototype.getData = function (item, index) {
         var data = item[index + 'Data'] || [];
         if (item[index]) {
-            return data;
+            return _app_helpers_functions__WEBPACK_IMPORTED_MODULE_4__["Functions"].cloneObject(data);
         }
         return Array.from({ length: data.length }, function (i) { return 0; });
     };
@@ -4454,7 +4563,7 @@ var TabQosComponent = /** @class */ (function () {
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr);
         }
-        this.renderChartData(this.streams, this.chartData);
+        this.renderChartData(this.streams, 'RTCP');
     };
     TabQosComponent.prototype.onChangeChackBoxRTP = function (item, base) {
         if (base === void 0) { base = false; }
@@ -4467,7 +4576,15 @@ var TabQosComponent = /** @class */ (function () {
             item._indeterminate = !item._chacked &&
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
-        this.renderChartData(this.streamsRTP, this.chartDataRTP);
+        this.renderChartData(this.streamsRTP, 'RTP');
+    };
+    TabQosComponent.prototype.yAxisFormatter = function (label) {
+        return (function (num) {
+            var f = function (i) { return Math.pow(1024, i); };
+            var n = 4;
+            while (n-- && !(f(n) < num)) { }
+            return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
+        })(label);
     };
     TabQosComponent.ctorParameters = function () { return [
         { type: _services_call_report_service__WEBPACK_IMPORTED_MODULE_2__["CallReportService"] },
@@ -5549,6 +5666,65 @@ var SettingClockWidgetComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.css":
+/*!****************************************************************************!*\
+  !*** ./src/app/components/widgets/dialog-alarm/dialog-alarm.component.css ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".title {\n    margin: -1.5rem -1.5rem 2rem -1.5rem;\n    width: initial !important;\n    display: flex;\n    justify-content: space-between;\n}\n\n.example-container {\n    display: flex;\n    flex-direction: column;\n}\n\n.example-container > * {\n    width: 100%;\n}\n\n.alarm {\n    font-size: 54pt;\n    color: red;\n    height: 71px;\n    width: 71px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL2RpYWxvZy1hbGFybS9kaWFsb2ctYWxhcm0uY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLG9DQUFvQztJQUNwQyx5QkFBeUI7SUFDekIsYUFBYTtJQUNiLDhCQUE4QjtBQUNsQzs7QUFFQTtJQUNJLGFBQWE7SUFDYixzQkFBc0I7QUFDMUI7O0FBRUE7SUFDSSxXQUFXO0FBQ2Y7O0FBRUE7SUFDSSxlQUFlO0lBQ2YsVUFBVTtJQUNWLFlBQVk7SUFDWixXQUFXO0FBQ2YiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dpZGdldHMvZGlhbG9nLWFsYXJtL2RpYWxvZy1hbGFybS5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnRpdGxlIHtcbiAgICBtYXJnaW46IC0xLjVyZW0gLTEuNXJlbSAycmVtIC0xLjVyZW07XG4gICAgd2lkdGg6IGluaXRpYWwgIWltcG9ydGFudDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2Vlbjtcbn1cblxuLmV4YW1wbGUtY29udGFpbmVyIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG59XG5cbi5leGFtcGxlLWNvbnRhaW5lciA+ICoge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4uYWxhcm0ge1xuICAgIGZvbnQtc2l6ZTogNTRwdDtcbiAgICBjb2xvcjogcmVkO1xuICAgIGhlaWdodDogNzFweDtcbiAgICB3aWR0aDogNzFweDtcbn0iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts":
+/*!***************************************************************************!*\
+  !*** ./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts ***!
+  \***************************************************************************/
+/*! exports provided: DialogAlarmComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DialogAlarmComponent", function() { return DialogAlarmComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var DialogAlarmComponent = /** @class */ (function () {
+    function DialogAlarmComponent(dialogRef) {
+        this.dialogRef = dialogRef;
+    }
+    DialogAlarmComponent.prototype.onNoClick = function () {
+        this.dialogRef.close();
+    };
+    DialogAlarmComponent.ctorParameters = function () { return [
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] }
+    ]; };
+    DialogAlarmComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-dialog-alarm',
+            template: __webpack_require__(/*! raw-loader!./dialog-alarm.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/dialog-alarm/dialog-alarm.component.html"),
+            styles: [__webpack_require__(/*! ./dialog-alarm.component.css */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.css")]
+        }),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"]])
+    ], DialogAlarmComponent);
+    return DialogAlarmComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/widgets/iframe-widget/iframe-widget.component.css":
 /*!******************************************************************************!*\
   !*** ./src/app/components/widgets/iframe-widget/iframe-widget.component.css ***!
@@ -5602,14 +5778,12 @@ var IframeWidgetComponent = /** @class */ (function () {
             title: 'Frame title',
             typeDataRange: 'grafana',
             desc: 'Some description',
-            // panelListValue: 'CPU',
-            // dashboardSource: 'disk',
-            url: 'http://de9.sipcapture.io:3000/d-solo/VF_3OvKZz/test',
-            serverUrl: 'http://localhost:3000/',
+            url: 'none',
+            serverUrl: 'none',
             params: {
                 orgId: 1,
                 panelId: 2,
-                refresh: '',
+                refresh: '1h',
                 from: 'now-5m',
                 to: 'now',
                 theme: 'light'
@@ -5639,6 +5813,10 @@ var IframeWidgetComponent = /** @class */ (function () {
     };
     IframeWidgetComponent.prototype.buildUrl = function (noCache) {
         if (noCache === void 0) { noCache = false; }
+        if (this._config.url === 'none') {
+            this.iframeLoaded = false;
+            return;
+        }
         var params = this._config.params;
         if (noCache) {
             params.rand = (Math.random() * 999999).toFixed(0);
@@ -5777,8 +5955,14 @@ var SettingIframeWidgetComponent = /** @class */ (function () {
         var _this = this;
         var getUrlSubscription = this._ps.getProxyGrafanaUrl().subscribe(function (res) {
             getUrlSubscription.unsubscribe();
-            _this.data.serverUrl = res.data;
-            console.log("this.data.serverUrl", _this.data.serverUrl);
+            if (_this.data.serverUrl === 'none' || _this.data.url === 'none') {
+                _this.data.serverUrl = res.data;
+                _this.data.url = res.data;
+            }
+            else {
+                _this.data.serverUrl = res.data;
+            }
+            console.log('this.data.serverUrl', _this.data.serverUrl);
             _this.onGetGrafanaOrg();
         });
     };
@@ -5817,12 +6001,12 @@ var SettingIframeWidgetComponent = /** @class */ (function () {
     };
     SettingIframeWidgetComponent.prototype.onPanelSelect = function () {
         this.data.panelListValue = this.panelListValue.title;
-        this.data.url = this.data.serverUrl + "/d-solo/" + this.panelListValue.uid + "/" + this.panelListValue.title;
+        this.data.url = this.data.serverUrl + '/d-solo/' + (this.panelListValue.uid || '...') + '/' + (this.panelListValue.title || '...');
         this.data.params.panelId = this.panelListValue.pid;
     };
     SettingIframeWidgetComponent.prototype.compareDashboard = function (a, b) {
         // data.dashboardSource
-        // this.data.panelListValue 
+        // this.data.panelListValue
         return a.uid === b.uid && a.id === b.id;
     };
     SettingIframeWidgetComponent.prototype.comparePanel = function (a, b) {
@@ -5855,7 +6039,7 @@ var SettingIframeWidgetComponent = /** @class */ (function () {
 /*!*********************************************!*\
   !*** ./src/app/components/widgets/index.ts ***!
   \*********************************************/
-/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent */
+/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5889,6 +6073,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./iframe-widget/setting-iframe-widget.component */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__["SettingIframeWidgetComponent"]; });
+
+/* harmony import */ var _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./dialog-alarm/dialog-alarm.component */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DialogAlarmComponent", function() { return _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_10__["DialogAlarmComponent"]; });
+
 
 
 
@@ -6269,6 +6457,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_statistic_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/statistic.service */ "./src/app/services/statistic.service.ts");
 /* harmony import */ var _services_alert_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/alert.service */ "./src/app/services/alert.service.ts");
 /* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
+/* harmony import */ var _app_helpers_functions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @app/helpers/functions */ "./src/app/helpers/functions.ts");
+/* harmony import */ var _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../dialog-alarm/dialog-alarm.component */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6288,12 +6478,15 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 
 
 
+
+
 var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
-    function SettingInfluxdbchartWidgetComponent(_ss, _dtrs, alertService, dialogRef, data) {
+    function SettingInfluxdbchartWidgetComponent(_ss, _dtrs, alertService, dialogAlarm, dialogRef, data) {
         var _this = this;
         this._ss = _ss;
         this._dtrs = _dtrs;
         this.alertService = alertService;
+        this.dialogAlarm = dialogAlarm;
         this.dialogRef = dialogRef;
         this.data = data;
         this.displayedColumns = ['id', 'panelDataSource', 'database', 'retentionPolicy', 'buttons'];
@@ -6315,35 +6508,39 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
         if (data.empty) {
             return;
         }
-        this.chartType = data.chart.type.value;
-        this.chartTitle = data.title;
-        this.format = data.format.value;
-        if (data.panel && data.panel.queries) {
-            var queries = data.panel.queries;
-            // const queries: Array<any> = data.dataquery.data;
-            queries.forEach(function (item) {
-                var item2 = data.dataquery.data.filter(function (i) {
-                    return i.database.name === item.database.name &&
-                        i.retention.name === item.retention.name;
-                })[0];
-                _this.dataSource.push({
-                    id: item.name,
-                    panelDataSource: item.type.name,
-                    database: item.database.name,
-                    retentionPolicy: item.retention.name,
-                    buttons: true,
-                    detail: {
-                        measurement: item2.main.name,
-                        counter: item2.type.map(function (i) { return i.name; }),
-                        tags: item2.tag.map(function (i) { return i.name; }),
-                        values: [],
-                        sum: item2.sum,
-                        raw: item2.raw || ''
-                    }
+        try {
+            this.chartType = data.chart.type.value;
+            this.chartTitle = data.title;
+            this.format = data.format.value;
+            if (data.panel && data.panel.queries) {
+                data.dataquery.data.map(function (v, k) { return ({
+                    panel_queries: _app_helpers_functions__WEBPACK_IMPORTED_MODULE_7__["Functions"].cloneObject(data.panel.queries[k]),
+                    dataquery: _app_helpers_functions__WEBPACK_IMPORTED_MODULE_7__["Functions"].cloneObject(v)
+                }); }).forEach(function (item) {
+                    _this.dataSource.push({
+                        id: item.panel_queries.name,
+                        panelDataSource: item.panel_queries.type.name,
+                        database: item.panel_queries.database.name,
+                        retentionPolicy: item.panel_queries.retention.name,
+                        buttons: true,
+                        detail: {
+                            measurement: item.dataquery.main.name,
+                            counter: item.dataquery.type.map(function (i) { return i.name; }),
+                            tags: item.dataquery.tag.map(function (i) { return i.name; }),
+                            values: [],
+                            sum: item.dataquery.sum,
+                            raw: item.dataquery.raw || ''
+                        }
+                    });
                 });
-            });
+            }
+            this.updateResult();
         }
-        this.updateResult();
+        catch (err) {
+            this.onNoClick();
+            this.dialogAlarm.open(_dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_8__["DialogAlarmComponent"]);
+            console.warn('ERROR config broken');
+        }
     }
     SettingInfluxdbchartWidgetComponent.prototype.onNoClick = function () {
         this.dialogRef.close();
@@ -6374,9 +6571,10 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             }, 5000);
         }
     };
-    SettingInfluxdbchartWidgetComponent.prototype.editRecord = function (id) {
+    SettingInfluxdbchartWidgetComponent.prototype.editRecord = function (element) {
         var _this = this;
         this.showDetail();
+        var id = element.id;
         this.selecedEditQuery = this.dataSource.filter(function (item) { return item.id === id; })[0];
         if (!this.selecedEditQuery.detail) {
             this.selecedEditQuery.detail = {
@@ -6737,6 +6935,7 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
         { type: _services_statistic_service__WEBPACK_IMPORTED_MODULE_4__["StatisticService"] },
         { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__["DateTimeRangeService"] },
         { type: _services_alert_service__WEBPACK_IMPORTED_MODULE_5__["AlertService"] },
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"] },
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
         { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
     ]; };
@@ -6750,10 +6949,11 @@ var SettingInfluxdbchartWidgetComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./setting-influxdbchart-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/influxdbchart-widget/setting-influxdbchart-widget.component.html"),
             styles: [__webpack_require__(/*! ./setting-influxdbchart-widget.component.css */ "./src/app/components/widgets/influxdbchart-widget/setting-influxdbchart-widget.component.css")]
         }),
-        __param(4, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __param(5, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
         __metadata("design:paramtypes", [_services_statistic_service__WEBPACK_IMPORTED_MODULE_4__["StatisticService"],
             _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_6__["DateTimeRangeService"],
             _services_alert_service__WEBPACK_IMPORTED_MODULE_5__["AlertService"],
+            _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"],
             _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
     ], SettingInfluxdbchartWidgetComponent);
     return SettingInfluxdbchartWidgetComponent;
@@ -7061,6 +7261,7 @@ var ProtosearchWidgetComponent = /** @class */ (function () {
     ProtosearchWidgetComponent.prototype.handleEnterKeyPress = function (event) {
         var tagName = event.target.tagName.toLowerCase();
         if (tagName !== 'textarea') {
+            setTimeout(this.doSearchResult.bind(this), 100);
             return false;
         }
     };
@@ -7128,6 +7329,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingProtosearchWidgetComponent", function() { return SettingProtosearchWidgetComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
 /* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
+/* harmony import */ var _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../dialog-alarm/dialog-alarm.component */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7142,9 +7344,11 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 };
 
 
+
 var SettingProtosearchWidgetComponent = /** @class */ (function () {
-    function SettingProtosearchWidgetComponent(dialogRef, data) {
+    function SettingProtosearchWidgetComponent(dialogRef, dialogAlarm, data) {
         this.dialogRef = dialogRef;
+        this.dialogAlarm = dialogAlarm;
         this.data = data;
         this.isValidForm = true;
         this.proto = {
@@ -7163,41 +7367,48 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
         };
         this.defaultFields = [
             {
-                id: "limit",
-                name: "Query Limit",
-                type: "integer",
-                index: "none",
-                form_type: "input",
-                form_default: "100",
+                id: 'limit',
+                name: 'Query Limit',
+                type: 'integer',
+                index: 'none',
+                form_type: 'input',
+                form_default: '100',
                 disabled: false,
             }
         ];
         if (!data) {
             return;
         }
-        this.resultConfig.title = data.config.config.title || '';
-        this.resultConfig.isButton = data.isButton;
-        this.resultConfig.profile = data.config.config.protocol_profile.value;
-        this.resultConfig.protocol_id = data.config.protocol_id;
-        console.log({ data: data });
-        for (var _i = 0, _a = data.mapping.data; _i < _a.length; _i++) {
-            var item = _a[_i];
-            /* check if we have default fields inside */
-            if (item.fields_mapping.filter(function (it) { return it.id === 'limit'; }).length == 0) {
-                item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
+        try {
+            this.resultConfig.title = data.config.config.title || '';
+            this.resultConfig.isButton = data.isButton;
+            this.resultConfig.profile = data.config.config.protocol_profile.value;
+            this.resultConfig.protocol_id = data.config.protocol_id;
+            for (var _i = 0, _a = data.mapping.data; _i < _a.length; _i++) {
+                var item = _a[_i];
+                /* check if we have default fields inside */
+                if (item.fields_mapping.filter(function (it) { return it.id === 'limit'; }).length === 0) {
+                    item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
+                }
             }
+            if (data.config.protocol_id) {
+                this.proto.hep_alias = data.config.protocol_id.name;
+                this.proto.profile = this.resultConfig.profile;
+                this.proto.fields_mapping = data.mapping.data
+                    .filter(function (i) { return i.hep_alias === data.config.protocol_id.name &&
+                    i.profile === data.config.config.protocol_profile.value; })[0]
+                    .fields_mapping.map(function (i) {
+                    i.selected = data.config.fields.map(function (j) { return j.field_name; }).indexOf(i.id) !== -1;
+                    return i;
+                });
+            }
+            this.validate();
         }
-        if (data.config.protocol_id) {
-            this.proto.hep_alias = data.config.protocol_id.name;
-            this.proto.profile = this.resultConfig.profile;
-            this.proto.fields_mapping = data.mapping.data
-                .filter(function (i) { return i.hep_alias === data.config.protocol_id.name && i.profile === data.config.config.protocol_profile.value; })[0]
-                .fields_mapping.map(function (i) {
-                i.selected = data.config.fields.map(function (j) { return j.field_name; }).indexOf(i.id) !== -1;
-                return i;
-            });
+        catch (err) {
+            this.onNoClick();
+            this.dialogAlarm.open(_dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_2__["DialogAlarmComponent"]);
+            console.warn('ERROR config broken');
         }
-        this.validate();
     }
     SettingProtosearchWidgetComponent.prototype.ngOnInit = function () {
         this.validate();
@@ -7236,6 +7447,7 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
     };
     SettingProtosearchWidgetComponent.ctorParameters = function () { return [
         { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"] },
         { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
     ]; };
     SettingProtosearchWidgetComponent = __decorate([
@@ -7244,8 +7456,9 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./setting-protosearch-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/protosearch-widget/setting-protosearch-widget.component.html"),
             styles: [__webpack_require__(/*! ./setting-protosearch-widget.component.css */ "./src/app/components/widgets/protosearch-widget/setting-protosearch-widget.component.css")]
         }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"],
+            _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"], Object])
     ], SettingProtosearchWidgetComponent);
     return SettingProtosearchWidgetComponent;
 }());
@@ -7790,6 +8003,9 @@ var Functions = /** @class */ (function () {
             item: item
         }); });
         return dataSource;
+    };
+    Functions.cloneObject = function (src) {
+        return JSON.parse(JSON.stringify(src));
     };
     return Functions;
 }());

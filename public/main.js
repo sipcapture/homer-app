@@ -5798,7 +5798,7 @@ var IframeWidgetComponent = /** @class */ (function () {
             params: {
                 orgId: 1,
                 panelId: 2,
-                refresh: '',
+                refresh: '1h',
                 from: 'now-5m',
                 to: 'now',
                 theme: 'light'
@@ -10304,7 +10304,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
 var environment = {
     production: true,
-    apiUrl: "http://de9.sipcapture.io/api/v3"
+    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
 };
 
 
@@ -10325,7 +10325,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 var environment = {
     production: false,
-    apiUrl: "http://de9.sipcapture.io/api/v3"
+    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
 };
 /*
  * For easier debugging in development mode, you can import the following file

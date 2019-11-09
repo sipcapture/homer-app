@@ -326,7 +326,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n    <div>Add 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Widget</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n  \n<div mat-dialog-content style=\"text-align: center\">\n  <mat-grid-list cols=\"2\" rowHeight=\"5:1\">\n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Visualize</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>World Clock</h3>\n        <p>Display date and time</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'clock'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Metrics</h3>\n        <p>Display InfluxDB/Prometheus Metrics</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'influxdbchart'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Iframe component</h3>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'iframe'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    \n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Search</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Proto Search</h3>\n        <p>Display Protocol Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'protosearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Loki Search</h3>\n        <p>Display Loki Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'rsearch'\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n  </mat-grid-list>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n</div>"
+module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Widget</div>\n  <button mat-icon-button (click)=\"onNoClick()\">\n    <mat-icon>close</mat-icon>\n  </button>\n</mat-toolbar>\n  \n<div mat-dialog-content style=\"text-align: center\">\n  <mat-grid-list cols=\"2\" rowHeight=\"5:1\">\n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Visualize</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>World Clock</h3>\n        <p>Display date and time</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'clock'\" class=\"add-widget-button\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Metrics</h3>\n        <p>Display InfluxDB/Prometheus Metrics</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'influxdbchart'\" class=\"add-widget-button\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Grafana</h3>\n        <p>Display Grafana Metrics</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'iframe'\" class=\"add-widget-button\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    \n    <mat-grid-tile colspan=\"2\"><div class=\"sub-title\">Search</div></mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Proto Search</h3>\n        <p>Display Protocol Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'protosearch'\" class=\"add-widget-button\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n    <mat-grid-tile rowspan=\"3\">\n      <div>\n        <h3>Loki Search</h3>\n        <p>Display Loki Search Form</p>\n        <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"'rsearch'\" class=\"add-widget-button\" cdkFocusInitial><mat-icon>add</mat-icon>add</button>\n      </div>\n    </mat-grid-tile>\n  </mat-grid-list>\n</div>\n\n<div mat-dialog-actions style=\"display: flex; margin-bottom: 0; justify-content: space-between;\">\n  <button mat-raised-button (click)=\"onNoClick()\">Cancel</button>\n</div>"
 
 /***/ }),
 
@@ -381,7 +381,7 @@ module.exports = "<mat-card>\n    <mat-card-header>\n        <mat-card-title>\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button\n\t\t\t\t[matMenuTriggerFor]=\"panels\"\n\t\t\t\t[(ngModel)]=\"panelName\" name=\"panelName\"\n\t\t\t\tngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item \n\t\t\t\t\t*ngFor=\"let dashboardItem of dashboards | filter : searchText\"\n\t\t\t\t\t[className]=\"'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')\"\n\t\t\t\t\t(click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\"\n\t\t\t\t\t[title]=\"dashboardItem.name + ' (' + dashboardItem.id + ')'\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t\n\t\t\t</span>\n\t\t\t<button mat-button (click)=\"refresh()\" class=\"btn-refrash\">\n\t\t\t\t<mat-icon>refresh</mat-icon>\n\t\t\t</button>\n\t\t\t<button mat-button class=\"btn-refrash-timer\" name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>exit_to_app</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
+module.exports = "<mat-toolbar color=\"primary\" class=\"header\">\n\t<div class=\"logo-base\" (click)=\"panelName = 'home'; dashboardGo('/home')\">\n\t\t<img src=\"/assets/images/homerseven.png\" />\n\t\t<div class=\"logo-text\">HOMER</div>\n\t</div>\n\t<div>\n\t\t<div style=\"float: right; margin-bottom: 0rem; \">\n\t\t\t<button mat-button (click)=\"onPreference()\">Preference</button> \n\t\t\t<button mat-button\n\t\t\t\t[matMenuTriggerFor]=\"panels\"\n\t\t\t\t[(ngModel)]=\"panelName\" name=\"panelName\"\n\t\t\t\tngDefaultControl>Panels: {{panelName || 'Home'}}</button>\n\t\t\t<mat-menu #panels=\"matMenu\">\n\t\t\t\t<mat-form-field style=\"margin-left: 1rem;\">\n\t\t\t\t\t<mat-label>filter dashboards...</mat-label>\n\t\t\t\t\t<input matInput [(ngModel)]=\"searchText\" (click)=\"$event.stopPropagation();\">\n\t\t\t\t</mat-form-field>\n\t\t\t\t<button mat-menu-item \n\t\t\t\t\t*ngFor=\"let dashboardItem of dashboards | filter : searchText\"\n\t\t\t\t\t[className]=\"'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')\"\n\t\t\t\t\t(click)=\"panelName = dashboardItem.name; dashboardGo(dashboardItem.href)\"\n\t\t\t\t\t[title]=\"dashboardItem.name + ' (' + dashboardItem.id + ')'\">\n\t\t\t\t\t<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}\n\t\t\t\t</button>\n\t\t\t\t<button mat-menu-item (click)=\"onAddDashboard()\">\n\t\t\t\t\t<mat-icon>add</mat-icon>\n\t\t\t\t\tAdd New Dashboard\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t\n\t\t\t<span class=\"mat-button time-range-icon\">\n\t\t\t\t<mat-icon>access_time</mat-icon>\n\t\t\t</span>\n\t\t\t<span style=\"color: white;\">\n\t\t\t\t<input type=\"button\" class=\"mat-button\" ngxDaterangepickerMd\n\t\t\t\t[showCustomRangeLabel]=\"true\"\n\t\t\t\t[alwaysShowCalendars]=\"true\"\n\t\t\t\t[ranges]=\"ranges\"\n\t\t\t\t[linkedCalendars]=\"true\"\n\t\t\t\t[showClearButton]=\"false\"\n\t\t\t\t[autoApply]=\"false\"\n\t\t\t\t[opens]=\"'left'\"\n\t\t\t\t[timePicker]=\"true\"\n\t\t\t\t[timeInput]=\"true\"\n\t\t\t\t[timeZone]=\"true\"\t\t\t\t\n\t\t\t\t[timePickerSeconds]=\"true\"\n\t\t\t\t[timePickerIncrement]=\"1\"\n\t\t\t\t[locale]=\"{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}\"\n\t\t\t\t[timePicker24Hour]=\"true\"\n\t\t\t\t(rangeClicked)=\"onRangeClicked($event)\"\n\t\t\t\t(datesUpdated)=\"onDatesUpdated($event)\"\n\t\t\t\t[value]=\"selectedDateTimeRangeTitle\" />\n\t\t\t\n\t\t\t</span>\n\t\t\t<button mat-button (click)=\"refresh()\" class=\"btn-refrash\">\n\t\t\t\t<mat-icon>refresh</mat-icon>\n\t\t\t</button>\n\t\t\t<button mat-button class=\"btn-refrash-timer\" name=\"refresherName\" [matMenuTriggerFor]=\"refrasher\" [(ngModel)]=\"refresherName\" ngDefaultControl>\n\t\t\t\t{{refresherName || 'off'}}\n\t\t\t</button>\t\t\n\t\t\t<mat-menu #refrasher=\"matMenu\">\n\t\t\t\t<button mat-menu-item *ngFor=\"let item of refresherList\" (click)=\"refresherName = item.name; onRefrasher(item.value)\">\n\t\t\t\t\t{{ item.title }}\n\t\t\t\t</button>\n\t\t\t</mat-menu>\n\t\t\t<button mat-button (click)=\"logout()\"><mat-icon>exit_to_app</mat-icon></button>\n\t\t</div> \n\t</div>\n</mat-toolbar>\n<router-outlet></router-outlet>\n"
 
 /***/ }),
 
@@ -4155,15 +4155,55 @@ var TabQosComponent = /** @class */ (function () {
         this.labels = [];
         this.isRTCP = false;
         this.isRTP = false;
-        this.chartDataRTP = [];
+        this.chartDataRTP = [{
+                data: [],
+                label: 'TOTAL_PK',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'EXPECTED_PK',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'JITTER',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'MOS',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'DELTA',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'PACKET_LOSS',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            },
+        ];
         this.chartLabelsRTP = [];
         this.lineChartColorsRTP = [];
         this.chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
-            animation: {
-                duration: 200
-            },
             scales: {
                 yAxes: [{
                         ticks: {
@@ -4180,7 +4220,43 @@ var TabQosComponent = /** @class */ (function () {
         this.chartType = 'bar';
         this.chartLegend = true;
         this.lineChartColors = [];
-        this.chartData = [];
+        this.chartData = [{
+                data: [],
+                label: 'packets',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'octets',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'highest_seq_no',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'ia_jitter',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            }, {
+                data: [],
+                label: 'lsr',
+                backgroundColor: [],
+                hoverBackgroundColor: [],
+                fill: false,
+                borderWidth: 0
+            },
+        ];
         this.listRTP = [
             { name: 'min TOTAL_PK', value: Number.MAX_VALUE, color: 'color1' },
             { name: 'avg TOTAL_PK', value: 0, color: 'color1' },
@@ -4247,13 +4323,9 @@ var TabQosComponent = /** @class */ (function () {
         }
         this.chartLabelsRTP = [];
         data.forEach(function (item) {
-            var _a;
             item.raw = JSON.parse(item.raw);
             var i = item.raw;
-            // this.chartLabelsRTP.push(moment( item.create_date ).format('hh:mm'));
-            var _d = moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('HH:mm:ss.SSS');
-            var _arrD = [_d, _d, _d, _d, _d];
-            (_a = _this.chartLabelsRTP).push.apply(_a, _arrD);
+            _this.chartLabelsRTP.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('YYYY-MM-DD HH:mm:ss'));
             if (_this.streamsRTP.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
                 _this.streamsRTP.push({
                     dstIp: item.dstIp,
@@ -4326,7 +4398,7 @@ var TabQosComponent = /** @class */ (function () {
         this.listRTP[10].value = Math.floor((this.listRTP[9].value + this.listRTP[11].value) / 2);
         this.listRTP[13].value = Math.floor((this.listRTP[12].value + this.listRTP[14].value) / 2);
         this.listRTP[16].value = Math.floor((this.listRTP[15].value + this.listRTP[17].value) / 2);
-        this.renderChartData(this.streamsRTP, 'RTP');
+        this.renderChartData(this.streamsRTP, this.chartDataRTP);
         this.isRTP = true;
     };
     TabQosComponent.prototype.parseRTCP = function (data) {
@@ -4337,14 +4409,9 @@ var TabQosComponent = /** @class */ (function () {
         }
         this.chartLabels = [];
         data.forEach(function (item) {
-            var _a;
             item.raw = JSON.parse(item.raw);
             var i = item.raw;
-            // this.chartLabels.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss.SSS'));
-            var _d = moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('HH:mm:ss.SSS');
-            var _arrD = [_d, _d, _d, _d, _d];
-            (_a = _this.chartLabels).push.apply(_a, _arrD);
-            console.log(_d);
+            _this.chartLabels.push(moment__WEBPACK_IMPORTED_MODULE_3__(item.create_date).format('YYYY-MM-DD HH:mm:ss'));
             if (_this.streams.filter(function (j) { return j.dstIp === item.dstIp && j.srcIp === item.srcIp; }).length === 0) {
                 _this.streams.push({
                     dstIp: item.dstIp,
@@ -4366,7 +4433,7 @@ var TabQosComponent = /** @class */ (function () {
             }
             _this.streams.forEach(function (k) {
                 if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
-                    k.create_date.push(item.create_date);
+                    k.create_date.unshift(item.create_date);
                     // packets
                     k.packetsData.push(i.sender_information.packets);
                     // octets
@@ -4427,74 +4494,33 @@ var TabQosComponent = /** @class */ (function () {
         this.list[10].value = Math.floor((this.list[9].value + this.list[11].value) / 2);
         // avg lsr
         this.list[13].value = Math.floor((this.list[12].value + this.list[14].value) / 2);
-        this.renderChartData(this.streams, 'RTCP');
+        this.renderChartData(this.streams, this.chartData);
         this.isRTCP = true;
     };
-    TabQosComponent.prototype.renderChartData = function (streams, typeChartData) {
+    TabQosComponent.prototype.renderChartData = function (streams, chartData) {
         var _this = this;
-        var chartData = [{
-                data: [],
-                backgroundColor: [],
-                borderColor: [],
-                fill: false,
-                borderWidth: 0
-            }];
-        if (typeChartData === 'RTCP') {
-            this.lineChartColors = [];
-        }
-        else {
-            this.lineChartColorsRTP = [];
-        }
-        console.log(streams);
-        streams.forEach(function (item) {
-            var __sortableData = [];
-            _this.formatterStream(item).forEach(function (val) {
-                var label = val.index;
-                var unique = item.srcIp + label + item.dstIp;
-                var rColor = _this.setColor(label, unique, typeChartData);
-                item[label + '_color'] = rColor.backgroundColor;
-                var d = _this.getData(item, label);
-                d.forEach(function (i, k) {
-                    __sortableData.push({
-                        data: i,
-                        lable: label,
-                        backgroundColor: rColor.backgroundColor,
-                        borderColor: rColor.borderColor,
-                        date_time: item.create_date[k]
-                    });
-                });
-            });
-            (function (c) {
-                var __colors = {
-                    backgroundColor: c.backgroundColor || [],
-                    borderColor: c.hoverBackgroundColor || []
-                };
-                __sortableData.sort(function (a, b) {
-                    a = a.date_time;
-                    b = b.date_time;
-                    return a > b ? -1 : a < b ? 1 : 0;
-                }).forEach(function (d) {
-                    c.data.push(d.data);
-                    __colors.backgroundColor.push(d.backgroundColor);
-                    __colors.borderColor.push(d.borderColor);
-                });
-                c.borderColor = c.backgroundColor = __colors.backgroundColor;
-                c.hoverBorderColor = c.hoverBackgroundColor = __colors.borderColor;
-            })(chartData[0]);
+        chartData.forEach(function (i) {
+            i.data = [];
         });
-        console.log(chartData);
-        if (typeChartData === 'RTCP') {
-            this.chartData = chartData;
-        }
-        else if (typeChartData === 'RTP') {
-            this.chartDataRTP = chartData;
-        }
-        else {
-            // error
-            throw new Error('[408::]renderChartData - typeChartData should be equel RTP or RTCP');
-        }
+        streams.forEach(function (item) {
+            chartData.forEach(function (val) {
+                var unique = item.srcIp + val.label + item.dstIp;
+                var rColor = _this.setColor(unique);
+                var arrData = val.data || [];
+                var _data = _this.getData(item, val.label);
+                var arrBackgroundColor = val.backgroundColor || [];
+                var arrHoverBackgroundColor = val.hoverBackgroundColor || [];
+                val.data = arrData.concat(_data);
+                item[val.label + '_color'] = rColor.backgroundColor;
+                val.backgroundColor = arrBackgroundColor
+                    .concat(Array.from({ length: _data.length }, function (i) { return rColor.backgroundColor; }));
+                val.hoverBackgroundColor = arrHoverBackgroundColor
+                    .concat(Array.from({ length: _data.length }, function (i) { return rColor.borderColor; }));
+            });
+        });
+        console.log({ chartData: chartData });
     };
-    TabQosComponent.prototype.setColor = function (labelName, str, typeChartData) {
+    TabQosComponent.prototype.setColor = function (str) {
         var rColor = _app_helpers_functions__WEBPACK_IMPORTED_MODULE_4__["Functions"]
             .getColorByString(str)
             .match(/.{2}/g)
@@ -4506,17 +4532,6 @@ var TabQosComponent = /** @class */ (function () {
             backgroundColor: rColor50,
             borderColor: rColor100
         };
-    };
-    TabQosComponent.prototype.formatterStream = function (streamItem) {
-        var _temp = Object.keys(streamItem)
-            .map(function (i) { return i.replace('Data', '').replace('_color', ''); })
-            .reduce(function (a, b) { return (a[b] = (a[b] || 1) + 1, a); }, {});
-        return Object.keys(_temp).filter(function (i) { return _temp[i] >= 3; }).map(function (i) { return ({
-            index: i,
-            bool: streamItem[i],
-            data: streamItem[i + 'Data'],
-            color: streamItem[i + '_color']
-        }); });
     };
     TabQosComponent.prototype.getData = function (item, index) {
         var data = item[index + 'Data'] || [];
@@ -4563,7 +4578,7 @@ var TabQosComponent = /** @class */ (function () {
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr);
         }
-        this.renderChartData(this.streams, 'RTCP');
+        this.renderChartData(this.streams, this.chartData);
     };
     TabQosComponent.prototype.onChangeChackBoxRTP = function (item, base) {
         if (base === void 0) { base = false; }
@@ -4576,7 +4591,7 @@ var TabQosComponent = /** @class */ (function () {
             item._indeterminate = !item._chacked &&
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
-        this.renderChartData(this.streamsRTP, 'RTP');
+        this.renderChartData(this.streamsRTP, this.chartDataRTP);
     };
     TabQosComponent.prototype.yAxisFormatter = function (label) {
         return (function (num) {

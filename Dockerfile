@@ -12,6 +12,8 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 COPY . /app
 WORKDIR /app
+
+RUN touch /app/bootstrap
 RUN npm install \
  && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google \
  && npm install -g modclean && modclean -r

@@ -2048,7 +2048,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ":host {\n  display: flex;\n  justify-content: center;\n  margin: 100px 0px;\n}\n\n.mat-form-field {\n  width: 100%;\n  min-width: 300px;\n}\n\nmat-card-title,\nmat-card-content {\n  display: flex;\n  justify-content: center;\n}\n\nmat-card-title .login-page-header,\nmat-card-content .login-page-header {\n  text-align: center;\n  display: flex;\n  flex-direction: column;\n}\n\nmat-card-title .login-page-header h2,\nmat-card-content .login-page-header h2 {\n  margin-top: 2rem;\n}\n\nmat-card-title .login-page-header > img,\nmat-card-content .login-page-header > img {\n  width: 190px;\n}\n\n.error {\n  padding: 16px;\n  width: 300px;\n  color: white;\n  background-color: red;\n}\n\n.button {\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3NodXJpay9Qcm9qZWN0cy9oZXBpYy11aS0zL3NyYy9hcHAvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNDLGFBQUE7RUFDRyx1QkFBQTtFQUNBLGlCQUFBO0FDQ0o7O0FERUE7RUFDQyxXQUFBO0VBQ0csZ0JBQUE7QUNDSjs7QURFQTs7RUFFQyxhQUFBO0VBQ0csdUJBQUE7QUNDSjs7QURBSTs7RUFDSSxrQkFBQTtFQUNBLGFBQUE7RUFDQSxzQkFBQTtBQ0dSOztBREZROztFQUNJLGdCQUFBO0FDS1o7O0FESFE7O0VBQ0ksWUFBQTtBQ01aOztBRERBO0VBQ0MsYUFBQTtFQUNHLFlBQUE7RUFDQSxZQUFBO0VBQ0EscUJBQUE7QUNJSjs7QUREQTtFQUNDLGFBQUE7RUFDRyx5QkFBQTtBQ0lKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcblx0ZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBtYXJnaW46IDEwMHB4IDBweDtcbn1cblxuLm1hdC1mb3JtLWZpZWxkIHtcblx0d2lkdGg6IDEwMCU7XG4gICAgbWluLXdpZHRoOiAzMDBweDtcbn1cblxubWF0LWNhcmQtdGl0bGUsXG5tYXQtY2FyZC1jb250ZW50IHtcblx0ZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAubG9naW4tcGFnZS1oZWFkZXIge1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGgyIHtcbiAgICAgICAgICAgIG1hcmdpbi10b3A6IDJyZW07XG4gICAgICAgIH1cbiAgICAgICAgPiBpbWcge1xuICAgICAgICAgICAgd2lkdGg6IDE5MHB4O1xuICAgICAgICB9XG4gICAgfVxufVxuXG4uZXJyb3Ige1xuXHRwYWRkaW5nOiAxNnB4O1xuICAgIHdpZHRoOiAzMDBweDtcbiAgICBjb2xvcjogd2hpdGU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogcmVkO1xufVxuXG4uYnV0dG9uIHtcblx0ZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGZsZXgtZW5kO1xufVxuIiwiOmhvc3Qge1xuICBkaXNwbGF5OiBmbGV4O1xuICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgbWFyZ2luOiAxMDBweCAwcHg7XG59XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gIHdpZHRoOiAxMDAlO1xuICBtaW4td2lkdGg6IDMwMHB4O1xufVxuXG5tYXQtY2FyZC10aXRsZSxcbm1hdC1jYXJkLWNvbnRlbnQge1xuICBkaXNwbGF5OiBmbGV4O1xuICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbn1cbm1hdC1jYXJkLXRpdGxlIC5sb2dpbi1wYWdlLWhlYWRlcixcbm1hdC1jYXJkLWNvbnRlbnQgLmxvZ2luLXBhZ2UtaGVhZGVyIHtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xufVxubWF0LWNhcmQtdGl0bGUgLmxvZ2luLXBhZ2UtaGVhZGVyIGgyLFxubWF0LWNhcmQtY29udGVudCAubG9naW4tcGFnZS1oZWFkZXIgaDIge1xuICBtYXJnaW4tdG9wOiAycmVtO1xufVxubWF0LWNhcmQtdGl0bGUgLmxvZ2luLXBhZ2UtaGVhZGVyID4gaW1nLFxubWF0LWNhcmQtY29udGVudCAubG9naW4tcGFnZS1oZWFkZXIgPiBpbWcge1xuICB3aWR0aDogMTkwcHg7XG59XG5cbi5lcnJvciB7XG4gIHBhZGRpbmc6IDE2cHg7XG4gIHdpZHRoOiAzMDBweDtcbiAgY29sb3I6IHdoaXRlO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiByZWQ7XG59XG5cbi5idXR0b24ge1xuICBkaXNwbGF5OiBmbGV4O1xuICBqdXN0aWZ5LWNvbnRlbnQ6IGZsZXgtZW5kO1xufSJdfQ== */"
+module.exports = ":host {\n  display: flex;\n  justify-content: center;\n  margin: 100px 0px;\n}\n\n.mat-form-field {\n  width: 100%;\n  min-width: 300px;\n}\n\nmat-card-title,\nmat-card-content {\n  display: flex;\n  justify-content: center;\n}\n\nmat-card-title .login-page-header,\nmat-card-content .login-page-header {\n  text-align: center;\n  display: flex;\n  flex-direction: column;\n}\n\nmat-card-title .login-page-header h2,\nmat-card-content .login-page-header h2 {\n  margin-top: 2rem;\n}\n\nmat-card-title .login-page-header > img,\nmat-card-content .login-page-header > img {\n  width: 190px;\n}\n\n.error {\n  padding: 16px;\n  width: 300px;\n  color: white;\n  background-color: red;\n}\n\n.button {\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi91c3Ivc3JjL2hlcGljLXVpLTMvc3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0MsYUFBQTtFQUNHLHVCQUFBO0VBQ0EsaUJBQUE7QUNDSjs7QURFQTtFQUNDLFdBQUE7RUFDRyxnQkFBQTtBQ0NKOztBREVBOztFQUVDLGFBQUE7RUFDRyx1QkFBQTtBQ0NKOztBREFJOztFQUNJLGtCQUFBO0VBQ0EsYUFBQTtFQUNBLHNCQUFBO0FDR1I7O0FERlE7O0VBQ0ksZ0JBQUE7QUNLWjs7QURIUTs7RUFDSSxZQUFBO0FDTVo7O0FEREE7RUFDQyxhQUFBO0VBQ0csWUFBQTtFQUNBLFlBQUE7RUFDQSxxQkFBQTtBQ0lKOztBRERBO0VBQ0MsYUFBQTtFQUNHLHlCQUFBO0FDSUoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIG1hcmdpbjogMTAwcHggMHB4O1xufVxuXG4ubWF0LWZvcm0tZmllbGQge1xuXHR3aWR0aDogMTAwJTtcbiAgICBtaW4td2lkdGg6IDMwMHB4O1xufVxuXG5tYXQtY2FyZC10aXRsZSxcbm1hdC1jYXJkLWNvbnRlbnQge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIC5sb2dpbi1wYWdlLWhlYWRlciB7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgaDIge1xuICAgICAgICAgICAgbWFyZ2luLXRvcDogMnJlbTtcbiAgICAgICAgfVxuICAgICAgICA+IGltZyB7XG4gICAgICAgICAgICB3aWR0aDogMTkwcHg7XG4gICAgICAgIH1cbiAgICB9XG59XG5cbi5lcnJvciB7XG5cdHBhZGRpbmc6IDE2cHg7XG4gICAgd2lkdGg6IDMwMHB4O1xuICAgIGNvbG9yOiB3aGl0ZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZWQ7XG59XG5cbi5idXR0b24ge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59XG4iLCI6aG9zdCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICBtYXJnaW46IDEwMHB4IDBweDtcbn1cblxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG4gIG1pbi13aWR0aDogMzAwcHg7XG59XG5cbm1hdC1jYXJkLXRpdGxlLFxubWF0LWNhcmQtY29udGVudCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xufVxubWF0LWNhcmQtdGl0bGUgLmxvZ2luLXBhZ2UtaGVhZGVyLFxubWF0LWNhcmQtY29udGVudCAubG9naW4tcGFnZS1oZWFkZXIge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgaDIsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciBoMiB7XG4gIG1hcmdpbi10b3A6IDJyZW07XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgPiBpbWcsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciA+IGltZyB7XG4gIHdpZHRoOiAxOTBweDtcbn1cblxuLmVycm9yIHtcbiAgcGFkZGluZzogMTZweDtcbiAgd2lkdGg6IDMwMHB4O1xuICBjb2xvcjogd2hpdGU7XG4gIGJhY2tncm91bmQtY29sb3I6IHJlZDtcbn1cblxuLmJ1dHRvbiB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59Il19 */"
 
 /***/ }),
 
@@ -5798,7 +5798,7 @@ var IframeWidgetComponent = /** @class */ (function () {
             params: {
                 orgId: 1,
                 panelId: 2,
-                refresh: '',
+                refresh: '1h',
                 from: 'now-5m',
                 to: 'now',
                 theme: 'light'
@@ -10304,7 +10304,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
 var environment = {
     production: true,
-    apiUrl: "http://de9.sipcapture.io/api/v3"
+    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
 };
 
 
@@ -10325,7 +10325,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 var environment = {
     production: false,
-    apiUrl: "http://de9.sipcapture.io/api/v3"
+    apiUrl: "http://" + (window.location.host || "localhost") + "/api/v3"
 };
 /*
  * For easier debugging in development mode, you can import the following file
@@ -10381,7 +10381,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/shurik/Projects/hepic-ui-3/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /usr/src/hepic-ui-3/src/main.ts */"./src/main.ts");
 
 
 /***/ })

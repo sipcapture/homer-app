@@ -337,7 +337,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Add Wi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button *ngIf=\"!isHome\" (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"gridOptions\">\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler\" \n\t\t\t(mouseenter)=\"hoverme=true\" \n\t\t\t(mouseleave)=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\" [id]=\"item.id\">\n\t\t\t<div class=\"shadow-polygon\" style=\"display: none;\"></div>\n\t\t\t<app-clock-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\"\n\t\t\t\t#widgets></app-clock-widget>\n\n\t\t\t<app-influxdbchart-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\"\n\t\t\t\t#widgets></app-influxdbchart-widget>\n\n\t\t\t<app-protosearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\"\n\t\t\t\t#widgets></app-protosearch-widget>\n\n\t\t\t<app-rsearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\"\n\t\t\t\t#widgets></app-rsearch-widget>\n\n\t\t\t<app-iframe-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\"\n\t\t\t\t#widgets></app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
+module.exports = "<div class=\"top-tool\">\n\t<h3>{{ dashboardTitle | uppercase }}</h3>\n\t<div style=\"float: right;\">\n\t\t<button mat-icon-button *ngIf=\"!isIframe\" (click)=\"onDashboardAdd()\"><mat-icon>add</mat-icon></button>\n\t\t<button mat-icon-button (click)=\"onDashboardSettings()\"><mat-icon>settings</mat-icon></button>\n\t\t<button mat-icon-button *ngIf=\"!isHome\" (click)=\"onDashboarDelete()\"><mat-icon>delete</mat-icon></button>\n\t</div>\n</div>\n\n<div *ngIf=\"isIframe\">\n\t<iframe [src]=\"iframeUrl | safe\"></iframe>\n</div>\n<!-- Gridster grid -->\n<gridster *ngIf=\"!isIframe\" [options]=\"gridOptions\">\n\t<!-- Earch grister-item is generated with *ngFor -->\n\t<gridster-item [item]=\"item\" *ngFor=\"let item of dashboardArray; let i = index;\">\n\t\t<!-- Delete button call removeItem() who takes as parameter item -->\n\t\t<div class=\"box-header drag-handler\" \n\t\t\t(mouseenter)=\"hoverme=true\" \n\t\t\t(mouseleave)=\"hoverme=false\">\n\t\t\t\n\t\t\t<h3 *ngIf=\"item.name !== 'rsearch'\" class=\"ng-binding\">{{(item.config ? item.config['title']: item.title) || 'empty' }}</h3>\n\t\t\t<h3 *ngIf=\"item.name === 'rsearch'\" class=\"ng-binding\">LOKI Search</h3>\n\t\t\t\n\t\t\t<div class=\"box-header-btns pull-right\" >\n\t\t\t\t<!-- ngIf: widget.refresh -->\n\t\t\t\t<!-- <button class=\"btn btn-icon btn-danger\" (click)=\"removeItem(item)\"></button> -->\n\t\t\t\t<div class=\"box-icon-header\">\n\t\t\t\t\t<mat-icon *ngIf=\"item.name !== 'rsearch'\" [inline]=\"true\" (click)=\"openSettings(item)\" aria-label=\"settings\">settings</mat-icon>\n\t\t\t\t\t<mat-icon [inline]=\"true\" (mousedown)=\"removeItem($event, item)\" aria-label=\"delete\">delete</mat-icon>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"widget-block\" [id]=\"item.id\">\n\t\t\t<div class=\"shadow-polygon\" style=\"display: none;\"></div>\n\t\t\t\n\t\t\t<app-clock-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'clock'\"\n\t\t\t\t#widgets>\n\t\t\t</app-clock-widget>\n\n\t\t\t<app-influxdbchart-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'influxdbchart'\"\n\t\t\t\t#widgets>\n\t\t\t</app-influxdbchart-widget>\n\n\t\t\t<app-protosearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'protosearch'\"\n\t\t\t\t#widgets>\n\t\t\t</app-protosearch-widget>\n\n\t\t\t<app-rsearch-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t*ngIf=\"item.name == 'rsearch'\"\n\t\t\t\t#widgets>\n\t\t\t</app-rsearch-widget>\n\n\t\t\t<app-iframe-widget\n\t\t\t\t[id]=\"item.id\"\n\t\t\t\t[config]=\"item.config\"\n\t\t\t\t(changeSettings)=\"onChangeWidget($event, item)\"\n\t\t\t\t*ngIf=\"item.name == 'iframe'\"\n\t\t\t\t#widgets>\n\t\t\t</app-iframe-widget>\n\t\t</div>\n\t\t<ndc-dynamic class=\"no-drag\" [ndcDynamicComponent]=\"item.component\"></ndc-dynamic>\t\t\n\t</gridster-item>\n</gridster>\n"
 
 /***/ }),
 
@@ -594,6 +594,17 @@ module.exports = "<input class=\"regex-filter\" placeholder=\"Regex Results Filt
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/index.js!./src/app/components/search-loki/search-loki.component.html":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/app/components/search-loki/search-loki.component.html ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div style=\"overflow-y: auto; max-height: calc(100vh - 45px);\">\n<div style=\"display: flex; justify-content: center; align-items: center;\">\n    <strong  style=\"flex: 1;padding-left: 1.5rem;\">LOKI Search</strong>\n    <div style=\"flex: 5\">\n      <app-code-style-field\n        [queryText]=\"queryText\"\n        (updateData)=\"onUpdateQuery($event)\"\n      ></app-code-style-field>\n    </div>\n    <button mat-button style=\"flex: 1\"\n    (click)=\"doSerchResult()\">Refresh search</button>\n</div>\n<table mat-table [dataSource]=\"dataSource\" class=\"mat-elevation-z8\">\n\n    <!--- Note that these columns can be defined in any order.\n          The actual rendered columns are set as a property on the row definition\" -->\n  \n    <!-- Position Column -->\n    <ng-container matColumnDef=\"micro_ts\">\n      <th mat-header-cell *matHeaderCellDef>\n        <mat-form-field>\n          <mat-label>Timestamp</mat-label>\n          <input matInput [(ngModel)]=\"filterTimestamp\"\n            (keyup)=\"onFilterTable($event, 'Timestamp')\"\n          >\n        </mat-form-field>\n      </th>\n      <td mat-cell *matCellDef=\"let element\"> {{element.micro_ts}} </td>\n    </ng-container>\n  \n    <!-- Name Column -->\n    <ng-container matColumnDef=\"custom_1\">\n      <th mat-header-cell colspan=\"3\" *matHeaderCellDef>\n        <mat-form-field>\n          <mat-label>Message</mat-label>\n          <input matInput [(ngModel)]=\"filterMessage\"\n            (keyup)=\"onFilterTable($event, 'Message')\"\n          >\n        </mat-form-field>\n      </th>\n      <td mat-cell colspan=\"3\" *matCellDef=\"let element\"> {{element.custom_1}} </td>\n    </ng-container>\n  \n    <!-- Weight Column -->\n    <ng-container matColumnDef=\"custom_2\">\n      <th mat-header-cell *matHeaderCellDef>\n        <mat-form-field>\n          <mat-label>Labels</mat-label>\n          <input matInput [(ngModel)]=\"filterLabels\"\n            (keyup)=\"onFilterTable($event, 'Labels')\"\n          >\n        </mat-form-field>\n      </th>\n      <td mat-cell *matCellDef=\"let element\"> {{element.custom_2}} </td>\n    </ng-container>\n  \n  \n    <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n    <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n  </table>\n</div>"
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/clock-widget/clock-widget.component.html":
 /*!*******************************************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/app/components/widgets/clock-widget/clock-widget.component.html ***!
@@ -704,6 +715,17 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settin
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.html":
+/*!******************************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.html ***!
+  \******************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <mat-label style=\"color: rgba(0, 0, 0, 0.54); font-size: 0.8em;\">LogQL</mat-label>\n    \n    <div\n        (keyup)=\"onKeyUpDiv($event)\"\n        name=\"divContainer\" ngDefaultControl\n        contenteditable=\"true\"\n        class=\"div-field\"\n        \n        #divContainer></div>\n    <div [matMenuTriggerFor]=\"trigger\" style=\"position: absolute;\"></div>\n    <mat-menu #trigger=\"matMenu\">\n        <button mat-menu-item *ngFor=\"let i of popupList\" \n        (click)=\"onMenuMessage(i)\"\n        (keyup)=\"onMenuMessage(i, $event)\"\n        \n        >{{ i }}</button>\n    </mat-menu>\n    "
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/rsearch-widget.component.html":
 /*!***********************************************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/app/components/widgets/rsearch-widget/rsearch-widget.component.html ***!
@@ -711,18 +733,7 @@ module.exports = "<mat-toolbar class=\"title\" color=\"primary\">\n  <div>Settin
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  rsearch-widget works!\n</p>\n"
-
-/***/ }),
-
-/***/ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.html":
-/*!*******************************************************************************************************************!*\
-  !*** ./node_modules/raw-loader!./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.html ***!
-  \*******************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h1 mat-dialog-title>Settings</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">Cancel</button>\n  <button mat-button [mat-dialog-close]=\"data\" cdkFocusInitial>Ok</button>\n</div>\n"
+module.exports = "<form>\n    <div class=\"example-container\">\n      <app-code-style-field\n        [queryText]=\"queryText\"\n        (updateData)=\"onCodeData($event)\"\n      ></app-code-style-field>\n      \n      <mat-form-field>\n        <mat-label>Limit</mat-label>\n        <input matInput\n          [(ngModel)]=\"limit\"\n          [ngModelOptions]=\"{standalone: true}\"\n          (change)=\"onChangeField($event)\"\n          (keydown.enter)=\"handleEnterKeyPress($event)\"\n        >\n      </mat-form-field>\n    </div>\n    <div style=\"float: right;\">\n        <button mat-raised-button (click)=\"onClearFields()\">Clear</button>\n        <button mat-raised-button color=\"primary\" (click)=\"doSearchResult()\">Search</button>\n    </div>\n</form>"
 
 /***/ }),
 
@@ -1055,6 +1066,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_widgets_protosearch_widget_drag_drop_list_drag_drop_list_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components/widgets/protosearch-widget/drag-drop-list/drag-drop-list.component */ "./src/app/components/widgets/protosearch-widget/drag-drop-list/drag-drop-list.component.ts");
 /* harmony import */ var _components_search_grid_call_message_content_message_content_component__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./components/search-grid-call/message-content/message-content.component */ "./src/app/components/search-grid-call/message-content/message-content.component.ts");
 /* harmony import */ var _safe_pipe__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./safe.pipe */ "./src/app/safe.pipe.ts");
+/* harmony import */ var _components_widgets_rsearch_widget_code_style_field_code_style_field_component__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./components/widgets/rsearch-widget/code-style-field/code-style-field.component */ "./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.ts");
+/* harmony import */ var _components_search_loki_search_loki_component__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./components/search-loki/search-loki.component */ "./src/app/components/search-loki/search-loki.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1074,6 +1087,8 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 /* components */
+
+
 
 
 
@@ -1122,7 +1137,6 @@ var AppModule = /** @class */ (function () {
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingClockWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingInfluxdbchartWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingProtosearchWidgetComponent"],
-                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingRsearchWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingIframeWidgetComponent"],
                 _components_dashboard_add_dialog_add_dialog_component__WEBPACK_IMPORTED_MODULE_18__["AddDialogComponent"],
                 _components_dashboard_delete_dialog_delete_dialog_component__WEBPACK_IMPORTED_MODULE_19__["DeleteDialogComponent"],
@@ -1148,7 +1162,9 @@ var AppModule = /** @class */ (function () {
                 _app_components_preference_dialogs__WEBPACK_IMPORTED_MODULE_15__["DialogUsersComponent"],
                 _components_widgets_protosearch_widget_drag_drop_list_drag_drop_list_component__WEBPACK_IMPORTED_MODULE_33__["DragDropListComponent"],
                 _components_search_grid_call_message_content_message_content_component__WEBPACK_IMPORTED_MODULE_34__["MessageContentComponent"],
-                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["DialogAlarmComponent"]
+                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["DialogAlarmComponent"],
+                _components_widgets_rsearch_widget_code_style_field_code_style_field_component__WEBPACK_IMPORTED_MODULE_36__["CodeStyleFieldComponent"],
+                _components_search_loki_search_loki_component__WEBPACK_IMPORTED_MODULE_37__["SearchLokiComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"],
@@ -1174,7 +1190,6 @@ var AppModule = /** @class */ (function () {
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingClockWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingInfluxdbchartWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingProtosearchWidgetComponent"],
-                _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingRsearchWidgetComponent"],
                 _app_components_widgets__WEBPACK_IMPORTED_MODULE_14__["SettingIframeWidgetComponent"],
                 _components_dashboard_add_dialog_add_dialog_component__WEBPACK_IMPORTED_MODULE_18__["AddDialogComponent"],
                 _components_dashboard_delete_dialog_delete_dialog_component__WEBPACK_IMPORTED_MODULE_19__["DeleteDialogComponent"],
@@ -1229,6 +1244,10 @@ var appRoutes = [{
     }, {
         path: 'preference/:id',
         component: _app_components__WEBPACK_IMPORTED_MODULE_2__["PreferenceComponent"],
+        canActivate: [_guards__WEBPACK_IMPORTED_MODULE_1__["AuthGuard"]]
+    }, {
+        path: 'loki/result',
+        component: _app_components__WEBPACK_IMPORTED_MODULE_2__["SearchLokiComponent"],
         canActivate: [_guards__WEBPACK_IMPORTED_MODULE_1__["AuthGuard"]]
     }, {
         path: 'call/result',
@@ -1512,7 +1531,6 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-// import { Subscription } from 'rxjs';
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(_route, _ds, router, dialog) {
         this._route = _route;
@@ -1972,7 +1990,7 @@ var EditDialogComponent = /** @class */ (function () {
 /*!*************************************!*\
   !*** ./src/app/components/index.ts ***!
   \*************************************/
-/*! exports provided: AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
+/*! exports provided: SearchLokiComponent, AlertComponent, DashboardComponent, LoginComponent, MenuComponent, ModalComponent, ModalResizableComponent, SearchGridCallComponent, WindowComponent, PreferenceComponent, ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2016,8 +2034,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RsearchWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["RsearchWidgetComponent"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingRsearchWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["SettingRsearchWidgetComponent"]; });
-
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["IframeWidgetComponent"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _widgets__WEBPACK_IMPORTED_MODULE_8__["SettingIframeWidgetComponent"]; });
@@ -2026,6 +2042,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./preference/preference.component */ "./src/app/components/preference/preference.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PreferenceComponent", function() { return _preference_preference_component__WEBPACK_IMPORTED_MODULE_9__["PreferenceComponent"]; });
+
+/* harmony import */ var _search_loki_search_loki_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./search-loki/search-loki.component */ "./src/app/components/search-loki/search-loki.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SearchLokiComponent", function() { return _search_loki_search_loki_component__WEBPACK_IMPORTED_MODULE_10__["SearchLokiComponent"]; });
+
 
 
 
@@ -2048,7 +2068,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ":host {\n  display: flex;\n  justify-content: center;\n  margin: 100px 0px;\n}\n\n.mat-form-field {\n  width: 100%;\n  min-width: 300px;\n}\n\nmat-card-title,\nmat-card-content {\n  display: flex;\n  justify-content: center;\n}\n\nmat-card-title .login-page-header,\nmat-card-content .login-page-header {\n  text-align: center;\n  display: flex;\n  flex-direction: column;\n}\n\nmat-card-title .login-page-header h2,\nmat-card-content .login-page-header h2 {\n  margin-top: 2rem;\n}\n\nmat-card-title .login-page-header > img,\nmat-card-content .login-page-header > img {\n  width: 190px;\n}\n\n.error {\n  padding: 16px;\n  width: 300px;\n  color: white;\n  background-color: red;\n}\n\n.button {\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi91c3Ivc3JjL2hlcGljLXVpLTMvc3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0MsYUFBQTtFQUNHLHVCQUFBO0VBQ0EsaUJBQUE7QUNDSjs7QURFQTtFQUNDLFdBQUE7RUFDRyxnQkFBQTtBQ0NKOztBREVBOztFQUVDLGFBQUE7RUFDRyx1QkFBQTtBQ0NKOztBREFJOztFQUNJLGtCQUFBO0VBQ0EsYUFBQTtFQUNBLHNCQUFBO0FDR1I7O0FERlE7O0VBQ0ksZ0JBQUE7QUNLWjs7QURIUTs7RUFDSSxZQUFBO0FDTVo7O0FEREE7RUFDQyxhQUFBO0VBQ0csWUFBQTtFQUNBLFlBQUE7RUFDQSxxQkFBQTtBQ0lKOztBRERBO0VBQ0MsYUFBQTtFQUNHLHlCQUFBO0FDSUoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIG1hcmdpbjogMTAwcHggMHB4O1xufVxuXG4ubWF0LWZvcm0tZmllbGQge1xuXHR3aWR0aDogMTAwJTtcbiAgICBtaW4td2lkdGg6IDMwMHB4O1xufVxuXG5tYXQtY2FyZC10aXRsZSxcbm1hdC1jYXJkLWNvbnRlbnQge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIC5sb2dpbi1wYWdlLWhlYWRlciB7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgaDIge1xuICAgICAgICAgICAgbWFyZ2luLXRvcDogMnJlbTtcbiAgICAgICAgfVxuICAgICAgICA+IGltZyB7XG4gICAgICAgICAgICB3aWR0aDogMTkwcHg7XG4gICAgICAgIH1cbiAgICB9XG59XG5cbi5lcnJvciB7XG5cdHBhZGRpbmc6IDE2cHg7XG4gICAgd2lkdGg6IDMwMHB4O1xuICAgIGNvbG9yOiB3aGl0ZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZWQ7XG59XG5cbi5idXR0b24ge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59XG4iLCI6aG9zdCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICBtYXJnaW46IDEwMHB4IDBweDtcbn1cblxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG4gIG1pbi13aWR0aDogMzAwcHg7XG59XG5cbm1hdC1jYXJkLXRpdGxlLFxubWF0LWNhcmQtY29udGVudCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xufVxubWF0LWNhcmQtdGl0bGUgLmxvZ2luLXBhZ2UtaGVhZGVyLFxubWF0LWNhcmQtY29udGVudCAubG9naW4tcGFnZS1oZWFkZXIge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgaDIsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciBoMiB7XG4gIG1hcmdpbi10b3A6IDJyZW07XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgPiBpbWcsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciA+IGltZyB7XG4gIHdpZHRoOiAxOTBweDtcbn1cblxuLmVycm9yIHtcbiAgcGFkZGluZzogMTZweDtcbiAgd2lkdGg6IDMwMHB4O1xuICBjb2xvcjogd2hpdGU7XG4gIGJhY2tncm91bmQtY29sb3I6IHJlZDtcbn1cblxuLmJ1dHRvbiB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59Il19 */"
+module.exports = ":host {\n  display: flex;\n  justify-content: center;\n  margin: 100px 0px;\n}\n\n.mat-form-field {\n  width: 100%;\n  min-width: 300px;\n}\n\nmat-card-title,\nmat-card-content {\n  display: flex;\n  justify-content: center;\n}\n\nmat-card-title .login-page-header,\nmat-card-content .login-page-header {\n  text-align: center;\n  display: flex;\n  flex-direction: column;\n}\n\nmat-card-title .login-page-header h2,\nmat-card-content .login-page-header h2 {\n  margin-top: 2rem;\n}\n\nmat-card-title .login-page-header > img,\nmat-card-content .login-page-header > img {\n  width: 190px;\n}\n\n.error {\n  padding: 16px;\n  width: 300px;\n  color: white;\n  background-color: red;\n}\n\n.button {\n  display: flex;\n  justify-content: flex-end;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9hcHAvc3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0MsYUFBQTtFQUNHLHVCQUFBO0VBQ0EsaUJBQUE7QUNDSjs7QURFQTtFQUNDLFdBQUE7RUFDRyxnQkFBQTtBQ0NKOztBREVBOztFQUVDLGFBQUE7RUFDRyx1QkFBQTtBQ0NKOztBREFJOztFQUNJLGtCQUFBO0VBQ0EsYUFBQTtFQUNBLHNCQUFBO0FDR1I7O0FERlE7O0VBQ0ksZ0JBQUE7QUNLWjs7QURIUTs7RUFDSSxZQUFBO0FDTVo7O0FEREE7RUFDQyxhQUFBO0VBQ0csWUFBQTtFQUNBLFlBQUE7RUFDQSxxQkFBQTtBQ0lKOztBRERBO0VBQ0MsYUFBQTtFQUNHLHlCQUFBO0FDSUoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIG1hcmdpbjogMTAwcHggMHB4O1xufVxuXG4ubWF0LWZvcm0tZmllbGQge1xuXHR3aWR0aDogMTAwJTtcbiAgICBtaW4td2lkdGg6IDMwMHB4O1xufVxuXG5tYXQtY2FyZC10aXRsZSxcbm1hdC1jYXJkLWNvbnRlbnQge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIC5sb2dpbi1wYWdlLWhlYWRlciB7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgaDIge1xuICAgICAgICAgICAgbWFyZ2luLXRvcDogMnJlbTtcbiAgICAgICAgfVxuICAgICAgICA+IGltZyB7XG4gICAgICAgICAgICB3aWR0aDogMTkwcHg7XG4gICAgICAgIH1cbiAgICB9XG59XG5cbi5lcnJvciB7XG5cdHBhZGRpbmc6IDE2cHg7XG4gICAgd2lkdGg6IDMwMHB4O1xuICAgIGNvbG9yOiB3aGl0ZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZWQ7XG59XG5cbi5idXR0b24ge1xuXHRkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59XG4iLCI6aG9zdCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICBtYXJnaW46IDEwMHB4IDBweDtcbn1cblxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG4gIG1pbi13aWR0aDogMzAwcHg7XG59XG5cbm1hdC1jYXJkLXRpdGxlLFxubWF0LWNhcmQtY29udGVudCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xufVxubWF0LWNhcmQtdGl0bGUgLmxvZ2luLXBhZ2UtaGVhZGVyLFxubWF0LWNhcmQtY29udGVudCAubG9naW4tcGFnZS1oZWFkZXIge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgaDIsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciBoMiB7XG4gIG1hcmdpbi10b3A6IDJyZW07XG59XG5tYXQtY2FyZC10aXRsZSAubG9naW4tcGFnZS1oZWFkZXIgPiBpbWcsXG5tYXQtY2FyZC1jb250ZW50IC5sb2dpbi1wYWdlLWhlYWRlciA+IGltZyB7XG4gIHdpZHRoOiAxOTBweDtcbn1cblxuLmVycm9yIHtcbiAgcGFkZGluZzogMTZweDtcbiAgd2lkdGg6IDMwMHB4O1xuICBjb2xvcjogd2hpdGU7XG4gIGJhY2tncm91bmQtY29sb3I6IHJlZDtcbn1cblxuLmJ1dHRvbiB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7XG59Il19 */"
 
 /***/ }),
 
@@ -5018,13 +5038,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
-/* harmony import */ var _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/call/transaction.service */ "./src/app/services/call/transaction.service.ts");
-/* harmony import */ var _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./renderer/column-action-renderer.component */ "./src/app/components/search-grid-call/renderer/column-action-renderer.component.ts");
-/* harmony import */ var _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./renderer/column-callid-renderer.component */ "./src/app/components/search-grid-call/renderer/column-callid-renderer.component.ts");
-/* harmony import */ var _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderer/column-method-renderer.component */ "./src/app/components/search-grid-call/renderer/column-method-renderer.component.ts");
-/* harmony import */ var _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./renderer/header-action-renderer.component */ "./src/app/components/search-grid-call/renderer/header-action-renderer.component.ts");
-/* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../helpers/functions */ "./src/app/helpers/functions.ts");
-/* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
+/* harmony import */ var _services_preferences_mapping_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/preferences/mapping-protocol.service */ "./src/app/services/preferences/mapping-protocol.service.ts");
+/* harmony import */ var _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/call/transaction.service */ "./src/app/services/call/transaction.service.ts");
+/* harmony import */ var _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./renderer/column-action-renderer.component */ "./src/app/components/search-grid-call/renderer/column-action-renderer.component.ts");
+/* harmony import */ var _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderer/column-callid-renderer.component */ "./src/app/components/search-grid-call/renderer/column-callid-renderer.component.ts");
+/* harmony import */ var _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./renderer/column-method-renderer.component */ "./src/app/components/search-grid-call/renderer/column-method-renderer.component.ts");
+/* harmony import */ var _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./renderer/header-action-renderer.component */ "./src/app/components/search-grid-call/renderer/header-action-renderer.component.ts");
+/* harmony import */ var _helpers_functions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../helpers/functions */ "./src/app/helpers/functions.ts");
+/* harmony import */ var _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5044,9 +5065,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var SearchGridCallComponent = /** @class */ (function () {
-    function SearchGridCallComponent(_scs, _cts, _dtrs, changeDetectorRefs) {
+    function SearchGridCallComponent(_scs, _pmps, _cts, _dtrs, changeDetectorRefs) {
         this._scs = _scs;
+        this._pmps = _pmps;
         this._cts = _cts;
         this._dtrs = _dtrs;
         this.changeDetectorRefs = changeDetectorRefs;
@@ -5092,14 +5115,14 @@ var SearchGridCallComponent = /** @class */ (function () {
                 cellRendererParams: { checkbox: true },
                 pinned: 'left',
                 cellClass: 'no-border',
-                headerComponentFramework: _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_7__["HeaderActionRenderer"]
+                headerComponentFramework: _renderer_header_action_renderer_component__WEBPACK_IMPORTED_MODULE_8__["HeaderActionRenderer"]
             },
         ];
         this.context = { componentParent: this };
         this.frameworkComponents = {
-            columnActionRenderer: _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_4__["ColumnActionRenderer"],
-            columnCallidRenderer: _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_5__["ColumnCallidRenderer"],
-            columnMethodRenderer: _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_6__["ColumnMethodRenderer"]
+            columnActionRenderer: _renderer_column_action_renderer_component__WEBPACK_IMPORTED_MODULE_5__["ColumnActionRenderer"],
+            columnCallidRenderer: _renderer_column_callid_renderer_component__WEBPACK_IMPORTED_MODULE_6__["ColumnCallidRenderer"],
+            columnMethodRenderer: _renderer_column_method_renderer_component__WEBPACK_IMPORTED_MODULE_7__["ColumnMethodRenderer"]
         };
     }
     SearchGridCallComponent.prototype.ngOnInit = function () {
@@ -5122,6 +5145,25 @@ var SearchGridCallComponent = /** @class */ (function () {
                 this.config.param.limit = parseInt(elem.filter(function (it) { return it.name === 'limit'; })[0]['value']);
             }
         }
+        var subscription = this._pmps.getAll().subscribe(function (data) {
+            subscription.unsubscribe();
+            console.log('==this._pmps.getData(this.config).subscribe==', data);
+        });
+        /*
+      const getDataSubscribe = this._scs.getData(this.config).subscribe(result => {
+          getDataSubscribe.unsubscribe();
+          console.log('==this._scs.getData(this.config).subscribe==', result);
+
+          setTimeout(() => {
+              this.sizeToFit();
+          }, 100);
+
+          this.rowData = result['data'];
+          setTimeout(() => {
+              this.sizeToFit();
+          }, 200);
+      });
+      */
         var getDataSubscribe = this._scs.getData(this.config).subscribe(function (result) {
             getDataSubscribe.unsubscribe();
             console.log('==this._scs.getData(this.config).subscribe==', result);
@@ -5176,10 +5218,10 @@ var SearchGridCallComponent = /** @class */ (function () {
         return ((i >> 24) & 0xFF);
     };
     SearchGridCallComponent.prototype.getCallIDColor = function (params) {
-        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(params.value) };
+        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(params.value) };
     };
     SearchGridCallComponent.prototype.getMethodColor = function (params) {
-        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(params.value) };
+        return { 'color': '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(params.value) };
     };
     SearchGridCallComponent.prototype.getBkgColorTable = function (params) {
         var callid = params.data.callid;
@@ -5238,7 +5280,7 @@ var SearchGridCallComponent = /** @class */ (function () {
             }
             return a;
         }, []);
-        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(row.data.callid);
+        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.callid);
         var request = {
             param: this.config.param || {},
             timestamp: this.config.timestamp
@@ -5274,7 +5316,7 @@ var SearchGridCallComponent = /** @class */ (function () {
         if ((this.arrMessageDetail.filter(function (i) { return i.id === row.data.id; })[0] != null)) {
             return;
         }
-        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_8__["Functions"].getColorByString(row.data.method || 'LOG');
+        var color = '#' + _helpers_functions__WEBPACK_IMPORTED_MODULE_9__["Functions"].getColorByString(row.data.method || 'LOG');
         var mData = {
             loaded: false,
             data: null,
@@ -5356,8 +5398,9 @@ var SearchGridCallComponent = /** @class */ (function () {
     };
     SearchGridCallComponent.ctorParameters = function () { return [
         { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"] },
-        { type: _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__["CallTransactionService"] },
-        { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__["DateTimeRangeService"] },
+        { type: _services_preferences_mapping_protocol_service__WEBPACK_IMPORTED_MODULE_3__["PreferenceMappingProtocolService"] },
+        { type: _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"] },
+        { type: _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_10__["DateTimeRangeService"] },
         { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"] }
     ]; };
     SearchGridCallComponent = __decorate([
@@ -5367,11 +5410,124 @@ var SearchGridCallComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./search-grid-call.component.css */ "./src/app/components/search-grid-call/search-grid-call.component.css")]
         }),
         __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_2__["SearchCallService"],
-            _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_3__["CallTransactionService"],
-            _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_9__["DateTimeRangeService"],
+            _services_preferences_mapping_protocol_service__WEBPACK_IMPORTED_MODULE_3__["PreferenceMappingProtocolService"],
+            _services_call_transaction_service__WEBPACK_IMPORTED_MODULE_4__["CallTransactionService"],
+            _services_data_time_range_service__WEBPACK_IMPORTED_MODULE_10__["DateTimeRangeService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"]])
     ], SearchGridCallComponent);
     return SearchGridCallComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/components/search-loki/search-loki.component.css":
+/*!******************************************************************!*\
+  !*** ./src/app/components/search-loki/search-loki.component.css ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "table {\n    width: 100%;\n    max-width: 100vw;\n    table-layout: fixed;\n}\ntable td {\n    word-break: break-all;\n    padding-right: 0.5rem;\n    font-size: 0.7em;\n\n\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9zZWFyY2gtbG9raS9zZWFyY2gtbG9raS5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksV0FBVztJQUNYLGdCQUFnQjtJQUNoQixtQkFBbUI7QUFDdkI7QUFDQTtJQUNJLHFCQUFxQjtJQUNyQixxQkFBcUI7SUFDckIsZ0JBQWdCOzs7QUFHcEIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3NlYXJjaC1sb2tpL3NlYXJjaC1sb2tpLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJ0YWJsZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbWF4LXdpZHRoOiAxMDB2dztcbiAgICB0YWJsZS1sYXlvdXQ6IGZpeGVkO1xufVxudGFibGUgdGQge1xuICAgIHdvcmQtYnJlYWs6IGJyZWFrLWFsbDtcbiAgICBwYWRkaW5nLXJpZ2h0OiAwLjVyZW07XG4gICAgZm9udC1zaXplOiAwLjdlbTtcblxuXG59Il19 */"
+
+/***/ }),
+
+/***/ "./src/app/components/search-loki/search-loki.component.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/components/search-loki/search-loki.component.ts ***!
+  \*****************************************************************/
+/*! exports provided: SearchLokiComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchLokiComponent", function() { return SearchLokiComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
+/* harmony import */ var _app_services_data_time_range_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services/data-time-range.service */ "./src/app/services/data-time-range.service.ts");
+/* harmony import */ var _angular_material_table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/table */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/table.es5.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var SearchLokiComponent = /** @class */ (function () {
+    function SearchLokiComponent(_srs, _dtrs) {
+        this._srs = _srs;
+        this._dtrs = _dtrs;
+        this.displayedColumns = ['micro_ts', 'custom_1', 'custom_2'];
+        this.dataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_3__["MatTableDataSource"]([]);
+    }
+    SearchLokiComponent.prototype.ngOnInit = function () {
+        this.getStorage = JSON.parse(localStorage.getItem('searchQueryLoki'));
+        this.queryText = this.getStorage.text;
+        this.doSerchResult();
+    };
+    SearchLokiComponent.prototype.doSerchResult = function () {
+        var _this = this;
+        this._srs.getData(this.queryBuilder()).subscribe(function (data) {
+            console.log(data.data);
+            _this.dataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_3__["MatTableDataSource"](data.data);
+            _this.dataSource.filterPredicate = function (data, filter) {
+                filter = JSON.parse(filter);
+                // console.log({data, filter});
+                return (data.micro_ts.indexOf(filter.filterTimestamp) !== -1) &&
+                    (data.custom_1.indexOf(filter.filterMessage) !== -1) &&
+                    (data.custom_2.indexOf(filter.filterLabels) !== -1);
+            };
+        });
+    };
+    SearchLokiComponent.prototype.onUpdateQuery = function (event) {
+        var limit = this.getStorage.limit;
+        this.getStorage = event;
+        this.getStorage.limit = limit;
+        localStorage.setItem('searchQueryLoki', JSON.stringify(this.getStorage));
+    };
+    SearchLokiComponent.prototype.onFilterTable = function (event, type) {
+        this.dataSource.filter = JSON.stringify({
+            type: type,
+            filterTimestamp: this.filterTimestamp || '',
+            filterMessage: this.filterMessage || '',
+            filterLabels: this.filterLabels || ''
+        });
+    };
+    SearchLokiComponent.prototype.queryBuilder = function () {
+        return {
+            param: {
+                server: this.getStorage.serverLoki,
+                limit: this.getStorage.limit * 1,
+                search: this.getStorage.text,
+                timezone: {
+                    value: -120,
+                    name: 'Local'
+                }
+            },
+            timestamp: this._dtrs.getDatesForQuery(true)
+        };
+    };
+    SearchLokiComponent.ctorParameters = function () { return [
+        { type: _app_services__WEBPACK_IMPORTED_MODULE_1__["SearchRemoteService"] },
+        { type: _app_services_data_time_range_service__WEBPACK_IMPORTED_MODULE_2__["DateTimeRangeService"] }
+    ]; };
+    SearchLokiComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-search-loki',
+            template: __webpack_require__(/*! raw-loader!./search-loki.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/search-loki/search-loki.component.html"),
+            styles: [__webpack_require__(/*! ./search-loki.component.css */ "./src/app/components/search-loki/search-loki.component.css")]
+        }),
+        __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_1__["SearchRemoteService"],
+            _app_services_data_time_range_service__WEBPACK_IMPORTED_MODULE_2__["DateTimeRangeService"]])
+    ], SearchLokiComponent);
+    return SearchLokiComponent;
 }());
 
 
@@ -6054,7 +6210,7 @@ var SettingIframeWidgetComponent = /** @class */ (function () {
 /*!*********************************************!*\
   !*** ./src/app/components/widgets/index.ts ***!
   \*********************************************/
-/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, SettingRsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
+/*! exports provided: ClockWidgetComponent, SettingClockWidgetComponent, InfluxdbchartWidgetComponent, SettingInfluxdbchartWidgetComponent, ProtosearchWidgetComponent, SettingProtosearchWidgetComponent, RsearchWidgetComponent, IframeWidgetComponent, SettingIframeWidgetComponent, DialogAlarmComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6080,18 +6236,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _rsearch_widget_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./rsearch-widget/rsearch-widget.component */ "./src/app/components/widgets/rsearch-widget/rsearch-widget.component.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RsearchWidgetComponent", function() { return _rsearch_widget_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_6__["RsearchWidgetComponent"]; });
 
-/* harmony import */ var _rsearch_widget_setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./rsearch-widget/setting-rsearch-widget.component */ "./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingRsearchWidgetComponent", function() { return _rsearch_widget_setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_7__["SettingRsearchWidgetComponent"]; });
+/* harmony import */ var _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./iframe-widget/iframe-widget.component */ "./src/app/components/widgets/iframe-widget/iframe-widget.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_7__["IframeWidgetComponent"]; });
 
-/* harmony import */ var _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./iframe-widget/iframe-widget.component */ "./src/app/components/widgets/iframe-widget/iframe-widget.component.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IframeWidgetComponent", function() { return _iframe_widget_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__["IframeWidgetComponent"]; });
+/* harmony import */ var _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./iframe-widget/setting-iframe-widget.component */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_8__["SettingIframeWidgetComponent"]; });
 
-/* harmony import */ var _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./iframe-widget/setting-iframe-widget.component */ "./src/app/components/widgets/iframe-widget/setting-iframe-widget.component.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingIframeWidgetComponent", function() { return _iframe_widget_setting_iframe_widget_component__WEBPACK_IMPORTED_MODULE_9__["SettingIframeWidgetComponent"]; });
-
-/* harmony import */ var _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./dialog-alarm/dialog-alarm.component */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DialogAlarmComponent", function() { return _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_10__["DialogAlarmComponent"]; });
-
+/* harmony import */ var _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./dialog-alarm/dialog-alarm.component */ "./src/app/components/widgets/dialog-alarm/dialog-alarm.component.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DialogAlarmComponent", function() { return _dialog_alarm_dialog_alarm_component__WEBPACK_IMPORTED_MODULE_9__["DialogAlarmComponent"]; });
 
 
 
@@ -7482,6 +7634,341 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.css":
+/*!***************************************************************************************************!*\
+  !*** ./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.css ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".div-field {\n    padding: 0.2rem 0;\n    border-bottom: 1px solid rgba(0,0,0,0.54);\n    outline: none;\n    font-family: monospace;\n    background-color: rgb(253, 255, 226);\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL3JzZWFyY2gtd2lkZ2V0L2NvZGUtc3R5bGUtZmllbGQvY29kZS1zdHlsZS1maWVsZC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksaUJBQWlCO0lBQ2pCLHlDQUF5QztJQUN6QyxhQUFhO0lBQ2Isc0JBQXNCO0lBQ3RCLG9DQUFvQztBQUN4QyIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd2lkZ2V0cy9yc2VhcmNoLXdpZGdldC9jb2RlLXN0eWxlLWZpZWxkL2NvZGUtc3R5bGUtZmllbGQuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5kaXYtZmllbGQge1xuICAgIHBhZGRpbmc6IDAuMnJlbSAwO1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCByZ2JhKDAsMCwwLDAuNTQpO1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2IoMjUzLCAyNTUsIDIyNik7XG59XG4iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.ts":
+/*!**************************************************************************************************!*\
+  !*** ./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.ts ***!
+  \**************************************************************************************************/
+/*! exports provided: CodeStyleFieldComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeStyleFieldComponent", function() { return CodeStyleFieldComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
+/* harmony import */ var _angular_material_menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/menu */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/menu.es5.js");
+/* harmony import */ var _app_services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @app/services */ "./src/app/services/index.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __spreadArrays = (undefined && undefined.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+
+
+
+var CodeStyleFieldComponent = /** @class */ (function () {
+    function CodeStyleFieldComponent(_pas, _srs) {
+        this._pas = _pas;
+        this._srs = _srs;
+        this.isLabel = true;
+        this.updateData = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+    }
+    CodeStyleFieldComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        var subscription = this._pas.getAll().subscribe(function (data) {
+            _this.serverLoki = data.data
+                .filter(function (i) { return i.category === 'search' && i.param === 'lokiserver'; })
+                .map(function (i) { return i.data.host; })[0];
+            subscription.unsubscribe();
+        });
+    };
+    CodeStyleFieldComponent.prototype.ngAfterViewInit = function () {
+        this.editor = this.divContainer.nativeElement;
+        this.editor.addEventListener('input', this.updateEditor.bind(this));
+        if (this.queryText) {
+            this.editor.innerText = this.queryText;
+            this.updateEditor(null);
+        }
+    };
+    CodeStyleFieldComponent.prototype.getLabels = function () {
+        var _this = this;
+        var subscription = this._srs.getLabel(this.serverLoki).subscribe(function (labels) {
+            // console.log({labels});
+            _this.isLabel = true;
+            var readyAdded = _this.getObject(_this.editor.innerText);
+            _this.popupList = labels.filter(function (i) {
+                return Object.keys(readyAdded).indexOf(i) === -1;
+            });
+            subscription.unsubscribe();
+            if (_this.popupList.length > 0) {
+                _this.trigger.openMenu();
+                _this.editor.focus();
+            }
+        }, function (err) {
+            console.error({ err: err });
+        });
+    };
+    CodeStyleFieldComponent.prototype.getVariabls = function () {
+        var _this = this;
+        // console.log({event});
+        var label = this.editor.innerText.split(',').pop().replace(/[\=\"\,\{\}]+/g, '');
+        // console.log('get label = ', label);
+        var subscription = this._srs.getValues(label, this.serverLoki).subscribe(function (values) {
+            // console.log({values});
+            _this.popupList = values;
+            _this.isLabel = false;
+            subscription.unsubscribe();
+            if (_this.popupList.length > 0) {
+                _this.trigger.openMenu();
+                _this.editor.focus();
+            }
+        }, function (err) {
+            console.error({ err: err });
+        });
+    };
+    CodeStyleFieldComponent.prototype.onKeyUpDiv = function (event) {
+        // (event.keyCode);
+        if ([8].indexOf(event.keyCode) !== -1) {
+            event.preventDefault();
+            return false;
+        }
+        if ([219, 222, 188, 187, 192, 17, 16].indexOf(event.keyCode) !== -1) {
+            // const getLastLetter = this.editor.innerText.split('').pop()[0];
+            var getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
+            if ('{'.indexOf(getLastLetter) !== -1) { // {}
+                this.editor.innerText = '{}';
+                this.updateEditor(null);
+                this.restoreSelection(1, 1);
+            }
+            if ('="'.indexOf(getLastLetter) !== -1) { // '=' | '"'
+                this.getVariabls();
+            }
+            else {
+                this.getLabels();
+            }
+            this.editor.focus();
+        }
+        else {
+            this.trigger.closeMenu();
+        }
+    };
+    CodeStyleFieldComponent.prototype.getObject = function (str) {
+        if (str.match(/\{.*\}/g)) {
+            str = str.match(/\{.*\}/g)[0];
+        }
+        var json = str.replace(/\{|\}/g, '')
+            .split(',')
+            .map(function (i) {
+            if (i.indexOf('=') === -1) {
+                i += ':';
+            }
+            return i;
+        }).join(',')
+            .replace(/\=/g, ':')
+            .replace(/[a-zA-Z-]+/g, function (a, b) { return "\"" + a + "\""; })
+            .replace(/\"\"/g, '"')
+            .replace(/\s/g, '')
+            .replace(/^.*$/g, function (a) { return "{" + a + "}"; })
+            .replace(',}', '}')
+            .replace(':}', ': null}')
+            .replace('":"}', '": null}')
+            .replace('",: null}', '"}');
+        try {
+            if (json === '{: null}') {
+                return {};
+            }
+            return JSON.parse(json);
+        }
+        catch (e) {
+            return json;
+        }
+    };
+    CodeStyleFieldComponent.prototype.getRegExpString = function (str) {
+        return str.split(/\{.*\}\s*/g)[1] || '';
+    };
+    CodeStyleFieldComponent.prototype.onMenuMessage = function (item, event) {
+        if (event === void 0) { event = null; }
+        if (!event || (event.keyCode === 13 || event.keyCode === 32)) {
+            if (this.isLabel) {
+                this.typeInTextarea(item + '=');
+                this.updateEditor(null, true);
+                var c = this.editor.innerText.length - 1;
+                this.restoreSelection(c, c);
+                this.getVariabls();
+            }
+            else {
+                this.typeInTextarea("\"" + item + "\"");
+                this.updateEditor(null);
+                var c = this.editor.innerText.length - 1;
+                this.restoreSelection(c, c);
+            }
+            // console.log({item});
+        }
+        if (event && event.keyCode === 27) {
+            this.trigger.closeMenu();
+        }
+    };
+    CodeStyleFieldComponent.prototype.setStyleCodeColors = function (str) {
+        var s = str.match(/[\{\}\=, ]{1}|[^\{\}\=, ]+/g);
+        if (!s) {
+            return '';
+        }
+        return s.map(function (i) {
+            var cssClass = 'Pwhite';
+            if ('{}'.indexOf(i) !== -1) {
+                cssClass = 'Pbracket';
+            }
+            else if (i === '=') {
+                cssClass = 'Pequally';
+            }
+            else if (i.match(/[\"\'\`]+/g)) {
+                cssClass = 'Pquotes';
+            }
+            else if (i.match(/[a-z]+/g)) {
+                cssClass = 'Plabel';
+            }
+            var span = document.createElement('span');
+            span.classList.add(cssClass);
+            span.innerText = i;
+            return span.outerHTML;
+        }).join('');
+    };
+    CodeStyleFieldComponent.prototype.getTextSegments = function (element) {
+        var _this = this;
+        var textSegments = [];
+        Array.from(element.childNodes).forEach(function (node) {
+            switch (node.nodeType) {
+                case Node.TEXT_NODE:
+                    textSegments.push({ text: node.nodeValue, node: node });
+                    break;
+                case Node.ELEMENT_NODE:
+                    textSegments.splice.apply(textSegments, __spreadArrays([textSegments.length, 0], (_this.getTextSegments(node))));
+                    break;
+                default:
+                    throw new Error("Unexpected node type: " + node.nodeType);
+            }
+        });
+        return textSegments;
+    };
+    CodeStyleFieldComponent.prototype.updateEditor = function (event, setEnd) {
+        if (setEnd === void 0) { setEnd = false; }
+        // console.log('updateEditor::', event);
+        var sel = window.getSelection();
+        var textSegments = this.getTextSegments(this.editor);
+        var textContent = textSegments.map(function (_a) {
+            var text = _a.text;
+            return text;
+        }).join('');
+        var anchorIndex = null;
+        var focusIndex = null;
+        var currentIndex = 0;
+        textSegments.forEach(function (_a) {
+            var text = _a.text, node = _a.node;
+            if (node === sel.anchorNode) {
+                anchorIndex = currentIndex + sel.anchorOffset;
+            }
+            if (node === sel.focusNode) {
+                focusIndex = currentIndex + sel.focusOffset;
+            }
+            currentIndex += text.length;
+        });
+        this.editor.innerHTML = this.setStyleCodeColors(textContent); // this.renderText(textContent);
+        if (setEnd) {
+            this.restoreSelection(this.editor.innerText.length, this.editor.innerText.length);
+        }
+        else {
+            this.restoreSelection(anchorIndex, focusIndex);
+        }
+        this.updateData.emit({
+            text: textContent,
+            serverLoki: this.serverLoki,
+            obj: this.getObject(textContent),
+            rxText: this.getRegExpString(textContent)
+        });
+    };
+    CodeStyleFieldComponent.prototype.restoreSelection = function (absoluteAnchorIndex, absoluteFocusIndex) {
+        var sel = window.getSelection();
+        var textSegments = this.getTextSegments(this.editor);
+        var anchorNode = this.editor;
+        var anchorIndex = 0;
+        var focusNode = this.editor;
+        var focusIndex = 0;
+        var currentIndex = 0;
+        textSegments.forEach(function (_a) {
+            var text = _a.text, node = _a.node;
+            var startIndexOfNode = currentIndex;
+            var endIndexOfNode = startIndexOfNode + text.length;
+            if (startIndexOfNode <= absoluteAnchorIndex && absoluteAnchorIndex <= endIndexOfNode) {
+                anchorNode = node;
+                anchorIndex = absoluteAnchorIndex - startIndexOfNode;
+            }
+            if (startIndexOfNode <= absoluteFocusIndex && absoluteFocusIndex <= endIndexOfNode) {
+                focusNode = node;
+                focusIndex = absoluteFocusIndex - startIndexOfNode;
+            }
+            currentIndex += text.length;
+        });
+        sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+    };
+    CodeStyleFieldComponent.prototype.typeInTextarea = function (str) {
+        var sel = window.getSelection();
+        var el = sel.anchorNode.parentNode;
+        var start = sel['baseOffset'];
+        var end = sel['extentOffset'];
+        var text = el.innerText;
+        var before = text.substring(0, start);
+        var after = text.substring(end, text.length);
+        el.innerText = (before + str + after);
+        el.focus();
+        return false;
+    };
+    CodeStyleFieldComponent.ctorParameters = function () { return [
+        { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["PreferenceAdvancedService"] },
+        { type: _app_services__WEBPACK_IMPORTED_MODULE_2__["SearchRemoteService"] }
+    ]; };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], CodeStyleFieldComponent.prototype, "queryText", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"])
+    ], CodeStyleFieldComponent.prototype, "updateData", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])('divContainer', { static: false }),
+        __metadata("design:type", Object)
+    ], CodeStyleFieldComponent.prototype, "divContainer", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])(_angular_material_menu__WEBPACK_IMPORTED_MODULE_1__["MatMenuTrigger"], { static: false }),
+        __metadata("design:type", _angular_material_menu__WEBPACK_IMPORTED_MODULE_1__["MatMenuTrigger"])
+    ], CodeStyleFieldComponent.prototype, "trigger", void 0);
+    CodeStyleFieldComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-code-style-field',
+            template: __webpack_require__(/*! raw-loader!./code-style-field.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.html"),
+            styles: [__webpack_require__(/*! ./code-style-field.component.css */ "./src/app/components/widgets/rsearch-widget/code-style-field/code-style-field.component.css")]
+        }),
+        __metadata("design:paramtypes", [_app_services__WEBPACK_IMPORTED_MODULE_2__["PreferenceAdvancedService"],
+            _app_services__WEBPACK_IMPORTED_MODULE_2__["SearchRemoteService"]])
+    ], CodeStyleFieldComponent);
+    return CodeStyleFieldComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/widgets/rsearch-widget/rsearch-widget.component.css":
 /*!********************************************************************************!*\
   !*** ./src/app/components/widgets/rsearch-widget/rsearch-widget.component.css ***!
@@ -7489,7 +7976,7 @@ var SettingProtosearchWidgetComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd2lkZ2V0cy9yc2VhcmNoLXdpZGdldC9yc2VhcmNoLXdpZGdldC5jb21wb25lbnQuY3NzIn0= */"
+module.exports = ".example-container {\n    display: flex;\n    flex-direction: column;\n}\n\n.example-container > * {\n    width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL3JzZWFyY2gtd2lkZ2V0L3JzZWFyY2gtd2lkZ2V0LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxhQUFhO0lBQ2Isc0JBQXNCO0FBQzFCOztBQUVBO0lBQ0ksV0FBVztBQUNmIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93aWRnZXRzL3JzZWFyY2gtd2lkZ2V0L3JzZWFyY2gtd2lkZ2V0LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhhbXBsZS1jb250YWluZXIge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbn1cblxuLmV4YW1wbGUtY29udGFpbmVyID4gKiB7XG4gICAgd2lkdGg6IDEwMCU7XG59Il19 */"
 
 /***/ }),
 
@@ -7505,7 +7992,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RsearchWidgetComponent", function() { return RsearchWidgetComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
 /* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
-/* harmony import */ var _setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./setting-rsearch-widget.component */ "./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm5/router.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7519,22 +8006,45 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 var RsearchWidgetComponent = /** @class */ (function () {
-    function RsearchWidgetComponent(dialog) {
+    function RsearchWidgetComponent(dialog, router) {
         this.dialog = dialog;
+        this.router = router;
     }
     RsearchWidgetComponent.prototype.ngOnInit = function () {
+        var data = JSON.parse(localStorage.getItem('searchQueryLoki'));
+        if (data) {
+            this.queryText = data.text;
+            this.limit = data.limit || 100;
+        }
+    };
+    RsearchWidgetComponent.prototype.onCodeData = function (event) {
+        console.log(event);
+        this.searchQueryLoki = event;
+        this.searchQueryLoki.limit = this.limit;
+    };
+    RsearchWidgetComponent.prototype.doSearchResult = function () {
+        // this.saveState();
+        localStorage.setItem('searchQueryLoki', JSON.stringify(this.searchQueryLoki));
+        this.router.navigate(['loki/result']);
+    };
+    RsearchWidgetComponent.prototype.onChangeField = function (event) {
+    };
+    RsearchWidgetComponent.prototype.handleEnterKeyPress = function (event) {
+        var tagName = event.target.tagName.toLowerCase();
+        if (tagName !== 'textarea') {
+            setTimeout(this.doSearchResult.bind(this), 100);
+            return false;
+        }
+    };
+    RsearchWidgetComponent.prototype.onClearFields = function () {
+        this.lokiQuery = '';
+        this.limit = 100;
     };
     RsearchWidgetComponent.prototype.openDialog = function () {
-        var dialogRef = this.dialog.open(_setting_rsearch_widget_component__WEBPACK_IMPORTED_MODULE_2__["SettingRsearchWidgetComponent"], {
-            width: '90vw',
-            data: { name: 'this.name', animal: 'this.animal' }
-        });
-        var dialogRefSubscription = dialogRef.afterClosed().subscribe(function (result) {
-            dialogRefSubscription.unsubscribe();
-        });
     };
     RsearchWidgetComponent.ctorParameters = function () { return [
-        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"] }
+        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"] },
+        { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] }
     ]; };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -7546,62 +8056,10 @@ var RsearchWidgetComponent = /** @class */ (function () {
             template: __webpack_require__(/*! raw-loader!./rsearch-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/rsearch-widget.component.html"),
             styles: [__webpack_require__(/*! ./rsearch-widget.component.css */ "./src/app/components/widgets/rsearch-widget/rsearch-widget.component.css")]
         }),
-        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"]])
+        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialog"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
     ], RsearchWidgetComponent);
     return RsearchWidgetComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.ts":
-/*!***************************************************************************************!*\
-  !*** ./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.ts ***!
-  \***************************************************************************************/
-/*! exports provided: SettingRsearchWidgetComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingRsearchWidgetComponent", function() { return SettingRsearchWidgetComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm5/core.js");
-/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/__ivy_ngcc__/esm5/dialog.es5.js");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-
-
-var SettingRsearchWidgetComponent = /** @class */ (function () {
-    function SettingRsearchWidgetComponent(dialogRef, data) {
-        this.dialogRef = dialogRef;
-        this.data = data;
-    }
-    SettingRsearchWidgetComponent.prototype.onNoClick = function () {
-        this.dialogRef.close();
-    };
-    SettingRsearchWidgetComponent.ctorParameters = function () { return [
-        { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] },
-        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"],] }] }
-    ]; };
-    SettingRsearchWidgetComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'app-setting-rsearch-widget-component',
-            template: __webpack_require__(/*! raw-loader!./setting-rsearch-widget.component.html */ "./node_modules/raw-loader/index.js!./src/app/components/widgets/rsearch-widget/setting-rsearch-widget.component.html"),
-        }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object])
-    ], SettingRsearchWidgetComponent);
-    return SettingRsearchWidgetComponent;
 }());
 
 
@@ -10057,12 +10515,20 @@ var SearchRemoteService = /** @class */ (function () {
         this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].apiUrl + "/search/remote";
     }
     // Return search remote data
-    SearchRemoteService.prototype.getData = function () {
-        return this.http.get(this.url + "/data");
+    SearchRemoteService.prototype.getData = function (data) {
+        return this.http.post(this.url + "/data", data);
     };
     // Return search remote message
     SearchRemoteService.prototype.getMessage = function () {
         return this.http.get(this.url + "/message");
+    };
+    // v3/search/remote/label?
+    SearchRemoteService.prototype.getLabel = function (server) {
+        return this.http.get(this.url + "/label?server=" + server);
+    };
+    // v3/search/remote/values?label=method&server=http://127.0.0.1:3100
+    SearchRemoteService.prototype.getValues = function (label, server) {
+        return this.http.get(this.url + "/values?server=" + server + "&label=" + label);
     };
     SearchRemoteService.ctorParameters = function () { return [
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"] }
@@ -10381,7 +10847,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /usr/src/hepic-ui-3/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /app/src/main.ts */"./src/main.ts");
 
 
 /***/ })

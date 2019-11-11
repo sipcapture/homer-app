@@ -6,6 +6,7 @@ import Boom from 'boom';
 import User from '../classes/user';
 import LdapAuth from '../classes/ldap';
 import config from '../config';
+import Settings from '../classes/settings';
 
 export default function auth(server) {
   server.route({
@@ -38,12 +39,19 @@ export default function auth(server) {
           
           console.log("USER RESPONSE", response);                    
           if (response.auth) {
-             const token = jwt.sign({username, scope: response.guid, }, jwtSettings.key, 
+              
+             const token = jwt.sign({username, scope: response.guid, }, 
+              jwtSettings.key, 
              {
                 algorithm: jwtSettings.algorithm,
                 expiresIn: jwtSettings.expires_in,
-             });                          
-             return reply({token, scope: response.guid,});
+             });
+ 	
+                          
+	      const settings = new Settings(server, username);	      
+	      let table = 'user_settings';	      	      
+	      let response2 = await settings.insertNewUserDashboard('user_settings');                           
+              return reply({token, scope: response.guid,});
           } else {
               return reply(Boom.unauthorized('incorrect password'));
           }

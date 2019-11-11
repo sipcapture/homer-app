@@ -1,4 +1,5 @@
 import LivingBeing from './living_being';
+import uuid from 'uuid/v4';
 
 const table = 'user_settings';
 
@@ -150,6 +151,31 @@ class Settings extends LivingBeing {
             return globalReply;
           });
       });
+  }
+  
+  async insertNewUserDashboard(table) {
+        let dataWhere = {};    
+        let dashboardHome = '{"id":"home","name":"Home","alias":"home","selectedItem":"","title":"Home","weight":10.0,"widgets":[{"reload":false,"frameless":false,"title":"World Clock","group":"Tools","name":"clock","description":"Display date and time","templateUrl":"widgets/clock/view.html","controller":"clockController","controllerAs":"clock","sizeX":1,"sizeY":1,"config":{"title":"World Clock","timePattern":"HH:mm:ss","datePattern":"YYYY-MM-DD","location":{"value":-60,"offset":"+1","name":"GMT+1 CET","desc":"Central European Time"},"showseconds":false},"edit":{"reload":true,"immediate":false,"controller":"clockEditController","templateUrl":"widgets/clock/edit.html"},"row":0,"col":0,"api":{},"uuid":"0131d42a-793d-47d6-ad03-7cdc6811fb56"},{"title":"Proto Search","group":"Search","name":"protosearch","description":"Display Search Form component","refresh":false,"sizeX":2,"sizeY":1,"config":{"title":"CALL SIP SEARCH","searchbutton":true,"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"call","value":"call"}},"uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","fields":[{"name":"1:call:sid","selection":"Session ID","form_type":"input","hepid":1,"profile":"call","type":"string","field_name":"sid"},{"name":"1:call:protocol_header.srcIp","selection":"Source IP","form_type":"input","hepid":1,"profile":"call","type":"string","field_name":"protocol_header.srcIp"},{"name":"1:call:protocol_header.srcPort","selection":"Src Port","form_type":"input","hepid":1,"profile":"call","type":"integer","field_name":"protocol_header.srcPort"},{"name":"1:call:raw","selection":"SIP RAW","form_type":"input","hepid":1,"profile":"call","type":"string","field_name":"raw"}],"row":0,"col":1},{"title":"InfluxDB Chart","group":"Charts","name":"influxdbchart","description":"Display SIP Metrics","refresh":true,"sizeX":2,"sizeY":1,"config":{"title":"HEPIC Chart","chart":{"type":{"value":"line"}},"dataquery":{"data":[{"sum":false,"main":{"name":"heplify_method_response","value":"heplify_method_response"},"database":{"name":"homer"},"retention":{"name":"60s"},"type":[{"name":"counter","value":"counter"}],"tag":{},"typetag":{"name":"response","value":"response"}}]},"panel":{"queries":[{"name":"A1","type":{"name":"InfluxDB","alias":"influxdb"},"database":{"name":"homer"},"retention":{"name":"60s"},"value":"query"}]}},"edit":{},"api":{},"uuid":"8c8b4589-426a-4016-b964-d613ab6997b3","row":0,"col":3}],"config":{"margins":[10.0,10.0],"columns":"6","pushing":true,"draggable":{"handle":".box-header"},"resizable":{"enabled":true,"handles":["n","e","s","w","ne","se","sw","nw"]}}}';
+
+        dataWhere['username'] = this.username;
+        dataWhere['category'] = 'dashboard';
+        dataWhere['param'] = 'home';
+
+        let count = await this.configDb(table).where(dataWhere).count("*").then(function(rows) { return rows[0]['count'];});                
+        if(count == 0) {
+            let newBoard = {
+              guid: uuid(),
+              username: this.username,
+              param: "home",
+              partid: 10,
+              category: 'dashboard',
+              data: dashboardHome,
+              create_date: new Date(),
+            };    
+            let result =  await this.configDb(table).insert(newBoard).into(table).then(function(resp) {  return true; });
+        }
+        
+        return true;
   }
   
   deleteDashboard(table, dashboardId) {

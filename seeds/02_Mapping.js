@@ -636,7 +636,7 @@ exports.seed = function seed(knex) {
       type: 'string',
       index: 'none',
       form_type: 'input',
-      position: 1,
+      position: 2,
       skip: false,
       hide: false,
     },

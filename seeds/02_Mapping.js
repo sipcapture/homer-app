@@ -188,7 +188,7 @@ exports.seed = function seed(knex) {
       form_type: 'input',
       position: 18,
       skip: false,
-      hide: false,
+      hide: true,
     },
     {
       id: 'data_header.from_tag',

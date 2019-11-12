@@ -180,7 +180,8 @@ export default function search(server) {
     },
     handler: async function(request, reply) {
       let {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
-      version = parseInt(version)+1;
+      version = version || 0;
+      version+=1;
       const guid = uuid();
       const settings = new MappingData({server});
 

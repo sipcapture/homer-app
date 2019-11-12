@@ -835,7 +835,7 @@ exports.seed = function seed(knex) {
       partition_step: 10,
       create_index: JSON.stringify(empty),
       create_table: 'CREATE TABLE test(id integer, data text);',
-      fields_mapping: JSON.stringify(fieldsMapping2000default),
+      fields_mapping: JSON.stringify(fieldsMapping2000loki),
       correlation_mapping: JSON.stringify(empty),
       schema_mapping: JSON.stringify(empty),
       schema_settings: JSON.stringify(empty),

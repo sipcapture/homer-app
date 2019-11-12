@@ -179,14 +179,13 @@ export default function search(server) {
       */
     },
     handler: async function(request, reply) {
-      const {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
-      let local_version = 0 + version;
-      if(local_version == 0) local_version = 1;
+      let {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
+      version+=1;
       const guid = uuid();
       const settings = new MappingData({server});
 
       try {
-        await settings.add({guid, profile, hepid, hep_alias, partid, local_version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings});
+        await settings.add({guid, profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings});
         return reply({
           data: guid,
           message: 'successfully created mapping settings',

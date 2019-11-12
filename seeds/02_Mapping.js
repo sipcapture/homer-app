@@ -69,7 +69,6 @@ exports.seed = function seed(knex) {
       position: 6,
       skip: false,
       hide: false,
-      sid_type: true,
     },
     {
       id: 'protocol_header.srcIp',
@@ -190,7 +189,6 @@ exports.seed = function seed(knex) {
       position: 18,
       skip: false,
       hide: false,
-      sid_type: true,
     },
     {
       id: 'data_header.from_tag',

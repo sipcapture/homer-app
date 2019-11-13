@@ -637,6 +637,7 @@ exports.seed = function seed(knex) {
       position: 2,
       skip: false,
       hide: false,
+      autoheight: true,
     },
     {
       id: 'custom_2',

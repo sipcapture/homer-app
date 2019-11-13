@@ -5,9 +5,8 @@ exports.seed = function seed(knex) {
 
   let empty = {};
   let lokiURL='{"host":"http://loki:3100"}'
-  let promURL='{"host":"http://127.0.0.1:9090/api/v1/"}'
-  let grafURL='{"host": "http://127.0.0.1:3000","user": "admin","password":"admin","token": "ABCDEF1234"}'
-  
+  let promURL='{"host":"http://prometheus:9090/api/v1/"}'
+
   const rows = [
     {
       guid: uuidv4(),
@@ -23,14 +22,6 @@ exports.seed = function seed(knex) {
       partid: 1,
       category: 'search',
       data: promURL,
-      create_date: new Date(),
-    },
-    {
-      guid: uuidv4(),
-      param: 'grafana',
-      partid: 1,
-      category: 'search',
-      data: grafURL,
       create_date: new Date(),
     },
   ];

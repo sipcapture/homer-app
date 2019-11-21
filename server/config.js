@@ -39,7 +39,9 @@ const prometheus = {
   protocol: 'http',
   host: 'prometheus',
   port: 9090,
-  api: '/api/v1/'
+  api: '/api/v1/',
+  user: 'admin',
+  password: 'admin'
 }
 
 const proxyConfig = {

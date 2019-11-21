@@ -50,7 +50,8 @@ databases.statistics = influx;
 /* prometheus */
 const RequestClient = require('reqclient').RequestClient;
 const prometheusClient = new RequestClient({
-  baseUrl: config.db.prometheus.protocol + '://' + config.db.prometheus.host + ':' + config.db.prometheus.port + config.db.prometheus.api
+  baseUrl: config.db.prometheus.protocol + '://' + config.db.prometheus.host + ':' + config.db.prometheus.port + config.db.prometheus.api,
+  auth: {user: config.db.prometheus.user, pass: config.db.prometheus.password}
 });
 
 databases.prometheus = prometheusClient;

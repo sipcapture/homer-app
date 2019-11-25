@@ -27,14 +27,15 @@ class Prometheus extends LivingBeing {
      });
 
      return Promise.all(metricsQueries).then((responses) => {
-          let resposeBody = [];
+          /*let resposeBody = [];
           responses.forEach((metric) => {
             resposeBody.push({
               name: metric.data.result[0].metric.__name__,
               values: metric.data.result[0].values,
             });
           });
-          return (resposeBody);
+          */
+          return (responses);
      }).catch((err) => {
           return (err);
      });
@@ -44,6 +45,18 @@ class Prometheus extends LivingBeing {
   
      let unixTimeStamp = (new Date().getTime())/1000;
      return this.promDb.get(`/label/__name__/values?_=${unixTimeStamp}`)
+        .then((response) => {
+          return (response.data);
+        })
+        .catch((err) => {
+          return(err);
+     });    
+  }  
+  
+  getLabel(id) {
+  
+     let unixTimeStamp = (new Date().getTime())/1000;
+     return this.promDb.get(`/label/${id}/values?_=${unixTimeStamp}`)
         .then((response) => {
           return (response.data);
         })

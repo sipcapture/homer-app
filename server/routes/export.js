@@ -61,7 +61,7 @@ export default function search(server) {
             destinationIp: row.protocol_header.dstIp ? row.protocol_header.dstIp : row.data_header.dstIp,
             destinationPort: row.protocol_header.dstPort ? row.protocol_header.dstPort : row.data_header.dstPort,
             data: row.raw,
-            timestamp: (row.timeSeconds * 1000 + row.timeUseconds*10),
+            ts: (row.protocol_header.timeSeconds * 1000000 + row.protocol_header.timeUseconds),
           });
         });
         

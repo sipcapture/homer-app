@@ -43,8 +43,8 @@ class Prometheus extends LivingBeing {
     
   getLabels() {
   
-     let unixTimeStamp = (new Date().getTime())/1000;
-     return this.promDb.get(`/label/__name__/values?_=${unixTimeStamp}`)
+     let unixTimeStamp = parseInt((new Date().getTime())/1000);
+     return this.promDb.get(`label/__name__/values?_=${unixTimeStamp}`)
         .then((response) => {
           return (response.data);
         })
@@ -55,8 +55,8 @@ class Prometheus extends LivingBeing {
   
   getLabel(id) {
   
-     let unixTimeStamp = (new Date().getTime())/1000;
-     return this.promDb.get(`/label/${id}/values?_=${unixTimeStamp}`)
+     let unixTimeStamp = parseInt((new Date().getTime())/1000);
+     return this.promDb.get(`series?match[]=${id}`)
         .then((response) => {
           return (response.data);
         })

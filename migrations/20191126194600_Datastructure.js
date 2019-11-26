@@ -2,7 +2,7 @@
 exports.up = function(knex) {
   return knex
     .schema
-    .createTable('users', function(usersTable) {
+    .createTableIfNotExists('users', function(usersTable) {
       // Primary Key
       usersTable.increments();
       // Data
@@ -17,7 +17,7 @@ exports.up = function(knex) {
       usersTable.string('guid', 50).notNullable().unique();
       usersTable.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     })
-    .createTable('mapping_schema', function(mappingTable) {
+    .createTableIfNotExists('mapping_schema', function(mappingTable) {
       // Primary Key
       mappingTable.increments();
       // Data
@@ -38,7 +38,7 @@ exports.up = function(knex) {
       mappingTable.json('schema_settings');
       mappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     })
-    .createTable('hepsub_mapping_schema', function(hepSubMappingTable) {
+    .createTableIfNotExists('hepsub_mapping_schema', function(hepSubMappingTable) {
       // Primary Key
       hepSubMappingTable.increments();
       // Data
@@ -50,7 +50,7 @@ exports.up = function(knex) {
       hepSubMappingTable.json('mapping');
       hepSubMappingTable.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
     })
-    .createTable('user_settings', function(userSettingsTable) {
+    .createTableIfNotExists('user_settings', function(userSettingsTable) {
       // Primary Key
       userSettingsTable.increments();
       // Data
@@ -62,7 +62,7 @@ exports.up = function(knex) {
       userSettingsTable.string('param', 100).notNullable().defaultTo('default');
       userSettingsTable.json('data');
     })
-    .createTable('global_settings', function(globalSettingsTable) {
+    .createTableIfNotExists('global_settings', function(globalSettingsTable) {
       // Primary Key
       globalSettingsTable.increments();
       // Data
@@ -73,7 +73,7 @@ exports.up = function(knex) {
       globalSettingsTable.string('param', 100).notNullable().defaultTo('default');
       globalSettingsTable.json('data');
     })
-    .createTable('agent_location_session', function(agentLocationSession) {
+    .createTableIfNotExists('agent_location_session', function(agentLocationSession) {
       // Primary Key
       agentLocationSession.increments();
       // Data
@@ -89,7 +89,7 @@ exports.up = function(knex) {
       agentLocationSession.timestamp('expire_date').notNullable().defaultTo('2032-12-31 00:00:00');
       agentLocationSession.integer('active').notNullable().defaultTo(1);
     })
-    .createTable('alias', function(aliasTable) {
+    .createTableIfNotExists('alias', function(aliasTable) {
       // Primary Key
       aliasTable.increments();
       // Data
@@ -108,6 +108,7 @@ exports.down = function(knex) {
   return knex
     .schema
     .dropTableIfExists( 'mapping_schema' )
+    .dropTableIfExists( 'hepsub_mapping_schema' )
     .dropTableIfExists( 'user_settings' )
     .dropTableIfExists( 'global_settings' )
     .dropTableIfExists( 'agent_location_session' )

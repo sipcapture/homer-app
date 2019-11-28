@@ -20,6 +20,7 @@ const routes = {
   advanced: require('./routes/advanced'),
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
+  statistics2: require('./routes/statistics2'),
   agent_subscribe: require('./routes/agent_subscribe'),
   api: require('./routes/any'),
   ui: require('./routes/ui'),

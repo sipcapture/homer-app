@@ -74,6 +74,9 @@ export default function dashboards(server) {
           if (!data) {
             return reply(Boom.notFound('dashboard was not found'));
           }
+          /* sort it by create data */
+          //data.sort(function(a, b) { return a.name - b.name; });
+          
           return reply(data);
         }).catch(function(error) {
           return reply(Boom.serverUnavailable(error));

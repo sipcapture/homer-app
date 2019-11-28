@@ -93,6 +93,18 @@ class Settings extends LivingBeing {
                 
           dashboardList.push(dashboardElement);
         });
+
+        /* sort it by name */
+        dashboardList = dashboardList.sort(function(a,b){ 
+              // Use toUpperCase() to ignore character casing
+              const AN = a.name.toUpperCase();
+              const BN = b.name.toUpperCase();
+              let comparison = 0;
+              if (AN > BN) { comparison = 1; } 
+              else if (AN < BN) { comparison = -1; }
+              return comparison;
+        });
+        
           
         let globalReply = {
           total: dashboardList.length,

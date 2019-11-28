@@ -281,7 +281,7 @@ class RemoteData extends LivingBeing {
       }
 
       /* sort it by create data */
-      dataRow.sort(function(a, b) {
+      dataRow =  dataRow.sort(function(a, b) {
         return a.create_date - b.create_date;
       });
 

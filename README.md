@@ -9,13 +9,20 @@
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
+## Usage
+### Build Dev
+```
+npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
+ ```
+### Run
+```
+npm start
+```
+
 ## Docker Bundles
 ##### Getting started with HOMER Seven?
-Pick one of our ready-to-use [Docker images](https://github.com/sipcapture/homer7-docker) available in many flavours using multiple backends:
+Pick one of our ready-to-capture [Docker images](https://github.com/sipcapture/homer7-docker/tree/7.7/heplify-server) available in many flavours
 
-
-## Developement
-[Development documentation](docs/dev/README.md)
 
 
 ---

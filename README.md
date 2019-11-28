@@ -12,9 +12,6 @@
 ## Docker Bundles
 ##### Getting started with HOMER Seven?
 Pick one of our ready-to-use [Docker images](https://github.com/sipcapture/homer7-docker) available in many flavours using multiple backends:
-* [H7 + InfluxDB](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-influx)
-* [H7 + Prometheus](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-prom-graf)
-* [H7 + Elastic](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-elastic)
 
 
 ## Developement

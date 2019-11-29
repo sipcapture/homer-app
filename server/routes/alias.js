@@ -139,7 +139,7 @@ export default function alias(server) {
       const settings = new Alias({server});
 
       try {
-        await settings.add({ alias, ip, port, mask, captureID, status});
+        await settings.add({ guid, alias, ip, port, mask, captureID, status});
         return reply({
           data: guid,
           message: 'successfully created alias',

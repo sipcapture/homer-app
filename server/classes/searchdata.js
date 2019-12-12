@@ -315,6 +315,7 @@ class SearchData extends LivingBeing {
         }
         if (dataElement.hasOwnProperty('create_date')) {
           callElement.micro_ts = dataElement['create_date'];
+          callElement.usec_ts = dataElement['create_date']*1000;
         }
         if (dataElement.hasOwnProperty('protocol')) {
           callElement.protocol = dataElement['protocol'];
@@ -322,6 +323,11 @@ class SearchData extends LivingBeing {
         if (dataElement.hasOwnProperty('sid')) callElement.sid = dataElement['sid'];
         if (dataElement.hasOwnProperty('raw')) {
           callElement.ruri_user = dataElement['raw'].substr(0, 50);
+        }
+
+        if (dataElement.hasOwnProperty('timeSeconds') && dataElement.hasOwnProperty('timeUseconds')) {
+           callElement.micro_ts =  Math.round((parseInt(dataElement['timeSeconds']) * 1000000 +  parseInt(dataElement['timeUseconds']))/1000);
+           callElement.usec_ts =  parseInt(dataElement['timeSeconds']) * 1000000 +  parseInt(dataElement['timeUseconds']);
         }
 
         callElement.srcId = callElement.srcHost+':'+callElement.srcPort;
@@ -674,6 +680,11 @@ class SearchData extends LivingBeing {
 
       const globalReply = await this.getTransactionSummary(dataRow, aliasData);
 
+       /* sort it by create data */
+      dataRow = dataRow.sort(function(a, b) {
+        return a.usec_ts - b.usec_ts;
+      });
+      
       return globalReply;
     } catch (err) {
       throw new Error('fail to get data main:'+err);

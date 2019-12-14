@@ -91,7 +91,8 @@ class SearchData extends LivingBeing {
       .where(dataWhere)
       .whereBetween('create_date', timeWhere)
       .select(columns)
-      .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+      .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
       .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
@@ -175,7 +176,8 @@ class SearchData extends LivingBeing {
       .where(dataWhere)
       .whereBetween('create_date', timeWhere)
       .select(columns)
-      .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+      .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+      .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
       .limit(sLimit)
       .then(function(rows) {
         let dataReply = [];
@@ -313,8 +315,8 @@ class SearchData extends LivingBeing {
         if (dataElement.hasOwnProperty('create_date')) {
           callElement.create_date = dataElement['create_date'];
         }
-        if (dataElement.hasOwnProperty('create_date')) {
-          callElement.micro_ts = dataElement['create_date'];
+        if (dataElement.hasOwnProperty('micro_ts')) {
+          callElement.micro_ts = (dataElement['micro_ts'] / 100);
         }
         if (dataElement.hasOwnProperty('protocol')) {
           callElement.protocol = dataElement['protocol'];
@@ -408,7 +410,8 @@ class SearchData extends LivingBeing {
         .whereIn(fieldKey, dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
-        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
         .then(function(rows) {
           return rows;
         });
@@ -423,7 +426,8 @@ class SearchData extends LivingBeing {
         .whereRaw(fieldKey, dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
-        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
         .then(function(rows) {
           return rows;
         });
@@ -465,7 +469,7 @@ class SearchData extends LivingBeing {
       // let dataRow = []
       
       dataRow.sort(function(a, b) {
-        return a.create_date - b.create_date;
+        return a.micro_ts - b.micro_ts;
       });
 
       if (!isEmpty(correlation)) {
@@ -664,9 +668,9 @@ class SearchData extends LivingBeing {
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
 
-      /* sort it by create data */
+      /* sort it by micro_ts */
       dataRow.sort(function(a, b) {
-        return a.create_date - b.create_date;
+        return a.micro_ts - b.micro_ts;
       });
 
 
@@ -711,7 +715,8 @@ class SearchData extends LivingBeing {
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
-        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
         .then(function(rows) {
           let dataReply = [];
 
@@ -743,7 +748,8 @@ class SearchData extends LivingBeing {
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
-        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
         .then(function(rows) {
           let dataReply = [];
 
@@ -830,7 +836,8 @@ class SearchData extends LivingBeing {
         .whereIn('sid', dataWhere)
         .whereBetween('create_date', timeWhere)
         .select(columns)
-        .column(this.dataDb.raw('ROUND(EXTRACT(epoch FROM create_date)*1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date) * 1000) as create_date'))
+        .column(this.dataDb.raw('FLOOR(EXTRACT(epoch FROM create_date)::decimal * 100000) as micro_ts'))
         .then(function(rows) {
           let dataReply = [];
 

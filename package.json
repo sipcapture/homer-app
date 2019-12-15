@@ -1,17 +1,18 @@
 {
   "name": "homer-app",
-  "version": "1.7.7",
+  "version": "7.7.0",
   "description": "",
+  "homepage": "https://github.com/sipcapture/homer-app"
   "main": "index.js",
   "scripts": {
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",
-    "start": "node bootstrap.js",
+    "start": "node --max_old_space_size=2048 bootstrap.js",
     "dev": "nodemon --inspect=0.0.0.0:9211 bootstrap.js",
     "knex": "node_modules/babel-node node_modules/.bin/knex"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "dependencies": {
     "bcryptjs": "2.4.3",
     "bluebird": "3.5.0",

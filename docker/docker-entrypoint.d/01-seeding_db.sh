@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export NODE_OPTIONS="--max-old-space-size=2048"
+
 cd /app
 if [ ! -f bootstrap ]; then
    touch bootstrap
@@ -26,4 +28,5 @@ else
      fi
    fi
 fi
+
 exec "$@"

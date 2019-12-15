@@ -1,6 +1,6 @@
 FROM node:12-alpine
 # BUILD FORCE
-ENV BUILD 77-12122019-001
+ENV BUILD 77-15122019-001
 
 RUN apk add git && git clone https://gitlab.com/qxip/hepic-ui-3 /app
 WORKDIR /app
@@ -8,16 +8,17 @@ RUN npm install && npm install -g @angular/cli && ng build
 
 
 # HOMER 7.7.x UI+API
-FROM node:8-alpine
+FROM node:12-alpine
 # BUILD FORCE
-ENV BUILD 77-12122019-001
+ENV BUILD 77-15122019-001
 
 # To handle 'not get uid/gid'
 RUN npm config set unsafe-perm true
 
 RUN apk add --update git bash openssl run-parts
-ENV NODE_OPTIONS="--max_old_space_size=2048"
+# ENV NODE_OPTIONS="--max_old_space_size=2048"
 
+# RUN apk add git && git clone --branch server-only https://github.com/sipcapture/homer-app /app
 COPY . /app
 WORKDIR /app
 
@@ -30,7 +31,6 @@ COPY --from=0 /app/dist/homer-ui /app/public
 
 # Expose Ports
 EXPOSE 80
-EXPOSE 443
 
 # Configure entrypoint
 COPY /docker/docker-entrypoint.sh /

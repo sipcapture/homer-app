@@ -1,8 +1,7 @@
 {
   "name": "homer-app",
   "version": "7.7.0",
-  "description": "",
-  "homepage": "https://github.com/sipcapture/homer-app"
+  "homepage": "https://github.com/sipcapture/homer-app",
   "main": "index.js",
   "scripts": {
     "test": "nyc ./node_modules/mocha/bin/mocha --require babel-core/register",

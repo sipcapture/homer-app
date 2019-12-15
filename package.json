@@ -1,6 +1,7 @@
 {
   "name": "homer-app",
   "version": "7.7.0",
+  "description": "HOMER Front-End Application and API",
   "homepage": "https://github.com/sipcapture/homer-app",
   "main": "index.js",
   "scripts": {

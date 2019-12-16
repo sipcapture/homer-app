@@ -39,8 +39,6 @@ export default function search(server) {
             aliasData[row.ip+":"+row.port] = row.alias;
       });
               
-      console.log("AAL", aliasData);
-          
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
       searchdata.getSearchData(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload, aliasData)

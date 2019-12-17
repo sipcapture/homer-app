@@ -15,7 +15,7 @@ ENV BUILD 77-17122019-001
 # To handle 'not get uid/gid'
 RUN npm config set unsafe-perm true
 
-RUN apk add --update git bash openssl run-parts python
+RUN apk add --update git bash openssl run-parts python make
 # ENV NODE_OPTIONS="--max_old_space_size=2048"
 
 # RUN apk add git && git clone --branch server-only https://github.com/sipcapture/homer-app /app

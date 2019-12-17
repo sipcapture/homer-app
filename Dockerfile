@@ -1,6 +1,6 @@
 FROM node:12-alpine
 # BUILD FORCE
-ENV BUILD 77-16122019-001
+ENV BUILD 77-17122019-001
 
 RUN apk add git && git clone https://gitlab.com/qxip/hepic-ui-3 /app
 WORKDIR /app
@@ -10,7 +10,7 @@ RUN npm install && npm install -g @angular/cli && ng build
 # HOMER 7.7.x UI+API
 FROM node:12-alpine
 # BUILD FORCE
-ENV BUILD 77-16122019-001
+ENV BUILD 77-17122019-001
 
 # To handle 'not get uid/gid'
 RUN npm config set unsafe-perm true

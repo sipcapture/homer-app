@@ -19,6 +19,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const settings = new UserSettings({server});
@@ -60,6 +64,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -106,6 +114,10 @@ export default function users(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -156,6 +168,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
@@ -166,6 +182,7 @@ export default function users(server) {
           category: Joi.string().min(3).max(50),
           param: Joi.string().min(3).max(50),
           data: Joi.string(),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [
@@ -222,6 +239,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
@@ -252,7 +273,7 @@ export default function users(server) {
       const settings = new UserSettings({server, guid});
 
       try {
-        await settings.delete();
+        await settings.delete({"guid": guid});
         return reply({
           data: guid,
           message: 'successfully deleted user settings',

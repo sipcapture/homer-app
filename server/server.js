@@ -12,10 +12,8 @@ const routes = {
   mapping: require('./routes/mapping'),
   hepsub: require('./routes/hepsub'),
   birds: require('./routes/birds'),
-  ui: require('./routes/ui'),
   profile: require('./routes/profile'),
   prometheus: require('./routes/prometheus'),
-  any: require('./routes/any'),
   users: require('./routes/users'),
   user_settings: require('./routes/user_settings'),
   alias: require('./routes/alias'),
@@ -23,11 +21,14 @@ const routes = {
   dashboard: require('./routes/dashboard'),
   statistics: require('./routes/statistics'),
   agent_subscribe: require('./routes/agent_subscribe'),
+  api: require('./routes/any'),
+  ui: require('./routes/ui'),
+  proxy: require('./routes/proxy'),
 };
 
 const databases = {
-  data: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_data),
-  config: config.db.type.mysql ? require('knex')(config.db.mysql.homerdatadev) : require('knex')(config.db.pgsql.homer_config),
+  data: require('knex')(config.db.pgsql.homer_data),
+  config: require('knex')(config.db.pgsql.homer_config),
 };
 
 const server = new Hapi.Server({
@@ -49,10 +50,12 @@ databases.statistics = influx;
 /* prometheus */
 const RequestClient = require('reqclient').RequestClient;
 const prometheusClient = new RequestClient({
-  baseUrl: config.db.prometheus.protocol + '://' + config.db.prometheus.host + ':' + config.db.prometheus.port + config.db.prometheus.api
+  baseUrl: config.db.prometheus.protocol + '://' + config.db.prometheus.host + ':' + config.db.prometheus.port + config.db.prometheus.api,
+  auth: {user: config.db.prometheus.user, pass: config.db.prometheus.password}
 });
 
 databases.prometheus = prometheusClient;
+const proxyConfig = config.proxyConfig;
 
 pem.createCertificate({
   days: config.certificate.days,
@@ -70,12 +73,18 @@ pem.createCertificate({
   server.connection({
     host: config.http_host || '127.0.0.1',
     port: config.http_port || 8001,
+    "routes": {
+      "cors": true
+    }
   });
 
   server.connection({
     host: config.https_host || '127.0.0.1',
     port: config.https_port || 443,
     tls,
+    "routes": {
+      "cors": true
+    }
   });
 
   // JWT authentication and encryption
@@ -108,6 +117,7 @@ pem.createCertificate({
       }
     });
   });
+
 
   // Server start
   server.start(function(error) {

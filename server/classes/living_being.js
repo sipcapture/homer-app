@@ -91,9 +91,6 @@ class LivingBeing {
   async delete() {
     try {
     
-      console.log("TABLE", this.table);
-      console.log("GUID", this.guid);
-      
       
       return await this.db(this.table)
         .where({
@@ -112,6 +109,7 @@ class LivingBeing {
    */
   async delete(properties) {
     try {
+
       return await this.db(this.table)
         .where(properties)
         .delete();

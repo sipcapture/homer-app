@@ -26,15 +26,9 @@ class Statistics extends LivingBeing {
    */
   getDatabases() {
     return this.statsDb.getDatabaseNames().then((names) => {
-      let dbNames = [];
-
-      names.forEach((name) => {
-        dbNames.push({name: name, value: name});
-      });
-
       let globalReply = {
-        total: dbNames.length,
-        data: dbNames,
+        total: names.length,
+        data: names,
         status: 'ok',
         auth: 'ok',
       };
@@ -48,14 +42,9 @@ class Statistics extends LivingBeing {
 
   getRetentions(database) {
     return this.statsDb.showRetentionPolicies(database).then((polices) => {
-      let retNames = [];
-      polices.forEach((police) => {
-        retNames.push({name: police.name, value: police.name});
-      });
-
       let globalReply = {
-        total: retNames.length,
-        data: retNames,
+        total: polices.length,
+        data: polices,
         status: 'ok',
         auth: 'ok',
       };
@@ -69,14 +58,9 @@ class Statistics extends LivingBeing {
 
   getMeasurements(database) {
     return this.statsDb.getMeasurements(database).then((mses) => {
-      let mesNames = [];
-      mses.forEach((ms) => {
-        mesNames.push({name: ms, value: ms});
-      });
-
       let globalReply = {
-        total: mesNames.length,
-        data: mesNames,
+        total: mses.length,
+        data: mses,
         status: 'ok',
         auth: 'ok',
       };
@@ -102,15 +86,9 @@ class Statistics extends LivingBeing {
     let influxQuery = 'SHOW FIELD KEYS FROM "'+main+'"';
 
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
-      let mesNames = [];
-      let values = mses.results[0].series[0].values;
-      values.forEach((value) => {
-        mesNames.push({name: value[0], value: value[0]});
-      });
-
       let globalReply = {
-        total: mesNames.length,
-        data: mesNames,
+        total: mses.length,
+        data: mses,
         status: 'ok',
         auth: 'ok',
       };
@@ -136,16 +114,9 @@ class Statistics extends LivingBeing {
     let influxQuery = 'SHOW TAG KEYS FROM "'+main+'"';
 
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
-      let mesNames = [];
-      let values = mses.results[0].series[0].values;
-
-      values.forEach((value) => {
-        mesNames.push({name: value[0], value: value[0]});
-      });
-
       let globalReply = {
-        total: mesNames.length,
-        data: mesNames,
+        total: mses.length,
+        data: mses,
         status: 'ok',
         auth: 'ok',
       };
@@ -172,16 +143,9 @@ class Statistics extends LivingBeing {
     let influxQuery = 'SHOW TAG VALUES FROM "'+main+'" WITH KEY IN ("'+key+'")';
 
     return this.statsDb.queryRaw(influxQuery, options).then((mses) => {
-      let mesNames = [];
-      let values = mses.results[0].series[0].values;
-
-      values.forEach((value) => {
-        mesNames.push({name: value[1], value: value[1]});
-      });
-
       let globalReply = {
-        total: mesNames.length,
-        data: mesNames,
+        total: mses.length,
+        data: mses,
         status: 'ok',
         auth: 'ok',
       };
@@ -262,41 +226,11 @@ class Statistics extends LivingBeing {
 
 
     return this.statsDb.query(influxQuery, options).then((mses) => {
-      let mesNames = [];
-
-      let values = mses;
-      values.forEach((value) => {
-        let reporttime = 0;
-        for (let v in value) {
-          if (v == 'time') {
-            reporttime = value[v].getNanoTime()/1000000000;
-          } else {
-            let dataPoint = {
-              attemps: 1,
-              partid: 10,
-              group: 0,
-              id: 0,
-              reporttime: reporttime,
-              table: 'cpu',
-              tag1: '',
-              transaction: 'statistic',
-              countername: '',
-              value: 0,
-            };
-
-            dataPoint.countername = v;
-            dataPoint.value = value[v];
-            dataPoint.table = main;
-            mesNames.push(dataPoint);
-          }
-        };
-      });
-
       // groupsTagsKeys: [],
       // groupRows: [ { name: 'cpu', rows: [Array], tags: {} } ],
       let globalReply = {
-        total: mesNames.length,
-        data: [mesNames],
+        total: mses.length,
+        data: mses,
         status: 'ok',
         auth: 'ok',
       };

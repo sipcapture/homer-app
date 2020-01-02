@@ -20,6 +20,10 @@ export default function alias(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const settings = new Alias({server});
@@ -62,6 +66,10 @@ export default function alias(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -110,6 +118,10 @@ export default function alias(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           alias: Joi.string().min(1).max(40),
@@ -127,7 +139,7 @@ export default function alias(server) {
       const settings = new Alias({server});
 
       try {
-        await settings.add({ alias, ip, port, mask, captureID, status});
+        await settings.add({ guid, alias, ip, port, mask, captureID, status});
         return reply({
           data: guid,
           message: 'successfully created alias',
@@ -161,6 +173,10 @@ export default function alias(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
@@ -172,6 +188,7 @@ export default function alias(server) {
           mask: Joi.number(),
           captureID: Joi.string().min(0).max(20),
           status: Joi.boolean(),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [
@@ -228,6 +245,10 @@ export default function alias(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
@@ -258,7 +279,7 @@ export default function alias(server) {
       const settings = new Alias({server, guid});
 
       try {
-        await settings.delete();
+        await settings.delete({"guid": guid});
         return reply({
           data: guid,
           message: 'successfully deleted alias',

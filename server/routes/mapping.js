@@ -7,6 +7,12 @@ import MappingData from '../classes/mappingdata';
 export default function search(server) {
   server.route({
     path: '/api/v3/mapping/protocols',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     method: 'GET',
     handler: function(request, reply) {
       const mappingdata = new MappingData({server});
@@ -25,6 +31,12 @@ export default function search(server) {
   server.route({
     path: '/api/v3/mapping/fields/{id}/{transaction}',
     method: 'GET',
+    config: {
+        cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+        }
+    },
     handler: function(request, reply) {
       let id = encodeURIComponent(request.params.id);
       let transaction = encodeURIComponent(request.params.transaction);
@@ -55,6 +67,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
     },
     handler: async function(request, reply) {
@@ -98,6 +114,10 @@ export default function search(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         params: {
           guid: Joi.string().min(12).max(46).required(),
@@ -140,6 +160,10 @@ export default function search(server) {
     path: '/api/v3/mapping/protocol',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -155,7 +179,9 @@ export default function search(server) {
       */
     },
     handler: async function(request, reply) {
-      const {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
+      let {profile, hepid, hep_alias, partid, version, retention, partition_step, create_index, create_table, correlation_mapping, fields_mapping, mapping_settings, schema_mapping, schema_settings} = request.payload;
+      version = version || 0;
+      version+=1;
       const guid = uuid();
       const settings = new MappingData({server});
 
@@ -191,6 +217,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {
@@ -258,6 +288,10 @@ export default function search(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {

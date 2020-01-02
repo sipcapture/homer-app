@@ -88,7 +88,7 @@ class RemoteData extends LivingBeing {
   */
   getRemoteData(columns, table, data) {
     let sData = data.param.search;
-    console.log('IN LogQL', sData);
+    //console.log('IN LogQL', sData);
 
     let parseQuery = function(input) {
       const selectorRegexp = /(?:^|\s){[^{]*}/g;
@@ -100,7 +100,7 @@ class RemoteData extends LivingBeing {
         query = match[0].trim();
         regexp = input.replace(selectorRegexp, '').trim();
       }
-      console.log(query, regexp);
+      //console.log(query, regexp);
       return {query, regexp};
     };
 
@@ -115,7 +115,7 @@ class RemoteData extends LivingBeing {
     +'&start='+fromts
     +'&end='+tots;
 
-    console.log('OUT LogQL', logql);
+    //console.log('OUT LogQL', logql);
     // Fetch
     let LOKI_API = data.param.server || LOKI_SERVER;
     const url = LOKI_API + '/api/prom/query?'+encodeURI(logql);
@@ -151,7 +151,7 @@ class RemoteData extends LivingBeing {
   */
   getRemoteHepSubData(serverUrl, serverApi, query) {
 
-    console.log('IN PUBSUB Query', query);
+    //console.log('IN PUBSUB Query', query);
     
     const url =  serverUrl + serverApi;    
     let dataset = [];    
@@ -163,7 +163,6 @@ class RemoteData extends LivingBeing {
     return fetch(url, param)
       .then((response) => response.json())
       .then(function(responseJSON) {
-        console.log("RESP", responseJSON);
         return responseJSON;
       })
       .catch(function(error) {
@@ -281,7 +280,7 @@ class RemoteData extends LivingBeing {
       }
 
       /* sort it by create data */
-      dataRow.sort(function(a, b) {
+      dataRow =  dataRow.sort(function(a, b) {
         return a.create_date - b.create_date;
       });
 

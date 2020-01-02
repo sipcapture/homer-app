@@ -5,8 +5,8 @@ exports.seed = function seed(knex) {
 
   let empty = {};
   let lokiURL='{"host":"http://loki:3100"}'
-  let promURL='{"host":"http://127.0.0.1:9090/api/v1/"}'
-  
+  let promURL='{"host":"http://prometheus:9090/api/v1/"}'
+
   const rows = [
     {
       guid: uuidv4(),

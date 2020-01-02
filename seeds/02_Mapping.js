@@ -69,7 +69,6 @@ exports.seed = function seed(knex) {
       position: 6,
       skip: false,
       hide: false,
-      sid_type: true,
     },
     {
       id: 'protocol_header.srcIp',
@@ -189,8 +188,7 @@ exports.seed = function seed(knex) {
       form_type: 'input',
       position: 18,
       skip: false,
-      hide: false,
-      sid_type: true,
+      hide: true,
     },
     {
       id: 'data_header.from_tag',
@@ -618,6 +616,41 @@ exports.seed = function seed(knex) {
     },
   ];
   
+  let fieldsMapping2000loki = [
+     {
+      id: 'micro_ts',
+      name: 'Timeseconds',
+      type: 'integer',
+      index: 'none',
+      form_type: 'input',
+      date_field: true,
+      position: 1,
+      skip: false,
+      hide: false,
+    },
+    {
+      id: 'custom_1',
+      name: 'Message',
+      type: 'string',
+      index: 'none',
+      form_type: 'input',
+      position: 2,
+      skip: false,
+      hide: false,
+      autoheight: true,
+    },
+    {
+      id: 'custom_2',
+      name: 'Labels',
+      type: 'string',
+      index: 'none',
+      form_type: 'input',
+      position: 3,
+      skip: false,
+      hide: false,
+    }
+  ];
+  
   let correlationMapping1default = [
     {
       source_field: 'data_header.callid',
@@ -688,7 +721,7 @@ exports.seed = function seed(knex) {
       lookup_range: [-300, 200],
     },
   ];
-            
+  
   const rows = [
     {
       guid: uuidv4(),
@@ -792,7 +825,23 @@ exports.seed = function seed(knex) {
       schema_settings: JSON.stringify(empty),
       create_date: new Date(),
     },
-    
+    {
+      guid: uuidv4(),
+      profile: 'loki',
+      hepid: 2000,
+      hep_alias: 'Loki',
+      partid: 10,
+      version: 1,
+      retention: 10,
+      partition_step: 10,
+      create_index: JSON.stringify(empty),
+      create_table: 'CREATE TABLE test(id integer, data text);',
+      fields_mapping: JSON.stringify(fieldsMapping2000loki),
+      correlation_mapping: JSON.stringify(empty),
+      schema_mapping: JSON.stringify(empty),
+      schema_settings: JSON.stringify(empty),
+      create_date: new Date(),
+    },    
   ];
 
   return knex(tableName)

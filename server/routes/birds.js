@@ -12,6 +12,12 @@ export default function birds(server) {
      */
     path: '/api/v3/birds',
     method: 'GET',
+    config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
+    },
     handler: function(request, reply) {
       const bird = new Bird(server);
 
@@ -47,6 +53,10 @@ export default function birds(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -97,6 +107,10 @@ export default function birds(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         params: {

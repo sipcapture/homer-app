@@ -12,6 +12,10 @@ export default function search(server) {
     path: '/api/v3/export/call/messages/pcap',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
@@ -80,6 +84,10 @@ export default function search(server) {
     path: '/api/v3/export/call/messages/text',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
@@ -146,6 +154,10 @@ export default function search(server) {
     path: '/api/v3/export/call/data/pcap',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
@@ -170,8 +182,6 @@ export default function search(server) {
       aliasRowData.forEach(function(row) {
             aliasData[row.ip+":"+row.port] = row.alias;
       });
-
-      console.log("AAL", aliasData);
 
       const searchdata = new SearchData(server, request.payload.param);
       const searchTable = 'hep_proto_1_default';

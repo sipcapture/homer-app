@@ -74,12 +74,8 @@ class LdapAuth {
                                                     userObject.auth = true;
                                                     userObject.data = entry.object;
                                                     userObject.guid = entry.object[that.ldapAuth.uidNumber];
-                                                    //console.log('entry: ' + JSON.stringify(entry.object));
-                                                    //console.log('userObject: ' +  JSON.stringify(userObject));
                                               });
                                               res.on('end', function(result) {
-                                                    //console.log('status: ' + result.status);
-                                                    //console.log("OBJECT", userObject);
                                                     client.unbind();	
                                                     return resolve(userObject);
                                               });                      
@@ -100,12 +96,8 @@ class LdapAuth {
                                               userObject.auth = true;
                                               userObject.data = entry.object;
                                               userObject.guid = entry.object[that.ldapAuth.uidNumber];
-                                              //console.log('entry: ' + JSON.stringify(entry.object));
-                                              //console.log('userObject: ' +  JSON.stringify(userObject));
                                       });
                                       res.on('end', function(result) {
-                                            //console.log('status: ' + result.status);
-                                            //console.log("OBJECT", userObject);
                                             client.unbind();	
                                             return resolve(userObject);
                                       });                      

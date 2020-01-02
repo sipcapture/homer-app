@@ -1,59 +1,114 @@
 <!DOCTYPE html>
-<html ng-app="hepicApp" data-ng-cloak ng-controller="HepicController as hepicCtrl">
-  <head>
-    <title>{{hepicCtrl.title||"HOMER"}}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="width= 1280,initial-scale=0.8,minimum-scale=0.7,maximum-scale=1.0">
-    <link rel="icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
-    <link rel="shortcut icon" href="css/favicon_hepic.ico" type="image/x-icon"/>
-    <link rel="stylesheet" href="css/new-design/style-flow.css" />
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" />
-    <link rel="stylesheet" href="css/dialogs.min.css" />
-    <link rel="stylesheet" href="css/ui-grid.min.css" />
-    <link rel="stylesheet" href="css/angular-chart.min.css" />
-    <link rel="stylesheet" href="css/sweetalert.min.css" />
-    <link rel="stylesheet" href="css/inputDropdownStyles.css" />
-    <link rel="stylesheet" href="css/report-style.css" />
-    <link rel="stylesheet" href="css/nv.d3.css" />
-    <link rel="stylesheet" href="css/select.css" />
-    <link rel="stylesheet" href="css/themes/base/jquery-ui.min.css" />
-    <link rel="stylesheet" href="css/new-design/style.css" />
-    <link rel="stylesheet" href="css/material/css/material-design-iconic-font.min.css" />
-    <link rel="stylesheet" href="css/angular-gridster.min.css" />
-    <link rel="stylesheet" href="css/leaflet.css" />
-    <link rel="stylesheet" href="css/select.css" />
-    <link rel="stylesheet" href="css/wavesurfer/wavesurfer.angular.min.css" />
-    <link rel="stylesheet" href="css/demo-style.css" />
-    <link rel="stylesheet" href="css/dashboard-style.css" />
-    <link rel="stylesheet" href="css/style-test.css" />
-    <link rel="stylesheet" href="css/vis.css" />
+<html>
+<head>
+    <base href="/" />
+    <title>HOMER</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        @keyframes rot001 {
+            0% {            stroke-dashoffset: 268.60617px; transform: rotate(0);
+            } 12.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(0);
+            } 12.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(72.5deg);
+            } 25% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(72.5deg);
+            } 25.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(270deg);
+            } 37.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(270deg);
+            } 37.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(161.5deg);
+            } 50% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(161.5deg);
+            } 50.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(180deg);
+            } 62.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(180deg);
+            } 62.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(251.5deg);
+            } 75% {         stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(251.5deg);
+            } 75.0001% {    stroke-dashoffset: 268.60617px; transform: rotate(90deg);
+            } 87.5% {       stroke-dashoffset: 56.54867px;  transform: rotate(90deg);
+            } 87.5001% {    stroke-dashoffset: 56.54867px;  transform: rotateX(180deg) rotate(341.5deg);
+            } 100% {        stroke-dashoffset: 268.60617px; transform: rotateX(180deg) rotate(341.5deg);
+            }
+        }
 
-    <!--
-      Fix for UI-Grid Excel import
-      Check: http://ui-grid.info/docs/#!/tutorial/Tutorial:%20410%20Exporting%20Data%20with%20Fonts,%20Colors%20and%20Header%20in%20Excel
-    -->
-    <script src="http://ui-grid.info/docs/grunt-scripts/lodash.min.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/jszip.min.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/excel-builder.dist.js"></script>
-  </head>
+        @keyframes rot002 {
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
+        }
+        body {
+            margin: 0;
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 116px;
+        }
+        .loader-container > img {
+            width: 190px;
+            margin-bottom: 6rem;
+        }
+        
+        .loader-container > .spiner {
+            animation-delay: 0s;
+            animation-direction: normal;
+            animation-duration: 2s;
+            animation-fill-mode: none;
+            animation-iteration-count: infinite;
+            animation-name: rot002;
+            animation-play-state: running;
+            animation-timing-function: linear;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 100px;
+            position: relative;
+            width: 100px;
 
-  <script type="application/javascript" src="dist/bundle.js"></script>
-
-  <body>
-    <header>
-      <div ui-view="header"></div>
-    </header>
-
-    <main>
-      <div id="main" role="main" auto-height>
-        <div ui-view="main"></div>
-      </div>
-    </main>
-
-    <footer>
-      <div ui-view="footer"></div>
-    </footer>
-  </body>
+        }
+        .loader-container > .spiner > svg {
+            box-sizing: border-box;
+            display: block;
+            height: 100px;
+            left: 0px;
+            overflow: visible;
+            position: absolute;
+            top: 0px;
+            transform: matrix(6.12323e-17, -1, 1, 6.12323e-17, 0, 0);
+            transform-origin: 50px 50px;
+            width: 100px;
+            
+        }
+        .loader-container > .spiner > svg > circle {
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
+            animation-name: rot001;
+            animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+            box-sizing: border-box;
+            color: rgba(0, 0, 0, 0.87);
+            display: inline;
+            fill: rgba(0, 0, 0, 0);
+            stroke: #ee3324;
+            stroke-dasharray: 282.743px;
+            stroke-width: 10%;
+            text-size-adjust: 100%;
+            transform-origin: 50px 50px;
+            transition-delay: 0s;
+            transition-duration: 0.225s;
+            transition-property: stroke;
+            transition-timing-function: linear;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body>
+    <app-root>
+        <div class="loader-container">
+            <img  src="/assets/images/homerseven.png">
+            <div class="spiner">
+                <svg preserveAspectRatio="xMidYMid meet" focusable="false" ng-reflect-ng-switch="true" viewBox="0 0 100 100">
+                    <circle cx="50%" cy="50%" r="45"></circle>
+                </svg>
+            </div>
+        </div>
+    </app-root>
+<script src="runtime.js"></script><script src="polyfills-es5.js" nomodule></script><script src="polyfills.js"></script><script src="styles.js"></script><script src="vendor.js"></script><script src="main.js"></script></body>
 </html>
+
+
+

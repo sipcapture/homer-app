@@ -11,6 +11,10 @@ export default function search(server) {
     path: '/api/v3/search/call/data',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
@@ -35,8 +39,6 @@ export default function search(server) {
             aliasData[row.ip+":"+row.port] = row.alias;
       });
               
-      console.log("AAL", aliasData);
-          
       const searchdata = new SearchData(server, request.payload);
       const searchTable = 'hep_proto_1_default';
       searchdata.getSearchData(['id', 'sid', 'protocol_header', 'data_header'], searchTable, request.payload, aliasData)

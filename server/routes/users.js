@@ -21,6 +21,10 @@ export default function users(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: async function(request, reply) {
       const user = new User({server});
@@ -141,6 +145,7 @@ export default function users(server) {
           partid: Joi.number(),
           usergroup: Joi.string().min(2).max(250),
           department: Joi.string().min(2).max(250),
+          guid: Joi.string().min(12).max(46),
         },
       },
       pre: [
@@ -234,7 +239,7 @@ export default function users(server) {
       const user = new User({server, guid: userGuid});
 
       try {
-        await user.delete();
+        await user.delete({"guid": userGuid});
         return reply({
           data: userGuid,
           message: 'successfully deleted user',

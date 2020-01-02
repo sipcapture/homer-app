@@ -8,6 +8,10 @@ export default function statistics(server) {
     path: '/api/v3/statistic/_db',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -34,6 +38,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -74,6 +82,10 @@ export default function statistics(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: function(request, reply) {
       let databaseId = encodeURIComponent(request.params.databaseId);
@@ -99,11 +111,17 @@ export default function statistics(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       validate: {
         payload: {
           param: {
             limit: Joi.number().integer().min(0),
             search: Joi.object(),
+            query: Joi.array(),
+            total: Joi.bool(),
           },
           timestamp: {
             from: Joi.date().timestamp().required(),
@@ -114,11 +132,11 @@ export default function statistics(server) {
     },
     handler: function(request, reply) {
       let param = request.payload.param;
-      let search = param.search;
+      let query = param.query[0];
       let userObject = request.auth.credentials;
       const stats = new Stats(server, userObject.username);
       
-      stats.getTagsKeys(search).then(function(data) {
+      stats.getTagsKeys(query).then(function(data) {
         if (!data) {
           return reply(Boom.notFound('tags keys have been not found'));
         }
@@ -136,6 +154,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -174,6 +196,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {
@@ -214,6 +240,10 @@ export default function statistics(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
       validate: {
         payload: {

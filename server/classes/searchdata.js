@@ -315,8 +315,9 @@ class SearchData extends LivingBeing {
         if (dataElement.hasOwnProperty('create_date')) {
           callElement.create_date = dataElement['create_date'];
         }
-        if (dataElement.hasOwnProperty('micro_ts')) {
-          callElement.micro_ts = (dataElement['micro_ts'] / 100);
+        if (dataElement.hasOwnProperty('create_date')) {
+          callElement.micro_ts = dataElement['create_date'];
+          callElement.usec_ts = dataElement['create_date']*1000;
         }
         if (dataElement.hasOwnProperty('protocol')) {
           callElement.protocol = dataElement['protocol'];
@@ -324,6 +325,11 @@ class SearchData extends LivingBeing {
         if (dataElement.hasOwnProperty('sid')) callElement.sid = dataElement['sid'];
         if (dataElement.hasOwnProperty('raw')) {
           callElement.ruri_user = dataElement['raw'].substr(0, 50);
+        }
+
+        if (dataElement.hasOwnProperty('timeSeconds') && dataElement.hasOwnProperty('timeUseconds')) {
+           callElement.micro_ts =  Math.round((parseInt(dataElement['timeSeconds']) * 1000000 +  parseInt(dataElement['timeUseconds']))/1000);
+           callElement.usec_ts =  parseInt(dataElement['timeSeconds']) * 1000000 +  parseInt(dataElement['timeUseconds']);
         }
 
         callElement.srcId = callElement.srcHost+':'+callElement.srcPort;
@@ -468,8 +474,8 @@ class SearchData extends LivingBeing {
       let dataRow = await this.getTransactionData(table, columns, 'sid', dataWhere, timeWhere);
       // let dataRow = []
       
-      dataRow.sort(function(a, b) {
-        return a.micro_ts - b.micro_ts;
+      dataRow = dataRow.sort(function(a, b) {
+        return a.create_date - b.create_date;
       });
 
       if (!isEmpty(correlation)) {
@@ -668,9 +674,9 @@ class SearchData extends LivingBeing {
         if (!isEmpty(newDataRow)) dataRow = dataRow.concat(newDataRow);
       }
 
-      /* sort it by micro_ts */
-      dataRow.sort(function(a, b) {
-        return a.micro_ts - b.micro_ts;
+      /* sort it by create data */
+      dataRow = dataRow.sort(function(a, b) {
+        return a.create_date - b.create_date;
       });
 
 
@@ -678,6 +684,11 @@ class SearchData extends LivingBeing {
 
       const globalReply = await this.getTransactionSummary(dataRow, aliasData);
 
+       /* sort it by create data */
+      dataRow = dataRow.sort(function(a, b) {
+        return a.usec_ts - b.usec_ts;
+      });
+      
       return globalReply;
     } catch (err) {
       throw new Error('fail to get data main:'+err);

@@ -1,7 +1,7 @@
 <img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200/>
 
 # HOMER-APP
-![ezgif com-optimize 10](https://user-images.githubusercontent.com/1423657/46264200-211a6680-c51a-11e8-8477-3b7a53f9aa0b.gif)
+![ezgif com-optimize 10](https://user-content.gitlab-static.net/d5f1ab82b0eb2b06e123bd7f3ae46ced5e9759d7/68747470733a2f2f692e696d6775722e636f6d2f59763965394f4c2e676966)
 
 
 ## About
@@ -9,16 +9,20 @@
 
 <img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
 
+## Usage
+### Build Dev
+```
+npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
+ ```
+### Run
+```
+npm start
+```
+
 ## Docker Bundles
 ##### Getting started with HOMER Seven?
-Pick one of our ready-to-use [Docker images](https://github.com/sipcapture/homer7-docker) available in many flavours using multiple backends:
-* [H7 + InfluxDB](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-influx)
-* [H7 + Prometheus](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-prom-graf)
-* [H7 + Elastic](https://github.com/sipcapture/homer7-docker/tree/master/heplify-server/hom7-hep-elastic)
+Pick one of our ready-to-capture [Docker images](https://github.com/sipcapture/homer7-docker/tree/7.7/heplify-server) available in many flavours
 
-
-## Developement
-[Development documentation](docs/dev/README.md)
 
 
 ---

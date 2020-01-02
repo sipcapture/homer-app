@@ -14,14 +14,16 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
     },
     handler: function(request, reply) {
       let userObject = request.auth.credentials;
-      
-      console.log(userObject);
       
       const settings = new Settings(server, userObject.username);
 
@@ -51,6 +53,10 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/info',
     method: 'GET',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -66,6 +72,9 @@ export default function dashboards(server) {
           if (!data) {
             return reply(Boom.notFound('dashboard was not found'));
           }
+          /* sort it by create data */
+          //data.sort(function(a, b) { return a.name - b.name; });
+          
           return reply(data);
         }).catch(function(error) {
           return reply(Boom.serverUnavailable(error));
@@ -78,6 +87,10 @@ export default function dashboards(server) {
     path: '/api/v3/dashboard/store/{dashboardId}',
     method: 'POST',
     config: {
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
       auth: {
         strategy: 'token',
       },
@@ -118,6 +131,10 @@ export default function dashboards(server) {
       auth: {
         strategy: 'token',
       },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
+      },
     },
     handler: function(request, reply) {
       let userObject = request.auth.credentials;
@@ -144,6 +161,10 @@ export default function dashboards(server) {
     config: {
       auth: {
         strategy: 'token',
+      },
+      cors: {
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
       },
     },
     handler: function(request, reply) {

@@ -108,7 +108,7 @@ exports.up = function(knex) {
 	      agentLocationSession.string('node', 100).notNullable().defaultTo('testnode');
 	      agentLocationSession.string('type', 200).notNullable().defaultTo('type');
 	      agentLocationSession.timestamp('create_date').notNullable().defaultTo(knex.fn.now());
-	      agentLocationSession.timestamp('expire_date').notNullable().defaultTo(knex.fn.now() + 86400);
+	      agentLocationSession.timestamp('expire_date').notNullable().defaultTo(knex.raw('? + (? * interval \'1 second\')', [knex.fn.now(), "86400"]));
 	      agentLocationSession.integer('active').notNullable().defaultTo(1);
 	    })
 	}

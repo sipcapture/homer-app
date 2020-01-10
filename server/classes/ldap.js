@@ -49,7 +49,10 @@ class LdapAuth {
                   };
 	
                   let userDN = this.ldapAuth.userdn.replace("%USERNAME\%", this.username);
-                  let dnRetrieved =  userDN + ',' + this.ldapAuth.dn;
+                  let dnRetrieved = userDN;
+                  if (typeof this.ldapAuth.appendDN == 'undefined' || this.ldapAuth.appendDN) {
+                          dnRetrieved = dnRetrieved + ',' + this.ldapAuth.dn;
+                  }
 
                   let that = this;
 

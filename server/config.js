@@ -57,6 +57,7 @@ const proxyConfig = {
 const ldapauth = {
    url: 'ldap://127.0.0.1:389',
    strictDN: true,
+   appendDN: true,
    dn: 'dc=qxip,dc=net',
    userdn: 'uid=%USERNAME%',
    filter: '(uid=%USERNAME%)',

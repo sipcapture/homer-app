@@ -31,7 +31,7 @@ make frontend
 ### Configuration
 Before using the application, configure all database parameters using the example configuration file:
 ```
-/usr/local/homer/webapp_config.json
+/usr/local/homer/etc/webapp_config.json
 ```
 
 NOTE: The default location for settings and provisioning files is `/usr/local/homer`

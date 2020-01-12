@@ -1,0 +1,229 @@
+package controllerv1
+
+import (
+	"net/http"
+	"net/url"
+
+	"github.com/labstack/echo"
+	uuid "github.com/satori/go.uuid"
+	"github.com/sirupsen/logrus"
+	"gitlab.com/qxip/webapp-go/data/service"
+	"gitlab.com/qxip/webapp-go/model"
+	httpresponse "gitlab.com/qxip/webapp-go/network/response"
+	"gitlab.com/qxip/webapp-go/system/webmessages"
+)
+
+type HepsubController struct {
+	Controller
+	HepsubService *service.HepsubService
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) GetHepSub(c echo.Context) error {
+
+	reply, err := hsc.HepsubService.GetHepSub()
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
+	guid := url.QueryEscape(c.Param("guid"))
+	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
+	id := url.QueryEscape(c.Param("id"))
+	transaction := url.QueryEscape(c.Param("transaction"))
+	reply, err := hsc.HepsubService.GetHepSubFields(id, transaction)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route POST /hepsub/protocol HepSub AddHepSub
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) AddHepSub(c echo.Context) error {
+	// Stub an user to be populated from the body
+	u := model.TableHepsubSchema{}
+	err := c.Bind(&u)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	// validate input request body
+	if err := c.Validate(u); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
+	uid := uuid.NewV4()
+	u.GUID = uid.String()
+	reply, err := hsc.HepsubService.AddHepSub(u)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
+	guid := url.QueryEscape(c.Param("guid"))
+	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	// Stub an user to be populated from the body
+	u := model.TableHepsubSchema{}
+	err = c.Bind(&u)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	// validate input request body
+	if err := c.Validate(u); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	u.GUID = guid
+	reply, err = hsc.HepsubService.UpdateHepSubAgainstGUID(guid, u)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (hsc *HepsubController) DeleteHepSubAgainstGUID(c echo.Context) error {
+	guid := url.QueryEscape(c.Param("guid"))
+
+	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	reply, err = hsc.HepsubService.DeleteHepSubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	reply, err = hsc.HepsubService.DeleteHepSubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}

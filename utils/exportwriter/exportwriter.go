@@ -11,7 +11,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"gitlab.com/qxip/webapp-go/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/heputils"
 )
 
 //

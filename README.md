@@ -2,7 +2,7 @@
 
 # HOMER WebApp
 
-This repository hosts `homer-webapp`, the the GO webapplication for the HEP/HOMER 7.7+ stack.
+This repository hosts `homer-app`, the the GO webapplication for the HEP/HOMER 7.7+ stack.
 
 ### Instructions
 
@@ -16,13 +16,13 @@ This repository hosts `homer-webapp`, the the GO webapplication for the HEP/HOME
 
 #### Installation
 ##### Local
-To get dependencies and compile the latest homer-webapp on your system, use the following commands:
+To get dependencies and compile the latest homer-app on your system, use the following commands:
 ```
 make modules
 make all
 ```
 ##### Docker
-To get dependencies and compile the latest homer-webapp using a docker builder, use the following command:
+To get dependencies and compile the latest homer-app using a docker builder, use the following command:
 ```
 make binary
 make frontend
@@ -40,50 +40,50 @@ NOTE: The default location for settings and provisioning files is `/usr/local/ho
 #### Usage
 ##### Command Help
 ```
-./homer-webapp -h
+./homer-app -h
 ```
 ##### Custom Config in `/etc`
 ```
-./homer-webapp -webapp-config-path /etc
+./homer-app -webapp-config-path /etc
 ```
 
 ##### Initialization
 The application is able to initialize its database and tables it requires with the following commands:
 ###### Create User
 ```
-./homer-webapp -create-homer-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -create-homer-user -database-root=postgres -database-host=localhost -database-root-password=postgres
 ```
 ###### Show User
 ```
-./homer-webapp -show-db-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -show-db-user -database-root=postgres -database-host=localhost -database-root-password=postgres
 ```
 ###### Create User permissions
 ```
-./homer-webapp -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
+./homer-app -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
 ```
 
 ###### Create Homer DBs
 ```
-./homer-webapp -create-config-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
-./homer-webapp -create-data-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-config-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-data-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
 ```
 
 <!--
 ###### Save it or edit the webapp_config.json manualy
 ```
-./homer-webapp -save-homer-db-config-settings -database-host=localhost -database-homer-config=homer_config -database-homer-user=homer_user -database-homer-password=homer_password
-./homer-webapp -save-homer-db-data-settings -database-host=localhost -database-homer-data=homer_data -database-homer-user=homer_user -database-homer-password=homer_password
+./homer-app -save-homer-db-config-settings -database-host=localhost -database-homer-config=homer_config -database-homer-user=homer_user -database-homer-password=homer_password
+./homer-app -save-homer-db-data-settings -database-host=localhost -database-homer-data=homer_data -database-homer-user=homer_user -database-homer-password=homer_password
 ```
 -->
 
 ###### Create Table / Migration - connection data will be read from `webapp_config.json`
 ```
-./homer-webapp -create-table-db-config 
+./homer-app -create-table-db-config 
 ```
 
 ###### Populate DB
 ```
-./homer-webapp -populate-table-db-config 
+./homer-app -populate-table-db-config 
 ```
 
 ------------

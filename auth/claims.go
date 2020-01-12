@@ -5,7 +5,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 // jwt token claims which contains info regarding user

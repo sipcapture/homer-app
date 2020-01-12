@@ -11,7 +11,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 // StatisticService : here you tell us what Salutation is

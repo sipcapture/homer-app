@@ -2,8 +2,8 @@ package apirouterv1
 
 import (
 	"github.com/labstack/echo"
-	controllerv1 "gitlab.com/qxip/webapp-go/controller/v1"
-	"gitlab.com/qxip/webapp-go/data/service"
+	controllerv1 "github.com/sipcapture/homer-app/controller/v1"
+	"github.com/sipcapture/homer-app/data/service"
 )
 
 // RouteStatisticApis : here you tell us what RouteStatisticApis is

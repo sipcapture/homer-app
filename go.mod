@@ -1,4 +1,4 @@
-module gitlab.com/qxip/webapp-go
+module github.com/sipcapture/homer-app
 
 go 1.13
 

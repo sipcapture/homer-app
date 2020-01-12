@@ -6,7 +6,7 @@ import (
 
 	"sort"
 
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 type HepsubService struct {

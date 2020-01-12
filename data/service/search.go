@@ -13,10 +13,10 @@ import (
 	"github.com/dop251/goja"
 	"github.com/shomali11/util/xconditions"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/qxip/webapp-go/model"
-	"gitlab.com/qxip/webapp-go/utils/exportwriter"
-	"gitlab.com/qxip/webapp-go/utils/heputils"
-	"gitlab.com/qxip/webapp-go/utils/logger/function"
+	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/exportwriter"
+	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/logger/function"
 )
 
 type SearchService struct {

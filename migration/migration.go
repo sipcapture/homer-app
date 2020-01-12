@@ -7,9 +7,9 @@ import (
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/qxip/webapp-go/migration/jsonschema"
-	"gitlab.com/qxip/webapp-go/model"
-	"gitlab.com/qxip/webapp-go/utils/heputils"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
+	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/heputils"
 )
 
 type RollesTable struct {

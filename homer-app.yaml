@@ -1,5 +1,5 @@
 # nfpm example config file
-name: "homer-webapp"
+name: "homer-app"
 arch: "amd64"
 platform: "linux"
 version: "v${VERSION}"
@@ -28,7 +28,7 @@ homepage: "http://qxip.net"
 license: "AGPLv3"
 bindir: "/usr/local/bin"
 files:
-  /tmp/pkg/homer-webapp: "/usr/local/bin/homer-webapp"
+  /tmp/pkg/homer-app: "/usr/local/bin/homer-app"
   /tmp/pkg/dist/**/*: "/usr/local/homer/dist"
 config_files:
   /tmp/pkg/etc/webapp_config.json: "/usr/local/homer/webapp_config.json"

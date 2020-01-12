@@ -7,10 +7,10 @@ import (
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/qxip/webapp-go/data/service"
-	"gitlab.com/qxip/webapp-go/model"
-	httpresponse "gitlab.com/qxip/webapp-go/network/response"
-	"gitlab.com/qxip/webapp-go/system/webmessages"
+	"github.com/sipcapture/homer-app/data/service"
+	"github.com/sipcapture/homer-app/model"
+	httpresponse "github.com/sipcapture/homer-app/network/response"
+	"github.com/sipcapture/homer-app/system/webmessages"
 )
 
 type MappingController struct {

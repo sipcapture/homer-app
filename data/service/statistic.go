@@ -6,7 +6,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	client "github.com/influxdata/influxdb1-client/v2"
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 // StatisticService : here you tell us what Salutation is

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE="homer-webapp"
+PACKAGE="homer-app"
 VERSION="7.7.0"
 ARCH="amd64"
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 type MappingService struct {

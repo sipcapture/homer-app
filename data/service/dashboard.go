@@ -7,7 +7,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 type DashBoardService struct {

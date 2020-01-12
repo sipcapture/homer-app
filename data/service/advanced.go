@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/Jeffail/gabs/v2"
-	"gitlab.com/qxip/webapp-go/model"
+	"github.com/sipcapture/homer-app/model"
 )
 
 type AdvancedService struct {

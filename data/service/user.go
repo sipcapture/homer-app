@@ -6,9 +6,9 @@ import (
 	"hash/fnv"
 	"time"
 
-	"gitlab.com/qxip/webapp-go/auth"
-	"gitlab.com/qxip/webapp-go/model"
-	"gitlab.com/qxip/webapp-go/utils/ldap"
+	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/ldap"
 	"golang.org/x/crypto/bcrypt"
 )
 

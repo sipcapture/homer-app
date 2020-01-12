@@ -6,7 +6,7 @@ if ! [ -x "$(command -v docker)" ]; then
 fi
 
 # BUILD GO BINARY
-read -p "This will drop and rebuild the homer-webapp binary from source. Continue (y/n)?" CONT
+read -p "This will drop and rebuild the homer-app binary from source. Continue (y/n)?" CONT
 if [ "$CONT" = "y" ]; then
  docker run --rm \
   -v $PWD:/app \

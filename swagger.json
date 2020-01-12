@@ -683,7 +683,7 @@
         }
       },
       "x-go-name": "Alias",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "CreateUserStruct": {
       "type": "object",
@@ -742,7 +742,7 @@
         }
       },
       "x-go-name": "User",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "GlobalSettingsStruct": {
       "type": "object",
@@ -780,7 +780,7 @@
         }
       },
       "x-go-name": "GlobalSettings",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "ListUsers": {
       "type": "object",
@@ -801,7 +801,7 @@
         }
       },
       "x-go-name": "GetUser",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "RawMessage": {
       "description": "It implements Marshaler and Unmarshaler and can\nbe used to delay JSON decoding or precompute a JSON encoding.",
@@ -827,7 +827,7 @@
           "x-go-name": "Message"
         }
       },
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLoginFailureResponse": {
       "type": "object",
@@ -850,7 +850,7 @@
         }
       },
       "x-go-name": "UserTokenBadResponse",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLoginSuccessResponse": {
       "type": "object",
@@ -867,7 +867,7 @@
         }
       },
       "x-go-name": "UserTokenSuccessfulResponse",
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserSettings": {
       "type": "object",
@@ -909,7 +909,7 @@
           "x-go-name": "UserName"
         }
       },
-      "x-go-package": "gitlab.com/qxip/webapp-go/model"
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     }
   },
   "securityDefinitions": {

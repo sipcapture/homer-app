@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DB_HOST=${DB_HOST:-db}
+DB_USER=${DB_PASS:-root}
+DB_PASS=${DB_PASS:-homerSeven}
+
+if [ -f /usr/local/homer/webapp_config.json ]; then
+
+###Create user
+#/homer-app -create-homer-user -database-root=$DB_USER -database-host=$DB_HOST -database-root-password=$DB_PASS
+###Show user
+#/homer-app -show-db-user -database-root=$DB_USER -database-host=$DB_HOST -database-root-password=$DB_PASS
+###Create Role
+#/homer-app -create-homer-role -database-root=$DB_USER -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
+
+###Create DB
+/homer-app -create-config-db -database-root=$DB_USER -database-host=$DB_HOST -database-root-password=$DB_PASS -database-homer-user=homer_user
+/homer-app -create-data-db -database-root=$DB_USER -database-host=$DB_HOST -database-root-password=$DB_PASS -database-homer-user=homer_data
+
+#Save it or edit the webapp_config.json manualy
+#/homer-app -save-homer-db-config-settings -database-host=localhost -database-homer-config=homer_config -database-homer-user=homer_user -database-homer-password=homer_password
+#/homer-app -save-homer-db-data-settings -database-host=localhost -database-homer-data=homer_data -database-homer-user=homer_user -database-homer-password=homer_password
+
+#Create Table / Migration - connection data will be read from the webapp_config.json
+/homer-app -create-table-db-config -webapp-config-path /usr/local/homer
+
+#Populate DB
+/homer-app -populate-table-db-config -webapp-config-path /usr/local/homer
+
+   echo "Database provisioning completed!"
+
+else
+
+   echo "DB fail! Configuration file not found!"
+
+fi
+
+exec "$@"

@@ -1,18 +1,4 @@
-node_modules
-npm-debug.log
-coverage
-.nyc_output
-public/dist
-knexfile.js
-server/config/db/knex.js
-experiments
 *.swp
-server/config/server_config.js
-server/config.js
-*.iml
-.idea
-out
-
 # direnv and nix-shell
 .envrc
 default.nix

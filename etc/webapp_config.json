@@ -1,0 +1,67 @@
+{
+  "database_data": {
+    "help": "Settings for PGSQL Database (data)",
+    "user": "homer_user",
+    "pass": "homer_password",
+    "name": "homer_data",
+    "host": "127.0.0.1"
+  },
+  "database_config": {
+    "help": "Settings for PGSQL Database (settings)",
+    "user": "homer_user",
+    "pass": "homer_password",
+    "name": "homer_config",
+    "host": "localhost",
+  },
+  "influxdb_config": {
+    "help": "Settings for InfluxDB Database (optional)",
+    "user": "influx_user",
+    "pass": "influx_password",
+    "name": "homer_config",
+    "host": "http:/127.0.0.1:8086" ,
+    "database": "homer",
+    "policy": "autogen"
+  },
+  "prometheus_config": {
+    "help": "Settings for Prometheus Database (optional)",
+    "user": "admin",
+    "pass": "admin",
+    "host": "http://127.0.0.1:9090",
+    "api": "api/v1"
+  },
+  "loki_config": {
+    "help": "Settings for LOKI Database (optional)",
+    "user": "admin",
+    "pass": "admin",
+    "host": "http://127.0.0.1:3100",
+    "api": "api/prom"
+  },
+  "http_settings": {
+    "help": "Settings for the HOMER Webapp Server",
+    "host": "0.0.0.0",
+    "port" : 9080,
+    "root" : "/usr/local/homer/dist",
+    "gzip" : true,
+    "debug" : false
+  },
+  "system_settings": {
+    "help": "Settings for HOMER logs",
+    "logpath": "/usr/local/homer/log",
+    "logname" : "homer-app.log"
+  },
+  "auth_settings": {
+    "_comment": "The type param can be internal, ldap",
+    "type": "internal"
+  },
+  "ldap_config": {
+    "Base":  "dc=example,dc=com",
+		"Host":  "ldap.example.com",
+		"Port":   389,
+		"UseSSL": false,
+		"BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
+		"BindPassword": "readonlypassword",
+		"UserFilter": "(uid=%s)",
+		"GroupFilter": "(memberUid=%s)",
+		"Attributes": ["givenName", "sn", "mail", "uid"]
+  }
+}

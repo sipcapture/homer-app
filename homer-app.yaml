@@ -1,0 +1,44 @@
+# nfpm example config file
+name: "homer-app"
+arch: "amd64"
+platform: "linux"
+version: "v${VERSION}"
+section: "default"
+priority: "extra"
+replaces:
+- webapp-go
+provides:
+- webapp-go
+#depends:
+#- telegraf
+# recommends on rpm packages requires rpmbuild >= 4.13
+#recommends:
+#- whatever
+# suggests on rpm packages requires rpmbuild >= 4.13
+#suggests:
+#- something-else
+#conflicts:
+#- not-foo
+#- not-bar
+maintainer: "QXIP SIPCapture <support@sipcapture.org>"
+description: |
+    HOMER 7.7 WebAPP + API
+vendor: "QXIP"
+homepage: "http://qxip.net"
+license: "AGPLv3"
+bindir: "/usr/local/bin"
+files:
+  /tmp/pkg/homer-app: "/usr/local/bin/homer-app"
+  /tmp/pkg/dist/**/*: "/usr/local/homer/dist"
+config_files:
+  /tmp/pkg/etc/webapp_config.json: "/usr/local/homer/webapp_config.json"
+#overrides:
+#  rpm:
+#    scripts:
+#      preinstall: ./scripts/preinstall.sh
+#      postremove: ./scripts/postremove.sh
+#  deb:
+#    scripts:
+#      postinstall: ./scripts/postinstall.sh
+#      preremove: ./scripts/preremove.sh
+

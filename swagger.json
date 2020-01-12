@@ -1,0 +1,922 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Homer-App User interface for Hep protocol",
+    "title": "Homer-App",
+    "contact": {
+      "name": "Aqs",
+      "email": "aqsyounas@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.1"
+  },
+  "host": "localhost:8080",
+  "basePath": "/v1",
+  "paths": {
+    "/advanced": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns advanced setting of user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "advanced"
+        ],
+        "operationId": "ListAdvancedSettings",
+        "responses": {}
+      }
+    },
+    "/alias": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of Users",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "alias"
+        ],
+        "operationId": "ListAlias",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Adds alias to system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "alias"
+        ],
+        "operationId": "AddAlias",
+        "parameters": [
+          {
+            "description": "alias parameters",
+            "name": "aliasstruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AliasStruct"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/alias/{guid}": {
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update an existing user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "alias"
+        ],
+        "operationId": "UpdateAlias",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "uuid of the alias to update",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "area parameters",
+            "name": "area",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AliasStruct"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update an existing user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "alias"
+        ],
+        "operationId": "DeleteAlias",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "uuid of the alias to delete",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/call/report/log": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns logs related to transaction",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/call/report/qos": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns qos stats",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/call/transaction": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data related to transaction",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/search/call/data": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/search/call/message": {
+      "post": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/auth": {
+      "post": {
+        "description": "Returns a JWT Token and UUID attached to user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "userlogin",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "admin",
+            "description": "username to be used for login",
+            "name": "username",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "sipcapture",
+            "description": "password of the user",
+            "name": "password",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/dashboard/info/{username}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update an existing user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
+        "operationId": "Listdashboard",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "admin",
+            "description": "username of user",
+            "name": "username",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/dashboard/store/{dashboardId}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update an existing user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
+        "operationId": "Listdashboard",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "admin",
+            "description": "the dashboard id",
+            "name": "dashboardid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of Users",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "ListUsers",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Create a New user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "CreateUser",
+        "parameters": [
+          {
+            "description": "user structure",
+            "name": "userstruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserStruct"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/user/settings": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of settings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "ListSettings",
+        "responses": {}
+      }
+    },
+    "/user/{userGuid}": {
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update an existing user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "UpdateUser",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "uuid of the user to update",
+            "name": "userGuid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "area parameters",
+            "name": "area",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserStruct"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete an existing User",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "uuid of the user to update",
+            "name": "userGuid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    }
+  },
+  "definitions": {
+    "AliasStruct": {
+      "type": "object",
+      "required": [
+        "alias",
+        "ip",
+        "port",
+        "mask",
+        "capture_id"
+      ],
+      "properties": {
+        "alias": {
+          "description": "alias name",
+          "type": "string",
+          "x-go-name": "Alias",
+          "example": "verizon"
+        },
+        "capture_id": {
+          "type": "string",
+          "x-go-name": "CaptureID",
+          "example": "0"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Id"
+        },
+        "ip": {
+          "type": "string",
+          "x-go-name": "IP",
+          "example": "192.168.10.20"
+        },
+        "mask": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Mask",
+          "example": 32
+        },
+        "port": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Port",
+          "example": 5060
+        },
+        "status": {
+          "type": "boolean",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-name": "Alias",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "CreateUserStruct": {
+      "type": "object",
+      "required": [
+        "username",
+        "partid",
+        "email",
+        "password",
+        "lastname",
+        "department",
+        "usergroup",
+        "guid"
+      ],
+      "properties": {
+        "department": {
+          "type": "string",
+          "x-go-name": "Department",
+          "example": "NOC"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "firstname": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "guid": {
+          "description": "should be a unique value representing user",
+          "type": "string",
+          "x-go-name": "GUID",
+          "example": "e71771a2-1ea0-498f-8d27-391713e10664"
+        },
+        "lastname": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "partid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PartId",
+          "example": 10
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "usergroup": {
+          "type": "string",
+          "x-go-name": "UserGroup",
+          "example": "admin"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "UserName"
+        }
+      },
+      "x-go-name": "User",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GlobalSettingsStruct": {
+      "type": "object",
+      "required": [
+        "guid",
+        "partid",
+        "category",
+        "param"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category",
+          "example": "profile"
+        },
+        "data": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "guid": {
+          "description": "should be a unique value representing user",
+          "type": "string",
+          "x-go-name": "GUID",
+          "example": "e71771a2-1ea0-498f-8d27-391713e10664"
+        },
+        "param": {
+          "type": "string",
+          "x-go-name": "Param",
+          "example": "homer"
+        },
+        "partid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PartId",
+          "example": 1
+        }
+      },
+      "x-go-name": "GlobalSettings",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "ListUsers": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "description": "count",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "data": {
+          "description": "the data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateUserStruct"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-name": "GetUser",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "RawMessage": {
+      "description": "It implements Marshaler and Unmarshaler and can\nbe used to delay JSON decoding or precompute a JSON encoding.",
+      "type": "array",
+      "title": "RawMessage is a raw encoded JSON value.",
+      "items": {
+        "type": "integer",
+        "format": "uint8"
+      },
+      "x-go-package": "encoding/json"
+    },
+    "UserCreateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "count",
+          "type": "string",
+          "x-go-name": "Data"
+        },
+        "message": {
+          "description": "the data",
+          "type": "string",
+          "x-go-name": "Message"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserLoginFailureResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "errot",
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "message": {
+          "description": "message",
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "statuscode": {
+          "description": "statuscode",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "StatusCode"
+        }
+      },
+      "x-go-name": "UserTokenBadResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserLoginSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "description": "the uuid",
+          "type": "string",
+          "x-go-name": "Scope"
+        },
+        "token": {
+          "description": "the token",
+          "type": "string",
+          "x-go-name": "Token"
+        }
+      },
+      "x-go-name": "UserTokenSuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSettings": {
+      "type": "object",
+      "required": [
+        "guid",
+        "username",
+        "partid",
+        "category",
+        "param"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category",
+          "example": "profile"
+        },
+        "data": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "guid": {
+          "description": "should be a unique value representing user",
+          "type": "string",
+          "x-go-name": "GUID",
+          "example": "e71771a2-1ea0-498f-8d27-391713e10664"
+        },
+        "param": {
+          "type": "string",
+          "x-go-name": "Param",
+          "example": "homer"
+        },
+        "partid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PartId",
+          "example": 10
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "UserName"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

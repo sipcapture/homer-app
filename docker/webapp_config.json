@@ -1,0 +1,60 @@
+{
+  "database_data": {
+    "user": "homer_user",
+    "pass": "homer_password",
+    "name": "homer_data",
+    "host": "homer_db_host"
+  },
+  "database_config": {
+    "user": "homer_user",
+    "pass": "homer_password",
+    "name": "homer_config",
+    "host": "homer_db_host"
+  },
+  "influxdb_config": {
+    "user": "influx_user",
+    "pass": "influx_pass",
+    "name": "homer_config",
+    "host": "http://influx_host:8086" ,
+    "database": "homer",
+    "policy": "autogen"
+  },
+  "prometheus_config": {
+    "user": "prom_user",
+    "pass": "prom_pass",
+    "host": "http://prom_host:9090",
+    "api": "api/v1"
+  },
+  "loki_config": {
+    "user": "loki_user",
+    "pass": "loki_pass",
+    "host": "http://loki_host:3100",
+    "api": "api/prom"
+  },
+  "http_settings": {
+    "host": "0.0.0.0",
+    "port" : 80,
+    "root" : "/usr/local/homer/dist",
+    "gzip" : true,
+    "debug" : false
+  },
+  "system_settings": {
+    "logpath": "/usr/local/homer",
+    "logname" : "homer-app.log"
+  },
+  "auth_settings": {
+    "_comment": "The type param can be internal, ldap",
+    "type": "internal"
+  },
+  "ldap_config": {
+    "Base":  "dc=example,dc=com",
+		"Host":  "ldap.example.com",
+		"Port":   389,
+		"UseSSL": false,
+		"BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
+		"BindPassword": "readonlypassword",
+		"UserFilter": "(uid=%s)",
+		"GroupFilter": "(memberUid=%s)",
+		"Attributes": "\"givenName\", \"sn\", \"mail\", \"uid\""
+  }
+}

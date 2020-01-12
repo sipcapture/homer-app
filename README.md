@@ -1,29 +1,119 @@
 <img src="https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png" width=200/>
 
-# HOMER-APP
-![ezgif com-optimize 10](https://user-content.gitlab-static.net/d5f1ab82b0eb2b06e123bd7f3ae46ced5e9759d7/68747470733a2f2f692e696d6775722e636f6d2f59763965394f4c2e676966)
+# HOMER WebApp
 
+This repository hosts `homer-app`, the the GO webapplication for the HEP/HOMER 7.7+ stack.
 
-## About
-`Homer-App` provides the Front-End and Back-End components of HOMER 7.x and higher, featuring native integration with all the core supported backend components for search and analytics including `pgsql`,`influxdb`,`prometheus`,`loki`
+### Instructions
 
-<img src="http://i.imgur.com/9AN08au.gif" width=100% height=50 >
+#### Requirements
+* golang 1.13+
+* postgres 12+
+* optional
+  * prometheus
+  * influxdb
+  * loki
 
-## Usage
-### Build Dev
+#### Installation
+##### Local
+To get dependencies and compile the latest homer-app on your system, use the following commands:
 ```
-npm install && npm install -g knex eslint eslint-plugin-html eslint-plugin-json eslint-config-google
- ```
-### Run
+make modules
+make all
 ```
-npm start
+##### Docker
+To get dependencies and compile the latest homer-app using a docker builder, use the following command:
+```
+make binary
+make frontend
 ```
 
-## Docker Bundles
-##### Getting started with HOMER Seven?
-Pick one of our ready-to-capture [Docker images](https://github.com/sipcapture/homer7-docker/tree/7.7/heplify-server) available in many flavours
+### Configuration
+Before using the application, configure all database parameters using the example configuration file:
+```
+/usr/local/homer/webapp_config.json
+```
+
+NOTE: The default location for settings and provisioning files is `/usr/local/homer`
 
 
+#### Usage
+##### Command Help
+```
+./homer-app -h
+```
+##### Custom Config in `/etc`
+```
+./homer-app -webapp-config-path=/etc
+```
+
+##### Initialization
+The application is able to initialize its database and tables it requires with the following commands:
+###### Create User
+```
+./homer-app -create-homer-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+```
+###### Show User
+```
+./homer-app -show-db-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+```
+###### Create User permissions
+```
+./homer-app -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
+```
+
+###### Create Homer DBs
+```
+./homer-app -create-config-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-data-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+```
+
+<!--
+###### Save it or edit the webapp_config.json manualy
+```
+./homer-app -save-homer-db-config-settings -database-host=localhost -database-homer-config=homer_config -database-homer-user=homer_user -database-homer-password=homer_password
+./homer-app -save-homer-db-data-settings -database-host=localhost -database-homer-data=homer_data -database-homer-user=homer_user -database-homer-password=homer_password
+```
+-->
+
+###### Create Table / Migration - connection data will be read from `webapp_config.json`
+```
+./homer-app -create-table-db-config 
+```
+
+###### Populate DB
+```
+./homer-app -populate-table-db-config 
+```
+
+------------
+<!--
+#### Usage ENV
+```
+WEBAPPENV = config file extension "local" 
+WEBAPPPATH - path for config
+WEBAPPLOGPATH - path to the log dir
+WEBAPPLOGNAME - prefix name of the log
+```
+-->
+
+### DEB, RPM Packages
+To build a full package, including the latest frontend code:
+```
+make package
+```
+
+The application will deploy to `/usr/local/bin` with config in `/etc`
+
+
+### Docker Image
+This application is available on dockerhub as `sipcapture/webapp`
+To build a full bundle locally, including the latest frontend code:
+```
+make docker
+```
+
+For further examples, refer to the `docker` folder
 
 ---
 
@@ -42,5 +132,5 @@ If you use this software in production, please consider supporting its developme
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donation%40sipcapture%2eorg&lc=US&item_name=SIPCAPTURE&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest) 
 
-###### (C) 2008-2019 QXIP BV
+###### (C) 2008-2020 QXIP BV
 

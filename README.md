@@ -44,7 +44,7 @@ NOTE: The default location for settings and provisioning files is `/usr/local/ho
 ```
 ##### Custom Config in `/etc`
 ```
-./homer-app -webapp-config-path /etc
+./homer-app -webapp-config-path=/etc
 ```
 
 ##### Initialization

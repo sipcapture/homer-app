@@ -8,7 +8,7 @@
 //     Version: 0.0.1
 //     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
 //	   Copyright: QXIP B.V. 2019-2020
-//     Contact: Aqs<aqsyounas@gmail.com>
+//     Contact: Aqs <aqsyounas@gmail.com>
 //     Contact: Alexandr Dubovikov <alexandr.dubovikov@gmail.com>
 //
 //     Consumes:
@@ -42,8 +42,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration"
@@ -51,13 +49,17 @@ import (
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/ldap"
 	"github.com/sipcapture/homer-app/utils/logger"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 )
 
+//CustomValidator function
 type CustomValidator struct {
 	validator *validator.Validate
 }
 
+// validate function
 func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
 }
@@ -70,6 +72,7 @@ type CommandLineFlags struct {
 	PopulateTableConfigDB     *bool   `json:"populate_table_config"`
 	CreateHomerUser           *bool   `json:"create_homer_user"`
 	DeleteHomerUser           *bool   `json:"delete_homer_user"`
+	ShowVersion               *bool   `json:"version"`
 	RevokeHomerRole           *bool   `json:"revoke_homer_role"`
 	CreateHomerRole           *bool   `json:"create_homer_role"`
 	SaveHomerDbConfigToConfig *bool   `json:"save_db_config_to_config"`
@@ -105,6 +108,8 @@ func initFlags() {
 	appFlags.DeleteHomerUser = flag.Bool("delete-homer-user", false, "delete homer user")
 	appFlags.ShowDbUsers = flag.Bool("show-db-users", false, "show db users")
 
+	appFlags.ShowVersion = flag.Bool("version", false, "show version")
+
 	appFlags.CreateHomerRole = flag.Bool("create-homer-role", false, "create homer role")
 	appFlags.RevokeHomerRole = flag.Bool("revoke-homer-role", false, "revoke homer user")
 
@@ -133,6 +138,9 @@ func main() {
 
 	//init flags
 	initFlags()
+
+	/* first check admin flags */
+	checkHelpVersionFlags()
 
 	// read system configurations and expose through viper
 	readConfig()
@@ -569,12 +577,19 @@ func printRequest(request *http.Request) {
 	}).Info("Request")
 }
 
-func checkAdminFlags() {
-
+func checkHelpVersionFlags() {
 	if *appFlags.ShowHelpMessage {
 		flag.Usage()
 		os.Exit(0)
 	}
+
+	if *appFlags.ShowVersion {
+		fmt.Printf("VERSION: %s\r\n", getVersion())
+		os.Exit(0)
+	}
+}
+
+func checkAdminFlags() {
 
 	/* start creating pgsql user */
 	if *appFlags.CreateHomerUser {

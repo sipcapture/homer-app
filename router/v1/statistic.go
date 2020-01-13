@@ -2,7 +2,7 @@ package apirouterv1
 
 import (
 	client "github.com/influxdata/influxdb1-client/v2"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	controllerv1 "github.com/sipcapture/homer-app/controller/v1"
 	"github.com/sipcapture/homer-app/data/service"
 )

@@ -1,0 +1,16 @@
+basePath: /v3
+host: localhost:8090
+info:
+  contact:
+    email: alexandr.dubovikov@gmail.com
+    name: Alexandr Dubovikov
+    url: http://www.sipcapture.org
+  description: Homer-App User interface API.
+  license:
+    name: AGPL
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  termsOfService: http://www.qxip.net
+  title: Homer-App User interface API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

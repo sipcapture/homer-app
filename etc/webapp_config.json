@@ -11,7 +11,7 @@
     "user": "homer_user",
     "pass": "homer_password",
     "name": "homer_config",
-    "host": "localhost",
+    "host": "localhost"
   },
   "influxdb_config": {
     "help": "Settings for InfluxDB Database (optional)",

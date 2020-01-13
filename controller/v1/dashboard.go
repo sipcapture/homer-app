@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/labstack/echo"
-	"github.com/sirupsen/logrus"
+	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sipcapture/homer-app/network/response"
+	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
+	"github.com/sirupsen/logrus"
 )
 
 type DashBoardController struct {

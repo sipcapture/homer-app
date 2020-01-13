@@ -2,7 +2,7 @@ package apirouterv1
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	controllerv1 "github.com/sipcapture/homer-app/controller/v1"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/utils/ldap"

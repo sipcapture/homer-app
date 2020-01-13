@@ -2,9 +2,9 @@ package auth
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
-	"github.com/sirupsen/logrus"
+	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {

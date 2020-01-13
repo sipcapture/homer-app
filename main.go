@@ -1,31 +1,23 @@
 // Homer-App
 //
-// Homer-App User interface for Hep protocol
-//
-//     Schemes: http
-//     Host: localhost:8080
-//     BasePath: /v1
-//     Version: 0.0.1
-//     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
-//	   Copyright: QXIP B.V. 2019-2020
-//     Contact: Aqs <aqsyounas@gmail.com>
-//     Contact: Alexandr Dubovikov <alexandr.dubovikov@gmail.com>
-//
-//     Consumes:
-//     - application/json
-//
-//     Produces:
-//     - application/json
-//     Security:
-//     - bearer
-//
-//     SecurityDefinitions:
-//     bearer:
-//          type: apiKey
-//          name: Authorization
-//          in: header
-//
-// swagger:meta
+
+// @title Homer-App User interface API
+// @version 1.0
+// @description Homer-App User interface API.
+// @termsOfService http://www.qxip.net
+
+// @contact.name Alexandr Dubovikov
+// @contact.url http://www.sipcapture.org
+// @contact.email alexandr.dubovikov@gmail.com
+
+// @license.name AGPL
+// @license.url https://www.gnu.org/licenses/agpl-3.0.en.html
+
+// @copyright: QXIP B.V. 2019-2020
+
+// @host localhost:8090
+// @BasePath /v3
+
 package main
 
 import (
@@ -34,16 +26,18 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	_ "github.com/influxdata/influxdb1-client" // this is important because of the bug in go mod
 	client "github.com/influxdata/influxdb1-client/v2"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
+	_ "github.com/sipcapture/homer-app/docs"
 	"github.com/sipcapture/homer-app/migration"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -51,6 +45,7 @@ import (
 	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -236,7 +231,6 @@ func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
 	e := echo.New()
 	// add validation
 	e.Validator = &CustomValidator{validator: validator.New()}
-
 	// Middleware
 	if httpDebugEnable := viper.GetBool("http_settings.debug"); httpDebugEnable {
 		e.Use(middleware.Logger())
@@ -261,6 +255,12 @@ func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
 	/* enable guzip*/
 	if gzipEnable := viper.GetBool("http_settings.gzip"); gzipEnable {
 		e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+			Skipper: func(c echo.Context) bool {
+				if strings.HasPrefix(c.Request().RequestURI, "/swagger") {
+					return true
+				}
+				return false
+			},
 			Level: 5,
 		}))
 	}
@@ -272,6 +272,10 @@ func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
 	httpHost := viper.GetString("http_settings.host")
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+
+	//Doc Swagger
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
 	// Server
 	e.Logger.Fatal(e.Start(httpURL))
 }
@@ -512,6 +516,10 @@ func registerGetRedirect(e *echo.Echo, path string) {
 
 	e.GET("/dashboard/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
+	})
+
+	e.GET("/swagger/index.html", func(c echo.Context) (err error) {
+		return c.File(path + "/jopa.html")
 	})
 
 	e.GET("/call/:name", func(c echo.Context) (err error) {

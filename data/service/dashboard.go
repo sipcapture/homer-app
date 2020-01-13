@@ -17,7 +17,7 @@ type DashBoardService struct {
 // this method gets all users from database
 func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) {
 	var userSettings []*model.TableUserSettings
-	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard'", username).
+	if err := us.Session.Table("user_settings").Where("username = ? AND category = 'dashboard'", username).
 		Find(&userSettings).Error; err != nil {
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 // this method gets all users from database
 func (us *DashBoardService) GetDashBoard(username, param string) (string, error) {
 	var userSettings model.TableUserSettings
-	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard' and param = ? ", username, param).
+	if err := us.Session.Table("user_settings").Where("username = ? AND category = 'dashboard' and param = ? ", username, param).
 		Find(&userSettings).Error; err != nil {
 		return "", err
 	}

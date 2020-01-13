@@ -6,7 +6,7 @@ This repository hosts `homer-app`, the the GO webapplication for the HEP/HOMER 7
 
 ### Instructions
 
-If you're just interested in using `homer-app`, download and run the latest release or package.
+If you're just interested in using `homer-app`, download, configure and run the latest release or package.
 
 #### Requirements
 * golang 1.13+

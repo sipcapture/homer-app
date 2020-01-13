@@ -3,3 +3,5 @@
 .envrc
 default.nix
 .direnv.*
+*.deb
+*.rpm

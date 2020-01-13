@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PACKAGE="homer-app"
-VERSION="7.7.0"
+RELEASE=${VERSION:-"7.7.0"}
 ARCH="amd64"
 
 # CHECK FOR DOCKER
@@ -10,17 +10,18 @@ if ! [ -x "$(command -v docker)" ]; then
   exit 1
 fi
 
+echo "Packaging release $RELEASE ..."
 # BUILD DEB PACKAGE
 EXT="deb"
 docker run --rm \
   -v $PWD:/tmp/pkg \
-  -e VERSION="$VERSION" \
-  goreleaser/nfpm pkg --config /tmp/pkg/$PACKAGE.yaml --target "/tmp/pkg/$PACKAGE-$VERSION-$ARCH.$EXT"
+  -e VERSION="$RELEASE" \
+  goreleaser/nfpm pkg --config /tmp/pkg/$PACKAGE.yaml --target "/tmp/pkg/$PACKAGE-$RELEASE-$ARCH.$EXT"
 
 # BUILD RPM PACKAGE
 EXT="rpm"
 docker run --rm \
   -v $PWD:/tmp/pkg \
-  -e VERSION="$VERSION" \
-  goreleaser/nfpm pkg --config /tmp/pkg/$PACKAGE.yaml --target "/tmp/pkg/$PACKAGE-$VERSION-$ARCH.$EXT"
+  -e VERSION="$RELEASE" \
+  goreleaser/nfpm pkg --config /tmp/pkg/$PACKAGE.yaml --target "/tmp/pkg/$PACKAGE-$RELEASE-$ARCH.$EXT"
 

@@ -68,6 +68,7 @@ type CommandLineFlags struct {
 	CreateHomerUser           *bool   `json:"create_homer_user"`
 	DeleteHomerUser           *bool   `json:"delete_homer_user"`
 	ShowVersion               *bool   `json:"version"`
+	ForcePopulate             *bool   `json:"force_insert"`
 	RevokeHomerRole           *bool   `json:"revoke_homer_role"`
 	CreateHomerRole           *bool   `json:"create_homer_role"`
 	SaveHomerDbConfigToConfig *bool   `json:"save_db_config_to_config"`
@@ -103,6 +104,7 @@ func initFlags() {
 	appFlags.DeleteHomerUser = flag.Bool("delete-homer-user", false, "delete homer user")
 	appFlags.ShowDbUsers = flag.Bool("show-db-users", false, "show db users")
 
+	appFlags.ForcePopulate = flag.Bool("force-populate", false, "force populate all records to config")
 	appFlags.ShowVersion = flag.Bool("version", false, "show version")
 
 	appFlags.CreateHomerRole = flag.Bool("create-homer-role", false, "create homer role")
@@ -180,7 +182,8 @@ func main() {
 	} else if *appFlags.PopulateTableConfigDB {
 
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.PopulateHomerConfigTables(configDBSession, nameHomerConfig)
+		migration.PopulateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.ForcePopulate)
+
 		os.Exit(0)
 	}
 
@@ -339,7 +342,7 @@ func getConfigDBSession() *gorm.DB {
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
 
-	fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
+	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
 
 	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
@@ -360,7 +363,7 @@ func getDataDBSession() *gorm.DB {
 	name := viper.GetString("database_data.name")
 	host := viper.GetString("database_data.host")
 
-	fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
+	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
 
 	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
@@ -379,10 +382,10 @@ func getInfluxDBSession() client.Client {
 
 	user := viper.GetString("influxdb_config.user")
 	password := viper.GetString("influxdb_config.pass")
-	name := viper.GetString("influxdb_config.name")
+	//name := viper.GetString("influxdb_config.name")
 	host := viper.GetString("influxdb_config.host")
 
-	fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n InfluxDB CONNECT STRING\n", host, user, password, name))
+	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n InfluxDB CONNECT STRING\n", host, user, password, name))
 
 	urlInflux, err := url.Parse(host)
 	if err != nil {
@@ -416,7 +419,7 @@ func getPrometheusDBSession() service.ServicePrometheus {
 	host := viper.GetString("prometheus_config.host")
 	api := viper.GetString("prometheus_config.api")
 
-	fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Prometheus CONNECT STRING\n", host, api, user, password))
+	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Prometheus CONNECT STRING\n", host, api, user, password))
 
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
@@ -444,7 +447,7 @@ func getRemoteDBSession() service.ServiceRemote {
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
 
-	fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Loki CONNECT STRING\n", host, api, user, password))
+	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Loki CONNECT STRING\n", host, api, user, password))
 
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,

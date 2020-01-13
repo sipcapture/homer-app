@@ -6,10 +6,10 @@ import (
 
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
-	"github.com/sirupsen/logrus"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sirupsen/logrus"
 )
 
 type RollesTable struct {
@@ -172,7 +172,28 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
-func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
+func checkHomerConfigTables(configDBSession *gorm.DB) map[string]bool {
+
+	data := []model.TableVersions{}
+	createTables := map[string]bool{}
+	if err := configDBSession.Debug().
+		Table("versions").
+		Find(&data).Error; err != nil {
+		return createTables
+	}
+
+	for _, row := range data {
+		createTables[row.NameTable] = false
+		if jsonschema.TableVersion[row.NameTable] < row.VersionTable {
+			fmt.Println("Found older version:", row.NameTable)
+			createTables[row.NameTable] = true
+		}
+	}
+
+	return createTables
+}
+
+func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool) {
 
 	createString := fmt.Sprintf("\r\nHOMER - filling tables for the config DB [dbname=%s]", homerDBconfig)
 	usersData := []model.TableUser{
@@ -296,35 +317,35 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 	tableVersions := []model.TableVersions{
 		model.TableVersions{
 			NameTable:    "versions",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["versions"],
 		},
 		model.TableVersions{
 			NameTable:    "agent_location_session",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["agent_location_session"],
 		},
 		model.TableVersions{
 			NameTable:    "alias",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["alias"],
 		},
 		model.TableVersions{
 			NameTable:    "global_settings",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["global_settings"],
 		},
 		model.TableVersions{
 			NameTable:    "hepsub_mapping_schema",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["hepsub_mapping_schema"],
 		},
 		model.TableVersions{
 			NameTable:    "mapping_schema",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["mapping_schema"],
 		},
 		model.TableVersions{
-			NameTable:    "user",
-			VersionTable: 1,
+			NameTable:    "users",
+			VersionTable: jsonschema.TableVersion["users"],
 		},
 		model.TableVersions{
 			NameTable:    "user_settings",
-			VersionTable: 1,
+			VersionTable: jsonschema.TableVersion["user_settings"],
 		},
 	}
 
@@ -457,48 +478,69 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 		},
 	}
 
+	createTables := checkHomerConfigTables(configDBSession)
+
 	/*********************************************/
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	/* User data */
-	configDBSession.Exec("TRUNCATE TABLE users")
-	for _, el := range usersData {
-		configDBSession.Save(&el)
+	if val, ok := createTables["users"]; !ok || ok && val || force {
+		/* User data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling users")
+		configDBSession.Exec("TRUNCATE TABLE users")
+		for _, el := range usersData {
+			configDBSession.Save(&el)
+		}
 	}
 
-	/* globalSettingData data */
-	configDBSession.Exec("TRUNCATE TABLE global_settings")
-	for _, el := range globalSettingData {
-		configDBSession.Save(&el)
+	if val, ok := createTables["global_settings"]; !ok || ok && val || force {
+		/* globalSettingData data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling global_settings")
+		configDBSession.Exec("TRUNCATE TABLE global_settings")
+		for _, el := range globalSettingData {
+			configDBSession.Save(&el)
+		}
 	}
 
-	/* agentLocationSession data */
-	configDBSession.Exec("TRUNCATE TABLE agent_location_session")
-	for _, el := range agentLocationSession {
-		configDBSession.Save(&el)
+	if val, ok := createTables["agent_location_session"]; !ok || ok && val || force {
+		/* agentLocationSession data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling agent_location_session")
+		configDBSession.Exec("TRUNCATE TABLE agent_location_session")
+		for _, el := range agentLocationSession {
+			configDBSession.Save(&el)
+		}
 	}
 
-	/* hepsubSchema data */
-	configDBSession.Exec("TRUNCATE TABLE hepsub_mapping_schema")
-	for _, el := range hepsubSchema {
-		configDBSession.Save(&el)
+	if val, ok := createTables["hepsub_mapping_schema"]; !ok || ok && val || force {
+		/* hepsubSchema data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling hepsub_mapping_schema")
+		configDBSession.Exec("TRUNCATE TABLE hepsub_mapping_schema")
+		for _, el := range hepsubSchema {
+			configDBSession.Save(&el)
+		}
 	}
 
-	/* dashboardUsers data */
-	configDBSession.Exec("TRUNCATE TABLE user_settings")
-	for _, el := range dashboardUsers {
-		configDBSession.Save(&el)
+	if val, ok := createTables["user_settings"]; !ok || ok && val || force {
+		/* dashboardUsers data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling user_settings")
+		configDBSession.Exec("TRUNCATE TABLE user_settings")
+		for _, el := range dashboardUsers {
+			configDBSession.Save(&el)
+		}
+	}
+
+	if val, ok := createTables["mapping_schema"]; !ok || ok && val || force {
+		/* mappingSchema data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling mapping_schema")
+		configDBSession.Exec("TRUNCATE TABLE mapping_schema")
+		for _, el := range mappingSchema {
+			configDBSession.Save(&el)
+		}
 	}
 
 	/* tableVersions data */
+	heputils.Colorize(heputils.ColorRed, "reinstalling versions")
 	configDBSession.Exec("TRUNCATE TABLE versions")
 	for _, el := range tableVersions {
-		configDBSession.Save(&el)
-	}
-
-	/* mappingSchema data */
-	configDBSession.Exec("TRUNCATE TABLE mapping_schema")
-	for _, el := range mappingSchema {
 		configDBSession.Save(&el)
 	}
 

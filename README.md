@@ -57,7 +57,7 @@ The application is able to initialize its database and tables it requires with t
 ```
 ###### Show User
 ```
-./homer-app -show-db-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -show-db-users -database-root=postgres -database-host=localhost -database-root-password=postgres
 ```
 ###### Create User permissions
 ```

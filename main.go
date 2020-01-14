@@ -37,7 +37,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
-	_ "github.com/sipcapture/homer-app/docs"
+	//_ "github.com/sipcapture/homer-app/docs"
 	"github.com/sipcapture/homer-app/migration"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -45,7 +45,7 @@ import (
 	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	echoSwagger "github.com/swaggo/echo-swagger"
+	//echoSwagger "github.com/swaggo/echo-swagger"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -281,8 +281,7 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
 
 	//Doc Swagger
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
-
+	//e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Server
 	e.Logger.Fatal(e.Start(httpURL))
 }

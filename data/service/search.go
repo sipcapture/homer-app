@@ -42,11 +42,11 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 
 	data := v.Export().([]interface{})
 
-	fmt.Println("RESULT", data[0])
+	//fmt.Println("RESULT", data[0])
 	//b := make([]interface{}, len(a))
-	for i := range data {
+	/* for i := range data {
 		fmt.Println("VAL", data[i])
-	}
+	}*/
 
 	return data
 }
@@ -109,6 +109,10 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			Find(&searchTmp)
 
 		if len(searchTmp) > 0 {
+			for val := range searchTmp {
+				searchTmp[val].Node = session
+			}
+
 			searchData = append(searchData, searchTmp...)
 		}
 	}
@@ -123,37 +127,37 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			switch k {
 			case "data_header", "protocol_header":
 				dataElement.Merge(v)
-			case "id", "sid":
+			case "id", "sid", "node":
 				newData := gabs.New()
 				newData.Set(v.Data().(interface{}), k)
 				dataElement.Merge(newData)
 			}
 		}
 
-		srcIpPort := dataElement.S("srcIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
-		dstIpPort := dataElement.S("dstIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
-		srcIpPortZero := dataElement.S("srcIp").Data().(string) + ":" + "0"
-		dstIpPortZero := dataElement.S("dstIp").Data().(string) + ":" + "0"
+		srcIPPort := dataElement.S("srcIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
+		dstIPPort := dataElement.S("dstIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
+		srcIPPortZero := dataElement.S("srcIp").Data().(string) + ":" + "0"
+		dstIPPortZero := dataElement.S("dstIp").Data().(string) + ":" + "0"
 
-		if _, ok := aliasData[srcIpPort]; ok {
-			alias.Set(srcIpPort, aliasData[srcIpPort])
-		} else if _, ok := aliasData[srcIpPortZero]; ok {
-			alias.Set(srcIpPort, aliasData[srcIpPortZero])
+		if _, ok := aliasData[srcIPPort]; ok {
+			alias.Set(srcIPPort, aliasData[srcIPPort])
+		} else if _, ok := aliasData[srcIPPortZero]; ok {
+			alias.Set(srcIPPort, aliasData[srcIPPortZero])
 		}
 
-		if _, ok := aliasData[dstIpPort]; ok {
-			alias.Set(dstIpPort, aliasData[dstIpPort])
-		} else if _, ok := aliasData[srcIpPortZero]; ok {
-			alias.Set(dstIpPort, aliasData[dstIpPortZero])
+		if _, ok := aliasData[dstIPPort]; ok {
+			alias.Set(dstIPPort, aliasData[dstIPPort])
+		} else if _, ok := aliasData[srcIPPortZero]; ok {
+			alias.Set(dstIPPort, aliasData[dstIPPortZero])
 		}
-		if !alias.Exists(srcIpPort) {
-			alias.Set(srcIpPort, srcIpPort)
+		if !alias.Exists(srcIPPort) {
+			alias.Set(srcIPPort, srcIPPort)
 		}
-		if !alias.Exists(dstIpPort) {
-			alias.Set(dstIpPort, dstIpPort)
+		if !alias.Exists(dstIPPort) {
+			alias.Set(dstIPPort, dstIPPort)
 		}
-		dataElement.Set(alias.Search(srcIpPort).Data(), "aliasSrc")
-		dataElement.Set(alias.Search(dstIpPort).Data(), "aliasDst")
+		dataElement.Set(alias.Search(srcIPPort).Data(), "aliasSrc")
+		dataElement.Set(alias.Search(dstIPPort).Data(), "aliasDst")
 		dataElement.Set(table, "table")
 
 		createDate := int64(dataElement.S("timeSeconds").Data().(float64)*1000000 + dataElement.S("timeUseconds").Data().(float64))
@@ -212,6 +216,9 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 			Find(&searchTmp)
 
 		if len(searchTmp) > 0 {
+			for val := range searchTmp {
+				searchTmp[val].Node = session
+			}
 			searchData = append(searchData, searchTmp...)
 		}
 	}
@@ -424,9 +431,13 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 			Find(&searchTmp).Error; err != nil {
 			fmt.Println("We have got error")
 			fmt.Println(err)
+			logrus.Errorln("GetTransactionData: We have got error: ", err)
 		}
 
 		if len(searchTmp) > 0 {
+			for val := range searchTmp {
+				searchTmp[val].Node = session
+			}
 			searchData = append(searchData, searchTmp...)
 		}
 	}
@@ -556,32 +567,32 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 
 		callElement.SrcID = callElement.SrcHost + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
 		callElement.DstID = callElement.DstHost + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
-		srcIpPort := callElement.SrcIP + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-		dstIpPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+		srcIPPort := callElement.SrcIP + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
+		dstIPPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
 
-		srcIpPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
-		dstIpPortZero := callElement.DstIP + ":" + strconv.Itoa(0)
+		srcIPPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
+		dstIPPortZero := callElement.DstIP + ":" + strconv.Itoa(0)
 
-		if value, ok := aliasData[srcIpPort]; ok {
-			alias.Set(value, srcIpPort)
-		} else if value, ok := aliasData[srcIpPortZero]; ok {
-			alias.Set(value, srcIpPort)
+		if value, ok := aliasData[srcIPPort]; ok {
+			alias.Set(value, srcIPPort)
+		} else if value, ok := aliasData[srcIPPortZero]; ok {
+			alias.Set(value, srcIPPort)
 		}
 
-		if value, ok := aliasData[dstIpPort]; ok {
-			alias.Set(value, dstIpPort)
-		} else if value, ok := aliasData[dstIpPortZero]; ok {
-			alias.Set(value, dstIpPort)
+		if value, ok := aliasData[dstIPPort]; ok {
+			alias.Set(value, dstIPPort)
+		} else if value, ok := aliasData[dstIPPortZero]; ok {
+			alias.Set(value, dstIPPort)
 		}
-		if !alias.Exists(srcIpPort) {
-			alias.Set(srcIpPort, srcIpPort)
+		if !alias.Exists(srcIPPort) {
+			alias.Set(srcIPPort, srcIPPort)
 		}
 
-		if !alias.Exists(dstIpPort) {
-			alias.Set(dstIpPort, dstIpPort)
+		if !alias.Exists(dstIPPort) {
+			alias.Set(dstIPPort, dstIPPort)
 		}
-		callElement.AliasSrc = alias.Search(srcIpPort).Data().(string)
-		callElement.AliasDst = alias.Search(dstIpPort).Data().(string)
+		callElement.AliasSrc = alias.Search(srcIPPort).Data().(string)
+		callElement.AliasDst = alias.Search(dstIPPort).Data().(string)
 		if !host.Exists(callElement.DstID) {
 			jsonObj := gabs.New()
 			position++
@@ -652,11 +663,15 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (strin
 				Find(&searchTmp).Error; err != nil {
 				fmt.Println("We have got error")
 				fmt.Println(err)
+				logrus.Errorln("GetTransactionQos: We have got error: ", err)
 				return "", err
 
 			}
 
 			if len(searchTmp) > 0 {
+				for val := range searchTmp {
+					searchTmp[val].Node = session
+				}
 				searchData = append(searchData, searchTmp...)
 			}
 		}
@@ -721,11 +736,15 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte) (string, e
 			Find(&searchTmp).Error; err != nil {
 			fmt.Println("We have got error")
 			fmt.Println(err)
+			logrus.Errorln("GetTransactionLog: We have got error: ", err)
 			return "", err
 
 		}
 
 		if len(searchTmp) > 0 {
+			for val := range searchTmp {
+				searchTmp[val].Node = session
+			}
 			searchData = append(searchData, searchTmp...)
 		}
 	}

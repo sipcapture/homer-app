@@ -1,13 +1,17 @@
 {
   "database_data": {
-    "help": "Settings for PGSQL Database (data)",
-    "user": "homer_user",
-    "pass": "homer_password",
-    "name": "homer_data",
-    "host": "127.0.0.1"
+    "LocalNode": {
+      "help": "Settings for PGSQL Database (data)",
+      "node": "LocalNode",
+      "user": "homer_user",
+      "pass": "homer_password",
+      "name": "homer_data",
+      "host": "127.0.0.1"
+    }
   },
   "database_config": {
     "help": "Settings for PGSQL Database (settings)",
+    "node": "LocalConfig",
     "user": "homer_user",
     "pass": "homer_password",
     "name": "homer_config",

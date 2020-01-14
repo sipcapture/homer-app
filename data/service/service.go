@@ -8,7 +8,12 @@ import (
 )
 
 // Service : here you tell us what Salutation is
-type Service struct {
+type ServiceData struct {
+	Session map[string]*gorm.DB
+}
+
+//ServiceConfig
+type ServiceConfig struct {
 	Session *gorm.DB
 }
 

@@ -11,7 +11,7 @@ import (
 )
 
 type DashBoardService struct {
-	Service
+	ServiceConfig
 }
 
 // this method gets all users from database

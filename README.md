@@ -59,15 +59,14 @@ The application is able to initialize its database and tables it requires with t
 ```
 ./homer-app -show-db-users -database-root=postgres -database-host=localhost -database-root-password=postgres
 ```
-###### Create User permissions
-```
-./homer-app -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
-```
-
 ###### Create Homer DBs
 ```
 ./homer-app -create-config-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
 ./homer-app -create-data-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+```
+###### Create User permissions
+```
+./homer-app -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
 ```
 
 <!--

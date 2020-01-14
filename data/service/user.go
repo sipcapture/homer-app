@@ -13,7 +13,7 @@ import (
 )
 
 type UserService struct {
-	Service
+	ServiceConfig
 	LdapClient *ldap.LDAPClient
 }
 

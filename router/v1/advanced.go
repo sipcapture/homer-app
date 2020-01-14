@@ -9,7 +9,7 @@ import (
 
 func RouteAdvancedApis(acc *echo.Group, configSession *gorm.DB) {
 	// initialize service of user
-	AdvancedService := service.AdvancedService{Service: service.Service{Session: configSession}}
+	AdvancedService := service.AdvancedService{ServiceConfig: service.ServiceConfig{Session: configSession}}
 	// initialize user controller
 	ac := controllerv1.AdvancedController{
 		AdvancedService: &AdvancedService,

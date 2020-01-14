@@ -13,7 +13,7 @@ import (
 )
 
 type UserSettingsService struct {
-	Service
+	ServiceConfig
 }
 
 func (ss *UserSettingsService) GetCorrelationMap(data *model.TransactionObject) ([]byte, error) {

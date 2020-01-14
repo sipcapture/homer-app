@@ -80,6 +80,7 @@ type CommandLineFlags struct {
 	DatabaseHost              *string `json:"root_host"`
 	DatabasePort              *int    `json:"root_port"`
 	DatabaseRootDB            *string `json:"root_db"`
+	DatabaseHomerNode         *string `json:"homer_node"`
 	DatabaseHomerUser         *string `json:"homer_user"`
 	DatabaseHomerPassword     *string `json:"homer_password"`
 	DatabaseHomerConfig       *string `json:"db_homer_config"`
@@ -119,6 +120,7 @@ func initFlags() {
 	appFlags.DatabaseHost = flag.String("database-host", "localhost", "database-host")
 	appFlags.DatabasePort = flag.Int("database-port", 5432, "database-port")
 	appFlags.DatabaseRootDB = flag.String("database-root", "systems", "database-root")
+	appFlags.DatabaseHomerNode = flag.String("database-homer-node", "localnode", "database-homer-node")
 	appFlags.DatabaseHomerUser = flag.String("database-homer-user", "homer_user", "database-homer-user")
 	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password")
 	appFlags.DatabaseHomerConfig = flag.String("database-homer-config", "homer_config", "database-homer-config")
@@ -165,10 +167,10 @@ func main() {
 
 	/* now check if we do write to config */
 	if *appFlags.SaveHomerDbConfigToConfig {
-		applyDBParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig, appFlags.DatabaseHost, false)
+		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig, appFlags.DatabaseHost, appFlags.DatabaseHomerNode)
 		os.Exit(0)
 	} else if *appFlags.SaveHomerDbDataToConfig {
-		applyDBParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerData, appFlags.DatabaseHost, true)
+		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerData, appFlags.DatabaseHost)
 		os.Exit(0)
 	}
 
@@ -189,7 +191,9 @@ func main() {
 
 	// configure new db session
 	dataDBSession := getDataDBSession()
-	defer dataDBSession.Close()
+	for val := range dataDBSession {
+		defer dataDBSession[val].Close()
+	}
 
 	// configure new influx db session
 	influxDBSession := getInfluxDBSession()
@@ -226,8 +230,8 @@ func main() {
 	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote)
 }
 
-func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
-	influxDBSession client.Client,
+func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
+	configDBSession *gorm.DB, influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote) {
 
@@ -283,7 +287,7 @@ func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
 	e.Logger.Fatal(e.Start(httpURL))
 }
 
-func performV1APIRouting(e *echo.Echo, dataDBSession, configDBSession *gorm.DB,
+func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, configDBSession *gorm.DB,
 	influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote) {
@@ -336,6 +340,60 @@ func performV1APIRouting(e *echo.Echo, dataDBSession, configDBSession *gorm.DB,
 }
 
 // getSession creates a new mongo session and panics if connection error occurs
+func getDataDBSession() map[string]*gorm.DB {
+
+	dataConfig := viper.GetStringMapStringSlice("database_data")
+	dbMap := make(map[string]*gorm.DB)
+
+	if _, ok := dataConfig["user"]; !ok {
+		for val := range dataConfig {
+
+			keyData := "database_data." + val
+
+			user := viper.GetString(keyData + ".user")
+			password := viper.GetString(keyData + ".pass")
+			name := viper.GetString(keyData + ".name")
+			host := viper.GetString(keyData + ".host")
+			node := viper.GetString(keyData + ".node")
+
+			fmt.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s]\n", host, user, name, node))
+			//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
+
+			db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+			dbMap[val] = db
+			if err != nil {
+				logrus.Error(err)
+				panic("failed to connect database")
+			}
+			logrus.Println("----------------------------------- ")
+			logrus.Println("*** Database Config Session created *** ")
+			logrus.Println("----------------------------------- ")
+		}
+	} else {
+		//single node
+		user := viper.GetString("database_data.user")
+		password := viper.GetString("database_data.pass")
+		name := viper.GetString("database_data.name")
+		host := viper.GetString("database_data.host")
+
+		fmt.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
+
+		db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+		dbMap["localnode"] = db
+
+		if err != nil {
+			logrus.Error(err)
+			panic("failed to connect database")
+		}
+		logrus.Println("----------------------------------- ")
+		logrus.Println("*** Database Data Session created *** ")
+		logrus.Println("----------------------------------- ")
+	}
+
+	return dbMap
+}
+
+// getSession creates a new mongo session and panics if connection error occurs
 func getConfigDBSession() *gorm.DB {
 	user := viper.GetString("database_config.user")
 	password := viper.GetString("database_config.pass")
@@ -352,27 +410,6 @@ func getConfigDBSession() *gorm.DB {
 	}
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Database Config Session created *** ")
-	logrus.Println("----------------------------------- ")
-	return db
-}
-
-// getSession creates a new mongo session and panics if connection error occurs
-func getDataDBSession() *gorm.DB {
-	user := viper.GetString("database_data.user")
-	password := viper.GetString("database_data.pass")
-	name := viper.GetString("database_data.name")
-	host := viper.GetString("database_data.host")
-
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
-
-	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
-
-	if err != nil {
-		logrus.Error(err)
-		panic("failed to connect database")
-	}
-	logrus.Println("----------------------------------- ")
-	logrus.Println("*** Database Data Session created *** ")
 	logrus.Println("----------------------------------- ")
 	return db
 }
@@ -489,23 +526,36 @@ func readConfig() {
 	}
 }
 
-func applyDBParamToConfig(user *string, password *string, dbname *string, host *string, writeType bool) {
+func applyDBDataParamToConfig(user *string, password *string, dbname *string, host *string, node *string) {
+
+	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, node=%s]", *user, *password, *dbname, *host, *node)
+
+	heputils.Colorize(heputils.ColorRed, createString)
+
+	viper.Set("database_data."+*node+".user", *user)
+	viper.Set("database_data."+*node+".pass", *password)
+	viper.Set("database_data."+*node+".name", *dbname)
+	viper.Set("database_data."+*node+".host", *host)
+	viper.Set("database_data."+*node+".node", *node)
+
+	err := viper.WriteConfig()
+	if err != nil {
+		fmt.Println("No configuration file loaded: ", err)
+		logrus.Errorln("No configuration file loaded - using defaults")
+		panic("DB configuration file not found: ")
+	}
+}
+
+func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string) {
 
 	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s]", *user, *password, *dbname, *host)
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	if writeType {
-		viper.Set("database_data.user", *user)
-		viper.Set("database_data.pass", *password)
-		viper.Set("database_data.name", *dbname)
-		viper.Set("database_data.host", *host)
-	} else {
-		viper.Set("database_config.user", *user)
-		viper.Set("database_config.pass", *password)
-		viper.Set("database_config.name", *dbname)
-		viper.Set("database_config.host", *host)
-	}
+	viper.Set("database_config.user", *user)
+	viper.Set("database_config.pass", *password)
+	viper.Set("database_config.name", *dbname)
+	viper.Set("database_config.host", *host)
 
 	err := viper.WriteConfig()
 	if err != nil {

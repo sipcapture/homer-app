@@ -9,7 +9,7 @@ import (
 )
 
 type AdvancedService struct {
-	Service
+	ServiceConfig
 }
 
 // this method create new user in the database

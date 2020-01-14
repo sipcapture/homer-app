@@ -114,7 +114,7 @@ To build a full bundle locally, including the latest frontend code:
 make docker
 ```
 
-For further examples, refer to the `docker` folder
+For working examples and ready to run recipes see [homer7-docker](https://github.com/sipcapture/homer7-docker/tree/7.7/heplify-server)
 
 ---
 

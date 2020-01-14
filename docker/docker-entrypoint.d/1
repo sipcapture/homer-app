@@ -5,30 +5,30 @@ INFLUX_DB=${INFLUX_DB:-localhost}
 PROM_HOST=${PROM_HOST:-localhost}
 LOKI_HOST=${LOKI_HOST:-localhost}
 
-if [ -f /usr/local/homer/webapp_config.json ]; then
+if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
-   if [ -n "$DB_HOST" ]; then sed -i "s/homer_db_host/${DB_HOST}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$DB_USER" ]; then sed -i "s/homer_user/${DB_USER}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$DB_PASS" ]; then sed -i "s/homer_password/${DB_PASS}/g" /usr/local/homer/webapp_config.json; fi
+   if [ -n "$DB_HOST" ]; then sed -i "s/homer_db_host/${DB_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$DB_USER" ]; then sed -i "s/homer_user/${DB_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$DB_PASS" ]; then sed -i "s/homer_password/${DB_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
    
-   if [ -n "$INFLUX_HOST" ]; then sed -i "s/influx_host/${INFLUX_HOST}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$INFLUX_USER" ]; then sed -i "s/influx_user/${INFLUX_USER}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$INFLUX_PASS" ]; then sed -i "s/influx_pass/${INFLUX_PASS}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$INFLUX_PORT" ]; then sed -i "s/8086/${INFLUX_PORT}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$INFLUX_DB" ]; then sed -i "s/influx_database/${INFLUX_DB}/g" /usr/local/homer/webapp_config.json; fi
+   if [ -n "$INFLUX_HOST" ]; then sed -i "s/influx_host/${INFLUX_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$INFLUX_USER" ]; then sed -i "s/influx_user/${INFLUX_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$INFLUX_PASS" ]; then sed -i "s/influx_pass/${INFLUX_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$INFLUX_PORT" ]; then sed -i "s/8086/${INFLUX_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$INFLUX_DB" ]; then sed -i "s/influx_database/${INFLUX_DB}/g" /usr/local/homer/etc/webapp_config.json; fi
 
-   if [ -n "$PROM_HOST" ]; then sed -i "s/prom_host/${PROM_HOST}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$PROM_PORT" ]; then sed -i "s/9090/${PROM_PORT}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$PROM_USER" ]; then sed -i "s/prom_user/${PROM_USER}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$PROM_PASS" ]; then sed -i "s/prom_pass/${PROM_PASS}/g" /usr/local/homer/webapp_config.json; fi
+   if [ -n "$PROM_HOST" ]; then sed -i "s/prom_host/${PROM_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$PROM_PORT" ]; then sed -i "s/9090/${PROM_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$PROM_USER" ]; then sed -i "s/prom_user/${PROM_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$PROM_PASS" ]; then sed -i "s/prom_pass/${PROM_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
 
-   if [ -n "$LOKI_HOST" ]; then sed -i "s/loki_host/${LOKI_HOST}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$LOKI_PORT" ]; then sed -i "s/3100/${LOKI_PORT}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$LOKI_USER" ]; then sed -i "s/loki_user/${LOKI_USER}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$LOKI_PASS" ]; then sed -i "s/loki_pass/${LOKI_PASS}/g" /usr/local/homer/webapp_config.json; fi
+   if [ -n "$LOKI_HOST" ]; then sed -i "s/loki_host/${LOKI_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LOKI_PORT" ]; then sed -i "s/3100/${LOKI_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LOKI_USER" ]; then sed -i "s/loki_user/${LOKI_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LOKI_PASS" ]; then sed -i "s/loki_pass/${LOKI_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
 
-   if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/webapp_config.json; fi
-   if [ -n "$HTTP_PORT" ]; then sed -i "s/9080/${HTTP_PORT}/g" /usr/local/homer/webapp_config.json; fi
+   if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$HTTP_PORT" ]; then sed -i "s/9080/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
 
    echo "Pre-Flight provisioning completed!"
 

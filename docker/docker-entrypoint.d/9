@@ -4,7 +4,7 @@ DB_HOST=${DB_HOST:-db}
 DB_USER=${DB_PASS:-root}
 DB_PASS=${DB_PASS:-homerSeven}
 
-if [ -f /usr/local/homer/webapp_config.json ]; then
+if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
 ###Create user
 #/homer-app -create-homer-user -database-root=$DB_USER -database-host=$DB_HOST -database-root-password=$DB_PASS

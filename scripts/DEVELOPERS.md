@@ -14,7 +14,7 @@ make frontend
 ```
 #### Get Release Version
 ```
-RELEASE=$(/homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
+RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
 ```
 #### Build Package artifacts
 ```

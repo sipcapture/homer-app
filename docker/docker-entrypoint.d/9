@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DB_HOST=${DB_HOST:-db}
-DB_USER=${DB_PASS:-root}
+DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-homerSeven}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
@@ -22,10 +22,10 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 #/homer-app -save-homer-db-data-settings -database-host=localhost -database-homer-data=homer_data -database-homer-user=homer_user -database-homer-password=homer_password
 
 #Create Table / Migration - connection data will be read from the webapp_config.json
-/homer-app -create-table-db-config -webapp-config-path /usr/local/homer
+/homer-app -create-table-db-config -webapp-config-path=/usr/local/homer/etc
 
 #Populate DB
-/homer-app -populate-table-db-config -webapp-config-path /usr/local/homer
+/homer-app -populate-table-db-config -webapp-config-path=/usr/local/homer/etc
 
    echo "Database provisioning completed!"
 

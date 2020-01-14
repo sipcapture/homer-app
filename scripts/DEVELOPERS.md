@@ -18,7 +18,7 @@ RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
 ```
 #### Build Package artifacts
 ```
-VERSION=$RELEASE make packages
+VERSION=$RELEASE make package
 ```
 
 #### Push to Github

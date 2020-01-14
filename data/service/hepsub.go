@@ -10,7 +10,7 @@ import (
 )
 
 type HepsubService struct {
-	Service
+	ServiceConfig
 }
 
 // this method gets all users from database

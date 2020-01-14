@@ -9,7 +9,7 @@ import (
 
 func RouteDashboardApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	dashBoardService := service.DashBoardService{Service: service.Service{Session: session}}
+	dashBoardService := service.DashBoardService{ServiceConfig: service.ServiceConfig{Session: session}}
 	// initialize user controller
 	dbc := controllerv1.DashBoardController{
 		DashBoardService: &dashBoardService,

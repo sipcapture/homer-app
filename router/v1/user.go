@@ -10,7 +10,7 @@ import (
 
 func RouteUserDetailsApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	userService := service.UserService{Service: service.Service{Session: session}, LdapClient: nil}
+	userService := service.UserService{ServiceConfig: service.ServiceConfig{Session: session}, LdapClient: nil}
 	// initialize user controller
 	urc := controllerv1.UserController{
 		UserService: &userService,
@@ -27,7 +27,7 @@ func RouteUserDetailsApis(acc *echo.Group, session *gorm.DB) {
 
 func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClient) {
 	// initialize service of user
-	userService := service.UserService{Service: service.Service{Session: session}, LdapClient: ldapClient}
+	userService := service.UserService{ServiceConfig: service.ServiceConfig{Session: session}, LdapClient: ldapClient}
 	// initialize user controller
 	urc := controllerv1.UserController{
 		UserService: &userService,

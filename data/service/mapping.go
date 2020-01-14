@@ -8,7 +8,7 @@ import (
 )
 
 type MappingService struct {
-	Service
+	ServiceConfig
 }
 
 // this method gets all users from database

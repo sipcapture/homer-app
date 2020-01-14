@@ -9,7 +9,7 @@ import (
 
 func RouteProfileApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	ProfileService := service.ProfileService{Service: service.Service{Session: session}}
+	ProfileService := service.ProfileService{ServiceConfig: service.ServiceConfig{Session: session}}
 	// initialize user controller
 	hs := controllerv1.ProfileController{
 		ProfileService: &ProfileService,

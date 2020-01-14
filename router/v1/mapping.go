@@ -9,7 +9,7 @@ import (
 
 func RouteMappingdApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	mappingService := service.MappingService{Service: service.Service{Session: session}}
+	mappingService := service.MappingService{ServiceConfig: service.ServiceConfig{Session: session}}
 	// initialize user controller
 	mpc := controllerv1.MappingController{
 		MappingService: &mappingService,

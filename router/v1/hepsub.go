@@ -9,7 +9,7 @@ import (
 
 func RouteHepsubApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	HepsubService := service.HepsubService{Service: service.Service{Session: session}}
+	HepsubService := service.HepsubService{ServiceConfig: service.ServiceConfig{Session: session}}
 	// initialize user controller
 	hs := controllerv1.HepsubController{
 		HepsubService: &HepsubService,

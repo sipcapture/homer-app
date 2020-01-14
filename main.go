@@ -189,7 +189,9 @@ func main() {
 
 	// configure new db session
 	dataDBSession := getDataDBSession()
-	defer dataDBSession.Close()
+	for val := range dataDBSession {
+		defer dataDBSession[val].Close()
+	}
 
 	// configure new influx db session
 	influxDBSession := getInfluxDBSession()
@@ -226,8 +228,8 @@ func main() {
 	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote)
 }
 
-func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
-	influxDBSession client.Client,
+func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
+	configDBSession *gorm.DB, influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote) {
 
@@ -283,7 +285,7 @@ func configureAsHTTPServer(dataDBSession, configDBSession *gorm.DB,
 	e.Logger.Fatal(e.Start(httpURL))
 }
 
-func performV1APIRouting(e *echo.Echo, dataDBSession, configDBSession *gorm.DB,
+func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, configDBSession *gorm.DB,
 	influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote) {
@@ -336,6 +338,60 @@ func performV1APIRouting(e *echo.Echo, dataDBSession, configDBSession *gorm.DB,
 }
 
 // getSession creates a new mongo session and panics if connection error occurs
+func getDataDBSession() map[string]*gorm.DB {
+
+	dataConfig := viper.GetStringMapStringSlice("database_data")
+	dbMap := make(map[string]*gorm.DB)
+
+	if _, ok := dataConfig["user"]; !ok {
+		for val := range dataConfig {
+
+			keyData := "database_data." + val
+
+			user := viper.GetString(keyData + ".user")
+			password := viper.GetString(keyData + ".pass")
+			name := viper.GetString(keyData + ".name")
+			host := viper.GetString(keyData + ".host")
+			node := viper.GetString(keyData + ".node")
+
+			fmt.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s]\n", host, user, name, node))
+			//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
+
+			db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+			dbMap[val] = db
+			if err != nil {
+				logrus.Error(err)
+				panic("failed to connect database")
+			}
+			logrus.Println("----------------------------------- ")
+			logrus.Println("*** Database Config Session created *** ")
+			logrus.Println("----------------------------------- ")
+		}
+	} else {
+		//single node
+		user := viper.GetString("database_data.user")
+		password := viper.GetString("database_data.pass")
+		name := viper.GetString("database_data.name")
+		host := viper.GetString("database_data.host")
+
+		fmt.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
+
+		db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+		dbMap["localnode"] = db
+
+		if err != nil {
+			logrus.Error(err)
+			panic("failed to connect database")
+		}
+		logrus.Println("----------------------------------- ")
+		logrus.Println("*** Database Data Session created *** ")
+		logrus.Println("----------------------------------- ")
+	}
+
+	return dbMap
+}
+
+// getSession creates a new mongo session and panics if connection error occurs
 func getConfigDBSession() *gorm.DB {
 	user := viper.GetString("database_config.user")
 	password := viper.GetString("database_config.pass")
@@ -352,27 +408,6 @@ func getConfigDBSession() *gorm.DB {
 	}
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Database Config Session created *** ")
-	logrus.Println("----------------------------------- ")
-	return db
-}
-
-// getSession creates a new mongo session and panics if connection error occurs
-func getDataDBSession() *gorm.DB {
-	user := viper.GetString("database_data.user")
-	password := viper.GetString("database_data.pass")
-	name := viper.GetString("database_data.name")
-	host := viper.GetString("database_data.host")
-
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
-
-	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
-
-	if err != nil {
-		logrus.Error(err)
-		panic("failed to connect database")
-	}
-	logrus.Println("----------------------------------- ")
-	logrus.Println("*** Database Data Session created *** ")
 	logrus.Println("----------------------------------- ")
 	return db
 }

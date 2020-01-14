@@ -9,7 +9,7 @@ import (
 
 func RouteUserSettingsApis(acc *echo.Group, session *gorm.DB) {
 	// initialize service of user
-	userSettingService := service.UserSettingsService{Service: service.Service{Session: session}}
+	userSettingService := service.UserSettingsService{ServiceConfig: service.ServiceConfig{Session: session}}
 	// initialize user controller
 	urc := controllerv1.UserSettingsController{
 		UserSettingsService: &userSettingService,

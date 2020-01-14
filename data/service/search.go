@@ -12,15 +12,16 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/dop251/goja"
 	"github.com/shomali11/util/xconditions"
-	"github.com/sirupsen/logrus"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger/function"
+	"github.com/sirupsen/logrus"
 )
 
+//search Service
 type SearchService struct {
-	Service
+	ServiceData
 }
 
 func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
@@ -98,12 +99,19 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 	}
 
-	ss.Session.Debug().
-		Table(table).
-		Where(sql, searchFromTime, searchToTime).
-		Limit(sLimit).
-		Find(&searchData)
-		//Count(&count)
+	//var searchData
+	for session := range ss.Session {
+		searchTmp := []model.HepTable{}
+		ss.Session[session].Debug().
+			Table(table).
+			Where(sql, searchFromTime, searchToTime).
+			Limit(sLimit).
+			Find(&searchTmp)
+
+		if len(searchTmp) > 0 {
+			searchData = append(searchData, searchTmp...)
+		}
+	}
 
 	rows, _ := json.Marshal(searchData)
 	data, _ := gabs.ParseJSON(rows)
@@ -195,11 +203,18 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 		}
 	}
 
-	ss.Session.Debug().
-		Table(table).
-		Where(sql, searchFromTime, searchToTime).
-		Limit(sLimit).
-		Find(&searchData)
+	for session := range ss.Session {
+		searchTmp := []model.HepTable{}
+		ss.Session[session].Debug().
+			Table(table).
+			Where(sql, searchFromTime, searchToTime).
+			Limit(sLimit).
+			Find(&searchTmp)
+
+		if len(searchTmp) > 0 {
+			searchData = append(searchData, searchTmp...)
+		}
+	}
 
 	rows, _ := json.Marshal(searchData)
 	data, _ := gabs.ParseJSON(rows)
@@ -401,12 +416,19 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 	//transactionData := model.TransactionResponse{}
 	query := fieldKey + " in (?) and create_date between ? and ?"
 
-	if err := ss.Session.Debug().
-		Table(table).
-		Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
-		Find(&searchData).Error; err != nil {
-		fmt.Println("We have got error")
-		fmt.Println(err)
+	for session := range ss.Session {
+		searchTmp := []model.HepTable{}
+		if err := ss.Session[session].Debug().
+			Table(table).
+			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
+			Find(&searchTmp).Error; err != nil {
+			fmt.Println("We have got error")
+			fmt.Println(err)
+		}
+
+		if len(searchTmp) > 0 {
+			searchData = append(searchData, searchTmp...)
+		}
 	}
 
 	//response, _ := json.Marshal(searchData)
@@ -621,12 +643,24 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (strin
 		dataReply := gabs.Wrap([]interface{}{})
 
 		query := "sid in (?) and create_date between ? and ?"
-		if err := ss.Session.Debug().
-			Table(table).
-			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
-			Find(&searchData).Error; err != nil {
-			return "", err
+
+		for session := range ss.Session {
+			searchTmp := []model.HepTable{}
+			if err := ss.Session[session].Debug().
+				Table(table).
+				Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
+				Find(&searchTmp).Error; err != nil {
+				fmt.Println("We have got error")
+				fmt.Println(err)
+				return "", err
+
+			}
+
+			if len(searchTmp) > 0 {
+				searchData = append(searchData, searchTmp...)
+			}
 		}
+
 		response, _ := json.Marshal(searchData)
 		row, _ := gabs.ParseJSON(response)
 		for _, value := range row.Children() {
@@ -679,12 +713,23 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte) (string, e
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
 	query := "sid in (?) and create_date between ? and ?"
-	if err := ss.Session.Debug().
-		Table(table).
-		Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
-		Find(&searchData).Error; err != nil {
-		return "", err
+	for session := range ss.Session {
+		searchTmp := []model.HepTable{}
+		if err := ss.Session[session].Debug().
+			Table(table).
+			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
+			Find(&searchTmp).Error; err != nil {
+			fmt.Println("We have got error")
+			fmt.Println(err)
+			return "", err
+
+		}
+
+		if len(searchTmp) > 0 {
+			searchData = append(searchData, searchTmp...)
+		}
 	}
+
 	response, _ := json.Marshal(searchData)
 	row, _ := gabs.ParseJSON(response)
 	for _, value := range row.Children() {

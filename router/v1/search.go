@@ -7,11 +7,12 @@ import (
 	"github.com/sipcapture/homer-app/data/service"
 )
 
-func RouteSearchApis(acc *echo.Group, dataSession, configSession *gorm.DB) {
+// routesearch Apis
+func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSession *gorm.DB) {
 	// initialize service of user
-	searchService := service.SearchService{Service: service.Service{Session: dataSession}}
-	aliasService := service.AliasService{Service: service.Service{Session: configSession}}
-	settingService := service.UserSettingsService{Service: service.Service{Session: configSession}}
+	searchService := service.SearchService{ServiceData: service.ServiceData{Session: dataSession}}
+	aliasService := service.AliasService{ServiceConfig: service.ServiceConfig{Session: configSession}}
+	settingService := service.UserSettingsService{ServiceConfig: service.ServiceConfig{Session: configSession}}
 	// initialize user controller
 	src := controllerv1.SearchController{
 		SearchService:  &searchService,

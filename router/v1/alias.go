@@ -9,7 +9,7 @@ import (
 
 func RouteAliasApis(acc *echo.Group, configSession *gorm.DB) {
 	// initialize service of user
-	aliasService := service.AliasService{Service: service.Service{Session: configSession}}
+	aliasService := service.AliasService{ServiceConfig: service.ServiceConfig{Session: configSession}}
 	// initialize user controller
 	src := controllerv1.AliasController{
 		AliasService: &aliasService,

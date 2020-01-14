@@ -41,6 +41,7 @@ type Message struct {
 	DataH  DataHeader     `json:"data_header"`
 	Raw    string         `json:"raw"`
 }
+
 type ProtocolHeader struct {
 	DstIP          string `json:"dstIp"`
 	SrcIP          string `json:"srcIp"`

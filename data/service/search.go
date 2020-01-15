@@ -448,7 +448,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 
 func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData map[string]string) string {
 
-	var position int
+	var position = 0
 	sid := gabs.New()
 	host := gabs.New()
 	alias := gabs.New()
@@ -595,20 +595,20 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		callElement.AliasDst = alias.Search(dstIPPort).Data().(string)
 		if !host.Exists(callElement.DstID) {
 			jsonObj := gabs.New()
-			position++
 			jsonObj.Array(callElement.DstID, "host")
 			jsonObj.ArrayAppend(callElement.DstID, callElement.DstID, "host")
 			jsonObj.S(callElement.DstID).Set(position, "position")
 			host.Merge(jsonObj)
+			position++
 		}
 
 		if !host.Exists(callElement.SrcID) {
 			jsonObj := gabs.New()
-			position++
 			jsonObj.Array(callElement.SrcID, "host")
 			jsonObj.ArrayAppend(callElement.SrcID, callElement.SrcID, "host")
 			jsonObj.S(callElement.SrcID).Set(position, "position")
 			host.Merge(jsonObj)
+			position++
 		}
 		callElement.Destination = host.Search(callElement.DstID, "position").Data().(int)
 		callData = append(callData, callElement)

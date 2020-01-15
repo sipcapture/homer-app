@@ -1,7 +1,6 @@
 package controllerv1
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -46,7 +45,7 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 
 	responseData, err := pc.PrometheusService.PrometheusData(&prometheusObject)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -80,7 +79,7 @@ func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 
 	responseData, err := pc.PrometheusService.PrometheusValue(&prometheusObject)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -107,7 +106,7 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 
 	responseData, err := pc.PrometheusService.PrometheusLabels()
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -134,11 +133,11 @@ func (pc *PrometheusController) PrometheusLabelData(c echo.Context) error {
 
 	label := c.Param("userlabel")
 
-	fmt.Println("LABEL", label)
+	logrus.Println("LABEL", label)
 
 	responseData, err := pc.PrometheusService.PrometheusLabelData(label)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

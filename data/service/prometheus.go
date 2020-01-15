@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
-	"github.com/sirupsen/logrus"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -118,7 +118,6 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 		}
 		prometheusValuesData = append(prometheusValuesData, tmpPromValData)
 
-		//fmt.Println("Response", response)
 		//this.promDb.get(`query_range?query=${metricName}&start=${fromts}&end=${tots}&step=${precision}`),
 	}
 
@@ -127,9 +126,6 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 		logrus.Error("couldn't encode json body")
 		return "", err
 	}
-
-	fmt.Println("Response", responseArray)
-
 	return string(responseArray), nil
 }
 
@@ -174,7 +170,7 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Response", prometheusLebels.Data)
+	logrus.Debug("Response", prometheusLebels.Data)
 	responseArray, _ := json.Marshal(prometheusLebels.Data)
 
 	if err != nil {
@@ -215,7 +211,7 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Response1", string(buf))
+	logrus.Debug("Response1", string(buf))
 
 	var prometheusLebelData PrometheusLabelData
 	json.Unmarshal(buf, &prometheusLebelData)
@@ -225,7 +221,7 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Response", prometheusLebelData.Data)
+	logrus.Debug("Response", prometheusLebelData.Data)
 	responseArray, _ := json.Marshal(prometheusLebelData.Data)
 
 	if err != nil {

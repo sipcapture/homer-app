@@ -57,7 +57,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 
 	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -90,7 +90,7 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 
 	responseData, err := sc.SearchService.GetMessageById(&searchObject)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

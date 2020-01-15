@@ -46,7 +46,8 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	//b := make([]interface{}, len(a))
 	/* for i := range data {
 		fmt.Println("VAL", data[i])
-	}*/
+	}
+	*/
 
 	return data
 }
@@ -73,7 +74,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 					if strings.Contains(mapData["name"].(string), ".") {
 						elemArray := strings.Split(mapData["name"].(string), ".")
-						fmt.Println(elemArray)
+						logrus.Debug(elemArray)
 						if mapData["type"].(string) == "integer" {
 							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %s", elemArray[0], elemArray[1], mapData["value"].(string))
 						} else {
@@ -332,12 +333,12 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			to = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
 		}
 		if lookupId == 0 {
-			fmt.Println("We need to implement remote call here")
+			logrus.Error("We need to implement remote call here")
 		} else {
 			if sourceField == "data_header.callid" {
 
-				fmt.Println(lookupProfile)
-				fmt.Println(lookupField)
+				logrus.Debug(lookupProfile)
+				logrus.Debug(lookupField)
 			}
 
 			if corrs.Exists("input_function_js") {
@@ -429,8 +430,6 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 			Table(table).
 			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
 			Find(&searchTmp).Error; err != nil {
-			fmt.Println("We have got error")
-			fmt.Println(err)
 			logrus.Errorln("GetTransactionData: We have got error: ", err)
 		}
 
@@ -661,8 +660,6 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (strin
 				Table(table).
 				Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
 				Find(&searchTmp).Error; err != nil {
-				fmt.Println("We have got error")
-				fmt.Println(err)
 				logrus.Errorln("GetTransactionQos: We have got error: ", err)
 				return "", err
 
@@ -734,8 +731,6 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte) (string, e
 			Table(table).
 			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
 			Find(&searchTmp).Error; err != nil {
-			fmt.Println("We have got error")
-			fmt.Println(err)
 			logrus.Errorln("GetTransactionLog: We have got error: ", err)
 			return "", err
 

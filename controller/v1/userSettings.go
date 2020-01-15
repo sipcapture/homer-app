@@ -1,7 +1,6 @@
 package controllerv1
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -33,8 +32,6 @@ type UserSettingsController struct {
 //   '200': body:ListUsers
 //   '400': body:UserLoginFailureResponse
 func (usc *UserSettingsController) GetAll(c echo.Context) error {
-
-	fmt.Println("USER SETTINGS")
 
 	reply, err := usc.UserSettingsService.GetAll()
 	if err != nil {

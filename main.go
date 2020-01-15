@@ -232,7 +232,7 @@ func main() {
 	}
 	/* Check LDAP here */
 	if authType == "ldap" {
-		fmt.Println("Ldap implementation here")
+		logrus.Println("Ldap implementation here")
 		ldapClient.Base = viper.GetString("ldap_settings.Base")
 		ldapClient.Host = viper.GetString("ldap_settings.Host")
 		ldapClient.Port = viper.GetInt("ldap_settings.Port")
@@ -330,7 +330,7 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	res.Use(middleware.JWTWithConfig(config))
 	res.Use(auth.MiddlewareRes)
 
-	fmt.Println(auth.JwtUserClaim{})
+	logrus.Println(auth.JwtUserClaim{})
 	// route user apis
 	apirouterv1.RouteUserDetailsApis(res, configDBSession)
 	// route search apis
@@ -375,8 +375,7 @@ func getDataDBSession() map[string]*gorm.DB {
 			host := viper.GetString(keyData + ".host")
 			node := viper.GetString(keyData + ".node")
 
-			fmt.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s]\n", host, user, name, node))
-			//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
+			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s]\n", host, user, name, node))
 
 			db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
@@ -401,7 +400,7 @@ func getDataDBSession() map[string]*gorm.DB {
 		host := viper.GetString("database_data.host")
 		dbLogDebug := viper.GetBool("system_settings.db_debug")
 
-		fmt.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
+		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
 
 		db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
@@ -431,8 +430,6 @@ func getConfigDBSession() *gorm.DB {
 	host := viper.GetString("database_config.host")
 	dbLogDebug := viper.GetBool("system_settings.db_debug")
 
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
-
 	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
 	if err != nil {
@@ -456,8 +453,6 @@ func getInfluxDBSession() client.Client {
 	password := viper.GetString("influxdb_config.pass")
 	//name := viper.GetString("influxdb_config.name")
 	host := viper.GetString("influxdb_config.host")
-
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n InfluxDB CONNECT STRING\n", host, user, password, name))
 
 	urlInflux, err := url.Parse(host)
 	if err != nil {
@@ -491,8 +486,6 @@ func getPrometheusDBSession() service.ServicePrometheus {
 	host := viper.GetString("prometheus_config.host")
 	api := viper.GetString("prometheus_config.api")
 
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Prometheus CONNECT STRING\n", host, api, user, password))
-
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -518,8 +511,6 @@ func getRemoteDBSession() service.ServiceRemote {
 	password := viper.GetString("lokiconfig.pass")
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
-
-	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n Loki CONNECT STRING\n", host, api, user, password))
 
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,

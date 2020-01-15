@@ -1,7 +1,6 @@
 package controllerv1
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -41,7 +40,7 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 
 	responseData, err := pc.RemoteService.RemoteLabels(serverName)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -71,7 +70,7 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 
 	responseData, err := pc.RemoteService.RemoteValues(serverName, label)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -105,7 +104,7 @@ func (pc *RemoteController) RemoteData(c echo.Context) error {
 
 	responseData, err := pc.RemoteService.RemoteData(&remoteObject)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

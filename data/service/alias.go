@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
@@ -69,7 +68,6 @@ func (as *AliasService) Delete(alias *model.TableAlias) error {
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (as *AliasService) Update(alias *model.TableAlias) error {
-	fmt.Println(alias)
 	if err := as.Session.Debug().
 		Table("alias").
 		Debug().

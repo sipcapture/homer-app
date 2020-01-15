@@ -2,7 +2,6 @@ package controllerv1
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 
@@ -133,19 +132,19 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 		return err
 	}
 
 	data, err := json.Marshal(jsonData)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 		return err
 	}
 
 	//data := types.JSONText(string(jsonString))
-	//fmt.Println(string(data))
-	//fmt.Println("-----------------------------")
+	//logrus.Println(string(data))
+	//logrus.Println("-----------------------------")
 
 	reply, err := dbc.DashBoardService.InsertDashboard(username, dashboardId, data)
 	if err != nil {

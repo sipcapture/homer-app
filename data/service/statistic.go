@@ -7,6 +7,7 @@ import (
 	"github.com/Jeffail/gabs"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -57,14 +58,14 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 	myPrefix := ""
 
 	for index, query := range statisticObject.Param.Query {
-		fmt.Println("inside of the array", index)
-		fmt.Println(query.Main)
+		logrus.Debugln("inside of the array", index)
+		logrus.Debugln(query.Main)
 
 		counterArray := []string{}
 		for _, el := range query.Type {
 			meanEl := fmt.Sprintf("mean(\"%s%s\") AS %s", myPrefix, el, el)
 			counterArray = append(counterArray, meanEl)
-			fmt.Println(counterArray)
+			logrus.Debugln(counterArray)
 		}
 
 		infQuery = fmt.Sprintf("SELECT %s FROM %s.%s.\"%s\" WHERE time > %d AND %d > time %s GROUP BY time(%s) FILL(null) LIMIT %d;",
@@ -73,8 +74,7 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 			(statisticObject.Timestamp.To * 1000000),
 			tagName, indexRange, statisticObject.Param.Limit)
 
-		fmt.Println(infQuery)
-
+		logrus.Debugln(infQuery)
 	}
 
 	q := client.NewQuery(infQuery, "", "")

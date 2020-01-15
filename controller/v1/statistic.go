@@ -1,7 +1,6 @@
 package controllerv1
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -46,7 +45,7 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 
 	responseData, err := sc.StatisticService.StatisticData(&searchObject)
 	if err != nil {
-		fmt.Println(responseData)
+		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

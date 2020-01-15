@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/Jeffail/gabs"
-	"github.com/sirupsen/logrus"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -87,7 +87,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	// Let's start with a base url
 	baseUrl, err := url.Parse(lokiQuery)
 	if err != nil {
-		fmt.Println("Malformed URL: ", err.Error())
+		logrus.Error("Malformed URL: ", err.Error())
 	}
 
 	baseUrl.RawQuery = params.Encode() // Escape Query Parameters
@@ -185,7 +185,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Response", RemoteLebels.Values)
+	logrus.Debug("Response", RemoteLebels.Values)
 	responseArray, _ := json.Marshal(RemoteLebels.Values)
 
 	if err != nil {
@@ -239,7 +239,7 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 		return "", err
 	}
 
-	fmt.Println("Response", RemoteLebels.Values)
+	logrus.Debug("Response", RemoteLebels.Values)
 	responseArray, _ := json.Marshal(RemoteLebels.Values)
 
 	if err != nil {

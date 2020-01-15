@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
@@ -22,7 +21,6 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 		return "", err
 	}
 	data, _ := json.Marshal(userSettings)
-	fmt.Println(string(data))
 	dashboardElement := model.DashBoardElement{
 		CssClass: "fa",
 		Href:     "",
@@ -38,7 +36,6 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	count := 0
 	for _, row := range rows.Children() {
 		count++
-		fmt.Println(row)
 		if row.Exists("param") {
 			dashboardElement.Href = row.S("param").Data().(string)
 			dashboardElement.Id = row.S("param").Data().(string)
@@ -47,7 +44,6 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 			dashboardElement.Name = row.S("data", "name").Data().(string)
 			dashboardElement.Weight = row.S("data", "weight").Data().(float64)
 		}
-		fmt.Println(dashboardElement)
 		dashboardList = append(dashboardList, dashboardElement)
 	}
 	reply := gabs.New()

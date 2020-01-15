@@ -53,7 +53,8 @@
     "logpath": "/usr/local/homer/log",
     "logname" : "homer-app.log",
     "_loglevels": "can be: fatal, error, warn, info, debug, trace",
-    "loglevel": "error"
+    "loglevel": "error",
+    "logstdout": false
   },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",

@@ -166,6 +166,7 @@ func main() {
 	logPath := viper.GetString("system_settings.logpath")
 	logName := viper.GetString("system_settings.logname")
 	logLevel := viper.GetString("system_settings.loglevel")
+	logStdout := viper.GetBool("system_settings.logstdout")
 
 	if *appFlags.LogPathWebApp != "" {
 		logPath = *appFlags.LogPathWebApp
@@ -180,7 +181,7 @@ func main() {
 	}
 
 	// initialize logger
-	logger.InitLogger(logPath, logName, logLevel)
+	logger.InitLogger(logPath, logName, logLevel, logStdout)
 
 	/* first check admin flags */
 	checkAdminFlags()

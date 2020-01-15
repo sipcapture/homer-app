@@ -11,7 +11,7 @@ import (
 
 type LogInfo logrus.Fields
 
-func InitLogger(path string, logname string, loglevelString string) {
+func InitLogger(path string, logname string, loglevelString string, logStdout bool) {
 
 	env := os.Getenv("environment")
 	isLocalHost := env == "local"
@@ -21,7 +21,7 @@ func InitLogger(path string, logname string, loglevelString string) {
 
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
-	if isLocalHost {
+	if logStdout {
 		logrus.SetOutput(os.Stdout)
 	}
 

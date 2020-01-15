@@ -61,6 +61,18 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
+type GormLogger struct{}
+
+/* gorm logger for logrus */
+func (*GormLogger) Print(v ...interface{}) {
+	if v[0] == "sql" {
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "sql"}).Print(v[3])
+	}
+	if v[0] == "log" {
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "log"}).Print(v[2])
+	}
+}
+
 // validate function
 func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
@@ -350,6 +362,7 @@ func getDataDBSession() map[string]*gorm.DB {
 
 	dataConfig := viper.GetStringMapStringSlice("database_data")
 	dbMap := make(map[string]*gorm.DB)
+	dbLogDebug := viper.GetBool("system_settings.db_debug")
 
 	if _, ok := dataConfig["user"]; !ok {
 		for val := range dataConfig {
@@ -366,6 +379,11 @@ func getDataDBSession() map[string]*gorm.DB {
 			//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
 
 			db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+
+			/* activate debug */
+			db.SetLogger(&GormLogger{})
+			db.LogMode(dbLogDebug)
+
 			dbMap[val] = db
 			if err != nil {
 				logrus.Error(err)
@@ -381,10 +399,16 @@ func getDataDBSession() map[string]*gorm.DB {
 		password := viper.GetString("database_data.pass")
 		name := viper.GetString("database_data.name")
 		host := viper.GetString("database_data.host")
+		dbLogDebug := viper.GetBool("system_settings.db_debug")
 
 		fmt.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
 
 		db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+
+		/* activate debug */
+		db.SetLogger(&GormLogger{})
+		db.LogMode(dbLogDebug)
+
 		dbMap["localnode"] = db
 
 		if err != nil {
@@ -405,6 +429,7 @@ func getConfigDBSession() *gorm.DB {
 	password := viper.GetString("database_config.pass")
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
+	dbLogDebug := viper.GetBool("system_settings.db_debug")
 
 	//fmt.Println(fmt.Sprintf("%s\n%s\n%s\n%s\n CONNECT STRING\n", host, user, password, name))
 
@@ -414,6 +439,10 @@ func getConfigDBSession() *gorm.DB {
 		logrus.Error(err)
 		panic("failed to connect database")
 	}
+
+	db.SetLogger(&GormLogger{})
+	db.LogMode(dbLogDebug)
+
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Database Config Session created *** ")
 	logrus.Println("----------------------------------- ")

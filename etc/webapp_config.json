@@ -51,7 +51,8 @@
   "system_settings": {
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",
-    "logname" : "homer-app.log"
+    "logname" : "homer-app.log",
+    "db_debug": false
   },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",

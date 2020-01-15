@@ -11,6 +11,19 @@ import (
 
 type LogInfo logrus.Fields
 
+type GormLogger struct{}
+
+/* gorm logger for logrus */
+func (*GormLogger) Print(v ...interface{}) {
+	if v[0] == "sql" {
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "sql"}).Print(v[3])
+	}
+	if v[0] == "log" {
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "log"}).Print(v[2])
+	}
+}
+
+// initLogger function
 func InitLogger(path string, logname string, loglevelString string, logStdout bool) {
 
 	env := os.Getenv("environment")
@@ -23,6 +36,8 @@ func InitLogger(path string, logname string, loglevelString string, logStdout bo
 	// Can be any io.Writer, see below for File example
 	if logStdout {
 		logrus.SetOutput(os.Stdout)
+	} else {
+		logrus.SetOutput(os.Stderr)
 	}
 
 	/* log level default */

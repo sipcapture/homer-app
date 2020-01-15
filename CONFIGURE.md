@@ -107,11 +107,15 @@ This section defines the parameters used by `homer-app` to serve its API and Fro
 
 ### System Settings
 This section defined the path and names used for `homer-app` generated logs. Configure when needed.
+Loglevels: fatal, error, warn, info, debug, trace
+If the loglevel is >= info , the stdout will be enabled automaticaly.
 ```
   "system_settings": {
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",
-    "logname" : "homer-app.log"
+    "logname" : "homer-app.log",
+    "loglevel": "error",
+    "logstdout": false
   }
 ```
 

@@ -338,7 +338,7 @@ if (content.locals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/shurik/Projects/homer-ui/src/styles.scss */"./src/styles.scss");
+module.exports = __webpack_require__(/*! /app/src/styles.scss */"./src/styles.scss");
 
 
 /***/ })

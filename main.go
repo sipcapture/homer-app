@@ -581,10 +581,6 @@ func registerGetRedirect(e *echo.Echo, path string) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/swagger/index.html", func(c echo.Context) (err error) {
-		return c.File(path + "/jopa.html")
-	})
-
 	e.GET("/call/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})

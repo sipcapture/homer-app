@@ -12,8 +12,6 @@ require (
 	github.com/dop251/goja v0.0.0-20191203121440-007eef3bc40f
 	github.com/go-asn1-ber/asn1-ber v1.3.1 // indirect
 	github.com/go-ldap/ldap v3.0.3+incompatible
-	github.com/go-openapi/spec v0.19.5 // indirect
-	github.com/go-openapi/swag v0.19.6 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.2+incompatible // indirect
@@ -32,8 +30,6 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.5.0
-	github.com/swaggo/echo-swagger v0.0.0-20191205130555-62f81ea88919
-	github.com/swaggo/swag v1.6.5
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20191105034135-c7e5f84aec59
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect

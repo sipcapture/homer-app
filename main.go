@@ -1,22 +1,31 @@
 // Homer-App
 //
-
-// @title Homer-App User interface API
-// @version 1.0
-// @description Homer-App User interface API.
-// @termsOfService http://www.qxip.net
-
-// @contact.name Alexandr Dubovikov
-// @contact.url http://www.sipcapture.org
-// @contact.email alexandr.dubovikov@gmail.com
-
-// @license.name AGPL
-// @license.url https://www.gnu.org/licenses/agpl-3.0.en.html
-
-// @copyright: QXIP B.V. 2019-2020
-
-// @host localhost:8090
-// @BasePath /v3
+// Homer-App User interface for WEB AI
+//
+//     Schemes: http
+//     Host: localhost:8080
+//     BasePath: /api/v3
+//     Version: 1.1.2
+//     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
+//	   Copyright: QXIP B.V. 2019-2020
+//     Contact: Aqs <aqsyounas@gmail.com>
+//     Contact: Alexandr Dubovikov <alexandr.dubovikov@gmail.com>
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//     Security:
+//     - bearer
+//
+//     SecurityDefinitions:
+//     bearer:
+//          type: apiKey
+//          name: Authorization
+//          in: header
+//
+// swagger:meta
 
 package main
 
@@ -37,7 +46,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
-	//_ "github.com/sipcapture/homer-app/docs"
 	"github.com/sipcapture/homer-app/migration"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -45,7 +53,6 @@ import (
 	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	//echoSwagger "github.com/swaggo/echo-swagger"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -280,9 +287,9 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
 
-	//Doc Swagger
-	//e.GET("/swagger/*", echoSwagger.WrapHandler)
-	// Server
+	//Doc Swagger for future. For now - external
+	/* e.GET("/swagger/*", echoSwagger.WrapHandler)
+	 */
 	e.Logger.Fatal(e.Start(httpURL))
 }
 

@@ -165,6 +165,7 @@ func main() {
 
 	logPath := viper.GetString("system_settings.logpath")
 	logName := viper.GetString("system_settings.logname")
+	logLevel := viper.GetString("system_settings.loglevel")
 
 	if *appFlags.LogPathWebApp != "" {
 		logPath = *appFlags.LogPathWebApp
@@ -179,7 +180,7 @@ func main() {
 	}
 
 	// initialize logger
-	logger.InitLogger(logPath, logName)
+	logger.InitLogger(logPath, logName, logLevel)
 
 	/* first check admin flags */
 	checkAdminFlags()
@@ -362,7 +363,6 @@ func getDataDBSession() map[string]*gorm.DB {
 
 	dataConfig := viper.GetStringMapStringSlice("database_data")
 	dbMap := make(map[string]*gorm.DB)
-	dbLogDebug := viper.GetBool("system_settings.db_debug")
 
 	if _, ok := dataConfig["user"]; !ok {
 		for val := range dataConfig {
@@ -381,7 +381,6 @@ func getDataDBSession() map[string]*gorm.DB {
 
 			/* activate debug */
 			db.SetLogger(&GormLogger{})
-			db.LogMode(dbLogDebug)
 
 			dbMap[val] = db
 			if err != nil {
@@ -398,7 +397,6 @@ func getDataDBSession() map[string]*gorm.DB {
 		password := viper.GetString("database_data.pass")
 		name := viper.GetString("database_data.name")
 		host := viper.GetString("database_data.host")
-		dbLogDebug := viper.GetBool("system_settings.db_debug")
 
 		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s]\n", host, user, name))
 
@@ -406,7 +404,6 @@ func getDataDBSession() map[string]*gorm.DB {
 
 		/* activate debug */
 		db.SetLogger(&GormLogger{})
-		db.LogMode(dbLogDebug)
 
 		dbMap["localnode"] = db
 

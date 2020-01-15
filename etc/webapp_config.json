@@ -52,7 +52,8 @@
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",
     "logname" : "homer-app.log",
-    "db_debug": false
+    "_loglevels": "can be: fatal, error, warn, info, debug, trace",
+    "loglevel": "error"
   },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",

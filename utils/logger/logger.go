@@ -11,7 +11,7 @@ import (
 
 type LogInfo logrus.Fields
 
-func InitLogger(path string, logname string) {
+func InitLogger(path string, logname string, loglevelString string) {
 
 	env := os.Getenv("environment")
 	isLocalHost := env == "local"
@@ -25,8 +25,18 @@ func InitLogger(path string, logname string) {
 		logrus.SetOutput(os.Stdout)
 	}
 
-	// Only log the warning severity or above.
-	logrus.SetLevel(logrus.InfoLevel)
+	/* log level default */
+	if loglevelString == "" {
+		loglevelString = "error"
+	}
+
+	if logLevel, ok := logrus.ParseLevel(loglevelString); ok == nil {
+		// Only log the warning severity or above.
+		logrus.SetLevel(logLevel)
+	} else {
+		logrus.Error("Couldn't parse loglevel", loglevelString)
+		logrus.SetLevel(logrus.ErrorLevel)
+	}
 
 	if !isLocalHost {
 		// configure file system hook

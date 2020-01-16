@@ -626,14 +626,6 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		}
 		callElement.AliasSrc = alias.Search(srcIPPort).Data().(string)
 		callElement.AliasDst = alias.Search(dstIPPort).Data().(string)
-		if !host.Exists(callElement.DstID) {
-			jsonObj := gabs.New()
-			jsonObj.Array(callElement.DstID, "host")
-			jsonObj.ArrayAppend(callElement.DstID, callElement.DstID, "host")
-			jsonObj.S(callElement.DstID).Set(position, "position")
-			host.Merge(jsonObj)
-			position++
-		}
 
 		if !host.Exists(callElement.SrcID) {
 			jsonObj := gabs.New()
@@ -643,6 +635,16 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			host.Merge(jsonObj)
 			position++
 		}
+
+		if !host.Exists(callElement.DstID) {
+			jsonObj := gabs.New()
+			jsonObj.Array(callElement.DstID, "host")
+			jsonObj.ArrayAppend(callElement.DstID, callElement.DstID, "host")
+			jsonObj.S(callElement.DstID).Set(position, "position")
+			host.Merge(jsonObj)
+			position++
+		}
+
 		callElement.Destination = host.Search(callElement.DstID, "position").Data().(int)
 		callData = append(callData, callElement)
 		for key := range dataElement.ChildrenMap() {

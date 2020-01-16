@@ -8,9 +8,9 @@ import (
 )
 
 // routesearch Apis
-func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSession *gorm.DB) {
+func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSession *gorm.DB, externalDecoder service.ExternalDecoder) {
 	// initialize service of user
-	searchService := service.SearchService{ServiceData: service.ServiceData{Session: dataSession}}
+	searchService := service.SearchService{ServiceData: service.ServiceData{Session: dataSession, Decoder: externalDecoder}}
 	aliasService := service.AliasService{ServiceConfig: service.ServiceConfig{Session: configSession}}
 	settingService := service.UserSettingsService{ServiceConfig: service.ServiceConfig{Session: configSession}}
 	// initialize user controller

@@ -290,9 +290,11 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	binShark := viper.GetString("decoder_shark.bin")
 	if binShark != "" {
 		externalDecoder.Binary = binShark
-		externalDecoder.Active = true
 		externalDecoder.Param = viper.GetString("decoder_shark.param")
 		externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
+		if len(externalDecoder.Protocols) > 0 {
+			externalDecoder.Active = true
+		}
 	}
 
 	// perform routing for v1 version of web apis
@@ -337,7 +339,7 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	// route user apis
 	apirouterv1.RouteUserDetailsApis(res, configDBSession)
 	// route search apis
-	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession)
+	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession, externalDecoder)
 	// route alias apis
 	apirouterv1.RouteAliasApis(res, configDBSession)
 	// route dashboards apis

@@ -10,6 +10,7 @@ import (
 // Service : here you tell us what Salutation is
 type ServiceData struct {
 	Session map[string]*gorm.DB
+	Decoder ExternalDecoder
 }
 
 //ServiceConfig

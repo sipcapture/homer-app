@@ -273,6 +273,17 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 		}
 	}
 
+	if ss.Decoder.Active {
+		logrus.Debug("Trying to debug using external decoder")
+		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
+		for key, _ := range sData.ChildrenMap() {
+			if heputils.ItemExists(ss.Decoder.Protocols, key) {
+				logrus.Debug("Start it to debug using external decoder")
+				break
+			}
+		}
+	}
+
 	total, _ := dataReply.ArrayCount()
 
 	reply := gabs.New()

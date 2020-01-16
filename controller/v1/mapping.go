@@ -201,7 +201,7 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// Stub an user to be populated from the body
-	u := model.TableHepsubSchema{}
+	u := model.TableMappingSchema{}
 	err = c.Bind(&u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

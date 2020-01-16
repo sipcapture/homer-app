@@ -71,7 +71,7 @@ func (mps *MappingService) GetMappingAgainstGUID(guid string) (string, error) {
 	return response, nil
 }
 
-func (mps *MappingService) UpdateMappingAgainstGUID(guid string, data model.TableHepsubSchema) (string, error) {
+func (mps *MappingService) UpdateMappingAgainstGUID(guid string, data model.TableMappingSchema) (string, error) {
 	if err := mps.Session.Debug().Table("mapping_schema").
 		Where("guid = ?", guid).
 		Update(&data).Error; err != nil {

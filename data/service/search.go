@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
@@ -209,7 +211,7 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 	sql := "create_date between ? and ?"
 	var sipExist = false
 
-	for key, _ := range sData.ChildrenMap() {
+	for key := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
 			if key == "1" {
@@ -276,9 +278,25 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 	if ss.Decoder.Active {
 		logrus.Debug("Trying to debug using external decoder")
 		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
-		for key, _ := range sData.ChildrenMap() {
+		for key := range sData.ChildrenMap() {
 			if heputils.ItemExists(ss.Decoder.Protocols, key) {
 				logrus.Debug("Start it to debug using external decoder")
+				cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
+				stdin, err := cmd.StdinPipe()
+				if err != nil {
+					logrus.Error("Bad cmd stdin", err)
+					break
+				}
+				go func() {
+					defer stdin.Close()
+					io.WriteString(stdin, "writing pcap buffer here")
+				}()
+
+				out, err := cmd.CombinedOutput()
+				if err != nil {
+					logrus.Error("Bad combined output", err)
+				}
+				logrus.Printf("OUTPUT: %s\n", out)
 				break
 			}
 		}

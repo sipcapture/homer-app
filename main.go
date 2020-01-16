@@ -283,8 +283,20 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 
 	registerGetRedirect(e, rootPath)
 
+	/* decoder */
+	var externalDecoder service.ExternalDecoder
+	externalDecoder.Active = false
+
+	binShark := viper.GetString("decoder_shark.bin")
+	if binShark != "" {
+		externalDecoder.Binary = binShark
+		externalDecoder.Active = true
+		externalDecoder.Param = viper.GetString("decoder_shark.param")
+		externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
+	}
+
 	// perform routing for v1 version of web apis
-	performV1APIRouting(e, dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote)
+	performV1APIRouting(e, dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, externalDecoder)
 	httpHost := viper.GetString("http_settings.host")
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
@@ -298,7 +310,8 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, configDBSession *gorm.DB,
 	influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
-	serviceRemote service.ServiceRemote) {
+	serviceRemote service.ServiceRemote,
+	externalDecoder service.ExternalDecoder) {
 
 	// accessible web services will fall in this group
 	acc := e.Group("/api/v3")

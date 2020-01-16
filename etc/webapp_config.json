@@ -70,5 +70,11 @@
 		"UserFilter": "(uid=%s)",
 		"GroupFilter": "(memberUid=%s)",
 		"Attributes": ["givenName", "sn", "mail", "uid"]
+  },
+  "decoder_shark": {
+    "_comment": "Here you can do packet decoding to using tshark application",
+    "bin": "/usr/bin/tshark",
+    "param": "-Q -T json -li -",
+    "protocols":  ["1","100"]
   }
 }

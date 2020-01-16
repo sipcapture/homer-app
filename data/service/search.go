@@ -24,6 +24,14 @@ type SearchService struct {
 	ServiceData
 }
 
+//external decoder
+type ExternalDecoder struct {
+	Binary    string   `json:"binary"`
+	Param     string   `json:"param"`
+	Protocols []string `json:"protocols"`
+	Active    bool     `json:"active"`
+}
+
 func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 
 	vm := goja.New()

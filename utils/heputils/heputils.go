@@ -3,6 +3,7 @@ package heputils
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 type Color string
@@ -101,4 +102,29 @@ func ConvertProtoTypeToString(val float64) string {
 	}
 
 	return protoText
+}
+
+/* isup to HEX */
+func IsupToHex(s string) string {
+	p1 := strings.Index(s, "/isup")
+	if p1 == -1 {
+		if p1 = strings.Index(s, "/ISUP"); p1 == -1 {
+			return s
+		}
+	}
+
+	if p2 := strings.Index(s[p1:], "\r\n\r\n"); p2 > -1 {
+		p2 = p1 + p2 + 4
+		if p3 := strings.Index(s[p2:], "\r\n"); p3 > -1 {
+			p3 = p2 + p3
+			return injectHex(s, p2, p3)
+		} else {
+			return injectHex(s, p2, len(s)-1)
+		}
+	}
+	return s
+}
+
+func injectHex(s string, start, end int) string {
+	return s[:start] + fmt.Sprintf("% X", s[start:end]) + s[end+1:]
 }

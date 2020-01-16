@@ -315,7 +315,21 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 					if err != nil {
 						logrus.Error("Bad combined output", err)
 					}
-					sData, err := gabs.ParseJSON(out)
+
+					/* limit search String */
+					maxEl := len(out)
+					if maxEl > 100 {
+						maxEl = 100
+					}
+					var skipElement = 0
+					for i := 0; i < maxEl; i++ {
+						if string(out[i]) == "[" || string(out[i]) == "{" {
+							skipElement = i
+							break
+						}
+					}
+
+					sData, err := gabs.ParseJSON(out[skipElement:])
 					if err != nil {
 						logrus.Error("bad json", err)
 						break

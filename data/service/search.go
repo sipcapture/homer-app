@@ -281,23 +281,46 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 		for key := range sData.ChildrenMap() {
 			if heputils.ItemExists(ss.Decoder.Protocols, key) {
 				logrus.Debug("Start it to debug using external decoder")
-				cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
-				stdin, err := cmd.StdinPipe()
+				//cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
+				var buffer bytes.Buffer
+				export := exportwriter.NewWriter(buffer)
+
+				// pcap export
+				err := export.WritePcapHeader(65536, 1)
 				if err != nil {
-					logrus.Error("Bad cmd stdin", err)
+					logrus.Errorln("write error to the pcap header", err)
 					break
 				}
-				go func() {
-					defer stdin.Close()
-					io.WriteString(stdin, "writing pcap buffer here")
-				}()
+				for _, h := range dataReply.Children() {
 
-				out, err := cmd.CombinedOutput()
-				if err != nil {
-					logrus.Error("Bad combined output", err)
+					err := export.WriteDataPcapBuffer(h)
+					if err != nil {
+						logrus.Errorln("write error to the pcap buffer", err)
+						break
+					}
+
+					cmd := exec.Command(ss.Decoder.Binary, "-Q", "-T", "json", "-l", "-i", "-", ss.Decoder.Param)
+
+					stdin, err := cmd.StdinPipe()
+					if err != nil {
+						logrus.Error("Bad cmd stdin", err)
+						break
+					}
+					go func() {
+						defer stdin.Close()
+						io.WriteString(stdin, export.Buffer.String())
+					}()
+
+					out, err := cmd.CombinedOutput()
+					if err != nil {
+						logrus.Error("Bad combined output", err)
+					}
+					sData, _ := gabs.ParseJSON(out)
+
+					h.Set(sData.Data(), "decoded")
+					//logrus.Printf("OUTPUT: %s\n", sData.Data())
+					break
 				}
-				logrus.Printf("OUTPUT: %s\n", out)
-				break
 			}
 		}
 	}

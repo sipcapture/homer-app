@@ -132,8 +132,8 @@ func injectHex(s string, start, end int) string {
 /* check if the element exists */
 func ItemExists(arr []string, elem string) bool {
 
-	for val := range arr {
-		if arr[val] == elem {
+	for index := range arr {
+		if arr[index] == elem {
 			return true
 		}
 	}

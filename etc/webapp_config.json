@@ -74,7 +74,6 @@
   "decoder_shark": {
     "_comment": "Here you can do packet decoding to using tshark application",
     "bin": "/usr/bin/tshark",
-    "param": "-Q -T json -li -",
-    "protocols":  ["1","100"]
+    "protocols":  ["1_call","1_registration", "1_default"]
   }
 }

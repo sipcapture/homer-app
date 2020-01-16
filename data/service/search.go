@@ -315,7 +315,11 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 					if err != nil {
 						logrus.Error("Bad combined output", err)
 					}
-					sData, _ := gabs.ParseJSON(out)
+					sData, err := gabs.ParseJSON(out)
+					if err != nil {
+						logrus.Error("bad json", err)
+						break
+					}
 
 					h.Set(sData.Data(), "decoded")
 					//logrus.Printf("OUTPUT: %s\n", sData.Data())

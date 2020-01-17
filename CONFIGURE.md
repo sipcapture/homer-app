@@ -141,10 +141,10 @@ This section defines how `homer-app` will authenticate its API and UI users. By 
 ```
 
 ### External Decoder Settings
-This section defined an external decoder that give you show message as a Wireshark View
+This section defines an external packet decoder pipeline returning advanced dissection in JSON format:
 ```
   "decoder_shark": {
-    "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",
+    "_comment": "Perform packet decoding using tshark application. Please define uid, gid if you run the app under root",
     "active": true,
     "bin": "/usr/bin/tshark",
     "protocols":  ["1_call","1_registration", "1_default"]

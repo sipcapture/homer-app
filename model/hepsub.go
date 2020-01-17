@@ -11,8 +11,8 @@ func (TableHepsubSchema) TableName() string {
 
 // swagger:model Hepsubchema
 type TableHepsubSchema struct {
-	Id         int             `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
-	GUID       string          `gorm:"column:guid;type:uuid" json:"guid"`
+	ID         int             `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
+	GUID       string          `gorm:"column:guid;type:uuid" json:"guid" validate:"required"`
 	Profile    string          `gorm:"column:profile;type:varchar(100)" json:"profile" validate:"required"`
 	Hepid      int             `gorm:"column:hepid;type:varchar(250)" json:"hepid" validate:"required"`
 	HepAlias   string          `gorm:"column:hep_alias;type:varchar(250)" json:"hep_alias" validate:"required"`

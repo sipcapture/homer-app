@@ -9,6 +9,7 @@ import (
 // this is version
 var TableVersion = map[string]int{
 	"versions":               1,
+	"applications":           1,
 	"agent_location_session": 1,
 	"alias":                  1,
 	"global_settings":        1,

@@ -44,9 +44,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration"
+	"github.com/sipcapture/homer-app/model"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/ldap"
@@ -235,6 +237,9 @@ func main() {
 		defer ldapClient.Close()
 	}
 
+	// update version
+	updateVersionApplication(configDBSession)
+
 	// configure to serve WebServices
 	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote)
 }
@@ -294,10 +299,7 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 		externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
 		externalDecoder.UID = uint32(viper.GetInt("decoder_shark.uid"))
 		externalDecoder.GID = uint32(viper.GetInt("decoder_shark.gid"))
-
-		if len(externalDecoder.Protocols) > 0 {
-			externalDecoder.Active = true
-		}
+		externalDecoder.Active = viper.GetBool("decoder_shark.active")
 	}
 
 	// perform routing for v1 version of web apis
@@ -445,7 +447,55 @@ func getConfigDBSession() *gorm.DB {
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Database Config Session created *** ")
 	logrus.Println("----------------------------------- ")
+
 	return db
+}
+
+// getSession creates a new mongo session and panics if connection error occurs
+func updateVersionApplication(configDBSession *gorm.DB) bool {
+
+	var err error
+	var saveConfig = false
+	recordApp := model.TableApplications{}
+	recordApp.VersionApplication = getVersion()
+	recordApp.NameApplication = getName()
+
+	recordApp.HostApplication = viper.GetString("system_settings.hostname")
+	if recordApp.HostApplication == "" {
+		recordApp.HostApplication, err = os.Hostname()
+		if err != nil {
+			recordApp.HostApplication = "unknown"
+		}
+		viper.Set("system_settings.hostname", recordApp.HostApplication)
+		saveConfig = true
+
+	}
+
+	recordApp.GUID = viper.GetString("system_settings.uuid")
+	if recordApp.GUID == "" {
+		recordApp.GUID = uuid.NewV4().String()
+		viper.Set("system_settings.uuid", recordApp.GUID)
+		saveConfig = true
+	}
+
+	if saveConfig {
+		err := viper.WriteConfig()
+		if err != nil {
+			fmt.Println("No configuration file loaded: ", err)
+			logrus.Errorln("No configuration file loaded - using defaults")
+			return false
+		}
+	}
+
+	if err := configDBSession.Debug().Set(
+		"gorm:insert_option",
+		fmt.Sprintf("ON CONFLICT (name,host) DO UPDATE SET version = EXCLUDED.version, guid = EXCLUDED.guid"),
+	).Table("applications").Create(&recordApp).Error; err != nil {
+		logrus.Error("Error by updating application table", err)
+		return false
+	}
+
+	return true
 }
 
 // getInfluxDBSession creates a new influxdb session and panics if connection error occurs

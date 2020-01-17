@@ -71,8 +71,7 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	uid := uuid.NewV4()
-	u.GUID = uid.String()
+	u.GUID = uuid.NewV4().String()
 	reply, err := ac.AdvancedService.AddAdvanced(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

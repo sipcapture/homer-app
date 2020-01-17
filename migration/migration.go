@@ -158,7 +158,7 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 
 	createString := fmt.Sprintf("\r\nHOMER - creating table for the config DB [dbname=%s]", homerDBconfig)
 
-	heputils.Colorize(heputils.ColorRed, createString)
+	heputils.Colorize(heputils.ColorGreen, createString)
 
 	configDBSession.AutoMigrate(&model.TableAlias{},
 		&model.TableGlobalSettings{},
@@ -167,7 +167,8 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 		&model.TableHepsubSchema{},
 		&model.TableUser{},
 		&model.TableAgentLocationSession{},
-		&model.TableVersions{})
+		&model.TableVersions{},
+		&model.TableApplications{})
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
@@ -318,6 +319,10 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		model.TableVersions{
 			NameTable:    "versions",
 			VersionTable: jsonschema.TableVersion["versions"],
+		},
+		model.TableVersions{
+			NameTable:    "applications",
+			VersionTable: jsonschema.TableVersion["applications"],
 		},
 		model.TableVersions{
 			NameTable:    "agent_location_session",

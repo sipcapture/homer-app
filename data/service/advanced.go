@@ -37,7 +37,7 @@ func (as *AdvancedService) GetAll() (string, error) {
 func (as *AdvancedService) GetAdvancedAgainstGUID(guid string) (string, error) {
 	var userGlobalSettings = []model.TableGlobalSettings{}
 	var count int
-	if err := as.Session.Debug().Table("mapping_schema").
+	if err := as.Session.Debug().Table("global_settings").
 		Where("guid = ?", guid).
 		Find(&userGlobalSettings).Count(&count).Error; err != nil {
 		return "", err

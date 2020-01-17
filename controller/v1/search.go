@@ -88,7 +88,7 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	responseData, err := sc.SearchService.GetMessageById(&searchObject)
+	responseData, err := sc.SearchService.GetMessageByID(&searchObject)
 	if err != nil {
 		logrus.Println(responseData)
 	}

@@ -292,6 +292,9 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 		externalDecoder.Binary = binShark
 		externalDecoder.Param = viper.GetString("decoder_shark.param")
 		externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
+		externalDecoder.UID = uint32(viper.GetInt("decoder_shark.uid"))
+		externalDecoder.GID = uint32(viper.GetInt("decoder_shark.gid"))
+
 		if len(externalDecoder.Protocols) > 0 {
 			externalDecoder.Active = true
 		}

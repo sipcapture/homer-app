@@ -158,7 +158,7 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 
 	createString := fmt.Sprintf("\r\nHOMER - creating table for the config DB [dbname=%s]", homerDBconfig)
 
-	heputils.Colorize(heputils.ColorRed, createString)
+	heputils.Colorize(heputils.ColorGreen, createString)
 
 	configDBSession.AutoMigrate(&model.TableAlias{},
 		&model.TableGlobalSettings{},
@@ -167,7 +167,8 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
 		&model.TableHepsubSchema{},
 		&model.TableUser{},
 		&model.TableAgentLocationSession{},
-		&model.TableVersions{})
+		&model.TableVersions{},
+		&model.TableApplications{})
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
@@ -320,6 +321,10 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			VersionTable: jsonschema.TableVersion["versions"],
 		},
 		model.TableVersions{
+			NameTable:    "applications",
+			VersionTable: jsonschema.TableVersion["applications"],
+		},
+		model.TableVersions{
 			NameTable:    "agent_location_session",
 			VersionTable: jsonschema.TableVersion["agent_location_session"],
 		},
@@ -355,7 +360,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "default",
 			Hepid:              1,
 			HepAlias:           "SIP",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -373,7 +378,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "call",
 			Hepid:              1,
 			HepAlias:           "SIP",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -391,7 +396,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "registration",
 			Hepid:              1,
 			HepAlias:           "SIP",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -409,7 +414,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "default",
 			Hepid:              100,
 			HepAlias:           "LOG",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -427,7 +432,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "default",
 			Hepid:              34,
 			HepAlias:           "RTP-FULL-REPORT",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -445,7 +450,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "default",
 			Hepid:              1000,
 			HepAlias:           "JANUS",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,
@@ -463,7 +468,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Profile:            "default",
 			Hepid:              2000,
 			HepAlias:           "LOKI",
-			PartId:             10,
+			PartID:             10,
 			Version:            1,
 			Retention:          10,
 			PartitionStep:      10,

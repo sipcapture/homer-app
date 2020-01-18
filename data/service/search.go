@@ -3,12 +3,15 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
@@ -31,6 +34,8 @@ type ExternalDecoder struct {
 	Binary    string   `json:"binary"`
 	Param     string   `json:"param"`
 	Protocols []string `json:"protocols"`
+	UID       uint32   `json:"uid"`
+	GID       uint32   `json:"gid"`
 	Active    bool     `json:"active"`
 }
 
@@ -200,7 +205,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (string, error) {
+func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (string, error) {
 	table := "hep_proto_1_default"
 	sLimit := searchObject.Param.Limit
 	searchData := []model.HepTable{}
@@ -210,15 +215,20 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? and ?"
 	var sipExist = false
+	var doDecode = false
 
 	for key := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
-			if key == "1" {
+			if key == "1_call" {
 				sipExist = true
 			}
 			elems := sData.Search(key, "id").Data().(float64)
 			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
+			/* check if we have to decode */
+			if ss.Decoder.Active && heputils.ItemExists(ss.Decoder.Protocols, key) {
+				doDecode = true
+			}
 		}
 	}
 
@@ -254,6 +264,11 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 			case "raw":
 				newData := gabs.New()
 				/* doing sipIsup extraction */
+				if doDecode {
+					if decodedData, err := ss.excuteExternalDecoder(value); err == nil {
+						newData.Set(decodedData, "decoded")
+					}
+				}
 				if sipExist {
 					rawElement := fmt.Sprintf("%v", v.Data().(interface{}))
 					newData.Set(heputils.IsupToHex(rawElement), k)
@@ -275,74 +290,6 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 		}
 	}
 
-	if ss.Decoder.Active {
-		logrus.Debug("Trying to debug using external decoder")
-		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
-		for key := range sData.ChildrenMap() {
-			if heputils.ItemExists(ss.Decoder.Protocols, key) {
-				logrus.Debug("Start it to debug using external decoder")
-				//cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
-				var buffer bytes.Buffer
-				export := exportwriter.NewWriter(buffer)
-
-				// pcap export
-				err := export.WritePcapHeader(65536, 1)
-				if err != nil {
-					logrus.Errorln("write error to the pcap header", err)
-					break
-				}
-				for _, h := range dataReply.Children() {
-
-					err := export.WriteDataPcapBuffer(h)
-					if err != nil {
-						logrus.Errorln("write error to the pcap buffer", err)
-						break
-					}
-
-					cmd := exec.Command(ss.Decoder.Binary, "-Q", "-T", "json", "-l", "-i", "-", ss.Decoder.Param)
-
-					stdin, err := cmd.StdinPipe()
-					if err != nil {
-						logrus.Error("Bad cmd stdin", err)
-						break
-					}
-					go func() {
-						defer stdin.Close()
-						io.WriteString(stdin, export.Buffer.String())
-					}()
-
-					out, err := cmd.CombinedOutput()
-					if err != nil {
-						logrus.Error("Bad combined output", err)
-					}
-
-					/* limit search String */
-					maxEl := len(out)
-					if maxEl > 100 {
-						maxEl = 100
-					}
-					var skipElement = 0
-					for i := 0; i < maxEl; i++ {
-						if string(out[i]) == "[" || string(out[i]) == "{" {
-							skipElement = i
-							break
-						}
-					}
-
-					sData, err := gabs.ParseJSON(out[skipElement:])
-					if err != nil {
-						logrus.Error("bad json", err)
-						break
-					}
-
-					h.Set(sData.Data(), "decoded")
-					//logrus.Printf("OUTPUT: %s\n", sData.Data())
-					break
-				}
-			}
-		}
-	}
-
 	total, _ := dataReply.ArrayCount()
 
 	reply := gabs.New()
@@ -351,6 +298,96 @@ func (ss *SearchService) GetMessageById(searchObject *model.SearchObject) (strin
 	reply.Set(dataKeys.Data(), "keys")
 
 	return reply.String(), nil
+}
+
+//this method create new user in the database
+//it doesn't check internally whether all the validation are applied or not
+func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (interface{}, error) {
+
+	if ss.Decoder.Active {
+		logrus.Debug("Trying to debug using external decoder")
+		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
+		//cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
+		var buffer bytes.Buffer
+		export := exportwriter.NewWriter(buffer)
+		var rootExecute = false
+
+		// pcap export
+		if err := export.WritePcapHeader(65536, 1); err != nil {
+			logrus.Errorln("write error to the pcap header", err)
+			return nil, err
+		}
+
+		if err := export.WriteDataPcapBuffer(dataRecord); err != nil {
+			logrus.Errorln("write error to the pcap buffer", err)
+			return nil, err
+		}
+
+		cmd := exec.Command(ss.Decoder.Binary, "-Q", "-T", "json", "-l", "-i", "-", ss.Decoder.Param)
+
+		/*check if we root under root - changing to an user */
+		uid, gid := os.Getuid(), os.Getgid()
+
+		if uid == 0 || gid == 0 {
+			logrus.Info("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, ss.Decoder.UID, ss.Decoder.GID)
+			if ss.Decoder.UID != 0 && ss.Decoder.GID != 0 {
+				logrus.Info("Changing to: UID: [%d], GID: [%d]", uid, gid)
+				cmd.SysProcAttr = &syscall.SysProcAttr{
+					Credential: &syscall.Credential{
+						Uid: ss.Decoder.UID, Gid: ss.Decoder.GID,
+						NoSetGroups: true,
+					},
+				}
+			} else {
+				logrus.Error("You run external decoder under root! Please set UID/GID in the config")
+				rootExecute = true
+			}
+		}
+
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			logrus.Error("Bad cmd stdin", err)
+			return nil, err
+		}
+		go func() {
+			defer stdin.Close()
+			io.WriteString(stdin, export.Buffer.String())
+			return
+		}()
+
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			logrus.Error("Bad combined output: ", err)
+			return nil, err
+		}
+
+		var skipElement = 0
+
+		/* this is fix if you run the webapp under root */
+		if rootExecute {
+			/* limit search String */
+			maxEl := len(out)
+			if maxEl > 100 {
+				maxEl = 100
+			}
+			for i := 0; i < maxEl; i++ {
+				if string(out[i]) == "[" || string(out[i]) == "{" {
+					skipElement = i
+					break
+				}
+			}
+		}
+
+		sData, err := gabs.ParseJSON(out[skipElement:])
+		if err != nil {
+			logrus.Error("bad json", err)
+			return nil, err
+		}
+
+		return sData.Data(), nil
+	}
+
+	return nil, errors.New("decoder not active. You should not be here")
 }
 
 //this method create new user in the database

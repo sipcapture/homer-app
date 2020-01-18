@@ -72,7 +72,8 @@
 		"Attributes": ["givenName", "sn", "mail", "uid"]
   },
   "decoder_shark": {
-    "_comment": "Here you can do packet decoding to using tshark application",
+    "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",
+    "active": false,
     "bin": "/usr/bin/tshark",
     "protocols":  ["1_call","1_registration", "1_default"]
   }

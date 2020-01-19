@@ -205,6 +205,95 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
+func (ss *SearchService) GetDBNodeList(searchObject *model.SearchObject) (string, error) {
+
+	reply := gabs.New()
+	reply.Set(1, "total")
+	reply.Set("", "data")
+
+	return reply.String(), nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject) (string, error) {
+	table := "hep_proto_1_default"
+	sLimit := searchObject.Param.Limit
+	searchData := []model.HepTable{}
+	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
+	searchToTime := time.Unix(searchObject.Timestamp.To/int64(time.Microsecond), 0)
+	Data, _ := json.Marshal(searchObject.Param.Search)
+	sData, _ := gabs.ParseJSON(Data)
+	sql := "create_date between ? and ?"
+	var doDecode = false
+
+	for key := range sData.ChildrenMap() {
+		table = "hep_proto_" + key
+		if sData.Exists(key) {
+			elems := sData.Search(key, "id").Data().(float64)
+			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
+			/* check if we have to decode */
+			if ss.Decoder.Active && heputils.ItemExists(ss.Decoder.Protocols, key) {
+				doDecode = true
+			}
+		}
+	}
+
+	for session := range ss.Session {
+		searchTmp := []model.HepTable{}
+		ss.Session[session].Debug().
+			Table(table).
+			Where(sql, searchFromTime, searchToTime).
+			Limit(sLimit).
+			Find(&searchTmp)
+
+		if len(searchTmp) > 0 {
+			for val := range searchTmp {
+				searchTmp[val].Node = session
+			}
+			searchData = append(searchData, searchTmp...)
+		}
+	}
+
+	rows, _ := json.Marshal(searchData)
+	data, _ := gabs.ParseJSON(rows)
+	dataReply := gabs.Wrap([]interface{}{})
+	for _, value := range data.Children() {
+		dataElement := gabs.New()
+		for k, _ := range value.ChildrenMap() {
+			switch k {
+			case "raw":
+				newData := gabs.New()
+				/* doing sipIsup extraction */
+				if doDecode {
+					if decodedData, err := ss.excuteExternalDecoder(value); err == nil {
+						newData.Set(decodedData, "decoded")
+					}
+				}
+			}
+		}
+		dataReply.ArrayAppend(dataElement.Data())
+	}
+	dataKeys := gabs.Wrap([]interface{}{})
+	for _, v := range dataReply.Children() {
+		for key := range v.ChildrenMap() {
+			if !function.ArrayKeyExits(key, dataKeys) {
+				dataKeys.ArrayAppend(key)
+			}
+		}
+	}
+
+	total, _ := dataReply.ArrayCount()
+
+	reply := gabs.New()
+	reply.Set(total, "total")
+	reply.Set(dataReply.Data(), "data")
+
+	return reply.String(), nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (string, error) {
 	table := "hep_proto_1_default"
 	sLimit := searchObject.Param.Limit

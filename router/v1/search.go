@@ -23,6 +23,9 @@ func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSes
 	// create new user
 	acc.POST("/search/call/data", src.SearchData)
 	acc.POST("/search/call/message", src.GetMessageById)
+	acc.GET("/database/node/list", src.GetDBNodeList)
+
+	acc.POST("/search/call/decode/message", src.GetDecodeMessageById)
 	acc.POST("/call/transaction", src.GetTransaction)
 	acc.POST("/call/report/qos", src.GetTransactionQos)
 	acc.POST("/call/report/log", src.GetTransactionLog)

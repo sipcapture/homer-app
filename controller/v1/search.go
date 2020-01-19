@@ -95,6 +95,72 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
+// swagger:route POST /api/search/call/message search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *SearchController) GetDBNodeList(c echo.Context) error {
+
+	searchObject := model.SearchObject{}
+
+	if err := c.Bind(&searchObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	responseData, err := sc.SearchService.GetMessageByID(&searchObject)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+// swagger:route POST /api/search/call/decode/message search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
+
+	searchObject := model.SearchObject{}
+
+	if err := c.Bind(&searchObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	responseData, err := sc.SearchService.GetDecodedMessageByID(&searchObject)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
 // swagger:route GET /api/call/transaction search
 //
 // Returns data related to transaction

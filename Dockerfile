@@ -1,11 +1,11 @@
 FROM node:12-alpine as webapp
-ENV BUILD 20200117-001
-RUN apk add git && git clone https://gitlab.com/qxip/hepic-ui-3 /app
+ENV BUILD 20200119-001
+RUN apk add git && git clone https://github.com/sipcapture/homer-ui /app
 WORKDIR /app
 RUN npm install && npm install -g @angular/cli && ng build --configuration=production
 
 FROM golang:alpine as webapi
-ENV BUILD 20200117-001
+ENV BUILD 20200119-001
 RUN apk --update add git make
 COPY . /homer-app
 WORKDIR /homer-app

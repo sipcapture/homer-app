@@ -43,7 +43,7 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /mapping/protocol dashboard ListMapping
 //
 // Get mappings
 // ---
@@ -68,6 +68,36 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
 	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route GET /mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (pc *ProfileController) GetDBNodeList(c echo.Context) error {
+
+	reply, err := pc.ProfileService.GetDBNodeList()
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+	}
+
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
 }

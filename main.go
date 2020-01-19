@@ -201,7 +201,7 @@ func main() {
 	}
 
 	// configure new db session
-	dataDBSession := getDataDBSession()
+	dataDBSession, databaseNodeMap := getDataDBSession()
 	for val := range dataDBSession {
 		defer dataDBSession[val].Close()
 	}
@@ -241,13 +241,14 @@ func main() {
 	updateVersionApplication(configDBSession)
 
 	// configure to serve WebServices
-	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote)
+	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, databaseNodeMap)
 }
 
 func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	configDBSession *gorm.DB, influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
-	serviceRemote service.ServiceRemote) {
+	serviceRemote service.ServiceRemote,
+	databaseNodeMap []model.DatabasesMap) {
 
 	e := echo.New()
 	// add validation
@@ -303,7 +304,7 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	}
 
 	// perform routing for v1 version of web apis
-	performV1APIRouting(e, dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, externalDecoder)
+	performV1APIRouting(e, dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, externalDecoder, databaseNodeMap)
 	httpHost := viper.GetString("http_settings.host")
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
@@ -318,7 +319,8 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	influxDBSession client.Client,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote,
-	externalDecoder service.ExternalDecoder) {
+	externalDecoder service.ExternalDecoder,
+	databaseNodeMap []model.DatabasesMap) {
 
 	// accessible web services will fall in this group
 	acc := e.Group("/api/v3")
@@ -340,7 +342,7 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	res.Use(middleware.JWTWithConfig(config))
 	res.Use(auth.MiddlewareRes)
 
-	logrus.Println(auth.JwtUserClaim{})
+	logrus.Debug(auth.JwtUserClaim{})
 	// route user apis
 	apirouterv1.RouteUserDetailsApis(res, configDBSession)
 	// route search apis
@@ -356,7 +358,7 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	// route hepsub apis
 	apirouterv1.RouteHepsubApis(res, configDBSession)
 	// route profile apis
-	apirouterv1.RouteProfileApis(res, configDBSession)
+	apirouterv1.RouteProfileApis(res, configDBSession, databaseNodeMap)
 	// route mapping apis
 	apirouterv1.RouteMappingdApis(res, configDBSession)
 	// route RouteStatisticApis apis
@@ -368,10 +370,11 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 }
 
 // getSession creates a new mongo session and panics if connection error occurs
-func getDataDBSession() map[string]*gorm.DB {
+func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 	dataConfig := viper.GetStringMapStringSlice("database_data")
 	dbMap := make(map[string]*gorm.DB)
+	var dbNodeMap []model.DatabasesMap
 
 	if _, ok := dataConfig["user"]; !ok {
 		for val := range dataConfig {
@@ -388,14 +391,16 @@ func getDataDBSession() map[string]*gorm.DB {
 
 			db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
 
-			/* activate logging */
-			db.SetLogger(&logger.GormLogger{})
-
-			dbMap[val] = db
 			if err != nil {
-				logrus.Error(err)
-				panic("failed to connect database")
+				logrus.Error(fmt.Sprintf("couldn't make connection to [Host: %s, Node: %s]: \n", host, node), err)
+				continue
+			} else {
+				/* activate logging */
+				db.SetLogger(&logger.GormLogger{})
+				dbMap[val] = db
+				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: val, Node: node})
 			}
+
 			logrus.Println("----------------------------------- ")
 			logrus.Println("*** Database Config Session created *** ")
 			logrus.Println("----------------------------------- ")
@@ -420,12 +425,15 @@ func getDataDBSession() map[string]*gorm.DB {
 			logrus.Error(err)
 			panic("failed to connect database")
 		}
+
+		dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: "localnode", Node: "LocalNode"})
+
 		logrus.Println("----------------------------------- ")
 		logrus.Println("*** Database Data Session created *** ")
 		logrus.Println("----------------------------------- ")
 	}
 
-	return dbMap
+	return dbMap, dbNodeMap
 }
 
 // getSession creates a new mongo session and panics if connection error occurs

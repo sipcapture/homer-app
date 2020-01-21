@@ -273,10 +273,10 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 	dataReply := gabs.Wrap([]interface{}{})
 	for _, value := range data.Children() {
 		dataElement := gabs.New()
-		for k, _ := range value.ChildrenMap() {
+		newData := gabs.New()
+		for k := range value.ChildrenMap() {
 			switch k {
 			case "raw":
-				newData := gabs.New()
 				/* doing sipIsup extraction */
 				if doDecode {
 					if decodedData, err := ss.excuteExternalDecoder(value); err == nil {
@@ -285,6 +285,7 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 				}
 			}
 		}
+		dataElement.Merge(newData)
 		dataReply.ArrayAppend(dataElement.Data())
 	}
 	dataKeys := gabs.Wrap([]interface{}{})

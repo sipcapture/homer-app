@@ -139,3 +139,18 @@ func ItemExists(arr []string, elem string) bool {
 	}
 	return false
 }
+
+/* check if the element exists */
+func NodeExists(arr []string, elem string) bool {
+
+	if len(arr) == 0 {
+		return true
+	}
+
+	for index := range arr {
+		if strings.EqualFold(arr[index], elem) {
+			return true
+		}
+	}
+	return false
+}

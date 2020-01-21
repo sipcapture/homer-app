@@ -1,6 +1,6 @@
 package model
 
 type DatabasesMap struct {
-	Name string `json:"value"`
-	Node string `json:"id"`
+	Value string `json:"value"`
+	Name  string `json:"name"`
 }

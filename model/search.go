@@ -12,6 +12,7 @@ type SearchObject struct {
 		Limit    int             `json:"limit"`
 		Search   json.RawMessage `json:"search"`
 		Location struct {
+			Node []string `json:node`
 		} `json:"location"`
 		Timezone struct {
 			Value int    `json:"value"`

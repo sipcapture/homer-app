@@ -268,9 +268,9 @@ var FieldsMapping1default = json.RawMessage(`[
     "index": "none",
     "form_type": "multiselect",
     "form_default": [
-        {"value":"LocalNode","id":"LocalNode"}
+        {"value":"localnode","name":"Local node"}
     ],
-    "_form_api": "/api/v3/nodes/all",
+    "_form_api": "/database/node/list",  
     "system_param": true,
     "mapping": "param.location.node",
     "position": 22,

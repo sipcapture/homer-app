@@ -137,7 +137,7 @@ func initFlags() {
 
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
 	appFlags.LogName = flag.String("webapp-log-name", "homer-webapp.log", "the name prefix of the log file.")
-	appFlags.LogPathWebApp = flag.String("webapp-log-path", "/usr/local/homer/log", "the path for the log file.")
+	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 
 	flag.Parse()
 }
@@ -398,7 +398,8 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				/* activate logging */
 				db.SetLogger(&logger.GormLogger{})
 				dbMap[val] = db
-				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: val, Node: node})
+				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: node, Value: val})
+
 			}
 
 			logrus.Println("----------------------------------- ")
@@ -426,7 +427,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			panic("failed to connect database")
 		}
 
-		dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: "localnode", Node: "LocalNode"})
+		dbNodeMap = append(dbNodeMap, model.DatabasesMap{Value: "localnode", Name: "LocalNode"})
 
 		logrus.Println("----------------------------------- ")
 		logrus.Println("*** Database Data Session created *** ")

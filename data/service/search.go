@@ -117,7 +117,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 	//var searchData
 	for session := range ss.Session {
+
 		searchTmp := []model.HepTable{}
+
+		/* if node doesnt exists - continue */
+		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+			continue
+		}
+
 		ss.Session[session].Debug().
 			Table(table).
 			Where(sql, searchFromTime, searchToTime).
@@ -240,6 +247,12 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 	}
 
 	for session := range ss.Session {
+
+		/* if node doesnt exists - continue */
+		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+			continue
+		}
+
 		searchTmp := []model.HepTable{}
 		ss.Session[session].Debug().
 			Table(table).
@@ -322,6 +335,11 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 	}
 
 	for session := range ss.Session {
+		/* if node doesnt exists - continue */
+		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+			continue
+		}
+
 		searchTmp := []model.HepTable{}
 		ss.Session[session].Debug().
 			Table(table).
@@ -482,7 +500,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 //this method create new user in the database
 //it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int) (string, error) {
+	aliasData map[string]string, typeReport int, nodes []string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
@@ -494,7 +512,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo)
+	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes)
 	marshalData, _ := json.Marshal(dataRow)
 
 	jsonParsed, _ := gabs.ParseJSON(marshalData)
@@ -535,7 +553,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		var to time.Time
 
 		sourceField := corrs.Search("source_field").Data().(string)
-		lookupId := corrs.Search("lookup_id").Data().(float64)
+		lookupID := corrs.Search("lookup_id").Data().(float64)
 		lookupProfile := corrs.Search("lookup_profile").Data().(string)
 		lookupField := corrs.Search("lookup_field").Data().(string)
 		lookupRange := corrs.Search("lookup_range").Data().([]interface{})
@@ -545,13 +563,13 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			continue
 		}
 
-		table := "hep_proto_" + strconv.FormatFloat(lookupId, 'f', 0, 64) + "_" + lookupProfile
+		table := "hep_proto_" + strconv.FormatFloat(lookupID, 'f', 0, 64) + "_" + lookupProfile
 
 		if len(lookupRange) > 0 {
 			from = timeFrom.Add(time.Duration(lookupRange[0].(float64)) * time.Second).UTC()
 			to = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
 		}
-		if lookupId == 0 {
+		if lookupID == 0 {
 			logrus.Error("We need to implement remote call here")
 		} else {
 			if sourceField == "data_header.callid" {
@@ -569,7 +587,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 					newWhereData = append(newWhereData, newDataArray...)
 				}
 			}
-			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to)
+			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes)
 			dataRow = append(dataRow, newDataRow...)
 		}
 	}
@@ -637,13 +655,18 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom, timeTo time.Time) ([]model.HepTable, error) {
+func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom, timeTo time.Time, nodes []string) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
 	//transactionData := model.TransactionResponse{}
 	query := fieldKey + " in (?) and create_date between ? and ?"
 
 	for session := range ss.Session {
+		/* if node doesnt exists - continue */
+		if !heputils.NodeExists(nodes, session) {
+			continue
+		}
+
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).
@@ -854,7 +877,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (string, error) {
+func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes []string) (string, error) {
 
 	var dataWhere []interface{}
 	sid := gabs.New()
@@ -876,6 +899,11 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (strin
 		query := "sid in (?) and create_date between ? and ?"
 
 		for session := range ss.Session {
+			/* if node doesnt exists - continue */
+			if !heputils.NodeExists(nodes, session) {
+				continue
+			}
+
 			searchTmp := []model.HepTable{}
 			if err := ss.Session[session].Debug().
 				Table(table).
@@ -929,7 +957,7 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte) (strin
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetTransactionLog(table string, data []byte) (string, error) {
+func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []string) (string, error) {
 
 	var dataWhere []interface{}
 	sid := gabs.New()
@@ -947,6 +975,10 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte) (string, e
 
 	query := "sid in (?) and create_date between ? and ?"
 	for session := range ss.Session {
+		/* if node doesnt exists - continue */
+		if !heputils.NodeExists(nodes, session) {
+			continue
+		}
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).

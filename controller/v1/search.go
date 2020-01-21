@@ -166,7 +166,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 	searchTable := "hep_proto_1_default'"
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 0)
+		correlation, false, aliasData, 0, transactionObject.Param.Location.Node)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
 
@@ -191,17 +191,17 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
-	transactionObject := model.SearchObject{}
-	if err := c.Bind(&transactionObject); err != nil {
+	searchObject := model.SearchObject{}
+	if err := c.Bind(&searchObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	transactionData, _ := json.Marshal(transactionObject)
+	transactionData, _ := json.Marshal(searchObject)
 
 	searchTable := [...]string{"hep_proto_5_default", "hep_proto_35_default"}
 
-	row, _ := sc.SearchService.GetTransactionQos(searchTable, transactionData)
+	row, _ := sc.SearchService.GetTransactionQos(searchTable, transactionData, searchObject.Param.Location.Node)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 
@@ -226,29 +226,29 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
-	transactionObject := model.SearchObject{}
-	if err := c.Bind(&transactionObject); err != nil {
+	searchObject := model.SearchObject{}
+	if err := c.Bind(&searchObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
-	transactionData, _ := json.Marshal(transactionObject)
+	transactionData, _ := json.Marshal(searchObject)
 	searchTable := "hep_proto_100_default"
-	row, _ := sc.SearchService.GetTransactionLog(searchTable, transactionData)
+	row, _ := sc.SearchService.GetTransactionLog(searchTable, transactionData, searchObject.Param.Location.Node)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
 func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 
-	transactionObject := model.SearchObject{}
-	if err := c.Bind(&transactionObject); err != nil {
+	searchObject := model.SearchObject{}
+	if err := c.Bind(&searchObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
-	transactionData, _ := json.Marshal(transactionObject)
+	transactionData, _ := json.Marshal(searchObject)
 
 	searchTable := "hep_proto_100_default"
-	row, _ := sc.SearchService.GetTransactionLog(searchTable, transactionData)
+	row, _ := sc.SearchService.GetTransactionLog(searchTable, transactionData, searchObject.Param.Location.Node)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
@@ -272,14 +272,14 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
-	transactionObject := model.SearchObject{}
-	if err := c.Bind(&transactionObject); err != nil {
+	searchObject := model.SearchObject{}
+	if err := c.Bind(&searchObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	transactionData, _ := json.Marshal(transactionObject)
-	correlation, _ := sc.SettingService.GetCorrelationMap(&transactionObject)
+	transactionData, _ := json.Marshal(searchObject)
+	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
 	aliasRowData, _ := sc.AliasService.GetAll()
 
 	aliasData := make(map[string]string)
@@ -290,7 +290,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchTable := "hep_proto_1_default'"
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1)
+	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1, searchObject.Param.Location.Node)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
@@ -321,20 +321,20 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
-	transactionObject := model.SearchObject{}
-	if err := c.Bind(&transactionObject); err != nil {
+	searchObject := model.SearchObject{}
+	if err := c.Bind(&searchObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	transactionData, _ := json.Marshal(transactionObject)
-	correlation, _ := sc.SettingService.GetCorrelationMap(&transactionObject)
+	transactionData, _ := json.Marshal(searchObject)
+	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
 	aliasData := make(map[string]string)
 
 	searchTable := "hep_proto_1_default'"
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 2)
+		correlation, false, aliasData, 2, searchObject.Param.Location.Node)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
 	if err := c.String(http.StatusOK, reply); err != nil {

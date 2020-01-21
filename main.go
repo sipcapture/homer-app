@@ -136,7 +136,7 @@ func initFlags() {
 	appFlags.DatabaseHomerData = flag.String("database-homer-data", "homer_data", "database-homer-data")
 
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
-	appFlags.LogName = flag.String("webapp-log-name", "homer-webapp.log", "the name prefix of the log file.")
+	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 
 	flag.Parse()

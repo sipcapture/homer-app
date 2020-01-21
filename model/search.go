@@ -70,6 +70,7 @@ type DataHeader struct {
 	RuriDomain string `json:"ruri_domain"`
 }
 
+/*
 type TransactionObject struct {
 	Timestamp struct {
 		From int64 `json:"from"`
@@ -77,7 +78,7 @@ type TransactionObject struct {
 	} `json:"timestamp"`
 	Param struct {
 		Search struct {
-			OneCall struct {
+			OneCall struct {``
 				ID     int           `json:"id"`
 				Callid []string      `json:"callid"`
 				UUID   []interface{} `json:"uuid"`
@@ -98,6 +99,7 @@ type TransactionObject struct {
 		} `json:"timezone"`
 	} `json:"param"`
 }
+*/
 
 type TransactionResponse struct {
 	Total int        `json:"total"`

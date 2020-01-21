@@ -19,5 +19,7 @@ func RouteStatisticApis(acc *echo.Group, influxClient client.Client) {
 
 	// create new stats
 	acc.POST("/statistic/data", src.StatisticData)
+	acc.POST("/statistic/_db", src.GetStatisticDBList)
+
 	//acc.POST("/api/call/report/log", src.HepSub)
 }

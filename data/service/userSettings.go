@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,14 +15,20 @@ type UserSettingsService struct {
 	ServiceConfig
 }
 
-func (ss *UserSettingsService) GetCorrelationMap(data *model.TransactionObject) ([]byte, error) {
+func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]byte, error) {
 
 	var mappingSchema = model.TableMappingSchema{}
-	val := reflect.ValueOf(data.Param.Search)
-	profileKey := val.Type().Field(0).Tag.Get("json")
-	dataParse := strings.Split(profileKey, "_")
-	hepid, _ := strconv.Atoi(dataParse[0])
-	profile := dataParse[1]
+	Data, _ := json.Marshal(data.Param.Search)
+	sData, _ := gabs.ParseJSON(Data)
+	hepid := 1
+	profile := "call"
+
+	for key := range sData.ChildrenMap() {
+		dataParse := strings.Split(key, "_")
+		hepid, _ = strconv.Atoi(dataParse[0])
+		profile = dataParse[1]
+	}
+
 	ss.Session.Debug().
 		Table("mapping_schema").
 		Where("hepid = ? and profile = ?", hepid, profile).

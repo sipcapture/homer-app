@@ -49,3 +49,30 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
+
+// swagger:route GET /api/statistic/data search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
+
+	responseData, err := sc.StatisticService.StatisticDataBaseList()
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}

@@ -147,7 +147,7 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetTransaction(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
@@ -191,7 +191,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
@@ -226,7 +226,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
@@ -240,7 +240,7 @@ func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
 func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
@@ -272,7 +272,7 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
@@ -290,8 +290,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchTable := "hep_proto_1_default'"
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 1)
+	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
@@ -322,7 +321,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
-	transactionObject := model.TransactionObject{}
+	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)

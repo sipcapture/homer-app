@@ -853,21 +853,48 @@ var FieldsMapping2000loki = json.RawMessage(`[
 	}
 ]`)
 
-var CorrelationMapping1default = json.RawMessage(`[
-		{
-			"source_field": "data_header.callid",
-			"lookup_id": 100,
-			"lookup_profile": "default",
-			"lookup_field": "sid",
-			"lookup_range": [-300, 200]
-		},
-		{
-			"source_field": "data_header.callid",
-			"lookup_id": 5,
-			"lookup_profile": "default",
-			"lookup_field": "sid",
-			"lookup_range": [-300, 200]
-		}
+var CorrelationMapping1default = json.RawMessage(`[		
+    {
+        "source_field": "data_header.callid",
+        "lookup_id": 100,
+        "lookup_profile": "default",
+        "lookup_field": "sid",
+        "lookup_range": [
+            -300,
+            200
+        ]
+    },
+    {
+        "source_field": "data_header.callid",
+        "lookup_id": 5,
+        "lookup_profile": "default",
+        "lookup_field": "sid",
+        "lookup_range": [
+            -300,
+            200
+        ]
+    },
+    {
+        "source_field": "data_header.correlation_id",
+        "lookup_id": 1,
+        "lookup_profile": "default",
+        "lookup_field": "sid",
+        "lookup_range": [
+            -300,
+            200
+        ]
+    },
+    {
+        "source_field": "data_header.callid",
+        "lookup_id": 1,
+        "lookup_profile": "call",
+        "lookup_field": "data_header->>'callid'",
+        "lookup_range": [
+            -300,
+            200
+        ],
+        "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
+    }
 	]	
 `)
 

@@ -80,7 +80,6 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 	q := client.NewQuery(infQuery, "", "")
 	reply := gabs.New()
 	dataEmpty := []string{}
-	//allPoints := [][]model.StatisticPoint{}
 
 	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
 
@@ -88,44 +87,35 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
 		}
 
-		/*
-			for _, v := range response.Results[0].Series {
+		reply.Set(len(response.Results), "total")
+		reply.Set("ok", "status")
+		reply.Set(response, "data")
+		return reply.String(), nil
+	} else {
+		reply.Set("ok", "status")
+		reply.Set(0, "total")
+		reply.Set(dataEmpty, "data")
+		return reply.String(), nil
+	}
+}
 
-				dataPoints := []model.StatisticPoint{}
-				for _, valValue := range v.Values {
-					//fmt.Printf("COL value[%s] [%d]\n", valValue, colIndex)
+// StatisticData: this method create new user in the database
+func (ss *StatisticService) StatisticDataBaseList() (string, error) {
 
-					var retportTime int64 = 0
-					for vSubIndex, vSubValue := range valValue {
-						colValue := v.Columns[vSubIndex]
-						if colValue == "time" {
-							str := fmt.Sprintf("%v", vSubValue)
-							t, err := time.Parse(time.RFC3339, str)
-							if err != nil {
-								fmt.Println(err)
-							}
-							retportTime = int64(t.Unix())
-						} else {
-							var dataPoint model.StatisticPoint
-							dataPoint.Table = v.Name
-							dataPoint.Transaction = "statistic"
-							dataPoint.Partid = 10
-							dataPoint.Attemps = 1
-							dataPoint.Countername = colValue
-							str := fmt.Sprintf("%v", vSubValue)
-							if dataPoint.Value, err = strconv.ParseFloat(str, 64); err != nil {
-								dataPoint.Value = 0
-							}
-							dataPoint.Reporttime = retportTime
-							dataPoints = append(dataPoints, dataPoint)
-						}
-					}
-				}
-				allPoints = append(allPoints, dataPoints)
-			}
-		*/
+	infQuery := fmt.Sprintf("SHOW DATABASES")
 
-		//fmt.Println(response.Results)
+	logrus.Debugln(infQuery)
+
+	q := client.NewQuery(infQuery, "", "")
+	reply := gabs.New()
+	dataEmpty := []string{}
+
+	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
+
+		if len(response.Results[0].Series) != 1 {
+			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+		}
+
 		reply.Set(len(response.Results), "total")
 		reply.Set("ok", "status")
 		reply.Set(response, "data")

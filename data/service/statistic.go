@@ -114,13 +114,160 @@ func (ss *StatisticService) StatisticDataBaseList() (string, error) {
 
 		if len(response.Results[0].Series) != 1 {
 			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+			reply.Set(dataEmpty, "data")
+			reply.Set(0, "total")
+		} else {
+			reply.Set(response, "data")
+			reply.Set(1, "total")
 		}
 
-		reply.Set(len(response.Results), "total")
 		reply.Set("ok", "status")
-		reply.Set(response, "data")
 		return reply.String(), nil
 	} else {
+
+		reply.Set("ok", "status")
+		reply.Set(0, "total")
+		reply.Set(dataEmpty, "data")
+		return reply.String(), nil
+	}
+}
+
+// StatisticData: this method create new user in the database
+func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.StatisticSearchObject) (string, error) {
+
+	infQuery := fmt.Sprintf("SHOW RETENTION POLICIES ON %s", statisticObject.Param.Search.Database)
+
+	logrus.Debugln(infQuery)
+
+	q := client.NewQuery(infQuery, statisticObject.Param.Search.Database, "")
+	reply := gabs.New()
+	dataEmpty := []string{}
+
+	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
+
+		if len(response.Results[0].Series) != 1 {
+			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+			reply.Set(dataEmpty, "data")
+			reply.Set(0, "total")
+		} else {
+			reply.Set(response, "data")
+			reply.Set(1, "total")
+		}
+
+		reply.Set("ok", "status")
+		return reply.String(), nil
+	} else {
+
+		reply.Set("ok", "status")
+		reply.Set(0, "total")
+		reply.Set(dataEmpty, "data")
+		return reply.String(), nil
+	}
+}
+
+// StatisticData: this method create new user in the database
+func (ss *StatisticService) StatisticMeasurementsList(dbId string) (string, error) {
+
+	infQuery := fmt.Sprintf("SHOW MEASUREMENTS ON %s", dbId)
+
+	logrus.Debugln(infQuery)
+
+	q := client.NewQuery(infQuery, dbId, "")
+	reply := gabs.New()
+	dataEmpty := []string{}
+
+	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
+
+		if len(response.Results[0].Series) != 1 {
+			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+			reply.Set(dataEmpty, "data")
+			reply.Set(0, "total")
+		} else {
+			reply.Set(response, "data")
+			reply.Set(1, "total")
+		}
+
+		reply.Set("ok", "status")
+		return reply.String(), nil
+	} else {
+
+		reply.Set("ok", "status")
+		reply.Set(0, "total")
+		reply.Set(dataEmpty, "data")
+		return reply.String(), nil
+	}
+}
+
+// StatisticData: this method create new user in the database
+func (ss *StatisticService) StatisticMetricsList(statisticObject *model.StatisticObject) (string, error) {
+
+	var infQuery string
+
+	if statisticObject.Param.Query[0].Retention == "" || statisticObject.Param.Query[0].Retention == "none" {
+		infQuery = fmt.Sprintf("SHOW FIELD KEYS FROM %s", statisticObject.Param.Query[0].Main)
+	} else {
+		infQuery = fmt.Sprintf("SHOW FIELD KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
+	}
+	logrus.Debugln(infQuery)
+
+	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
+	reply := gabs.New()
+	dataEmpty := []string{}
+
+	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
+
+		if len(response.Results[0].Series) != 1 {
+			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+			reply.Set(dataEmpty, "data")
+			reply.Set(0, "total")
+		} else {
+			reply.Set(response, "data")
+			reply.Set(1, "total")
+		}
+
+		reply.Set("ok", "status")
+		return reply.String(), nil
+	} else {
+
+		reply.Set("ok", "status")
+		reply.Set(0, "total")
+		reply.Set(dataEmpty, "data")
+		return reply.String(), nil
+	}
+}
+
+// StatisticData: this method create new user in the database
+func (ss *StatisticService) StatisticTagsList(statisticObject *model.StatisticObject) (string, error) {
+
+	var infQuery string
+
+	if statisticObject.Param.Query[0].Retention == "" || statisticObject.Param.Query[0].Retention == "none" {
+		infQuery = fmt.Sprintf("SHOW TAG KEYS FROM %s", statisticObject.Param.Query[0].Main)
+	} else {
+		infQuery = fmt.Sprintf("SHOW TAG KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
+	}
+
+	logrus.Debugln(infQuery)
+
+	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
+	reply := gabs.New()
+	dataEmpty := []string{}
+
+	if response, err := ss.InfluxClient.Query(q); err == nil && response.Error() == nil {
+
+		if len(response.Results[0].Series) != 1 {
+			fmt.Printf("Expected 1 series in result, got %d", len(response.Results[0].Series))
+			reply.Set(dataEmpty, "data")
+			reply.Set(0, "total")
+		} else {
+			reply.Set(response, "data")
+			reply.Set(1, "total")
+		}
+
+		reply.Set("ok", "status")
+		return reply.String(), nil
+	} else {
+
 		reply.Set("ok", "status")
 		reply.Set(0, "total")
 		reply.Set(dataEmpty, "data")

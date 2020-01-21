@@ -76,3 +76,134 @@ func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
+
+// swagger:route GET /api/statistic/data search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error {
+
+	searchObject := model.StatisticSearchObject{}
+
+	if err := c.Bind(&searchObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	responseData, err := sc.StatisticService.StatisticRetentionsList(&searchObject)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+// swagger:route GET /api/statistic/data search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) error {
+
+	dbID := c.Param("dbid")
+
+	responseData, err := sc.StatisticService.StatisticMeasurementsList(dbID)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+// swagger:route GET /api/statistic/data search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
+
+	searchObject := model.StatisticObject{}
+
+	if err := c.Bind(&searchObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	responseData, err := sc.StatisticService.StatisticMetricsList(&searchObject)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+// swagger:route GET /api/statistic/data search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *StatisticController) GetStatisticTagsList(c echo.Context) error {
+
+	searchObject := model.StatisticObject{}
+
+	if err := c.Bind(&searchObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	responseData, err := sc.StatisticService.StatisticTagsList(&searchObject)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}

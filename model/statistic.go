@@ -25,6 +25,30 @@ type StatisticObject struct {
 	} `json:"timestamp"`
 }
 
+type StatisticSearchObject struct {
+	Param struct {
+		Limit     int `json:"limit"`
+		Precision int `json:"precision"`
+		Search    struct {
+			Database string `json:"database"`
+		} `json:"search`
+		Bfrom int  `json:"bfrom"`
+		Total bool `json:"total"`
+	} `json:"param"`
+	Timestamp struct {
+		From int64 `json:"from"`
+		To   int64 `json:"to"`
+	} `json:"timestamp"`
+}
+
+type InfluxDatabasesPolices struct {
+	Name string `json:"name"`
+}
+
+type InfluxDatabasesMeasurements struct {
+	Name string `json:"name"`
+}
+
 type StatisticResponse struct {
 	Total int             `json:"total"`
 	D     json.RawMessage `json:"data"`

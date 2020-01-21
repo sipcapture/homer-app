@@ -511,7 +511,6 @@ func getInfluxDBSession() client.Client {
 
 	user := viper.GetString("influxdb_config.user")
 	password := viper.GetString("influxdb_config.pass")
-	//name := viper.GetString("influxdb_config.name")
 	host := viper.GetString("influxdb_config.host")
 
 	urlInflux, err := url.Parse(host)

@@ -22,7 +22,7 @@
     "user": "influx_user",
     "pass": "influx_password",
     "name": "homer_config",
-    "host": "http:/127.0.0.1:8086" ,
+    "host": "http://127.0.0.1:8086" ,
     "database": "homer",
     "policy": "autogen"
   },

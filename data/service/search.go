@@ -318,7 +318,6 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? and ?"
 	var sipExist = false
-	var doDecode = false
 
 	for key := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
@@ -328,10 +327,6 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 			}
 			elems := sData.Search(key, "id").Data().(float64)
 			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
-			/* check if we have to decode */
-			if ss.Decoder.Active && heputils.ItemExists(ss.Decoder.Protocols, key) {
-				doDecode = true
-			}
 		}
 	}
 
@@ -372,11 +367,6 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 			case "raw":
 				newData := gabs.New()
 				/* doing sipIsup extraction */
-				if doDecode {
-					if decodedData, err := ss.excuteExternalDecoder(value); err == nil {
-						newData.Set(decodedData, "decoded")
-					}
-				}
 				if sipExist {
 					rawElement := fmt.Sprintf("%v", v.Data().(interface{}))
 					newData.Set(heputils.IsupToHex(rawElement), k)

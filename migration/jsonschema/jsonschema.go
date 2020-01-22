@@ -39,7 +39,7 @@ var PrometheusConfig = json.RawMessage(`{"host":"http://prometheus:9090/api/v1/"
 
 var LokiConfig = json.RawMessage(`{"host":"http://loki:3100"}`)
 
-var FieldsMapping1default = json.RawMessage(`[
+var FieldsMapping1call = json.RawMessage(`[
 	{
 	  "id": "sid",
 	  "type": "string",
@@ -82,7 +82,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	},
 	{
 	  "id": "data_header.callid",
-	  "name": "SIP Callid",
+	  "name": "CallID",
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
@@ -90,14 +90,24 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "skip": false,
 	  "hide": true,
 	  "sid_type": true
-	},
+  },
+  {
+    "id": "data_header.ruri_user",
+    "name": "RURI user",
+    "type": "string",
+    "index": "none",
+    "form_type": "input",
+    "position": 5,
+    "skip": false,
+    "hide": true
+  },
 	{
 	  "id": "data_header.from_user",
 	  "name": "SIP From user",
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 5,
+	  "position": 6,
 	  "skip": false,
 	  "hide": false
 	},
@@ -107,7 +117,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 6,
+	  "position": 7,
 	  "skip": false,
 	  "hide": false
 	},
@@ -117,7 +127,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 7,
+	  "position": 8,
 	  "skip": false,
 	  "hide": false
 	},
@@ -127,7 +137,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 8,
+	  "position": 9,
 	  "skip": false,
 	  "hide": false
 	},
@@ -137,7 +147,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 9,
+	  "position": 10,
 	  "skip": false,
 	  "hide": false
 	},
@@ -147,7 +157,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 10,
+	  "position": 11,
 	  "skip": false,
 	  "hide": false
 	},
@@ -157,7 +167,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 11,
+	  "position": 12,
 	  "skip": false,
 	  "hide": true
 	},
@@ -167,7 +177,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 12,
+	  "position": 13,
 	  "skip": false,
 	  "hide": true
 	},
@@ -177,7 +187,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 13,
+	  "position": 14,
 	  "skip": false,
 	  "hide": true
 	},
@@ -187,7 +197,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 14,
+	  "position": 15,
 	  "skip": false,
 	  "hide": true
 	},
@@ -197,7 +207,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 15,
+	  "position": 16,
 	  "skip": false,
 	  "hide": true
 	},
@@ -207,7 +217,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 16,
+	  "position": 17,
 	  "skip": false,
 	  "hide": true
 	},
@@ -217,7 +227,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 17,
+	  "position": 18,
 	  "skip": true,
 	  "hide": true
 	},
@@ -227,7 +237,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "integer",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 18,
+	  "position": 19,
 	  "skip": false,
 	  "hide": true
 	},
@@ -237,7 +247,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 19,
+	  "position": 20,
 	  "skip": false,
 	  "hide": true
 	},
@@ -247,7 +257,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 20,
+	  "position": 21,
 	  "skip": false,
 	  "hide": true
 	},
@@ -257,7 +267,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
-	  "position": 21,
+	  "position": 22,
 	  "skip": true,
 	  "hide": true
   },
@@ -273,7 +283,250 @@ var FieldsMapping1default = json.RawMessage(`[
     "_form_api": "/database/node/list",  
     "system_param": true,
     "mapping": "param.location.node",
-    "position": 22,
+    "position": 23,
+    "skip": true,
+    "hide": true
+  }
+  ]
+`)
+
+var FieldsMapping1default = json.RawMessage(`[
+	{
+	  "id": "sid",
+	  "type": "string",
+	  "index": "secondary",
+	  "name": "Session ID",
+	  "form_type": "input",
+	  "position": 1,
+	  "sid_type": true,
+	  "hide": false
+	},
+	{
+	  "id": "data_header.method",
+	  "name": "SIP Method",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "form_default": [
+		"INVITE",
+		"BYE",
+		"100",
+		"200",
+		"REGISTER",
+    "CANCEL",
+    "OPTIONS",
+    "NOTIFY"    
+	  ],
+	  "position": 2,
+	  "skip": false,
+	  "hide": false,
+	  "method_type": true
+	},
+	{
+	  "id": "protocol_header.correlation_id",
+	  "name": "Correlation ID",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 3,
+	  "skip": false,
+	  "hide": true,
+	  "sid_type": true
+	},
+	{
+	  "id": "data_header.callid",
+	  "name": "SIP Callid",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 4,
+	  "skip": false,
+	  "hide": true,
+	  "sid_type": true
+  },
+	{
+	  "id": "data_header.from_user",
+	  "name": "SIP From user",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 6,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "data_header.to_user",
+	  "name": "SIP To user",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 7,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "protocol_header.srcIp",
+	  "name": "Source IP",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 8,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "protocol_header.srcPort",
+	  "name": "Src Port",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 9,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "protocol_header.dstIp",
+	  "name": "Destination IP",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 10,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "protocol_header.dstPort",
+	  "name": "Dst Port",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 11,
+	  "skip": false,
+	  "hide": false
+	},
+	{
+	  "id": "protocol_header.timeSeconds",
+	  "name": "Timeseconds",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 12,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.timeUseconds",
+	  "name": "Usecond time",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 13,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.payloadType",
+	  "name": "Payload type",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 14,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.protocolFamily",
+	  "name": "Proto Family",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 15,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.protocol",
+	  "name": "Protocol Type",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 16,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.captureId",
+	  "name": "Capture ID",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 17,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "protocol_header.capturePass",
+	  "name": "Capture Pass",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 18,
+	  "skip": true,
+	  "hide": true
+	},
+	{
+	  "id": "data_header.cseq",
+	  "name": "SIP Cseq",
+	  "type": "integer",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 19,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "data_header.from_tag",
+	  "name": "SIP From tag",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 20,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "data_header.protocol",
+	  "name": "SIP Protocol",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 21,
+	  "skip": false,
+	  "hide": true
+	},
+	{
+	  "id": "raw",
+	  "name": "SIP RAW",
+	  "type": "string",
+	  "index": "none",
+	  "form_type": "input",
+	  "position": 22,
+	  "skip": true,
+	  "hide": true
+  },
+  {
+    "id": "node",
+    "name": "Node",
+    "type": "string",
+    "index": "none",
+    "form_type": "multiselect",
+    "form_default": [
+        {"value":"localnode","name":"Local node"}
+    ],
+    "_form_api": "/database/node/list",  
+    "system_param": true,
+    "mapping": "param.location.node",
+    "position": 23,
     "skip": true,
     "hide": true
   }

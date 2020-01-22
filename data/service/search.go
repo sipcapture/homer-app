@@ -85,31 +85,30 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			elems := sData.Search(key).Data().([]interface{})
 			for _, v := range elems {
 				mapData := v.(map[string]interface{})
-
 				if _, ok := mapData["value"]; ok {
 
 					if strings.Contains(mapData["name"].(string), ".") {
 						elemArray := strings.Split(mapData["name"].(string), ".")
 						logrus.Debug(elemArray)
 						if mapData["type"].(string) == "integer" {
-							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %s", elemArray[0], elemArray[1], mapData["value"].(string))
+							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %d", elemArray[0], elemArray[1], heputils.CheckIntValue(mapData["value"]))
 						} else {
 							eqValue := "="
 							if strings.Contains(mapData["value"].(string), "%") {
 								eqValue = "LIKE"
 							}
-							sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, mapData["value"].(string))
+							sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(mapData["value"].(string)))
 						}
 					} else if strings.Contains(mapData["value"].(string), "%") {
-						sql = sql + " and " + mapData["name"].(string) + " like '" + mapData["value"].(string) + "'"
+						sql = sql + " and " + mapData["name"].(string) + " like '" + heputils.Sanitize(mapData["value"].(string)) + "'"
 
 					} else {
 						if mapData["name"].(string) == "limit" {
-							sLimit, _ = strconv.Atoi(mapData["value"].(string))
+							sLimit = heputils.CheckIntValue(mapData["value"])
 						} else if mapData["type"].(string) == "integer" {
-							sql = sql + " and " + fmt.Sprintf("%s = %s", mapData["name"], mapData["value"])
+							sql = sql + " and " + fmt.Sprintf("%s = %d", mapData["name"], heputils.CheckIntValue(mapData["value"]))
 						} else {
-							sql = sql + " and " + fmt.Sprintf("%s = '%s'", mapData["name"], mapData["value"])
+							sql = sql + " and " + fmt.Sprintf("%s = '%s'", mapData["name"], heputils.Sanitize(mapData["value"].(string)))
 						}
 
 					}
@@ -504,8 +503,11 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
 		table = "hep_proto_" + key
-		dataWhere = append(dataWhere, value.Search("callid", "0").Data())
+		for _, v := range value.Search("callid").Data().([]interface{}) {
+			dataWhere = append(dataWhere, v)
+		}
 	}
+
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
 	timeWhereTo := requestData.S("timestamp", "to").Data().(float64)
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
@@ -884,7 +886,9 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 	requestData, _ := gabs.ParseJSON(data)
 	for _, value := range requestData.Search("param", "search").ChildrenMap() {
 		//table = "hep_proto_" + key
-		dataWhere = append(dataWhere, value.Search("callid", "0").Data())
+		for _, v := range value.Search("callid").Data().([]interface{}) {
+			dataWhere = append(dataWhere, v)
+		}
 	}
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
 	timeWhereTo := requestData.S("timestamp", "to").Data().(float64)
@@ -965,7 +969,9 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 	requestData, _ := gabs.ParseJSON(data)
 	for _, value := range requestData.Search("param", "search").ChildrenMap() {
 		//table = "hep_proto_" + key
-		dataWhere = append(dataWhere, value.Search("callid", "0").Data())
+		for _, v := range value.Search("callid").Data().([]interface{}) {
+			dataWhere = append(dataWhere, v)
+		}
 	}
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
 	timeWhereTo := requestData.S("timestamp", "to").Data().(float64)

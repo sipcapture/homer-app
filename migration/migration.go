@@ -389,7 +389,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			PartitionStep:      10,
 			CreateIndex:        jsonschema.EmptyJson,
 			CreateTable:        "CREATE TABLE test(id integer, data text);",
-			FieldsMapping:      jsonschema.FieldsMapping1default,
+			FieldsMapping:      jsonschema.FieldsMapping1call,
 			CorrelationMapping: jsonschema.CorrelationMapping1default,
 			MappingSettings:    jsonschema.EmptyJson,
 			SchemaMapping:      jsonschema.EmptyJson,

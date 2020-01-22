@@ -3,6 +3,7 @@ package heputils
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -48,9 +49,36 @@ func CheckFloatValue(val interface{}) float64 {
 	return float64(0)
 }
 
+//import  checkFloatValue
+func CheckIntValue(val interface{}) int {
+	if val != nil {
+		myType := reflect.TypeOf(val)
+		switch myType.Kind() {
+		case reflect.String:
+			tmp, _ := strconv.Atoi(val.(string))
+			return tmp
+		case reflect.Int:
+			return val.(int)
+		case reflect.Float64:
+			return int(val.(float64))
+		default:
+			return int(0)
+		}
+	}
+	return int(0)
+}
+
 /* colorize message */
 func Colorize(color Color, message string) {
 	fmt.Println(string(color), message, string(ColorReset))
+}
+
+func Sanitize(text string) string {
+	return strings.NewReplacer(
+		`'`, "&#39;",
+		`\"`, `\"`,
+		`&`, "&amp;",
+	).Replace(text)
 }
 
 //import  convertPayloadTypeToString

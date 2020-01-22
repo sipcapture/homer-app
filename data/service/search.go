@@ -140,6 +140,11 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 	}
 
+	/* lets sort it */
+	sort.Slice(searchData, func(i, j int) bool {
+		return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
+	})
+
 	rows, _ := json.Marshal(searchData)
 	data, _ := gabs.ParseJSON(rows)
 	dataReply := gabs.Wrap([]interface{}{})
@@ -205,7 +210,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	reply := gabs.New()
 	reply.Set(total, "total")
 	reply.Set(dataReply.Data(), "data")
-	reply.Set(dataKeys.Data(), "keys")
+	//reply.Set(dataKeys.Data(), "keys")
 
 	return reply.String(), nil
 }

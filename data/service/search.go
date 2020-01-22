@@ -78,6 +78,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? and ?"
+
 	for key, _ := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
@@ -100,13 +101,15 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 							sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, mapData["value"].(string))
 						}
 					} else if strings.Contains(mapData["value"].(string), "%") {
-						sql = sql + " and " + mapData["name"].(string) + " like " + mapData["value"].(string)
+						sql = sql + " and " + mapData["name"].(string) + " like '" + mapData["value"].(string) + "'"
 
 					} else {
 						if mapData["name"].(string) == "limit" {
 							sLimit, _ = strconv.Atoi(mapData["value"].(string))
-						} else {
+						} else if mapData["type"].(string) == "integer" {
 							sql = sql + " and " + fmt.Sprintf("%s = %s", mapData["name"], mapData["value"])
+						} else {
+							sql = sql + " and " + fmt.Sprintf("%s = '%s'", mapData["name"], mapData["value"])
 						}
 
 					}

@@ -36,6 +36,11 @@ type RemoteController struct {
 //   '400': body:UserLoginFailureResponse
 func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 
+	if !pc.RemoteService.Active {
+		logrus.Error("Loki service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
+	}
+
 	serverName := c.QueryParam("server")
 
 	responseData, err := pc.RemoteService.RemoteLabels(serverName)
@@ -64,6 +69,11 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 //   '200': body:ListValues
 //   '400': body:UserLoginFailureResponse
 func (pc *RemoteController) RemoteValues(c echo.Context) error {
+
+	if !pc.RemoteService.Active {
+		logrus.Error("Loki service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
+	}
 
 	serverName := c.QueryParam("server")
 	label := c.QueryParam("label")
@@ -94,6 +104,11 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 //   '200': body:ListValues
 //   '400': body:UserLoginFailureResponse
 func (pc *RemoteController) RemoteData(c echo.Context) error {
+
+	if !pc.RemoteService.Active {
+		logrus.Error("Loki service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
+	}
 
 	remoteObject := model.RemoteObject{}
 

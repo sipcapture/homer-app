@@ -593,6 +593,11 @@ func getRemoteDBSession() service.ServiceRemote {
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
 
+	if host == "" {
+		logrus.Println("Loki functions disabled")
+		return service.ServiceRemote{Active: false}
+	}
+
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -603,6 +608,7 @@ func getRemoteDBSession() service.ServiceRemote {
 		Password:   password,
 		Host:       host,
 		Api:        api,
+		Active:     true,
 	}
 
 	logrus.Println("------------------------------------ ")

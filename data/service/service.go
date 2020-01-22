@@ -21,6 +21,7 @@ type ServiceConfig struct {
 // ServiceInfluxDB : here you tell us what ServiceInfluxDB is
 type ServiceInfluxDB struct {
 	InfluxClient client.Client
+	Active       bool
 }
 
 // ServicePrometheus : here you tell us what ServicePrometheus is
@@ -30,6 +31,7 @@ type ServicePrometheus struct {
 	Password   string
 	Host       string
 	Api        string
+	Active     bool
 }
 
 // ServiceRemote : here you tell us what ServiceRemote is
@@ -39,4 +41,5 @@ type ServiceRemote struct {
 	Password   string
 	Host       string
 	Api        string
+	Active     bool
 }

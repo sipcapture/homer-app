@@ -73,6 +73,7 @@ type CommandLineFlags struct {
 	CreateConfigDB            *bool   `json:"create_config_db"`
 	CreateDataDB              *bool   `json:"create_data_db"`
 	CreateTableConfigDB       *bool   `json:"create_table_config"`
+	UpgradeTableConfigDB      *bool   `json:"upgrade_table_config"`
 	PopulateTableConfigDB     *bool   `json:"populate_table_config"`
 	CreateHomerUser           *bool   `json:"create_homer_user"`
 	DeleteHomerUser           *bool   `json:"delete_homer_user"`
@@ -108,6 +109,8 @@ func initFlags() {
 	appFlags.CreateConfigDB = flag.Bool("create-config-db", false, "create config db")
 	appFlags.CreateDataDB = flag.Bool("create-data-db", false, "create data db")
 	appFlags.CreateTableConfigDB = flag.Bool("create-table-db-config", false, "create table in db config")
+	appFlags.UpgradeTableConfigDB = flag.Bool("upgrade-table-db-config", false, "upgrade table in db config")
+
 	appFlags.PopulateTableConfigDB = flag.Bool("populate-table-db-config", false, "populate table in db config")
 
 	appFlags.CreateHomerUser = flag.Bool("create-homer-user", false, "create homer user")
@@ -188,9 +191,9 @@ func main() {
 	configDBSession := getConfigDBSession()
 	defer configDBSession.Close()
 
-	if *appFlags.CreateTableConfigDB {
+	if *appFlags.CreateTableConfigDB || *appFlags.UpgradeTableConfigDB {
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig)
+		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB)
 		os.Exit(0)
 	} else if *appFlags.PopulateTableConfigDB {
 
@@ -208,7 +211,9 @@ func main() {
 
 	// configure new influx db session
 	influxDBSession := getInfluxDBSession()
-	defer influxDBSession.Close()
+	if influxDBSession.Active {
+		defer influxDBSession.InfluxClient.Close()
+	}
 
 	// configure new influx db session
 	servicePrometheus := getPrometheusDBSession()
@@ -245,7 +250,7 @@ func main() {
 }
 
 func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
-	configDBSession *gorm.DB, influxDBSession client.Client,
+	configDBSession *gorm.DB, influxDBSession service.ServiceInfluxDB,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote,
 	databaseNodeMap []model.DatabasesMap) {
@@ -316,7 +321,7 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 }
 
 func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, configDBSession *gorm.DB,
-	influxDBSession client.Client,
+	influxDBSession service.ServiceInfluxDB,
 	servicePrometheus service.ServicePrometheus,
 	serviceRemote service.ServiceRemote,
 	externalDecoder service.ExternalDecoder,
@@ -508,11 +513,16 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 }
 
 // getInfluxDBSession creates a new influxdb session and panics if connection error occurs
-func getInfluxDBSession() client.Client {
+func getInfluxDBSession() service.ServiceInfluxDB {
 
 	user := viper.GetString("influxdb_config.user")
 	password := viper.GetString("influxdb_config.pass")
 	host := viper.GetString("influxdb_config.host")
+
+	if host == "" {
+		logrus.Println("InfluxDB functions disabled")
+		return service.ServiceInfluxDB{Active: false}
+	}
 
 	urlInflux, err := url.Parse(host)
 	if err != nil {
@@ -532,19 +542,29 @@ func getInfluxDBSession() client.Client {
 		panic("failed to connect influx database")
 	}
 
+	serviceInfluxDB := service.ServiceInfluxDB{
+		InfluxClient: influxClient,
+		Active:       true,
+	}
+
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Influx Database Session created *** ")
 	logrus.Println("----------------------------------- ")
-	return influxClient
+	return serviceInfluxDB
 }
 
-// getInfluxDBSession creates a new influxdb session and panics if connection error occurs
+// getPrometheusDBSession creates a new influxdb session and panics if connection error occurs
 func getPrometheusDBSession() service.ServicePrometheus {
 
+	host := viper.GetString("prometheus_config.host")
 	user := viper.GetString("prometheus_config.user")
 	password := viper.GetString("prometheus_config.pass")
-	host := viper.GetString("prometheus_config.host")
 	api := viper.GetString("prometheus_config.api")
+
+	if host == "" {
+		logrus.Println("Prometheus functions disabled")
+		return service.ServicePrometheus{Active: false}
+	}
 
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
@@ -556,6 +576,7 @@ func getPrometheusDBSession() service.ServicePrometheus {
 		Password:   password,
 		Host:       host,
 		Api:        api,
+		Active:     true,
 	}
 
 	logrus.Println("------------------------------------ ")

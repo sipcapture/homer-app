@@ -36,6 +36,11 @@ type PrometheusController struct {
 //   '400': body:UserLoginFailureResponse
 func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 
+	if !pc.PrometheusService.Active {
+		logrus.Error("Prometheus service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
+	}
+
 	prometheusObject := model.PrometheusObject{}
 
 	if err := c.Bind(&prometheusObject); err != nil {
@@ -69,6 +74,11 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 //   '200': body:ListUsers
 //   '400': body:UserLoginFailureResponse
 func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
+
+	if !pc.PrometheusService.Active {
+		logrus.Error("Prometheus service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
+	}
 
 	prometheusObject := model.PrometheusObject{}
 
@@ -104,6 +114,11 @@ func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 //   '400': body:UserLoginFailureResponse
 func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 
+	if !pc.PrometheusService.Active {
+		logrus.Error("Prometheus service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
+	}
+
 	responseData, err := pc.PrometheusService.PrometheusLabels()
 	if err != nil {
 		logrus.Println(responseData)
@@ -130,6 +145,11 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 //   '200': body:ListLabels
 //   '400': body:UserLoginFailureResponse
 func (pc *PrometheusController) PrometheusLabelData(c echo.Context) error {
+
+	if !pc.PrometheusService.Active {
+		logrus.Error("Prometheus service is not enabled")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
+	}
 
 	label := c.Param("userlabel")
 

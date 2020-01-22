@@ -154,9 +154,14 @@ func ShowUsers(dataRootDBSession *gorm.DB) {
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
-func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string) {
+func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typeAction bool) {
 
-	createString := fmt.Sprintf("\r\nHOMER - creating table for the config DB [dbname=%s]", homerDBconfig)
+	actionString := "creating"
+	if typeAction {
+		actionString = "upgrading"
+	}
+
+	createString := fmt.Sprintf("\r\nHOMER - %s tables for the config DB [dbname=%s]", actionString, homerDBconfig)
 
 	heputils.Colorize(heputils.ColorGreen, createString)
 

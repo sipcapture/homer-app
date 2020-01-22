@@ -247,6 +247,7 @@ func main() {
 
 	// configure to serve WebServices
 	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, databaseNodeMap)
+
 }
 
 func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
@@ -270,6 +271,9 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
+
+	/* hide bunner */
+	e.HideBanner = true
 
 	/* static */
 	rootPath := viper.GetString("http_settings.root")
@@ -313,6 +317,8 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	httpHost := viper.GetString("http_settings.host")
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+
+	heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
 
 	//Doc Swagger for future. For now - external
 	/* e.GET("/swagger/*", echoSwagger.WrapHandler)

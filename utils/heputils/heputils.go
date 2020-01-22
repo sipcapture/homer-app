@@ -17,6 +17,21 @@ const (
 	ColorReset        = "\u001b[0m"
 )
 
+var HomerLogo = `
+         ___              
+        /__/\             
+        \  \:\           
+         \__\:\         _____ _____ 
+     ___ /  /::\       |___  |___  |
+    /__/\  /:/\:\         / /   / / 
+    \  \:\/:/__\/        / /   / /    
+     \  \::/            /_(_) /_/   
+      \  \:\              
+       \  \:\             
+        \__\/             
+
+`
+
 //import  checkFloatValue
 func CheckFloatValue(val interface{}) float64 {
 	if val != nil {

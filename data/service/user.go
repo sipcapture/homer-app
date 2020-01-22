@@ -18,13 +18,20 @@ type UserService struct {
 }
 
 // this method gets all users from database
-func (us *UserService) GetUser() ([]*model.TableUser, int, error) {
+func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUser, int, error) {
+
 	var user []*model.TableUser
-	var count int
-	if err := us.Session.Debug().Table("users").Find(&user).Count(&count).Error; err != nil {
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"username": UserName}
+	}
+
+	if err := us.Session.Debug().Table("users").Where(sqlWhere).Find(&user).Error; err != nil {
 		return user, 0, err
 	}
-	return user, count, nil
+
+	return user, len(user), nil
 }
 
 // this method create new user in the database
@@ -51,15 +58,24 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 
 // this method update user info in the database
 // it doesn't check internally whether all the validation are applied or not
-func (us *UserService) UpdateUser(user *model.TableUser) error {
+func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmin bool) error {
 
 	// get new instance of user data source
 	user.CreatedAt = time.Now()
 	oldRecord := model.TableUser{}
 
-	if us.Session.Where("guid =?", user.GUID).Find(&oldRecord).RecordNotFound() {
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"guid": user.GUID, "username": UserName}
+	} else {
+		sqlWhere = map[string]interface{}{"guid": user.GUID}
+	}
+
+	if us.Session.Where(sqlWhere).Find(&oldRecord).RecordNotFound() {
 		return errors.New(fmt.Sprintf("the user with id '%s' was not found", user.GUID))
 	}
+
 	password := []byte(user.Password)
 	// Hashing the password with the default cost of 10
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
@@ -67,7 +83,7 @@ func (us *UserService) UpdateUser(user *model.TableUser) error {
 		return err
 	}
 	user.Hash = string(hashedPassword)
-	err = us.Session.Debug().Table("users").Model(&model.TableUser{}).Where("guid =?", user.GUID).Update(model.TableUser{UserName: user.UserName,
+	err = us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{UserName: user.UserName,
 		PartId: user.PartId, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName, Department: user.Department, UserGroup: user.UserGroup,
 		Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
 	if err != nil {

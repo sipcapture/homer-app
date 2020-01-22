@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -37,7 +38,9 @@ type UserController struct {
 //   '400': body:UserLoginFailureResponse
 func (uc *UserController) GetUser(c echo.Context) error {
 
-	user, count, err := uc.UserService.GetUser()
+	userName, isAdmin := auth.IsRequestAdmin(c)
+
+	user, count, err := uc.UserService.GetUser(userName, isAdmin)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
 	}
@@ -137,6 +140,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableUser{}
 	u.GUID = c.Param("userGuid")
+	userName, isAdmin := auth.IsRequestAdmin(c)
 
 	if err := c.Bind(&u); err != nil {
 		logrus.Error(err.Error())
@@ -148,7 +152,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// update user info in database
-	if err := uc.UserService.UpdateUser(&u); err != nil {
+	if err := uc.UserService.UpdateUser(&u, userName, isAdmin); err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	response := fmt.Sprintf("{\"data\":\"%s\",\"message\":\"%s\"}", u.GUID, "successfully updated user")

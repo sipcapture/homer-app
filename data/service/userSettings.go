@@ -6,8 +6,10 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Jeffail/gabs/v2"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
 )
 
@@ -37,11 +39,18 @@ func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]by
 	return mappingSchema.CorrelationMapping, nil
 }
 
-func (ss *UserSettingsService) GetAll() (string, error) {
+func (ss *UserSettingsService) GetAll(UserName string, isAdmin bool) (string, error) {
 	var userSettings = []model.TableUserSettings{}
+
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"username": UserName}
+	}
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
+		Where(sqlWhere).
 		Find(&userSettings).Error; err != nil {
 		return "", errors.New("no users settings found")
 	}
@@ -57,4 +66,85 @@ func (ss *UserSettingsService) GetAll() (string, error) {
 	reply.Set(count, "count")
 	reply.Set(vals, "data")
 	return reply.String(), nil
+}
+
+// this method create new userSetting in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *UserSettingsService) Add(userObject *model.TableUserSettings) (string, error) {
+	u1 := uuid.NewV4()
+	userObject.GUID = u1.String()
+	userObject.CreateDate = time.Now()
+	if err := ss.Session.Debug().
+		Table("user_settings").
+		Create(&userObject).Error; err != nil {
+		return "", err
+	}
+	reply := gabs.New()
+	reply.Set(u1.String(), "data")
+	reply.Set("successfully created userObject", "message")
+	return reply.String(), nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *UserSettingsService) Get(userObject *model.TableUserSettings, UserName string, isAdmin bool) (model.TableUserSettings, error) {
+	data := model.TableUserSettings{}
+
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+	} else {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+	}
+
+	if err := ss.Session.Debug().
+		Table("user_settings").
+		Where(sqlWhere).Find(&data).Error; err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *UserSettingsService) Delete(userObject *model.TableUserSettings, UserName string, isAdmin bool) error {
+
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+	} else {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+	}
+
+	if err := ss.Session.Debug().
+		Table("user_settings").
+		Where(sqlWhere).
+		Delete(model.TableUserSettings{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *UserSettingsService) Update(userObject *model.TableUserSettings, UserName string, isAdmin bool) error {
+
+	var sqlWhere = make(map[string]interface{})
+
+	if !isAdmin {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+	} else {
+		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+	}
+
+	if err := ss.Session.Debug().
+		Table("user_settings").
+		Debug().
+		Model(&model.TableUserSettings{}).
+		Where(sqlWhere).Update(userObject).Error; err != nil {
+		return err
+	}
+	return nil
 }

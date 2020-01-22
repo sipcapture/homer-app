@@ -1,16 +1,18 @@
 package auth
 
 import (
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/sirupsen/logrus"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 // jwt token claims which contains info regarding user
 type JwtUserClaim struct {
-	UserName string `json:"username"`
+	UserName  string `json:"username"`
+	UserAdmin bool   `json:"useradmin"`
 	jwt.StandardClaims
 }
 
@@ -19,10 +21,16 @@ func Token(user model.TableUser) (string, error) {
 	tNow := time.Now()
 	tUTC := tNow
 	newTUTC := tUTC.Add(time.Minute * TokenExpiryTime)
+	adminUser := false
+
+	if user.UserGroup != "" && strings.Contains(strings.ToLower(user.UserGroup), "admin") {
+		adminUser = true
+	}
 
 	// Set custom claims
 	claims := &JwtUserClaim{
 		user.UserName,
+		adminUser,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),
 		},

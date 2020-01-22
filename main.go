@@ -319,6 +319,7 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
 
 	heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+	heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
 
 	//Doc Swagger for future. For now - external
 	/* e.GET("/swagger/*", echoSwagger.WrapHandler)
@@ -354,24 +355,30 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	res.Use(auth.MiddlewareRes)
 
 	logrus.Debug(auth.JwtUserClaim{})
-	// route user apis
-	apirouterv1.RouteUserDetailsApis(res, configDBSession)
-	// route search apis
-	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession, externalDecoder)
+
+	/*************** admin access ONLY ***************/
+	// route mapping apis
+	apirouterv1.RouteMappingdApis(res, configDBSession)
 	// route alias apis
 	apirouterv1.RouteAliasApis(res, configDBSession)
-	// route dashboards apis
-	apirouterv1.RouteDashboardApis(res, configDBSession)
-	// route userSettings apis
-	apirouterv1.RouteUserSettingsApis(res, configDBSession)
 	// route advanced apis
 	apirouterv1.RouteAdvancedApis(res, configDBSession)
 	// route hepsub apis
 	apirouterv1.RouteHepsubApis(res, configDBSession)
+
+	/*************** PARTLY admin access ONLY ***************/
+	// route user apis
+	apirouterv1.RouteUserDetailsApis(res, configDBSession)
+	// route userSettings apis
+	apirouterv1.RouteUserSettingsApis(res, configDBSession)
+
+	// route search apis
+	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession, externalDecoder)
+	// route dashboards apis
+	apirouterv1.RouteDashboardApis(res, configDBSession)
+
 	// route profile apis
 	apirouterv1.RouteProfileApis(res, configDBSession, databaseNodeMap)
-	// route mapping apis
-	apirouterv1.RouteMappingdApis(res, configDBSession)
 	// route RouteStatisticApis apis
 	apirouterv1.RouteStatisticApis(res, influxDBSession)
 	// route RouteStatisticApis apis

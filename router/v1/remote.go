@@ -26,4 +26,7 @@ func RouteRemoteApis(acc *echo.Group, serviceRemote service.ServiceRemote) {
 	// create new stats
 	acc.POST("/search/remote/data", src.RemoteData)
 
+	// create agent subscribe
+	acc.POST("/agent/subscribe", src.RemoteData)
+
 }

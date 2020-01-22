@@ -123,7 +123,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		searchTmp := []model.HepTable{}
 
 		/* if node doesnt exists - continue */
-		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+		if !heputils.ElementExists(searchObject.Param.Location.Node, session) {
 			continue
 		}
 
@@ -256,7 +256,7 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 	for session := range ss.Session {
 
 		/* if node doesnt exists - continue */
-		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+		if !heputils.ElementExists(searchObject.Param.Location.Node, session) {
 			continue
 		}
 
@@ -339,7 +339,7 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */
-		if !heputils.NodeExists(searchObject.Param.Location.Node, session) {
+		if !heputils.ElementExists(searchObject.Param.Location.Node, session) {
 			continue
 		}
 
@@ -664,7 +664,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */
-		if !heputils.NodeExists(nodes, session) {
+		if !heputils.ElementExists(nodes, session) {
 			continue
 		}
 
@@ -903,7 +903,7 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 
 		for session := range ss.Session {
 			/* if node doesnt exists - continue */
-			if !heputils.NodeExists(nodes, session) {
+			if !heputils.ElementExists(nodes, session) {
 				continue
 			}
 
@@ -981,7 +981,7 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 	query := "sid in (?) and create_date between ? and ?"
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */
-		if !heputils.NodeExists(nodes, session) {
+		if !heputils.ElementExists(nodes, session) {
 			continue
 		}
 		searchTmp := []model.HepTable{}

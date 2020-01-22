@@ -199,7 +199,7 @@ func checkHomerConfigTables(configDBSession *gorm.DB) map[string]bool {
 	return createTables
 }
 
-func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool) {
+func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool, tablesPopulate []string) {
 
 	createString := fmt.Sprintf("\r\nHOMER - filling tables for the config DB [dbname=%s]", homerDBconfig)
 	usersData := []model.TableUser{
@@ -493,7 +493,13 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	/*********************************************/
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	if val, ok := createTables["users"]; !ok || ok && val || force {
+	//tablesPopulate
+	var forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "users") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["users"]; !ok || ok && val || forceIt {
 		/* User data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling users")
 		configDBSession.Exec("TRUNCATE TABLE users")
@@ -502,7 +508,12 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		}
 	}
 
-	if val, ok := createTables["global_settings"]; !ok || ok && val || force {
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "global_settings") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["global_settings"]; !ok || ok && val || forceIt {
 		/* globalSettingData data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling global_settings")
 		configDBSession.Exec("TRUNCATE TABLE global_settings")
@@ -511,7 +522,12 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		}
 	}
 
-	if val, ok := createTables["agent_location_session"]; !ok || ok && val || force {
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "agent_location_session") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["agent_location_session"]; !ok || ok && val || forceIt {
 		/* agentLocationSession data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling agent_location_session")
 		configDBSession.Exec("TRUNCATE TABLE agent_location_session")
@@ -520,7 +536,12 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		}
 	}
 
-	if val, ok := createTables["hepsub_mapping_schema"]; !ok || ok && val || force {
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "hepsub_mapping_schema") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["hepsub_mapping_schema"]; !ok || ok && val || forceIt {
 		/* hepsubSchema data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling hepsub_mapping_schema")
 		configDBSession.Exec("TRUNCATE TABLE hepsub_mapping_schema")
@@ -529,7 +550,12 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		}
 	}
 
-	if val, ok := createTables["user_settings"]; !ok || ok && val || force {
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "user_settings") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["user_settings"]; !ok || ok && val || forceIt {
 		/* dashboardUsers data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling user_settings")
 		configDBSession.Exec("TRUNCATE TABLE user_settings")
@@ -538,7 +564,12 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		}
 	}
 
-	if val, ok := createTables["mapping_schema"]; !ok || ok && val || force {
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "mapping_schema") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["mapping_schema"]; !ok || ok && val || forceIt {
 		/* mappingSchema data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling mapping_schema")
 		configDBSession.Exec("TRUNCATE TABLE mapping_schema")

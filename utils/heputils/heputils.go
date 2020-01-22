@@ -184,7 +184,7 @@ func ItemExists(arr []string, elem string) bool {
 }
 
 /* check if the element exists */
-func NodeExists(arr []string, elem string) bool {
+func ElementExists(arr []string, elem string) bool {
 
 	if len(arr) == 0 {
 		return true

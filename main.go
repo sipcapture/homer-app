@@ -68,41 +68,53 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
 }
 
-//params for Flags
-type CommandLineFlags struct {
-	CreateConfigDB            *bool   `json:"create_config_db"`
-	CreateDataDB              *bool   `json:"create_data_db"`
-	CreateTableConfigDB       *bool   `json:"create_table_config"`
-	UpgradeTableConfigDB      *bool   `json:"upgrade_table_config"`
-	PopulateTableConfigDB     *bool   `json:"populate_table_config"`
-	CreateHomerUser           *bool   `json:"create_homer_user"`
-	DeleteHomerUser           *bool   `json:"delete_homer_user"`
-	ShowVersion               *bool   `json:"version"`
-	ForcePopulate             *bool   `json:"force_insert"`
-	RevokeHomerRole           *bool   `json:"revoke_homer_role"`
-	CreateHomerRole           *bool   `json:"create_homer_role"`
-	SaveHomerDbConfigToConfig *bool   `json:"save_db_config_to_config"`
-	SaveHomerDbDataToConfig   *bool   `json:"save_db_data_to_config"`
-	ShowDbUsers               *bool   `json:"show_db_users"`
-	ShowHelpMessage           *bool   `json:"help"`
-	DatabaseRootUser          *string `json:"root_user"`
-	DatabaseRootPassword      *string `json:"root_password"`
-	DatabaseHost              *string `json:"root_host"`
-	DatabasePort              *int    `json:"root_port"`
-	DatabaseRootDB            *string `json:"root_db"`
-	DatabaseHomerNode         *string `json:"homer_node"`
-	DatabaseHomerUser         *string `json:"homer_user"`
-	DatabaseHomerPassword     *string `json:"homer_password"`
-	DatabaseHomerConfig       *string `json:"db_homer_config"`
-	DatabaseHomerData         *string `json:"db_homer_data"`
-	PathWebAppConfig          *string `json:"path_webapp"`
-	LogPathWebApp             *string `json:"path_log_webapp"`
-	LogName                   *string `json:"log_name_webapp"`
-}
-
 var appFlags CommandLineFlags
 var ldapClient ldap.LDAPClient
 var authType string
+
+type arrayFlags []string
+
+func (i *arrayFlags) String() string {
+	return "my string representation"
+}
+
+func (i *arrayFlags) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
+
+//params for Flags
+type CommandLineFlags struct {
+	CreateConfigDB            *bool      `json:"create_config_db"`
+	CreateDataDB              *bool      `json:"create_data_db"`
+	CreateTableConfigDB       *bool      `json:"create_table_config"`
+	UpgradeTableConfigDB      *bool      `json:"upgrade_table_config"`
+	PopulateTableConfigDB     *bool      `json:"populate_table_config"`
+	CreateHomerUser           *bool      `json:"create_homer_user"`
+	DeleteHomerUser           *bool      `json:"delete_homer_user"`
+	ShowVersion               *bool      `json:"version"`
+	ForcePopulate             *bool      `json:"force_insert"`
+	TablesPopulate            arrayFlags `json:"force_tables"`
+	RevokeHomerRole           *bool      `json:"revoke_homer_role"`
+	CreateHomerRole           *bool      `json:"create_homer_role"`
+	SaveHomerDbConfigToConfig *bool      `json:"save_db_config_to_config"`
+	SaveHomerDbDataToConfig   *bool      `json:"save_db_data_to_config"`
+	ShowDbUsers               *bool      `json:"show_db_users"`
+	ShowHelpMessage           *bool      `json:"help"`
+	DatabaseRootUser          *string    `json:"root_user"`
+	DatabaseRootPassword      *string    `json:"root_password"`
+	DatabaseHost              *string    `json:"root_host"`
+	DatabasePort              *int       `json:"root_port"`
+	DatabaseRootDB            *string    `json:"root_db"`
+	DatabaseHomerNode         *string    `json:"homer_node"`
+	DatabaseHomerUser         *string    `json:"homer_user"`
+	DatabaseHomerPassword     *string    `json:"homer_password"`
+	DatabaseHomerConfig       *string    `json:"db_homer_config"`
+	DatabaseHomerData         *string    `json:"db_homer_data"`
+	PathWebAppConfig          *string    `json:"path_webapp"`
+	LogPathWebApp             *string    `json:"path_log_webapp"`
+	LogName                   *string    `json:"log_name_webapp"`
+}
 
 /* init flags */
 func initFlags() {
@@ -118,6 +130,9 @@ func initFlags() {
 	appFlags.ShowDbUsers = flag.Bool("show-db-users", false, "show db users")
 
 	appFlags.ForcePopulate = flag.Bool("force-populate", false, "force populate all records to config")
+
+	flag.Var(&appFlags.TablesPopulate, "populate-table", "force to populate only current tables")
+
 	appFlags.ShowVersion = flag.Bool("version", false, "show version")
 
 	appFlags.CreateHomerRole = flag.Bool("create-homer-role", false, "create homer role")
@@ -198,7 +213,7 @@ func main() {
 	} else if *appFlags.PopulateTableConfigDB {
 
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.PopulateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.ForcePopulate)
+		migration.PopulateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
 
 		os.Exit(0)
 	}

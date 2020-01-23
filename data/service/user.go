@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"hash/fnv"
+	"strings"
 	"time"
 
 	"github.com/sipcapture/homer-app/auth"
@@ -129,6 +130,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		userData.Id = int(hashString(username))
 		userData.Password = password
 		userData.FirstName = username
+		userData.IsAdmin = false
 		if val, ok := user["dn"]; ok {
 			userData.UserGroup = val
 		}
@@ -140,6 +142,13 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		if err := bcrypt.CompareHashAndPassword([]byte(userData.Hash), []byte(password)); err != nil {
 			return "", userData, errors.New("password is not correct")
 		}
+
+		/* check admin or not */
+		userData.IsAdmin = false
+		if userData.UserGroup != "" && strings.Contains(strings.ToLower(userData.UserGroup), "admin") {
+			userData.IsAdmin = true
+		}
+
 	}
 
 	token, err := auth.Token(userData)

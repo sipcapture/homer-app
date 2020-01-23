@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -21,16 +20,11 @@ func Token(user model.TableUser) (string, error) {
 	tNow := time.Now()
 	tUTC := tNow
 	newTUTC := tUTC.Add(time.Minute * TokenExpiryTime)
-	adminUser := false
-
-	if user.UserGroup != "" && strings.Contains(strings.ToLower(user.UserGroup), "admin") {
-		adminUser = true
-	}
 
 	// Set custom claims
 	claims := &JwtUserClaim{
 		user.UserName,
-		adminUser,
+		user.IsAdmin,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),
 		},

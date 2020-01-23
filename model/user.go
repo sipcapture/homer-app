@@ -31,7 +31,9 @@ type TableUser struct {
 	// required: true
 	// example: admin
 	UserGroup string `gorm:"column:usergroup;type:varchar(250);not null" json:"usergroup" validate:"required"`
-	Hash      string `gorm:"column:hash;type:varchar(128);not null" json:"-"`
+	IsAdmin   bool   `gorm:"-" json:"-"`
+
+	Hash string `gorm:"column:hash;type:varchar(128);not null" json:"-"`
 	// should be a unique value representing user
 	// example: e71771a2-1ea0-498f-8d27-391713e10664
 	// required: true
@@ -45,6 +47,10 @@ type UserTokenSuccessfulResponse struct {
 	Token string `json:"token"`
 	// the uuid
 	Scope string `json:"scope"`
+	// the uuid
+	User struct {
+		Admin bool `json:"admin"`
+	} `json:"user"`
 }
 
 // swagger:model UserLoginFailureResponse

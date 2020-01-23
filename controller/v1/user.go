@@ -237,6 +237,7 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 	loginObject := model.UserTokenSuccessfulResponse{}
 	loginObject.Token = token
 	loginObject.Scope = userData.GUID
+	loginObject.User.Admin = userData.IsAdmin
 	response, _ := json.Marshal(loginObject)
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }

@@ -19,7 +19,7 @@ type TableUser struct {
 	// required: true
 	Email string `gorm:"column:email;type:varchar(250);not null" json:"email" validate:"required,email"`
 	// required: true
-	Password string `gorm:"-" json:"password" validate:"required"`
+	Password string `gorm:"-" json:"password"`
 	// required: true
 
 	FirstName string `gorm:"column:firstname;type:varchar(50);not null" json:"firstname" validate:"required"`

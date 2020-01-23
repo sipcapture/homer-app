@@ -43,6 +43,10 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 	// lets generate hash from password
 	password := []byte(user.Password)
 
+	if user.Password != "" {
+		return errors.New("empty password")
+	}
+
 	// Hashing the password with the default cost of 10
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	if err != nil {
@@ -77,20 +81,24 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 		return errors.New(fmt.Sprintf("the user with id '%s' was not found", user.GUID))
 	}
 
-	password := []byte(user.Password)
-	// Hashing the password with the default cost of 10
-	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-	if err != nil {
-		return err
+	if user.Password != "" {
+		password := []byte(user.Password)
+		// Hashing the password with the default cost of 10
+		hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		user.Hash = string(hashedPassword)
+		err = us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{UserName: user.UserName,
+			PartId: user.PartId, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName, Department: user.Department, UserGroup: user.UserGroup,
+			Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
+		if err != nil {
+			return err
+		}
 	}
-	user.Hash = string(hashedPassword)
-	err = us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{UserName: user.UserName,
-		PartId: user.PartId, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName, Department: user.Department, UserGroup: user.UserGroup,
-		Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
-	if err != nil {
-		return err
-	}
+
 	return nil
+
 }
 
 // this method deletes user in the database

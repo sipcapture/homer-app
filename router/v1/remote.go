@@ -7,7 +7,7 @@ import (
 )
 
 // RouteStatisticApis : here you tell us what RouteStatisticApis is
-func RouteRemoteApis(acc *echo.Group, serviceRemote service.ServiceRemote) {
+func RouteLokiApis(acc *echo.Group, serviceRemote service.ServiceRemote) {
 
 	// initialize service of user
 	remoteService := service.RemoteService{ServiceRemote: serviceRemote}
@@ -25,8 +25,5 @@ func RouteRemoteApis(acc *echo.Group, serviceRemote service.ServiceRemote) {
 
 	// create new stats
 	acc.POST("/search/remote/data", src.RemoteData)
-
-	// create agent subscribe
-	acc.POST("/agent/subscribe", src.RemoteData)
 
 }

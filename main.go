@@ -398,8 +398,9 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	apirouterv1.RouteStatisticApis(res, influxDBSession)
 	// route RouteStatisticApis apis
 	apirouterv1.RoutePrometheusApis(res, servicePrometheus)
-	// route RouteRemoteApis apis
-	apirouterv1.RouteRemoteApis(res, serviceRemote)
+	// route RouteLokiApis apis
+	apirouterv1.RouteLokiApis(res, serviceRemote)
+
 }
 
 // getSession creates a new mongo session and panics if connection error occurs

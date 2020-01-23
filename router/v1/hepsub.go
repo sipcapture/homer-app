@@ -23,12 +23,4 @@ func RouteHepsubApis(acc *echo.Group, session *gorm.DB) {
 	acc.POST("/hepsub/protocol", hs.AddHepSub, auth.IsAdmin)
 	acc.PUT("/hepsub/protocol/:guid", hs.UpdateHepSubAgainstGUID, auth.IsAdmin)
 	acc.DELETE("/hepsub/protocol/:guid", hs.DeleteHepSubAgainstGUID, auth.IsAdmin)
-
-	// create agent subscribe
-	/************************************/
-	acc.GET("/agent/subscribe", hs.GetAgentSub)
-	acc.GET("/agent/subscribe/:guid", hs.GetAgentSub)
-	acc.POST("/agent/subscribe", hs.GetAgentSub)
-	acc.POST("/agent/subscribe/:guid", hs.GetAgentSub)
-
 }

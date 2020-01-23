@@ -380,12 +380,19 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 	apirouterv1.RouteAdvancedApis(res, configDBSession)
 	// route hepsub apis
 	apirouterv1.RouteHepsubApis(res, configDBSession)
+	// route make auth token
+	apirouterv1.RouteAuthTokenApis(res, configDBSession)
 
 	/*************** PARTLY admin access ONLY ***************/
 	// route user apis
 	apirouterv1.RouteUserDetailsApis(res, configDBSession)
 	// route userSettings apis
 	apirouterv1.RouteUserSettingsApis(res, configDBSession)
+	// route agent sub apis
+	apirouterv1.RouteAgentsubApis(res, configDBSession)
+
+	// route hep sub search apis
+	apirouterv1.RouteHepSubSearch(res, configDBSession)
 
 	// route search apis
 	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession, externalDecoder)

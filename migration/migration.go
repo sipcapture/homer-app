@@ -173,7 +173,8 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typ
 		&model.TableUser{},
 		&model.TableAgentLocationSession{},
 		&model.TableVersions{},
-		&model.TableApplications{})
+		&model.TableApplications{},
+		&model.TableAuthToken{})
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
@@ -226,6 +227,22 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			UserGroup:  "admin",
 			Hash:       string(jsonschema.DefaultSupportPassword),
 			GUID:       uuid.NewV4().String(),
+		},
+	}
+
+	authTokens := []model.TableAuthToken{
+		model.TableAuthToken{
+			ID:            1,
+			GUID:          uuid.NewV4().String(),
+			UserGUID:      uuid.NewV4().String(),
+			Token:         heputils.GenerateToken(),
+			UserObject:    jsonschema.AgentObjectforAuthToken,
+			LastUsageDate: time.Now(),
+			CreateDate:    time.Now(),
+			ExpireDate:    time.Now(),
+			UsageCalls:    0,
+			LimitCalls:    1000,
+			Active:        0,
 		},
 	}
 
@@ -491,6 +508,25 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		tableVersions = append(tableVersions, model.TableVersions{
 			NameTable:    "global_settings",
 			VersionTable: jsonschema.TableVersion["global_settings"],
+		})
+	}
+
+	forceIt = force
+	if !heputils.ElementExists(tablesPopulate, "auth_token") {
+		forceIt = false
+	}
+
+	if val, ok := createTables["auth_token"]; !ok || ok && val || forceIt {
+		/* authTokens data */
+		heputils.Colorize(heputils.ColorRed, "reinstalling auth_token")
+		configDBSession.Exec("TRUNCATE TABLE auth_token")
+		for _, el := range authTokens {
+			configDBSession.Save(&el)
+		}
+
+		tableVersions = append(tableVersions, model.TableVersions{
+			NameTable:    "auth_token",
+			VersionTable: jsonschema.TableVersion["auth_token"],
 		})
 	}
 

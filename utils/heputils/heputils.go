@@ -2,9 +2,11 @@ package heputils
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Color string
@@ -32,6 +34,8 @@ var HomerLogo = `
         \__\/         
 
 `
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 //import  checkFloatValue
 func CheckFloatValue(val interface{}) float64 {
@@ -196,4 +200,14 @@ func ElementExists(arr []string, elem string) bool {
 		}
 	}
 	return false
+}
+
+func GenerateToken() string {
+
+	rand.Seed(time.Now().UnixNano())
+	b := make([]rune, 80)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

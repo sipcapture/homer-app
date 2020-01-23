@@ -9,6 +9,7 @@ import (
 // this is version
 var TableVersion = map[string]int{
 	"versions":               1,
+	"auth_token":             1,
 	"applications":           1,
 	"agent_location_session": 1,
 	"alias":                  1,
@@ -38,6 +39,16 @@ var GrafanaConfig = json.RawMessage(`{"host": "http://grafana:3000","user": "adm
 var PrometheusConfig = json.RawMessage(`{"host":"http://prometheus:9090/api/v1/"}`)
 
 var LokiConfig = json.RawMessage(`{"host":"http://loki:3100"}`)
+
+var AgentObjectforAuthToken = json.RawMessage(`{
+   "username": "test",
+   "firstname": "Tester",
+   "lastname": "Tester",
+   "email": "tester@test.com",
+   "usergroup": "user",
+   "id": 1000,
+   "partid": 10
+  }`)
 
 var FieldsMapping1call = json.RawMessage(`[
 	{

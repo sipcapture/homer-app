@@ -87,6 +87,22 @@ The application is able to initialize its database and tables it requires with t
 ./homer-app -populate-table-db-config 
 ```
 
+###### Upgrade / Migration - connection data will be read from `webapp_config.json`
+```
+./homer-app -upgrade-table-db-config 
+```
+###### Re- Populate Config DB 
+```
+./homer-app -populate-table-db-config -force-populate
+```
+
+###### Re- Populate Config DB for specific table/tables 
+```
+./homer-app -populate-table-db-config -force-populate -populate-table=mapping_schema -populate-table=user_settings
+```
+
+
+
 ------------
 <!--
 #### Usage ENV

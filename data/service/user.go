@@ -40,12 +40,13 @@ func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUse
 func (us *UserService) CreateNewUser(user *model.TableUser) error {
 
 	user.CreatedAt = time.Now()
-	// lets generate hash from password
-	password := []byte(user.Password)
 
-	if user.Password != "" {
+	if user.Password == "" {
 		return errors.New("empty password")
 	}
+
+	// lets generate hash from password
+	password := []byte(user.Password)
 
 	// Hashing the password with the default cost of 10
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)

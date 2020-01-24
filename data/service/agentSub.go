@@ -93,7 +93,7 @@ func (hs *AgentsubService) UpdateAgentsubAgainstGUID(guid string, data model.Tab
 func (hs *AgentsubService) DeleteAgentsubAgainstGUID(guid string) (string, error) {
 	var AgentsubObject []model.TableAgentLocationSession
 	if err := hs.Session.Debug().Table("agent_location_session").
-		Where("guid = ?", guid).
+		Where("guid = ? OR expire_date < NOW()", guid).
 		Delete(&AgentsubObject).Error; err != nil {
 		logrus.Println(err.Error())
 		return "", err

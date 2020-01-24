@@ -483,6 +483,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	//tablesPopulate
 	var forceIt = force
+	var lenTable = len(tablesPopulate)
 	if !heputils.ElementExists(tablesPopulate, "users") {
 		forceIt = false
 	}
@@ -490,7 +491,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	if val, ok := createTables["users"]; !ok || ok && val || forceIt {
 
 		/* User data */
-		if heputils.YesNo("users") {
+		if lenTable == 0 || heputils.YesNo("users") {
 
 			heputils.Colorize(heputils.ColorRed, "reinstalling users")
 			configDBSession.Exec("TRUNCATE TABLE users")
@@ -512,7 +513,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	if val, ok := createTables["global_settings"]; !ok || ok && val || forceIt {
 
 		/* globalSettingData data */
-		if heputils.YesNo("global_settings") {
+		if lenTable == 0 || heputils.YesNo("global_settings") {
 
 			heputils.Colorize(heputils.ColorRed, "reinstalling global_settings")
 			configDBSession.Exec("TRUNCATE TABLE global_settings")
@@ -535,7 +536,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	if val, ok := createTables["auth_token"]; !ok || ok && val || forceIt {
 
 		/* authTokens data */
-		if heputils.YesNo("auth_token") {
+		if lenTable == 0 || heputils.YesNo("auth_token") {
 
 			heputils.Colorize(heputils.ColorRed, "reinstalling auth_token")
 			configDBSession.Exec("TRUNCATE TABLE auth_token")
@@ -557,7 +558,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	if val, ok := createTables["agent_location_session"]; !ok || ok && val || forceIt {
 		/* agentLocationSession data */
-		if heputils.YesNo("agent_location_session") {
+		if lenTable == 0 || heputils.YesNo("agent_location_session") {
 			heputils.Colorize(heputils.ColorRed, "reinstalling agent_location_session")
 			configDBSession.Exec("TRUNCATE TABLE agent_location_session")
 			for _, el := range agentLocationSession {
@@ -577,7 +578,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	if val, ok := createTables["hepsub_mapping_schema"]; !ok || ok && val || forceIt {
 		/* hepsubSchema data */
-		if heputils.YesNo("hepsub_mapping_schema") {
+		if lenTable == 0 || heputils.YesNo("hepsub_mapping_schema") {
 			heputils.Colorize(heputils.ColorRed, "reinstalling hepsub_mapping_schema")
 			configDBSession.Exec("TRUNCATE TABLE hepsub_mapping_schema")
 			for _, el := range hepsubSchema {
@@ -599,7 +600,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	if val, ok := createTables["user_settings"]; !ok || ok && val || forceIt {
 
 		/* dashboardUsers data */
-		if heputils.YesNo("user_settings") {
+		if lenTable == 0 || heputils.YesNo("user_settings") {
 			heputils.Colorize(heputils.ColorRed, "reinstalling user_settings")
 			configDBSession.Exec("TRUNCATE TABLE user_settings")
 			for _, el := range dashboardUsers {
@@ -620,7 +621,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	if val, ok := createTables["mapping_schema"]; !ok || ok && val || forceIt {
 		/* mappingSchema data */
-		if heputils.YesNo("mapping_schema") {
+		if lenTable == 0 || heputils.YesNo("mapping_schema") {
 
 			heputils.Colorize(heputils.ColorRed, "reinstalling mapping_schema")
 			configDBSession.Exec("TRUNCATE TABLE mapping_schema")

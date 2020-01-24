@@ -2,11 +2,14 @@ package heputils
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/manifoldco/promptui"
 )
 
 type Color string
@@ -70,6 +73,19 @@ func CheckIntValue(val interface{}) int {
 		}
 	}
 	return int(0)
+}
+
+//import YesNo
+func YesNo(table string) bool {
+	prompt := promptui.Select{
+		Label: "Force to populate table [" + table + "]  [Yes/No]",
+		Items: []string{"Yes", "No"},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		log.Fatalf("Prompt failed %v\n", err)
+	}
+	return result == "Yes"
 }
 
 /* colorize message */

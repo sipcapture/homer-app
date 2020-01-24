@@ -212,7 +212,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	reply := gabs.New()
 	reply.Set(total, "total")
 	reply.Set(dataReply.Data(), "data")
-	//reply.Set(dataKeys.Data(), "keys")
+	reply.Set(dataKeys.Data(), "keys")
 
 	return reply.String(), nil
 }

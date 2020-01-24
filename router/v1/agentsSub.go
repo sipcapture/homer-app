@@ -19,8 +19,19 @@ func RouteAgentsubApis(acc *echo.Group, session *gorm.DB) {
 	/************************************/
 	acc.GET("/agent/subscribe", ass.GetAgentsub)
 	acc.GET("/agent/subscribe/:guid", ass.GetAgentsubAgainstGUID)
+	acc.DELETE("/agent/subscribe/:guid", ass.DeleteAgentsubAgainstGUID)
 
-	acc.POST("/agent/subscribe", ass.AddAgentsub)
-	acc.POST("/agent/subscribe/:guid", ass.UpdateAgentsubAgainstGUID)
+}
 
+func RouteAgentsubAuthKeyApis(acc *echo.Group, session *gorm.DB) {
+	// initialize service of user
+	AgentsubService := service.AgentsubService{ServiceConfig: service.ServiceConfig{Session: session}}
+	// initialize user controller
+	ass := controllerv1.AgentsubController{
+		AgentsubService: &AgentsubService,
+	}
+
+	// create agent subscribe
+	/************************************/
+	acc.POST("/agent/subscribe", ass.AddAgentsubWithKey)
 }

@@ -15,6 +15,7 @@ type TableAuthToken struct {
 	UserGUID      string          `gorm:"column:creator_guid;type:uuid" json:"creator_guid"`
 	Token         string          `gorm:"column:token;type:varchar(250)" json:"-"`
 	UserObject    json.RawMessage `gorm:"column:user_object;type:json" json:"user_object"`
+	IPAddress     string          `gorm:"column:ip_address;type:inet" json:"ip_address"`
 	CreateDate    time.Time       `gorm:"column:create_date;default:current_timestamp;not null" json:"create_date"`
 	LastUsageDate time.Time       `gorm:"column:lastusage_date;not null" json:"lastusage_date"`
 	ExpireDate    time.Time       `gorm:"column:expire_date;not null" json:"expire_date"`

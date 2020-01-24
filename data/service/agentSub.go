@@ -35,6 +35,24 @@ func (hs *AgentsubService) GetAgentsubAgainstGUID(guid string) (string, error) {
 }
 
 // this method gets all users from database
+func (hs *AgentsubService) GetAuthKeyByHeaderToken(token string) (string, error) {
+	var tokenObject []model.TableAuthToken
+	var count int
+	if err := hs.Session.Debug().Table("auth_token").
+		Where("expire_date > NOW() AND active = 1 AND token = ? ", token).
+		Find(&tokenObject).Count(&count).Error; err != nil {
+		return "", err
+	}
+	if len(tokenObject) == 0 {
+		return "", fmt.Errorf("no auth_token found or it has been expired: [%s]", token)
+	}
+
+	data, _ := json.Marshal(tokenObject)
+	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
+	return response, nil
+}
+
+// this method gets all users from database
 func (hs *AgentsubService) GetAgentsub() (string, error) {
 	var AgentsubObject []model.TableAgentLocationSession
 	var count int

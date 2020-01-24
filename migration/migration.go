@@ -237,6 +237,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			UserGUID:      uuid.NewV4().String(),
 			Token:         heputils.GenerateToken(),
 			UserObject:    jsonschema.AgentObjectforAuthToken,
+			IPAddress:     "0.0.0.0/0",
 			LastUsageDate: time.Now(),
 			CreateDate:    time.Now(),
 			ExpireDate:    time.Now(),

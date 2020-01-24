@@ -3,9 +3,10 @@ package controllerv1
 import (
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
+	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -95,22 +96,39 @@ func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 // responses:
 //   '201': body:UserCreateSuccessfulResponse
 //   '400': body:UserCreateSuccessfulResponse
-func (ass *AgentsubController) AddAgentsub(c echo.Context) error {
+func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	// Stub an user to be populated from the body
-	u := model.TableAgentLocationSession{}
-	err := c.Bind(&u)
+	agentSub := model.TableAgentLocationSession{}
+	err := c.Bind(&agentSub)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// validate input request body
-	if err := c.Validate(u); err != nil {
+	if err := c.Validate(agentSub); err != nil {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	uid := uuid.NewV4()
-	u.GUID = uid.String()
-	reply, err := ass.AgentsubService.AddAgentsub(u)
+	authToken := c.Request().Header.Get(auth.TokenHeader)
+	if authToken == "" {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Auth-Token header not present or has empty value")
+	}
+
+	reply, err := ass.AgentsubService.GetAuthKeyByHeaderToken(authToken)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
+	reply, err = ass.AgentsubService.DeleteAgentsubAgainstGUID(agentSub.GUID)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
+	agentSub.CreateDate = time.Now()
+	agentSub.ExpireDate = time.Now().Add(time.Duration(agentSub.TTL) * time.Second)
+	agentSub.Active = 1
+
+	reply, err = ass.AgentsubService.AddAgentsub(agentSub)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}

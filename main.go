@@ -364,6 +364,9 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 		apirouterv1.RouteUserApis(acc, configDBSession, nil)
 	}
 
+	//subscribe access with authKey
+	apirouterv1.RouteAgentsubAuthKeyApis(acc, configDBSession)
+
 	// restricted web services will fall in this group
 	res := e.Group("/api/v3")
 	// Configure middleware with the custom claims type

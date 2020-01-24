@@ -74,7 +74,7 @@ func (hs *AgentsubService) AddAgentsub(data model.TableAgentLocationSession) (st
 		Create(&data).Error; err != nil {
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully created Agentsub settings\",\"data\":\"%s\"}", data.GUID)
+	response := fmt.Sprintf("{\"message\":\"successfully created agent record\",\"data\":\"%s\"}", data.GUID)
 	return response, nil
 }
 
@@ -85,7 +85,7 @@ func (hs *AgentsubService) UpdateAgentsubAgainstGUID(guid string, data model.Tab
 		Update(&data).Error; err != nil {
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully updated Agentsub settings\",\"data\":\"%s\"}", guid)
+	response := fmt.Sprintf("{\"message\":\"successfully updated agent record\",\"data\":\"%s\"}", guid)
 	return response, nil
 }
 
@@ -98,6 +98,6 @@ func (hs *AgentsubService) DeleteAgentsubAgainstGUID(guid string) (string, error
 		logrus.Println(err.Error())
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully deleted Agentsub settings\",\"data\":\"%s\"}", guid)
+	response := fmt.Sprintf("{\"message\":\"successfully deleted agent record\",\"data\":\"%s\"}", guid)
 	return response, nil
 }

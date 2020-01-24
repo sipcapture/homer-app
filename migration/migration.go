@@ -268,6 +268,13 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Param:    "grafana",
 			Data:     jsonschema.GrafanaConfig,
 		},
+		model.TableGlobalSettings{
+			GUID:     uuid.NewV4().String(),
+			PartId:   1,
+			Category: "export",
+			Param:    "transaction",
+			Data:     jsonschema.ExportConfig,
+		},
 	}
 
 	agentLocationSession := []model.TableAgentLocationSession{

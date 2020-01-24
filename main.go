@@ -257,6 +257,12 @@ func main() {
 		defer ldapClient.Close()
 	}
 
+	/* apply token expire - default 1200 */
+	authTokenExpire := viper.GetInt("auth_settings.token_expire")
+	if authTokenExpire > 0 {
+		auth.TokenExpiryTime = authTokenExpire
+	}
+
 	// update version
 	updateVersionApplication(configDBSession)
 

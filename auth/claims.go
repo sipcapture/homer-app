@@ -19,7 +19,8 @@ func Token(user model.TableUser) (string, error) {
 
 	tNow := time.Now()
 	tUTC := tNow
-	newTUTC := tUTC.Add(time.Minute * TokenExpiryTime)
+
+	newTUTC := tUTC.Add(time.Duration(TokenExpiryTime) * time.Minute)
 
 	// Set custom claims
 	claims := &JwtUserClaim{

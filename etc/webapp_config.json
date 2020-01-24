@@ -58,7 +58,8 @@
   },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",
-    "type": "internal"
+    "type": "internal",
+    "token_expire": 1200
   },
   "ldap_config": {
     "Base":  "dc=example,dc=com",

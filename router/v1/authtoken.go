@@ -22,7 +22,7 @@ func RouteAuthTokenApis(acc *echo.Group, session *gorm.DB) {
 	acc.GET("/token/auth/:guid", ats.GetAuthtokenAgainstGUID, auth.IsAdmin)
 
 	acc.POST("/token/auth", ats.AddAuthtoken, auth.IsAdmin)
-	acc.POST("/token/auth/:guid", ats.UpdateAuthtokenAgainstGUID, auth.IsAdmin)
+	acc.PUT("/token/auth/:guid", ats.UpdateAuthtokenAgainstGUID, auth.IsAdmin)
 
 	acc.DELETE("/token/auth/:guid", ats.DeleteAuthtokenAgainstGUID, auth.IsAdmin)
 

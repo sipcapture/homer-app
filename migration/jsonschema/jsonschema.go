@@ -40,6 +40,8 @@ var PrometheusConfig = json.RawMessage(`{"host":"http://prometheus:9090/api/v1/"
 
 var LokiConfig = json.RawMessage(`{"host":"http://loki:3100"}`)
 
+var ExportConfig = json.RawMessage(`{"openwindow": false,"tabpositon": "flow"}`)
+
 var AgentObjectforAuthToken = json.RawMessage(`{
    "username": "test",
    "firstname": "Tester",

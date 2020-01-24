@@ -11,7 +11,6 @@ func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		user := c.Get("user").(*jwt.Token)
-
 		claims := user.Claims.(*JwtUserClaim)
 		logrus.Println("Claims")
 		logrus.Print(claims)

@@ -6,6 +6,8 @@ This repository hosts `homer-app`, the the GO webapplication for the HEP/HOMER 7
 
 ### Instructions
 
+If you want to install [Homer](https://github.com/sipcapture/homer) please refer to the project [readme](https://github.com/sipcapture/homer)
+
 If you're just interested in using `homer-app`, download, configure and run the latest release or package.
 
 #### Requirements

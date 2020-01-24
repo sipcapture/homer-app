@@ -70,7 +70,7 @@ func (hs *AgentsubService) GetAgentsub() (string, error) {
 
 // this method gets all users from database
 func (hs *AgentsubService) AddAgentsub(data model.TableAgentLocationSession) (string, error) {
-	if err := hs.Session.Debug().Table("Agentsub_mapping_schema").
+	if err := hs.Session.Debug().Table("agent_location_session").
 		Create(&data).Error; err != nil {
 		return "", err
 	}
@@ -80,7 +80,7 @@ func (hs *AgentsubService) AddAgentsub(data model.TableAgentLocationSession) (st
 
 // this method gets all users from database
 func (hs *AgentsubService) UpdateAgentsubAgainstGUID(guid string, data model.TableAgentLocationSession) (string, error) {
-	if err := hs.Session.Debug().Table("Agentsub_mapping_schema").
+	if err := hs.Session.Debug().Table("agent_location_session").
 		Where("guid = ?", guid).
 		Update(&data).Error; err != nil {
 		return "", err
@@ -92,7 +92,7 @@ func (hs *AgentsubService) UpdateAgentsubAgainstGUID(guid string, data model.Tab
 // this method gets all users from database
 func (hs *AgentsubService) DeleteAgentsubAgainstGUID(guid string) (string, error) {
 	var AgentsubObject []model.TableAgentLocationSession
-	if err := hs.Session.Debug().Table("Agentsub_mapping_schema").
+	if err := hs.Session.Debug().Table("agent_location_session").
 		Where("guid = ?", guid).
 		Delete(&AgentsubObject).Error; err != nil {
 		logrus.Println(err.Error())

@@ -108,7 +108,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 						} else if mapData["type"].(string) == "integer" {
 							sql = sql + " and " + fmt.Sprintf("%s = %d", mapData["name"], heputils.CheckIntValue(mapData["value"]))
 						} else {
-							sql = sql + " and " + fmt.Sprintf("%s = '%s'", mapData["name"], heputils.Sanitize(mapData["value"].(string)))
+							var valueArray []string
+							if strings.Contains(mapData["value"].(string), ";") {
+								valueArray = strings.Split(mapData["value"].(string), ";")
+							} else {
+								valueArray = []string{mapData["value"].(string)}
+							}
+							valueArray = heputils.SanitizeTextArray(valueArray)
+							sql = sql + " and " + fmt.Sprintf("%s IN ('%s')", mapData["name"], strings.Join(valueArray[:], "','"))
 						}
 
 					}

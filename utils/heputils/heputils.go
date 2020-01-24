@@ -85,6 +85,24 @@ func Sanitize(text string) string {
 	).Replace(text)
 }
 
+func SanitizeTextArray(valArray []string) []string {
+
+	for key, val := range valArray {
+		valArray[key] = Sanitize(val)
+	}
+
+	return valArray
+}
+
+func SanitizeIntArray(valArray []string) []int {
+
+	var intArray = []int{}
+	for key, val := range valArray {
+		intArray[key] = CheckIntValue(val)
+	}
+	return intArray
+}
+
 //import  convertPayloadTypeToString
 func ConvertPayloadTypeToString(val float64) (string, string) {
 

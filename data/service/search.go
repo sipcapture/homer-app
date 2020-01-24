@@ -93,11 +93,20 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 						if mapData["type"].(string) == "integer" {
 							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %d", elemArray[0], elemArray[1], heputils.CheckIntValue(mapData["value"]))
 						} else {
-							eqValue := "="
 							if strings.Contains(mapData["value"].(string), "%") {
-								eqValue = "LIKE"
+								sql = sql + " and " + fmt.Sprintf("%s->>'%s' LIKE '%s'", elemArray[0], elemArray[1], heputils.Sanitize(mapData["value"].(string)))
+							} else {
+								var valueArray []string
+								if strings.Contains(mapData["value"].(string), ";") {
+									valueArray = strings.Split(mapData["value"].(string), ";")
+								} else {
+									valueArray = []string{mapData["value"].(string)}
+								}
+
+								valueArray = heputils.SanitizeTextArray(valueArray)
+								sql = sql + " and " + fmt.Sprintf("%s->>'%s' IN ('%s')", elemArray[0], elemArray[1], strings.Join(valueArray[:], "','"))
+								//sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(mapData["value"].(string)))
 							}
-							sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(mapData["value"].(string)))
 						}
 					} else if strings.Contains(mapData["value"].(string), "%") {
 						sql = sql + " and " + mapData["name"].(string) + " like '" + heputils.Sanitize(mapData["value"].(string)) + "'"

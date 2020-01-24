@@ -18,5 +18,6 @@ func RouteAdvancedApis(acc *echo.Group, configSession *gorm.DB) {
 	acc.GET("/advanced", ac.GetAll)
 	acc.GET("/advanced/:guid", ac.GetAdvancedAgainstGUID)
 	acc.POST("/advanced", ac.AddAdvanced, auth.IsAdmin)
+	acc.PUT("/advanced/:guid", ac.UpdateAdvancedAgainstGUID, auth.IsAdmin)
 	acc.DELETE("/advanced/:guid", ac.DeleteAdvancedAgainstGUID, auth.IsAdmin)
 }

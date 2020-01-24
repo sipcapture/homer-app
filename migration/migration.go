@@ -240,7 +240,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			IPAddress:     "0.0.0.0/0",
 			LastUsageDate: time.Now(),
 			CreateDate:    time.Now(),
-			ExpireDate:    time.Now(),
+			ExpireDate:    time.Now().Add(time.Duration(720) * time.Hour),
 			UsageCalls:    0,
 			LimitCalls:    1000,
 			Active:        0,

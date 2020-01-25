@@ -6,6 +6,7 @@ import (
 
 	"sort"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sirupsen/logrus"
 )
@@ -74,8 +75,14 @@ func (hs *AgentsubService) AddAgentsub(data model.TableAgentLocationSession) (st
 		Create(&data).Error; err != nil {
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully created agent record\",\"data\":\"%s\"}", data.GUID)
-	return response, nil
+
+	sidData := gabs.New()
+	sidData.Set(data.ExpireDate, "expire_date")
+	sidData.Set(data.GUID, "uuid")
+	reply := gabs.New()
+	reply.Set("successfully created agent record", "message")
+	reply.Set(sidData.Data(), "data")
+	return reply.String(), nil
 }
 
 // this method gets all users from database

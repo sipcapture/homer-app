@@ -78,6 +78,7 @@ func (hs *AgentsubService) AddAgentsub(data model.TableAgentLocationSession) (st
 
 	sidData := gabs.New()
 	sidData.Set(data.ExpireDate, "expire_date")
+	sidData.Set(data.ExpireDate.Unix(), "expire_ts")
 	sidData.Set(data.GUID, "uuid")
 	reply := gabs.New()
 	reply.Set("successfully created agent record", "message")

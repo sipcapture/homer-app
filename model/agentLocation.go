@@ -10,7 +10,7 @@ func (TableAgentLocationSession) TableName() string {
 
 type TableAgentLocationSession struct {
 	ID         int       `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
-	GUID       string    `gorm:"column:guid;type:uuid" json:"uuid" validate:"required"`
+	GUID       string    `gorm:"column:guid;type:uuid" json:"guid" validate:"required"`
 	Gid        int       `gorm:"column:gid;type:int" json:"gid" validate:"required"`
 	Host       string    `gorm:"column:host;type:varchar(250);default:'127.0.0.1'" json:"host" validate:"required"`
 	Port       int       `gorm:"column:port;type:int;default:8080" json:"port"`

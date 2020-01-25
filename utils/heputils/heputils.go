@@ -24,18 +24,20 @@ const (
 )
 
 var HomerLogo = `
-         ___              
-        /__/\             
-        \  \:\           
-         \__\:\  
-     ___ /  /::\     
-    /__/\  /:/\:\     _____ _____    
-    \  \:\/:/__\/    |___  |___  |   
-     \  \::/            / /   / / 
-      \  \:\           / /   / /          
-       \  \:\         /_(_) /_/               
-        \__\/         
 
+        ,;;;;;,       HOMER-APP Server (http://sipcapture.org)
+       ;;;;;;;;;.     (c) 2020 QXIP BV, released under AGPLv3
+     ;;;;;;;;;;;;;
+    ;;;;  ;;;  ;;;;   <--------------- INVITE ---------------
+    ;;;;  ;;;  ;;;;    --------------- 200 OK --------------->
+    ;;;;  ...  ;;;;   <--------------- MEDIA ---------------->
+    ;;;;       ;;;;
+    ;;;;  ;;;  ;;;;   The AGPL source code is avialable at:
+    ,;;;  ;;;  ;;;;   https://github.com/sipcapture/homer-app
+     ;;;;;;;;;;;;;
+      :;;;;;;;;;;     THIS PROGRAM IS PROVIDED AS-IS, USE AT
+       ^;;;;;;;^      YOUR *OWN* RISK, REVIEW LICENSE & DOCS
+                                        
 `
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")

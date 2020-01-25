@@ -29,6 +29,7 @@ license: "AGPLv3"
 bindir: "/usr/local/bin"
 files:
   /tmp/pkg/homer-app: "/usr/local/bin/homer-app"
+  /tmp/pkg/log/.keepme: "/usr/local/homer/log/.keepme"
   /tmp/pkg/dist/**/*: "/usr/local/homer/dist"
 config_files:
   /tmp/pkg/etc/webapp_config.json: "/usr/local/homer/etc/webapp_config.json"

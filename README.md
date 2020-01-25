@@ -55,20 +55,20 @@ NOTE: The default location for settings and provisioning files is `/usr/local/ho
 The application is able to initialize its database and tables it requires with the following commands:
 ###### Create User
 ```
-./homer-app -create-homer-user -database-root=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -create-homer-user -database-root-user=postgres -database-host=localhost -database-root-password=postgres
 ```
 ###### Show User
 ```
-./homer-app -show-db-users -database-root=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -show-db-users -database-root-user=postgres -database-host=localhost -database-root-password=postgres
 ```
 ###### Create Homer DBs
 ```
-./homer-app -create-config-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
-./homer-app -create-data-db -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-config-db -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-data-db -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
 ```
 ###### Create User permissions
 ```
-./homer-app -create-homer-role -database-root=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
+./homer-app -create-homer-role -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
 ```
 
 <!--

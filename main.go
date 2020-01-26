@@ -208,7 +208,7 @@ func main() {
 
 	if *appFlags.CreateTableConfigDB || *appFlags.UpgradeTableConfigDB {
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB)
+		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
 		os.Exit(0)
 	} else if *appFlags.PopulateTableConfigDB {
 
@@ -261,6 +261,11 @@ func main() {
 	authTokenExpire := viper.GetInt("auth_settings.token_expire")
 	if authTokenExpire > 0 {
 		auth.TokenExpiryTime = authTokenExpire
+	}
+
+	/* force to upgrade */
+	if nameHomerConfig := viper.GetString("database_config.name"); nameHomerConfig != "" {
+		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, true, false)
 	}
 
 	// update version

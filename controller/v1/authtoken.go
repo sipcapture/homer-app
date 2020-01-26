@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/data/service"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
@@ -109,9 +110,17 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	u.Token = heputils.GenerateToken()
+	/*
+		u.Token = heputils.GenerateToken()
+		uid := uuid.NewV4()
+		u.GUID = uid.String()
+	*/
 	uid := uuid.NewV4()
 	u.GUID = uid.String()
+	u.UserGUID = uid.String()
+	u.Token = heputils.GenerateToken()
+	u.UserObject = jsonschema.AgentObjectforAuthToken
+	u.IPAddress = "0.0.0.0/0"
 	reply, err := ass.AuthtokenService.AddAuthtoken(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

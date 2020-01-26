@@ -154,16 +154,16 @@ func ShowUsers(dataRootDBSession *gorm.DB) {
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
-func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typeAction bool) {
+func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typeAction bool, showUpgrade bool) {
 
-	actionString := "creating"
-	if typeAction {
-		actionString = "upgrading"
+	if showUpgrade {
+		actionString := "creating"
+		if typeAction {
+			actionString = "upgrading"
+		}
+		createString := fmt.Sprintf("\r\nHOMER - %s tables for the config DB [dbname=%s]", actionString, homerDBconfig)
+		heputils.Colorize(heputils.ColorGreen, createString)
 	}
-
-	createString := fmt.Sprintf("\r\nHOMER - %s tables for the config DB [dbname=%s]", actionString, homerDBconfig)
-
-	heputils.Colorize(heputils.ColorGreen, createString)
 
 	configDBSession.AutoMigrate(&model.TableAlias{},
 		&model.TableGlobalSettings{},
@@ -176,7 +176,9 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typ
 		&model.TableApplications{},
 		&model.TableAuthToken{})
 
-	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
+	if showUpgrade {
+		heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
+	}
 }
 
 func checkHomerConfigTables(configDBSession *gorm.DB) map[string]bool {
@@ -234,6 +236,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		model.TableAuthToken{
 			ID:            1,
 			GUID:          uuid.NewV4().String(),
+			Name:          "Test token",
 			UserGUID:      uuid.NewV4().String(),
 			Token:         heputils.GenerateToken(),
 			UserObject:    jsonschema.AgentObjectforAuthToken,
@@ -243,7 +246,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			ExpireDate:    time.Now().Add(time.Duration(720) * time.Hour),
 			UsageCalls:    0,
 			LimitCalls:    1000,
-			Active:        0,
+			Active:        &[]bool{true}[0],
 		},
 	}
 
@@ -489,7 +492,6 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	}
 
 	if val, ok := createTables["users"]; !ok || ok && val || forceIt {
-
 		/* User data */
 		if lenTable == 0 || heputils.YesNo("users") {
 
@@ -645,8 +647,10 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 		/* tableVersions data */
 		heputils.Colorize(heputils.ColorRed, "reinstalling versions")
-		configDBSession.Exec("TRUNCATE TABLE versions")
+		//configDBSession.Exec("TRUNCATE TABLE versions")
 		for _, el := range tableVersions {
+			sql := fmt.Sprintf("DELETE FROM versions WHERE table_name = '%s'", el.NameTable)
+			configDBSession.Exec(sql)
 			configDBSession.Save(&el)
 		}
 	}

@@ -18,8 +18,16 @@ func RouteAgentsubApis(acc *echo.Group, session *gorm.DB) {
 	// create agent subscribe
 	/************************************/
 	acc.GET("/agent/subscribe", ass.GetAgentsub)
+	/* search by all */
+	acc.GET("/agent/type", ass.GetAgentsub)
+	/* search by type */
+	acc.GET("/agent/type/:type", ass.GetAgentsubByType)
+
 	acc.GET("/agent/subscribe/:guid", ass.GetAgentsubAgainstGUID)
 	acc.DELETE("/agent/subscribe/:guid", ass.DeleteAgentsubAgainstGUID)
+
+	/* search */
+	acc.POST("/agent/search/:type/:guid", ass.GetAgentsubAgainstGUID)
 
 }
 

@@ -6,6 +6,7 @@ import (
 
 	"sort"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sirupsen/logrus"
 )
@@ -29,6 +30,7 @@ func (hs *AuthtokenService) GetAuthtokenAgainstGUID(guid string) (string, error)
 	sort.Slice(AuthtokenObject[:], func(i, j int) bool {
 		return AuthtokenObject[i].GUID < AuthtokenObject[j].GUID
 	})
+
 	data, _ := json.Marshal(AuthtokenObject)
 	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
 	return response, nil
@@ -45,6 +47,7 @@ func (hs *AuthtokenService) GetAuthtoken() (string, error) {
 	sort.Slice(AuthtokenObject[:], func(i, j int) bool {
 		return AuthtokenObject[i].GUID < AuthtokenObject[j].GUID
 	})
+
 	data, _ := json.Marshal(AuthtokenObject)
 	response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, string(data))
 	return response, nil
@@ -56,8 +59,14 @@ func (hs *AuthtokenService) AddAuthtoken(data model.TableAuthToken) (string, err
 		Create(&data).Error; err != nil {
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully created Authtoken settings\",\"data\":\"%s\"}", data.GUID)
-	return response, nil
+
+	dataReply := gabs.New()
+	dataReply.Set(data.Token, "token")
+	reply := gabs.New()
+	reply.Set("successfully created auth token", "message")
+	reply.Set(dataReply.Data(), "data")
+
+	return reply.String(), nil
 }
 
 // this method gets all users from database
@@ -67,7 +76,7 @@ func (hs *AuthtokenService) UpdateAuthtokenAgainstGUID(guid string, data model.T
 		Update(&data).Error; err != nil {
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully updated Authtoken settings\",\"data\":\"%s\"}", guid)
+	response := fmt.Sprintf("{\"message\":\"successfully updated auth token settings\",\"data\":\"%s\"}", guid)
 	return response, nil
 }
 
@@ -80,6 +89,6 @@ func (hs *AuthtokenService) DeleteAuthtokenAgainstGUID(guid string) (string, err
 		logrus.Println(err.Error())
 		return "", err
 	}
-	response := fmt.Sprintf("{\"message\":\"successfully deleted Authtoken settings\",\"data\":\"%s\"}", guid)
+	response := fmt.Sprintf("{\"message\":\"successfully deleted authtoken\",\"data\":\"%s\"}", guid)
 	return response, nil
 }

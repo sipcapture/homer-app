@@ -67,6 +67,35 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 // responses:
 //   '201': body:UserCreateSuccessfulResponse
 //   '400': body:UserCreateSuccessfulResponse
+func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
+	typeRequest := url.QueryEscape(c.Param("type"))
+	reply, err := ass.AgentsubService.GetAgentsubAgainstType(typeRequest)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
 func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
@@ -214,4 +243,35 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}
+
+// swagger:route GET //mapping/protocol dashboard ListMapping
+//
+// Get mappings
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error {
+	guid := url.QueryEscape(c.Param("guid"))
+	//typeRequest := url.QueryEscape(c.Param("type"))
+
+	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
 }

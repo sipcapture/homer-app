@@ -51,9 +51,14 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 	sort.Slice(AgentsubObject[:], func(i, j int) bool {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID
 	})
-	data, _ := json.Marshal(AgentsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
-	return response, nil
+
+	response, _ := json.Marshal(AgentsubObject)
+	dataElement, _ := gabs.ParseJSON(response)
+
+	reply := gabs.New()
+	reply.Set("successfully created agent record", "message")
+	reply.Set(dataElement.Data(), "data")
+	return reply.String(), nil
 }
 
 // this method gets all users from database
@@ -86,19 +91,12 @@ func (hs *AgentsubService) GetAgentsub() (string, error) {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID
 	})
 
-	dataReply := gabs.Wrap([]interface{}{})
-
-	for _, v := range AgentsubObject {
-		response, _ := json.Marshal(v)
-		dataElement := gabs.New()
-		dataElement, _ = gabs.ParseJSON(response)
-		dataReply.ArrayAppend(dataElement.Data())
-	}
+	response, _ := json.Marshal(AgentsubObject)
+	dataElement, _ := gabs.ParseJSON(response)
 
 	reply := gabs.New()
 	reply.Set("successfully created agent record", "message")
-	reply.Set(dataReply.Data(), "data")
-
+	reply.Set(dataElement.Data(), "data")
 	return reply.String(), nil
 }
 

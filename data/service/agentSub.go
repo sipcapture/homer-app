@@ -85,9 +85,14 @@ func (hs *AgentsubService) GetAgentsub() (string, error) {
 	sort.Slice(AgentsubObject[:], func(i, j int) bool {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID
 	})
-	data, _ := json.Marshal(AgentsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, string(data))
-	return response, nil
+
+	reply := gabs.New()
+	reply.Set("successfully created agent record", "message")
+	reply.Set(AgentsubObject, "data")
+
+	//data, _ := json.Marshal(AgentsubObject)
+
+	return reply.String(), nil
 }
 
 // this method gets all users from database

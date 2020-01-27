@@ -88,7 +88,8 @@ func (hs *AgentsubService) GetAgentsub() (string, error) {
 
 	reply := gabs.New()
 	reply.Set("successfully created agent record", "message")
-	reply.Set(AgentsubObject, "data")
+	data, _ := json.Marshal(AgentsubObject)
+	reply.Set(data, "data")
 
 	//data, _ := json.Marshal(AgentsubObject)
 

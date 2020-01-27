@@ -30,18 +30,25 @@ func (hs *AgentsubService) GetAgentsubAgainstGUID(guid string) (string, error) {
 	sort.Slice(AgentsubObject[:], func(i, j int) bool {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID
 	})
-	data, _ := json.Marshal(AgentsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
-	return response, nil
+
+	response, _ := json.Marshal(AgentsubObject)
+	dataElement, _ := gabs.ParseJSON(response)
+
+	reply := gabs.New()
+	reply.Set("agent record", "message")
+	reply.Set(dataElement.Data(), "data")
+	return reply.String(), nil
 }
 
 // this method gets all users from database
 func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, error) {
 	var AgentsubObject []model.TableAgentLocationSession
 	var count int
-	whereSql := fmt.Sprintf("expire_date > NOW() AND type LIKE '%%%s%%'", typeRequest)
+
+	whereSQL := fmt.Sprintf("expire_date > NOW() AND type LIKE '%%%s%%'", typeRequest)
+
 	if err := hs.Session.Debug().Table("agent_location_session").
-		Where(whereSql).
+		Where(whereSQL).
 		Find(&AgentsubObject).Count(&count).Error; err != nil {
 		return "", err
 	}
@@ -56,7 +63,7 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 	dataElement, _ := gabs.ParseJSON(response)
 
 	reply := gabs.New()
-	reply.Set("successfully created agent record", "message")
+	reply.Set("agent record", "message")
 	reply.Set(dataElement.Data(), "data")
 	return reply.String(), nil
 }
@@ -74,9 +81,13 @@ func (hs *AgentsubService) GetAuthKeyByHeaderToken(token string) (string, error)
 		return "", fmt.Errorf("no auth_token found or it has been expired: [%s]", token)
 	}
 
-	data, _ := json.Marshal(tokenObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
-	return response, nil
+	response, _ := json.Marshal(tokenObject)
+	dataElement, _ := gabs.ParseJSON(response)
+
+	reply := gabs.New()
+	reply.Set("auth record", "message")
+	reply.Set(dataElement.Data(), "data")
+	return reply.String(), nil
 }
 
 // this method gets all users from database
@@ -139,4 +150,32 @@ func (hs *AgentsubService) DeleteAgentsubAgainstGUID(guid string) (string, error
 	}
 	response := fmt.Sprintf("{\"message\":\"successfully deleted agent record\",\"data\":\"%s\"}", guid)
 	return response, nil
+}
+
+// this method gets all users from database
+func (hs *AgentsubService) GetAgentsubAgainstGUIDAndType(guid string, typeRequest string) (model.TableAgentLocationSession, error) {
+	var AgentsubObject model.TableAgentLocationSession
+	var count int
+
+	whereSQL := fmt.Sprintf("expire_date > NOW() AND guid = '%s' AND type LIKE '%%%s%%'", guid, typeRequest)
+
+	if err := hs.Session.Debug().Table("agent_location_session").
+		Where(whereSQL).
+		Find(&AgentsubObject).Count(&count).Error; err != nil {
+		return AgentsubObject, err
+	}
+
+	return AgentsubObject, nil
+}
+
+// this method gets all users from database
+func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, transactionObject model.SearchObject) (string, error) {
+
+	response, _ := json.Marshal(agentObject)
+	dataElement, _ := gabs.ParseJSON(response)
+
+	reply := gabs.New()
+	reply.Set("request answer", "message")
+	reply.Set(dataElement.Data(), "data")
+	return reply.String(), nil
 }

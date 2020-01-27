@@ -266,12 +266,25 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 //   '400': body:UserCreateSuccessfulResponse
 func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
-	//typeRequest := url.QueryEscape(c.Param("type"))
+	typeRequest := url.QueryEscape(c.Param("type"))
 
-	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
+	transactionObject := model.SearchObject{}
+	if err := c.Bind(&transactionObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	agentObject, err := ass.AgentsubService.GetAgentsubAgainstGUIDAndType(guid, typeRequest)
+
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
+
+	reply, err := ass.AgentsubService.DoSearchByPost(agentObject, transactionObject)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
 }

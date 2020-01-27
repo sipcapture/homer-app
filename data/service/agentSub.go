@@ -86,12 +86,12 @@ func (hs *AgentsubService) GetAgentsub() (string, error) {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID
 	})
 
+	response, _ := json.Marshal(AgentsubObject)
+	row, _ := gabs.ParseJSON(response)
+
 	reply := gabs.New()
 	reply.Set("successfully created agent record", "message")
-	data, _ := json.Marshal(AgentsubObject)
-	reply.Set(data, "data")
-
-	//data, _ := json.Marshal(AgentsubObject)
+	reply.Set(row.Data(), "data")
 
 	return reply.String(), nil
 }

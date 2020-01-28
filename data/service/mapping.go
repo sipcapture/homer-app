@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
 )
 
@@ -91,4 +92,18 @@ func (mps *MappingService) DeleteMappingAgainstGUID(guid string) (string, error)
 	}
 	response := fmt.Sprintf("{\"message\":\"successfully deleted mapping settings\",\"data\":\"%s\"}", guid)
 	return response, nil
+}
+
+// this method gets all the mapping from database
+func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile string) (string, error) {
+
+	var configSample = json.RawMessage(`[
+		{"value":"sip.From_user",name="sip.From_user"},
+		{"value":"sip.To_user",name="sip.To_user"},
+		{"value":"sip.Ruri",name="sip.Ruri"}
+	]`)
+
+	reply := gabs.New()
+	reply.Set(configSample, "data")
+	return reply.String(), nil
 }

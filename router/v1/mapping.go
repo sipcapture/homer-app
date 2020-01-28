@@ -23,4 +23,7 @@ func RouteMappingdApis(acc *echo.Group, session *gorm.DB) {
 	acc.PUT("/mapping/protocol/:guid", mpc.UpdateMappingAgainstGUID, auth.IsAdmin)
 	acc.DELETE("/mapping/protocol/:guid", mpc.DeleteMappingAgainstGUID, auth.IsAdmin)
 
+	/* search smart */
+	acc.GET("/smart/search/tag/:hepid/:profile", mpc.GetSmartHepProfile)
+
 }

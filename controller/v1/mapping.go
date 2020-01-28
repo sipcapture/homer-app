@@ -257,3 +257,42 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
+
+// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+//
+// Get mapping against id and profile
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// - name: id
+//   in: path
+//   example: 11111111-1111-1111-1111-111111111111
+//   description: guid of mapping
+//   required: true
+//   type: string
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
+func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
+
+	hepid := url.QueryEscape(c.Param("hepid"))
+	profile := url.QueryEscape(c.Param("profile"))
+
+	reply, err := mpc.MappingService.GetSmartSuggestionAginstProfile(hepid, profile)
+
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}

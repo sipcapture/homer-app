@@ -116,6 +116,20 @@ WEBAPPLOGNAME - prefix name of the log
 ```
 -->
 
+### Swagger APIs
+Swagger APIs can be generated from inside the `homer-app`
+
+To generate swagger.json file run below command insider homer-app
+```
+swagger generate spec -m -o ./swagger.json
+```
+
+To Serve swagger.json file run below command
+```
+swagger serve -F=swagger swagger.json
+```
+
+
 ### DEB, RPM Packages
 To build a full package, including the latest frontend code:
 ```

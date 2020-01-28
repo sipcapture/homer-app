@@ -12,7 +12,7 @@ func (TableUser) TableName() string {
 type TableUser struct {
 	Id int `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
 	// required: true
-	UserName string `gorm:"column:username;type:varchar(50);not null" json:"username" validate:"required"`
+	UserName string `gorm:"column:username;type:varchar(100);unique_index:idx_username;not null" json:"username" validate:"required"`
 	// example: 10
 	// required: true
 	PartId int `gorm:"column:partid;type:int;default:10;not null" json:"partid" validate:"required"`

@@ -97,13 +97,14 @@ func (mps *MappingService) DeleteMappingAgainstGUID(guid string) (string, error)
 // this method gets all the mapping from database
 func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile string) (string, error) {
 
+	reply := gabs.New()
+
 	var configSample = json.RawMessage(`[
-		{"value":"sip.From_user",name="sip.From_user"},
-		{"value":"sip.To_user",name="sip.To_user"},
-		{"value":"sip.Ruri",name="sip.Ruri"}
+		{"value":"sip.From_user","name":"sip.From_user"},
+		{"value":"sip.To_user","name":"sip.To_user"},
+		{"value":"sip.Ruri","name":"sip.Ruri"}
 	]`)
 
-	reply := gabs.New()
 	reply.Set(configSample, "data")
 	return reply.String(), nil
 }

@@ -290,7 +290,6 @@ func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 	profile := url.QueryEscape(c.Param("profile"))
 
 	reply, err := mpc.MappingService.GetSmartSuggestionAginstProfile(hepid, profile)
-
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
 	}

@@ -280,7 +280,7 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	reply, err := ass.AgentsubService.DoSearchByPost(agentObject, transactionObject)
+	reply, err := ass.AgentsubService.DoSearchByPost(agentObject, transactionObject, typeRequest)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}

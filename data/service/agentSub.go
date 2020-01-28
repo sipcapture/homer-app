@@ -1,8 +1,11 @@
 package service
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -172,7 +175,7 @@ func (hs *AgentsubService) GetAgentsubAgainstGUIDAndType(guid string, typeReques
 }
 
 // this method gets all users from database
-func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject) (string, error) {
+func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject, typeRequest string) (string, error) {
 
 	var hepsubObject []model.TableHepsubSchema
 	/*
@@ -215,7 +218,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		return "", fmt.Errorf("no mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
 	}
 
-	lookupProfile := sMapping.Search("lookup_profile").Data().(string)
+	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
 	lookupField := sMapping.Search("lookup_field").Data().(string)
 	lookupRange := sMapping.Search("lookup_range").Data().([]interface{})
 
@@ -232,12 +235,39 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	lookupField = strings.ReplaceAll(lookupField, "$fromts", fmt.Sprintf("%v", (timeFrom.Unix()*int64(time.Microsecond)+(int64(timeFrom.Nanosecond())/int64(time.Microsecond)))))
 	lookupField = strings.ReplaceAll(lookupField, "$tots", fmt.Sprintf("%v", (timeTo.Unix()*int64(time.Microsecond)+(int64(timeTo.Nanosecond())/int64(time.Microsecond)))))
 
-	fmt.Println("lookupField", lookupField)
-	fmt.Println("lookupProfile", lookupProfile)
+	serverURL := fmt.Sprintf("%s://%s:%d%s/%s", agentObject.Protocol, agentObject.Host, agentObject.Port, agentObject.Path, typeRequest)
+	serverNODE := agentObject.Node
 
-	//data, _ := json.Marshal(hepsubObject)
+	req, err := http.NewRequest("POST", serverURL, bytes.NewBuffer([]byte(lookupField)))
+
+	if err != nil {
+		logrus.Error("Couldn't make NewRequest query:", serverURL)
+		return "", err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	// This one line implements the authentication required for the task.
+	//req.SetBasicAuth(ps.User, ps.Password)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logrus.Error("Couldn't make http query:", serverURL)
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	buf, _ := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logrus.Error("Couldn't read the data from IO-Buffer")
+		return "", err
+	}
+
+	responseData, _ := gabs.ParseJSON(buf)
 	reply := gabs.New()
 	reply.Set("request answer", "message")
-	reply.Set("data", "data")
+	reply.Set(serverNODE, "node")
+	reply.Set(agentObject.GUID, "uuid")
+	reply.Set(responseData.Data(), "data")
 	return reply.String(), nil
 }

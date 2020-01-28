@@ -117,6 +117,11 @@ WEBAPPLOGNAME - prefix name of the log
 -->
 
 ### Swagger APIs
+
+#### Requirements
+
+* [go-swagger 2.0](https://github.com/go-swagger/go-swagger)
+
 Swagger APIs can be generated from inside the `homer-app`
 
 To generate swagger.json file run below command insider homer-app

@@ -17,7 +17,7 @@ type TableUserSettings struct {
 	// required: true
 	GUID string `gorm:"column:guid;type:uuid" json:"guid" validate:"required"`
 	// required: true
-	UserName string `gorm:"column:username;type:varchar(100);unique_index:idx_username;not null" json:"username" validate:"required"`
+	UserName string `gorm:"column:username;type:varchar(100);not null" json:"username" validate:"required"`
 	// example: 10
 	// required: true
 	PartId int `gorm:"column:partid;type:int;not null" json:"partid" validate:"required"`

@@ -59,7 +59,10 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 		return "", err
 	}
 	if len(AgentsubObject) == 0 {
-		return "", fmt.Errorf("no advacned settings found for type %s", typeRequest)
+		reply := gabs.New()
+		reply.Set(fmt.Sprintf("no advacned settings found for type %s", typeRequest), "message")
+		reply.Set("", "data")
+		return reply.String(), fmt.Errorf("no advacned settings found for type %s", typeRequest)
 	}
 	sort.Slice(AgentsubObject[:], func(i, j int) bool {
 		return AgentsubObject[i].GUID < AgentsubObject[j].GUID

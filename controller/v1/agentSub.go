@@ -71,10 +71,9 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 	typeRequest := url.QueryEscape(c.Param("type"))
 	reply, err := ass.AgentsubService.GetAgentsubAgainstType(typeRequest)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
-
 }
 
 // swagger:route GET //mapping/protocol dashboard ListMapping

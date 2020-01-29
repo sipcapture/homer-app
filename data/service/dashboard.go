@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"sort"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
@@ -46,6 +47,11 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 		}
 		dashboardList = append(dashboardList, dashboardElement)
 	}
+
+	sort.Slice(dashboardList[:], func(i, j int) bool {
+		return dashboardList[i].Name < dashboardList[j].Name
+	})
+
 	reply := gabs.New()
 	reply.Set(count, "total")
 	reply.Set(dashboardList, "data")

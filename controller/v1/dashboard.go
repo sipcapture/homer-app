@@ -18,9 +18,9 @@ type DashBoardController struct {
 	DashBoardService *service.DashBoardService
 }
 
-// swagger:operation GET /dashboard/info/{username} dashboard Listdashboard
+// swagger:operation GET /dashboard/info Dashboard Listdashboard
 //
-// Update an existing user
+// Get Dashbroad list
 // ---
 // consumes:
 // - application/json
@@ -49,9 +49,9 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 }
 
-// swagger:operation GET /dashboard/store/{dashboardId} dashboard Listdashboard
+// swagger:operation GET /dashboard/store/{dashboardId} Dashboard Listdashboard
 //
-// Update an existing user
+// Get Dashboard Against a GUID
 // ---
 // consumes:
 // - application/json
@@ -91,9 +91,9 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 }
 
-// swagger:operation POST /dashboard/store/{dashboardId} dashboard Listdashboard
+// swagger:operation POST /dashboard/store/{dashboardId} Dashboard Listdashboard
 //
-// Update an existing user
+// Add new dashboard
 // ---
 // consumes:
 // - application/json
@@ -154,9 +154,9 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
-// swagger:operation DELETE /dashboard/store/{dashboardId} dashboard DeleteDashboard
+// swagger:operation DELETE /dashboard/store/{dashboardId} Dashboard DeleteDashboard
 //
-// Update an existing user
+// Delete a dashboard
 // ---
 // consumes:
 // - application/json

@@ -3,7 +3,7 @@
 // Homer-App User interface for WEB AI
 //
 //     Schemes: http
-//     Host: localhost:8080
+//     Host: localhost:9080
 //     BasePath: /api/v3
 //     Version: 1.1.2
 //     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -26,7 +26,6 @@
 //          in: header
 //
 // swagger:meta
-
 package main
 
 import (

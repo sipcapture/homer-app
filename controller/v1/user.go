@@ -204,15 +204,6 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-//   in: body
-//   description: user structure
-//   schema:
-//     "$ref": "#/definitions/UserLogin"
-//   required: true
-// responses:
-//   '200': body:UserLoginSuccessResponse
-//   '401': body:UserLoginFailureResponse
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {

@@ -28,4 +28,10 @@ PKGNAME="homer-app-$RELEASE-amd64"
 ./scripts/github-release.sh github_api_token=$TOKEN owner=sipcapture repo=homer-app tag=$RELEASE filename=./$PKGNAME.deb
 ./scripts/github-release.sh github_api_token=$TOKEN owner=sipcapture repo=homer-app tag=$RELEASE filename=./$PKGNAME.rpm
 ```
+#### Push to Packagecloud
+```
+PKGNAME="homer-app-$RELEASE-amd64"
+package_cloud push qxip/sipcapture/debian/stretch $PKGNAME.deb
+package_cloud push qxip/sipcapture/el/7 $PKGNAME.rpm
+```
 

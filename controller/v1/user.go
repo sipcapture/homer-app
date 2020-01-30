@@ -19,7 +19,7 @@ type UserController struct {
 	UserService *service.UserService
 }
 
-// swagger:route GET /user user ListUsers
+// swagger:route GET /users user ListUsers
 //
 // Returns the list of Users
 // ---
@@ -53,7 +53,7 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
 }
 
-// swagger:operation POST /user user CreateUser
+// swagger:operation POST /users user CreateUser
 //
 // Create a New user
 // ---
@@ -103,7 +103,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }
 
-// swagger:operation PUT /user/{userGuid} user UpdateUser
+// swagger:operation PUT /users/{userGuid} user UpdateUser
 //
 // Update an existing user
 // ---
@@ -159,7 +159,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation DELETE /user/{userGuid} user DeleteUser
+// swagger:operation DELETE /users/{userGuid} user DeleteUser
 //
 // Delete an existing User
 // ---

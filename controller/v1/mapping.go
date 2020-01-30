@@ -18,7 +18,7 @@ type MappingController struct {
 	MappingService *service.MappingService
 }
 
-// swagger:route GET /mapping/protocols dashboard ListMapping
+// swagger:route GET /mapping/protocols Mapping ListMapping
 //
 // Get mappings
 // ---
@@ -46,7 +46,7 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 
 }
 
-// swagger:operation GET /mapping/protocol/{id}/{transaction} mapping GetMapping
+// swagger:operation GET /mapping/protocol/{id}/{transaction} Mapping GetMapping
 //
 // Get mapping against id and profile
 // ---
@@ -91,7 +91,7 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
 }
 
-// swagger:operation GET /mapping/protocol/{guid} mapping GetMapping
+// swagger:operation GET /mapping/protocol/{guid} Mapping GetMapping
 //
 // Get mapping against id and profile
 // ---
@@ -127,7 +127,7 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route POST /hepsub/protocol HepSub AddMapping
+// swagger:route POST /hepsub/protocol Mapping AddMapping
 //
 // Get mappings
 // ---
@@ -168,7 +168,7 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
 //
 // Get mapping against id and profile
 // ---
@@ -219,7 +219,7 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
 //
 // Get mapping against id and profile
 // ---
@@ -258,7 +258,7 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
 //
 // Get mapping against id and profile
 // ---

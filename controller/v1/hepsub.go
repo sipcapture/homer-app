@@ -18,9 +18,9 @@ type HepsubController struct {
 	HepsubService *service.HepsubService
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /hepsub/protocol hepsub ListHepsub
 //
-// Get mappings
+// Get HepSub
 // ---
 // consumes:
 // - application/json
@@ -47,25 +47,6 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
-//
-// Get mappings
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// Security:
-// - bearer: []
-//
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-// responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
 func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
@@ -76,25 +57,6 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
-//
-// Get mappings
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// Security:
-// - bearer: []
-//
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-// responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
 func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 	id := url.QueryEscape(c.Param("id"))
 	transaction := url.QueryEscape(c.Param("transaction"))
@@ -106,9 +68,9 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 
 }
 
-// swagger:route POST /hepsub/protocol HepSub AddHepSub
+// swagger:route POST /hepsub/protocol hepsub AddHepSub
 //
-// Get mappings
+// Add new Hepsub information
 // ---
 // consumes:
 // - application/json
@@ -147,25 +109,6 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
-//
-// Get mappings
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// Security:
-// - bearer: []
-//
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-// responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
 func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
@@ -191,25 +134,6 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
-//
-// Get mappings
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// Security:
-// - bearer: []
-//
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-// responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
 func (hsc *HepsubController) DeleteHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 

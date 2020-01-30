@@ -14,7 +14,7 @@ type ProfileController struct {
 	ProfileService *service.ProfileService
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /mapping/protocol profile ListProfiles
 //
 // Get mappings
 // ---
@@ -43,7 +43,7 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 }
 
-// swagger:route GET /mapping/protocol dashboard ListMapping
+// swagger:route GET /admin/profiles profile ListProfiles
 //
 // Get mappings
 // ---
@@ -60,8 +60,8 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '200': body:Hepsubchema
+//   '400': body:FailureResponse
 func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetProfile()
@@ -72,7 +72,7 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 }
 
-// swagger:route GET /mapping/protocol dashboard ListMapping
+// swagger:route GET /database/node/list profile ListMapping
 //
 // Get mappings
 // ---
@@ -90,7 +90,7 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 //      in: header
 // responses:
 //   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '400': body:FailureResponse
 func (pc *ProfileController) GetDBNodeList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetDBNodeList()

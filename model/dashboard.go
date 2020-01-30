@@ -34,6 +34,7 @@ type TableUserSettings struct {
 	//Data map[string]interface{} `gorm:"column:data;type:json" json:"data"`
 }
 
+// swagger:model DashboardElements
 type DashBoardElement struct {
 	CssClass string  `json:"cssclass"`
 	Href     string  `json:"href"`

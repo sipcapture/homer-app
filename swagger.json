@@ -10,7 +10,7 @@
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Homer-App User interface for Hep protocol",
+    "description": "Homer-App User interface for WEB AI",
     "title": "Homer-App",
     "contact": {
       "name": "Aqs",
@@ -18,13 +18,101 @@
     },
     "license": {
       "name": "AGPL",
-      "url": "http://opensource.org/licenses/MIT"
+      "url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
     },
-    "version": "0.0.1"
+    "version": "1.1.2"
   },
-  "host": "localhost:8080",
-  "basePath": "/v1",
+  "host": "localhost:9080",
+  "basePath": "/api/v3",
   "paths": {
+    "/Hepsubsearch/protocol": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Hepsubsearch"
+        ],
+        "operationId": "AddHepsubsearch",
+        "responses": {}
+      }
+    },
+    "/admin/profiles": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "operationId": "ListProfiles",
+        "responses": {}
+      }
+    },
     "/advanced": {
       "get": {
         "security": [
@@ -58,6 +146,270 @@
           "advanced"
         ],
         "operationId": "ListAdvancedSettings",
+        "responses": {}
+      }
+    },
+    "/advanced/protocol": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "ListAdvancedSettings",
+        "responses": {}
+      }
+    },
+    "/agent/search/{guid}/{type}": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "CreateAgent",
+        "responses": {}
+      }
+    },
+    "/agent/subscribe": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "ListAgents",
+        "responses": {}
+      }
+    },
+    "/agent/subscribe/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "GetAgentByGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "DeleteAgent",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/agent/type/{type}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "GetAgentByType",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "home",
+            "description": "type of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/agentsub/protocol": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "AddAgentsub",
         "responses": {}
       }
     },
@@ -295,8 +647,169 @@
         "responses": {}
       }
     },
+    "/api/prometheus/data": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/prometheus/label": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/prometheus/labels": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/prometheus/value": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
     "/api/search/call/data": {
       "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/search/call/decode/message": {
+      "post": {
         "security": [
           {
             "SecurityDefinitions": []
@@ -361,6 +874,200 @@
         "responses": {}
       }
     },
+    "/api/statistic/data": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/v3/export/call/messages/pcap": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns messages related to transaction",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/v3/export/call/messages/text": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns messages related to transaction",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search",
+        "responses": {}
+      }
+    },
+    "/api/v3/seach/remote/data": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/v3/seach/remote/label": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
+    "/api/v3/seach/remote/values": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
     "/auth": {
       "post": {
         "description": "Returns a JWT Token and UUID attached to user",
@@ -373,36 +1080,29 @@
         "tags": [
           "user"
         ],
-        "operationId": "userlogin",
+        "operationId": "userLogin",
         "parameters": [
           {
-            "type": "string",
-            "example": "admin",
-            "description": "username to be used for login",
-            "name": "username",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "example": "sipcapture",
-            "description": "password of the user",
-            "name": "password",
-            "in": "query",
-            "required": true
+            "description": "user login structure",
+            "name": "userLoginStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
           }
         ],
         "responses": {}
       }
     },
-    "/dashboard/info/{username}": {
+    "/dashboard/info": {
       "get": {
         "security": [
           {
             "bearer": []
           }
         ],
-        "description": "Update an existing user",
+        "description": "Get Dashbroad list",
         "consumes": [
           "application/json"
         ],
@@ -412,17 +1112,7 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "Listdashboard",
-        "parameters": [
-          {
-            "type": "string",
-            "example": "admin",
-            "description": "username of user",
-            "name": "username",
-            "in": "path",
-            "required": true
-          }
-        ],
+        "operationId": "ListDashboard",
         "responses": {}
       }
     },
@@ -433,7 +1123,7 @@
             "bearer": []
           }
         ],
-        "description": "Update an existing user",
+        "description": "Get Dashboard Against a GUID",
         "consumes": [
           "application/json"
         ],
@@ -443,13 +1133,79 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "Listdashboard",
+        "operationId": "GetDashboard",
         "parameters": [
           {
             "type": "string",
-            "example": "admin",
-            "description": "the dashboard id",
+            "example": "home",
+            "description": "param of dashboard",
+            "name": "dashboard id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Add new dashboard",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
+        "operationId": "CreateDashboard",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "home",
+            "description": "the param of dashboard",
             "name": "dashboardid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "json of dashboard",
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserSettings"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete a dashboard",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
+        "operationId": "DeleteDashboard",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "home",
+            "description": "the param of dashboard",
+            "name": "param",
             "in": "path",
             "required": true
           }
@@ -457,7 +1213,566 @@
         "responses": {}
       }
     },
-    "/user": {
+    "/database/node/list": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "operationId": "ListMapping",
+        "responses": {}
+      }
+    },
+    "/hepsub/protocol": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get HepSub",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hepsub"
+        ],
+        "operationId": "ListHepsub",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Mapping"
+        ],
+        "operationId": "AddMapping",
+        "responses": {}
+      }
+    },
+    "/mapping/protocol": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "operationId": "ListProfiles",
+        "responses": {}
+      }
+    },
+    "/mapping/protocol/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get mapping against id and profile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Mapping"
+        ],
+        "operationId": "GetMapping",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of mapping",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get mapping against id and profile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Mapping"
+        ],
+        "operationId": "DeleteMapping",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of mapping",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/mapping/protocol/{id}/{transaction}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get mapping against id and profile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Mapping"
+        ],
+        "operationId": "GetMapping",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "call",
+            "description": "profile",
+            "name": "transaction",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/mapping/protocols": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Mapping"
+        ],
+        "operationId": "ListMapping",
+        "responses": {}
+      }
+    },
+    "/token/auth": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "GetToken",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "AddAuthToken",
+        "responses": {}
+      }
+    },
+    "/token/auth/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "GetTokenAgainstGUID",
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "UpdateToken",
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "DeleteToken",
+        "responses": {}
+      }
+    },
+    "/user/settings": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of settings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "ListSettings",
+        "responses": {}
+      }
+    },
+    "/users": {
       "get": {
         "security": [
           {
@@ -523,43 +1838,7 @@
         "responses": {}
       }
     },
-    "/user/settings": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns the list of settings",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "settings"
-        ],
-        "operationId": "ListSettings",
-        "responses": {}
-      }
-    },
-    "/user/{userGuid}": {
+    "/users/{userGuid}": {
       "put": {
         "security": [
           {
@@ -630,6 +1909,67 @@
     }
   },
   "definitions": {
+    "AgentsLocation": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Active"
+        },
+        "create_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "expire_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpireDate"
+        },
+        "gid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Gid"
+        },
+        "host": {
+          "type": "string",
+          "x-go-name": "Host"
+        },
+        "node": {
+          "type": "string",
+          "x-go-name": "Node"
+        },
+        "path": {
+          "type": "string",
+          "x-go-name": "Path"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Port"
+        },
+        "protocol": {
+          "type": "string",
+          "x-go-name": "Protocol"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TTL"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "uuid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        }
+      },
+      "x-go-name": "TableAgentLocationSession",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "AliasStruct": {
       "type": "object",
       "required": [
@@ -637,7 +1977,7 @@
         "ip",
         "port",
         "mask",
-        "capture_id"
+        "captureID"
       ],
       "properties": {
         "alias": {
@@ -646,7 +1986,7 @@
           "x-go-name": "Alias",
           "example": "verizon"
         },
-        "capture_id": {
+        "captureID": {
           "type": "string",
           "x-go-name": "CaptureID",
           "example": "0"
@@ -682,7 +2022,7 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-name": "Alias",
+      "x-go-name": "TableAlias",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "CreateUserStruct": {
@@ -741,7 +2081,72 @@
           "x-go-name": "UserName"
         }
       },
-      "x-go-name": "User",
+      "x-go-name": "TableUser",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "DashboardElements": {
+      "type": "object",
+      "properties": {
+        "cssclass": {
+          "type": "string",
+          "x-go-name": "CssClass"
+        },
+        "href": {
+          "type": "string",
+          "x-go-name": "Href"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "param": {
+          "type": "string",
+          "x-go-name": "Param"
+        },
+        "shared": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Shared"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Type"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Weight"
+        }
+      },
+      "x-go-name": "DashBoardElement",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "FailureResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "errot",
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "message": {
+          "description": "message",
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "statuscode": {
+          "description": "statuscode",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "StatusCode"
+        }
+      },
+      "x-go-name": "UserTokenBadResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "GlobalSettingsStruct": {
@@ -779,8 +2184,58 @@
           "example": 1
         }
       },
-      "x-go-name": "GlobalSettings",
+      "x-go-name": "TableGlobalSettings",
       "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "Hepsubchema": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        },
+        "hep_alias": {
+          "type": "string",
+          "x-go-name": "HepAlias"
+        },
+        "hepid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Hepid"
+        },
+        "mapping": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "profile": {
+          "type": "string",
+          "x-go-name": "Profile"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-name": "TableHepsubSchema",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "LabelData": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LabelData"
+          },
+          "x-go-name": "Entries"
+        },
+        "labels": {
+          "type": "object",
+          "x-go-name": "Labels"
+        }
+      },
+      "x-go-name": "streamsResult",
+      "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {
       "type": "object",
@@ -803,6 +2258,72 @@
       "x-go-name": "GetUser",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "MappingSchema": {
+      "type": "object",
+      "properties": {
+        "correlation_mapping": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "create_index": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "create_table": {
+          "type": "string",
+          "x-go-name": "CreateTable"
+        },
+        "fields_mapping": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "fields_settings": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        },
+        "hep_alias": {
+          "type": "string",
+          "x-go-name": "HepAlias"
+        },
+        "hepid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Hepid"
+        },
+        "partid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PartID"
+        },
+        "partition_step": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PartitionStep"
+        },
+        "profile": {
+          "type": "string",
+          "x-go-name": "Profile"
+        },
+        "retention": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Retention"
+        },
+        "schema_mapping": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "schema_settings": {
+          "$ref": "#/definitions/RawMessage"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-name": "TableMappingSchema",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "RawMessage": {
       "description": "It implements Marshaler and Unmarshaler and can\nbe used to delay JSON decoding or precompute a JSON encoding.",
       "type": "array",
@@ -813,7 +2334,7 @@
       },
       "x-go-package": "encoding/json"
     },
-    "UserCreateSuccessfulResponse": {
+    "SuccessResponse": {
       "type": "object",
       "properties": {
         "data": {
@@ -827,29 +2348,28 @@
           "x-go-name": "Message"
         }
       },
+      "x-go-name": "UserCreateSuccessfulResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
-    "UserLoginFailureResponse": {
+    "UserLogin": {
       "type": "object",
+      "required": [
+        "username",
+        "password"
+      ],
       "properties": {
-        "error": {
-          "description": "errot",
+        "password": {
           "type": "string",
-          "x-go-name": "Error"
+          "x-go-name": "Password",
+          "example": "sipcapture"
         },
-        "message": {
-          "description": "message",
+        "username": {
           "type": "string",
-          "x-go-name": "Message"
-        },
-        "statuscode": {
-          "description": "statuscode",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "StatusCode"
+          "x-go-name": "Username",
+          "example": "admin"
         }
       },
-      "x-go-name": "UserTokenBadResponse",
+      "x-go-name": "UserloginDetails",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLoginSuccessResponse": {
@@ -864,6 +2384,17 @@
           "description": "the token",
           "type": "string",
           "x-go-name": "Token"
+        },
+        "user": {
+          "description": "the uuid",
+          "type": "object",
+          "properties": {
+            "admin": {
+              "type": "boolean",
+              "x-go-name": "Admin"
+            }
+          },
+          "x-go-name": "User"
         }
       },
       "x-go-name": "UserTokenSuccessfulResponse",
@@ -893,6 +2424,11 @@
           "x-go-name": "GUID",
           "example": "e71771a2-1ea0-498f-8d27-391713e10664"
         },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Id"
+        },
         "param": {
           "type": "string",
           "x-go-name": "Param",
@@ -909,6 +2445,7 @@
           "x-go-name": "UserName"
         }
       },
+      "x-go-name": "TableUserSettings",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     }
   },

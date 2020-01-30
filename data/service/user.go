@@ -9,7 +9,9 @@ import (
 
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/ldap"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -135,7 +137,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 	userData := model.TableUser{}
 
 	if us.LdapClient != nil {
-		ok, user, err := us.LdapClient.Authenticate(username, password)
+		ok, isAdmin, user, err := us.LdapClient.Authenticate(username, password)
 		if err != nil {
 			errorString := fmt.Sprintf("Error authenticating user %s: %+v", username, err)
 			return "", userData, errors.New(errorString)
@@ -149,9 +151,19 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		userData.Id = int(hashString(username))
 		userData.Password = password
 		userData.FirstName = username
-		userData.IsAdmin = false
+		userData.IsAdmin = isAdmin
+		userData.ExternalAuth = true
 		if val, ok := user["dn"]; ok {
 			userData.UserGroup = val
+		}
+
+		groups, err := us.LdapClient.GetGroupsOfUser(username)
+		if err != nil {
+			logrus.Error("Couldn't get any group for user: ", username)
+		} else {
+			if heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
+				userData.IsAdmin = true
+			}
 		}
 
 	} else {
@@ -164,6 +176,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 
 		/* check admin or not */
 		userData.IsAdmin = false
+		userData.ExternalAuth = false
 		if userData.UserGroup != "" && strings.Contains(strings.ToLower(userData.UserGroup), "admin") {
 			userData.IsAdmin = true
 		}

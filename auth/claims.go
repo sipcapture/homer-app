@@ -10,8 +10,9 @@ import (
 
 // jwt token claims which contains info regarding user
 type JwtUserClaim struct {
-	UserName  string `json:"username"`
-	UserAdmin bool   `json:"useradmin"`
+	UserName     string `json:"username"`
+	UserAdmin    bool   `json:"useradmin"`
+	ExternalAuth bool   `json:"externalauth"`
 	jwt.StandardClaims
 }
 
@@ -26,6 +27,7 @@ func Token(user model.TableUser) (string, error) {
 	claims := &JwtUserClaim{
 		user.UserName,
 		user.IsAdmin,
+		user.ExternalAuth,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),
 		},

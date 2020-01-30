@@ -7,6 +7,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/ldap.v3"
 )
 
@@ -24,6 +25,9 @@ type LDAPClient struct {
 	InsecureSkipVerify bool
 	UseSSL             bool
 	SkipTLS            bool
+	AdminGroup         string
+	AdminMode          bool
+
 	ClientCertificates []tls.Certificate // Adding client certificates
 }
 
@@ -74,17 +78,20 @@ func (lc *LDAPClient) Close() {
 }
 
 // Authenticate authenticates the user against the ldap backend.
-func (lc *LDAPClient) Authenticate(username, password string) (bool, map[string]string, error) {
+func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[string]string, error) {
+
 	err := lc.Connect()
 	if err != nil {
-		return false, nil, err
+		logrus.Error("Couldn't connect to LDAP: ", err)
+		return false, false, nil, err
 	}
 
 	// First bind with a read only user
 	if lc.BindDN != "" && lc.BindPassword != "" {
 		err := lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 		if err != nil {
-			return false, nil, err
+			logrus.Error("Couldn't auth user: ", err)
+			return false, false, nil, err
 		}
 	}
 
@@ -100,15 +107,15 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, map[string]
 
 	sr, err := lc.Conn.Search(searchRequest)
 	if err != nil {
-		return false, nil, err
+		return false, false, nil, err
 	}
 
 	if len(sr.Entries) < 1 {
-		return false, nil, errors.New("User does not exist")
+		return false, false, nil, errors.New("User does not exist")
 	}
 
 	if len(sr.Entries) > 1 {
-		return false, nil, errors.New("Too many entries returned")
+		return false, false, nil, errors.New("Too many entries returned")
 	}
 
 	userDN := sr.Entries[0].DN
@@ -124,21 +131,22 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, map[string]
 	if userDN != "" && password != "" {
 		err = lc.Conn.Bind(userDN, password)
 		if err != nil {
-			return false, user, err
+			return false, false, user, err
 		}
 	} else {
-		return false, user, errors.New("No username/password provided.")
+		return false, false, user, errors.New("No username/password provided.")
 	}
 
+	isAdmin := lc.AdminMode
 	// Rebind as the read only user for any further queries
 	if lc.BindDN != "" && lc.BindPassword != "" {
 		err = lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 		if err != nil {
-			return true, user, err
+			return true, isAdmin, user, err
 		}
 	}
 
-	return true, user, nil
+	return true, isAdmin, user, nil
 }
 
 // GetGroupsOfUser returns the group for a user.

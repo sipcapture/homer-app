@@ -30,8 +30,9 @@ type TableUser struct {
 	Department string `gorm:"column:department;type:varchar(50);not null" json:"department" validate:"required"`
 	// required: true
 	// example: admin
-	UserGroup string `gorm:"column:usergroup;type:varchar(250);not null" json:"usergroup" validate:"required"`
-	IsAdmin   bool   `gorm:"-" json:"-"`
+	UserGroup    string `gorm:"column:usergroup;type:varchar(250);not null" json:"usergroup" validate:"required"`
+	IsAdmin      bool   `gorm:"-" json:"-"`
+	ExternalAuth bool   `gorm:"-" json:"-"`
 
 	Hash string `gorm:"column:hash;type:varchar(128);not null" json:"-"`
 	// should be a unique value representing user

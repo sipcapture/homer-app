@@ -241,18 +241,30 @@ func main() {
 	if authType == "" {
 		authType = "internal"
 	}
+
 	/* Check LDAP here */
 	if authType == "ldap" {
 		logrus.Println("Ldap implementation here")
-		ldapClient.Base = viper.GetString("ldap_settings.Base")
-		ldapClient.Host = viper.GetString("ldap_settings.Host")
-		ldapClient.Port = viper.GetInt("ldap_settings.Port")
-		ldapClient.UseSSL = viper.GetBool("ldap_settings.UseSSL")
-		ldapClient.BindDN = viper.GetString("ldap_settings.BindDN")
-		ldapClient.BindPassword = viper.GetString("ldap_settings.BindPassword")
-		ldapClient.UserFilter = viper.GetString("ldap_settings.UserFilter")
-		ldapClient.GroupFilter = viper.GetString("ldap_settings.GroupFilter")
-		ldapClient.Attributes = viper.GetStringSlice("ldap_settings.Attributes")
+		ldapClient.Base = viper.GetString("ldap_config.base")
+		ldapClient.Host = viper.GetString("ldap_config.host")
+		ldapClient.Port = viper.GetInt("ldap_config.port")
+		ldapClient.UseSSL = viper.GetBool("ldap_config.usessl")
+		ldapClient.BindDN = viper.GetString("ldap_config.binddn")
+		ldapClient.BindPassword = viper.GetString("ldap_config.bindpassword")
+		ldapClient.UserFilter = viper.GetString("ldap_config.userfilter")
+		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
+		ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
+		ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
+		ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
+
+		if viper.IsSet("ldap_config.skiptls") {
+			ldapClient.SkipTLS = viper.GetBool("ldap_config.skiptls")
+		} else {
+			if !ldapClient.UseSSL {
+				ldapClient.SkipTLS = true
+			}
+		}
+
 		defer ldapClient.Close()
 	}
 

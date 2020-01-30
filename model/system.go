@@ -6,6 +6,7 @@ import (
 
 type AppContext struct {
 	echo.Context
-	UserName string `json:"username"`
-	Admin    bool   `json:"admin"`
+	UserName     string `json:"username"`
+	Admin        bool   `json:"admin"`
+	ExternalAuth bool   `json:"externalauth"`
 }

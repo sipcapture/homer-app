@@ -15,7 +15,12 @@ func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
 		logrus.Println("Claims")
 		logrus.Print(claims)
 
-		appContext := model.AppContext{Context: c, UserName: claims.UserName, Admin: claims.UserAdmin}
+		appContext := model.AppContext{
+			Context:      c,
+			UserName:     claims.UserName,
+			Admin:        claims.UserAdmin,
+			ExternalAuth: claims.ExternalAuth,
+		}
 		if err := next(appContext); err != nil {
 			c.Error(err)
 		}

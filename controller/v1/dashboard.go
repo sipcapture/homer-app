@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/data/service"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
@@ -79,13 +80,27 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
 	username := cc.UserName
+
 	dashboardId := c.Param("dashboardId")
 
 	logrus.Println("*** Database Session created *** ")
 
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardId)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		if cc.ExternalAuth && dashboardId == "home" {
+			_, err := dbc.DashBoardService.InsertDashboard(username, dashboardId, jsonschema.DashboardHome)
+			if err != nil {
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+			}
+
+			reply, err = dbc.DashBoardService.GetDashBoard(username, dashboardId)
+			if err != nil {
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+			}
+
+		} else {
+			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		}
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 

@@ -172,7 +172,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route DELETE /token/auth/:guid token DeleteToken
+// swagger:route DELETE /token/auth/{guid} token DeleteToken
 //
 // Get mappings
 // ---

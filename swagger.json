@@ -22,7 +22,7 @@
     },
     "version": "1.1.2"
   },
-  "host": "207.38.65.199:9080",
+  "host": "localhost:9080",
   "basePath": "/api/v3",
   "paths": {
     "/Hepsubsearch/protocol": {
@@ -1608,50 +1608,6 @@
         "responses": {}
       }
     },
-    "/token/auth/:guid": {
-      "delete": {
-        "security": [
-          {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "token"
-        ],
-        "operationId": "DeleteToken",
-        "responses": {}
-      }
-    },
     "/token/auth/{guid}": {
       "get": {
         "security": [
@@ -1735,6 +1691,48 @@
           "token"
         ],
         "operationId": "UpdateToken",
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "DeleteToken",
         "responses": {}
       }
     },
@@ -2224,20 +2222,19 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "__name__": {
-          "type": "string",
-          "x-go-name": "Name"
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LabelData"
+          },
+          "x-go-name": "Entries"
         },
-        "instance": {
-          "type": "string",
-          "x-go-name": "Instance"
-        },
-        "job": {
-          "type": "string",
-          "x-go-name": "Job"
+        "labels": {
+          "type": "object",
+          "x-go-name": "Labels"
         }
       },
-      "x-go-name": "ValuesArray",
+      "x-go-name": "streamsResult",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {

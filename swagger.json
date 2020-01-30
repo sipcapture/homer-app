@@ -25,138 +25,6 @@
   "host": "207.38.65.199:9080",
   "basePath": "/api/v3",
   "paths": {
-    "//mapping/protocol": {
-      "get": {
-        "security": [
-          {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "dashboard"
-        ],
-        "operationId": "ListMapping",
-        "responses": {}
-      }
-    },
-    "/Agentsub/protocol": {
-      "post": {
-        "security": [
-          {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Agentsub"
-        ],
-        "operationId": "AddAgentsub",
-        "responses": {}
-      }
-    },
-    "/Authtoken/protocol": {
-      "post": {
-        "security": [
-          {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Authtoken"
-        ],
-        "operationId": "AddAuthtoken",
-        "responses": {}
-      }
-    },
     "/Hepsubsearch/protocol": {
       "post": {
         "security": [
@@ -198,6 +66,50 @@
           "Hepsubsearch"
         ],
         "operationId": "AddHepsubsearch",
+        "responses": {}
+      }
+    },
+    "/admin/profiles": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "operationId": "ListProfiles",
         "responses": {}
       }
     },
@@ -275,6 +187,229 @@
           "application/json"
         ],
         "operationId": "ListAdvancedSettings",
+        "responses": {}
+      }
+    },
+    "/agent/search/{guid}/{type}": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "CreateAgent",
+        "responses": {}
+      }
+    },
+    "/agent/subscribe": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "ListAgents",
+        "responses": {}
+      }
+    },
+    "/agent/subscribe/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "GetAgentByGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "DeleteAgent",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/agent/type/{type}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "GetAgentByType",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "home",
+            "description": "type of agent",
+            "name": "type of agent",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/agentsub/protocol": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "AddAgentsub",
         "responses": {}
       }
     },
@@ -975,9 +1110,9 @@
           "application/json"
         ],
         "tags": [
-          "Dashboard"
+          "dashboard"
         ],
-        "operationId": "Listdashboard",
+        "operationId": "ListDashboard",
         "responses": {}
       }
     },
@@ -996,15 +1131,15 @@
           "application/json"
         ],
         "tags": [
-          "Dashboard"
+          "dashboard"
         ],
-        "operationId": "Listdashboard",
+        "operationId": "GetDashboard",
         "parameters": [
           {
             "type": "string",
-            "example": "admin",
-            "description": "the dashboard id",
-            "name": "dashboardid",
+            "example": "home",
+            "description": "param of dashboard",
+            "name": "dashboard id",
             "in": "path",
             "required": true
           }
@@ -1025,14 +1160,14 @@
           "application/json"
         ],
         "tags": [
-          "Dashboard"
+          "dashboard"
         ],
-        "operationId": "ListDashboard",
+        "operationId": "CreateDashboard",
         "parameters": [
           {
             "type": "string",
-            "example": "admin",
-            "description": "the dashboard id",
+            "example": "home",
+            "description": "the param of dashboard",
             "name": "dashboardid",
             "in": "path",
             "required": true
@@ -1042,7 +1177,7 @@
             "name": "data",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/CreateUserStruct"
+              "$ref": "#/definitions/UserSettings"
             }
           }
         ],
@@ -1062,19 +1197,63 @@
           "application/json"
         ],
         "tags": [
-          "Dashboard"
+          "dashboard"
         ],
         "operationId": "DeleteDashboard",
         "parameters": [
           {
             "type": "string",
-            "example": "admin",
-            "description": "the dashboard id",
-            "name": "dashboardid",
+            "example": "home",
+            "description": "the param of dashboard",
+            "name": "param",
             "in": "path",
             "required": true
           }
         ],
+        "responses": {}
+      }
+    },
+    "/database/node/list": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "operationId": "ListMapping",
         "responses": {}
       }
     },
@@ -1116,7 +1295,7 @@
           "application/json"
         ],
         "tags": [
-          "HepSub"
+          "hepsub"
         ],
         "operationId": "ListHepsub",
         "responses": {}
@@ -1202,9 +1381,9 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "profile"
         ],
-        "operationId": "ListMapping",
+        "operationId": "ListProfiles",
         "responses": {}
       }
     },
@@ -1343,7 +1522,259 @@
         "responses": {}
       }
     },
-    "/user": {
+    "/token/auth": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "GetToken",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "AddAuthToken",
+        "responses": {}
+      }
+    },
+    "/token/auth/:guid": {
+      "delete": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "DeleteToken",
+        "responses": {}
+      }
+    },
+    "/token/auth/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "GetTokenAgainstGUID",
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Get mappings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "token"
+        ],
+        "operationId": "UpdateToken",
+        "responses": {}
+      }
+    },
+    "/user/settings": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of settings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "ListSettings",
+        "responses": {}
+      }
+    },
+    "/users": {
       "get": {
         "security": [
           {
@@ -1409,43 +1840,7 @@
         "responses": {}
       }
     },
-    "/user/settings": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns the list of settings",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "settings"
-        ],
-        "operationId": "ListSettings",
-        "responses": {}
-      }
-    },
-    "/user/{userGuid}": {
+    "/users/{userGuid}": {
       "put": {
         "security": [
           {
@@ -1516,6 +1911,67 @@
     }
   },
   "definitions": {
+    "AgentsLocation": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Active"
+        },
+        "create_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "expire_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpireDate"
+        },
+        "gid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Gid"
+        },
+        "host": {
+          "type": "string",
+          "x-go-name": "Host"
+        },
+        "node": {
+          "type": "string",
+          "x-go-name": "Node"
+        },
+        "path": {
+          "type": "string",
+          "x-go-name": "Path"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Port"
+        },
+        "protocol": {
+          "type": "string",
+          "x-go-name": "Protocol"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TTL"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "uuid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        }
+      },
+      "x-go-name": "TableAgentLocationSession",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "AliasStruct": {
       "type": "object",
       "required": [
@@ -1630,6 +2086,48 @@
       "x-go-name": "TableUser",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "DashboardElements": {
+      "type": "object",
+      "properties": {
+        "cssclass": {
+          "type": "string",
+          "x-go-name": "CssClass"
+        },
+        "href": {
+          "type": "string",
+          "x-go-name": "Href"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "param": {
+          "type": "string",
+          "x-go-name": "Param"
+        },
+        "shared": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Shared"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Type"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Weight"
+        }
+      },
+      "x-go-name": "DashBoardElement",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "FailureResponse": {
       "type": "object",
       "properties": {
@@ -1726,16 +2224,20 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "line": {
-          "type": "object",
-          "x-go-name": "Line"
-        },
-        "ts": {
+        "__name__": {
           "type": "string",
-          "x-go-name": "Ts"
+          "x-go-name": "Name"
+        },
+        "instance": {
+          "type": "string",
+          "x-go-name": "Instance"
+        },
+        "job": {
+          "type": "string",
+          "x-go-name": "Job"
         }
       },
-      "x-go-name": "entriesRemoteResult",
+      "x-go-name": "ValuesArray",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {

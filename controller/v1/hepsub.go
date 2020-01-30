@@ -18,7 +18,7 @@ type HepsubController struct {
 	HepsubService *service.HepsubService
 }
 
-// swagger:route GET /hepsub/protocol HepSub ListHepsub
+// swagger:route GET /hepsub/protocol hepsub ListHepsub
 //
 // Get HepSub
 // ---
@@ -68,7 +68,7 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 
 }
 
-// swagger:route POST /hepsub/protocol HepSub AddHepSub
+// swagger:route POST /hepsub/protocol hepsub AddHepSub
 //
 // Add new Hepsub information
 // ---

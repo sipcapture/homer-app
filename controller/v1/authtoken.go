@@ -20,7 +20,7 @@ type AuthtokenController struct {
 	AuthtokenService *service.AuthtokenService
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /token/auth token GetToken
 //
 // Get mappings
 // ---
@@ -49,7 +49,7 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /token/auth/{guid} token GetTokenAgainstGUID
 //
 // Get mappings
 // ---
@@ -78,7 +78,7 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:route POST /Authtoken/protocol Authtoken AddAuthtoken
+// swagger:route POST /token/auth token AddAuthToken
 //
 // Get mappings
 // ---
@@ -128,7 +128,7 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route PUT /token/auth/{guid} token UpdateToken
 //
 // Get mappings
 // ---
@@ -172,7 +172,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route DELETE /token/auth/:guid token DeleteToken
 //
 // Get mappings
 // ---

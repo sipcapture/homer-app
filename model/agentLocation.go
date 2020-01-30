@@ -8,6 +8,7 @@ func (TableAgentLocationSession) TableName() string {
 	return "agent_location_session"
 }
 
+// swagger:model AgentsLocation
 type TableAgentLocationSession struct {
 	ID         int       `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
 	GUID       string    `gorm:"column:guid;type:uuid" json:"uuid" validate:"required"`

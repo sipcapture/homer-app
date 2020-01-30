@@ -19,9 +19,9 @@ type AgentsubController struct {
 	AgentsubService *service.AgentsubService
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /agent/subscribe agent ListAgents
 //
-// Get mappings
+// Get agent
 // ---
 // consumes:
 // - application/json
@@ -36,8 +36,8 @@ type AgentsubController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '200': body:AgentsLocation
+//   '400': body:FailureResponse
 func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 
 	reply, err := ass.AgentsubService.GetAgentsub()
@@ -48,14 +48,21 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:operation GET /agent/type/{type} agent GetAgentByType
 //
-// Get mappings
+// Get agent
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: type of agent
+//   in: path
+//   example: home
+//   description: type of agent
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -65,8 +72,8 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '200': body:AgentsLocation
+//   '400': body:FailureResponse
 func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 	typeRequest := url.QueryEscape(c.Param("type"))
 	reply, err := ass.AgentsubService.GetAgentsubAgainstType(typeRequest)
@@ -76,14 +83,21 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:operation GET /agent/subscribe/{guid} agent GetAgentByGUID
 //
-// Get mappings
+// Get agent
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: type of agent
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of agent
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -93,8 +107,8 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '201': body:AgentsLocation
+//   '400': body:FailureResponse
 func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
@@ -105,7 +119,7 @@ func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:route POST /Agentsub/protocol Agentsub AddAgentsub
+// swagger:route POST /agentsub/protocol agent AddAgentsub
 //
 // Get mappings
 // ---
@@ -163,7 +177,7 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route GET /agent/subscribe/{guid} agent UpdateAgent
 //
 // Get mappings
 // ---
@@ -207,7 +221,7 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:operation DELETE /agent/subscribe/{guid} agent DeleteAgent
 //
 // Get mappings
 // ---
@@ -215,6 +229,13 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: type of agent
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of agent
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -244,7 +265,7 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET //mapping/protocol dashboard ListMapping
+// swagger:route POST /agent/search/{guid}/{type} agent CreateAgent
 //
 // Get mappings
 // ---

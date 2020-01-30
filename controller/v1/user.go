@@ -196,7 +196,7 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation POST /auth user userlogin
+// swagger:operation POST /auth user userLogin
 //
 // Returns a JWT Token and UUID attached to user
 // ---
@@ -204,6 +204,16 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: userstruct
+//   in: body
+//   description: user structure
+//   schema:
+//     "$ref": "#/definitions/UserLogin"
+//   required: true
+// responses:
+//   '201': body:UserCreateSuccessfulResponse
+//   '400': body:UserCreateSuccessfulResponse
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {

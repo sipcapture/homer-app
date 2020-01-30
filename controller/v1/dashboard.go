@@ -91,7 +91,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 }
 
-// swagger:operation POST /dashboard/store/{dashboardId} Dashboard Listdashboard
+// swagger:operation POST /dashboard/store/{dashboardId} Dashboard ListDashboard
 //
 // Add new dashboard
 // ---

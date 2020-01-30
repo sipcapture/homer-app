@@ -22,7 +22,7 @@
     },
     "version": "1.1.2"
   },
-  "host": "localhost:8080",
+  "host": "207.38.65.199:9080",
   "basePath": "/api/v3",
   "paths": {
     "//mapping/protocol": {
@@ -945,7 +945,19 @@
         "tags": [
           "user"
         ],
-        "operationId": "userlogin"
+        "operationId": "userLogin",
+        "parameters": [
+          {
+            "description": "user login structure",
+            "name": "userLoginStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {}
       }
     },
     "/dashboard/info": {
@@ -1015,7 +1027,7 @@
         "tags": [
           "Dashboard"
         ],
-        "operationId": "Listdashboard",
+        "operationId": "ListDashboard",
         "parameters": [
           {
             "type": "string",
@@ -1618,6 +1630,29 @@
       "x-go-name": "TableUser",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "FailureResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "errot",
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "message": {
+          "description": "message",
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "statuscode": {
+          "description": "statuscode",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "StatusCode"
+        }
+      },
+      "x-go-name": "UserTokenBadResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "GlobalSettingsStruct": {
       "type": "object",
       "required": [
@@ -1691,19 +1726,16 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "entries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LabelData"
-          },
-          "x-go-name": "Entries"
-        },
-        "labels": {
+        "line": {
           "type": "object",
-          "x-go-name": "Labels"
+          "x-go-name": "Line"
+        },
+        "ts": {
+          "type": "string",
+          "x-go-name": "Ts"
         }
       },
-      "x-go-name": "streamsResult",
+      "x-go-name": "entriesRemoteResult",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {
@@ -1803,7 +1835,7 @@
       },
       "x-go-package": "encoding/json"
     },
-    "UserCreateSuccessfulResponse": {
+    "SuccessResponse": {
       "type": "object",
       "properties": {
         "data": {
@@ -1817,6 +1849,7 @@
           "x-go-name": "Message"
         }
       },
+      "x-go-name": "UserCreateSuccessfulResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLogin": {
@@ -1838,29 +1871,6 @@
         }
       },
       "x-go-name": "UserloginDetails",
-      "x-go-package": "github.com/sipcapture/homer-app/model"
-    },
-    "UserLoginFailureResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "description": "errot",
-          "type": "string",
-          "x-go-name": "Error"
-        },
-        "message": {
-          "description": "message",
-          "type": "string",
-          "x-go-name": "Message"
-        },
-        "statuscode": {
-          "description": "statuscode",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "StatusCode"
-        }
-      },
-      "x-go-name": "UserTokenBadResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLoginSuccessResponse": {

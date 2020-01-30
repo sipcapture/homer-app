@@ -53,7 +53,7 @@ type UserTokenSuccessfulResponse struct {
 	} `json:"user"`
 }
 
-// swagger:model UserLoginFailureResponse
+// swagger:model FailureResponse
 type UserTokenBadResponse struct {
 	// statuscode
 	StatusCode int `json:"statuscode"`
@@ -81,7 +81,7 @@ type UserloginDetails struct {
 	Password string `json:"password" validate:"required"`
 }
 
-// swagger:model UserCreateSuccessfulResponse
+// swagger:model SuccessResponse
 type UserCreateSuccessfulResponse struct {
 	// count
 	Data string `json:"data"`

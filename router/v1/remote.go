@@ -7,10 +7,10 @@ import (
 )
 
 // RouteStatisticApis : here you tell us what RouteStatisticApis is
-func RouteLokiApis(acc *echo.Group, serviceRemote service.ServiceRemote) {
+func RouteLokiApis(acc *echo.Group, serviceLoki service.ServiceLoki) {
 
 	// initialize service of user
-	remoteService := service.RemoteService{ServiceRemote: serviceRemote}
+	remoteService := service.RemoteService{ServiceLoki: serviceLoki}
 
 	// initialize user controller
 	src := controllerv1.RemoteController{

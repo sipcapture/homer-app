@@ -16,7 +16,7 @@ import (
 
 // StatisticService : here you tell us what Salutation is
 type RemoteService struct {
-	ServiceRemote
+	ServiceLoki
 }
 
 // Salutation : here you tell us what Salutation is

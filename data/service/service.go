@@ -35,9 +35,20 @@ type ServicePrometheus struct {
 }
 
 // ServiceRemote : here you tell us what ServiceRemote is
-type ServiceRemote struct {
+type ServiceLoki struct {
 	HttpClient *http.Client
 	User       string
+	Password   string
+	Host       string
+	Api        string
+	Active     bool
+}
+
+// ServiceGrafana : here you tell us what ServiceRemote is
+type ServiceGrafana struct {
+	HttpClient *http.Client
+	User       string
+	Token      string
 	Password   string
 	Host       string
 	Api        string

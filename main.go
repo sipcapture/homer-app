@@ -115,6 +115,20 @@ type CommandLineFlags struct {
 	LogName                   *string    `json:"log_name_webapp"`
 }
 
+//params for  Services
+type ServicesObject struct {
+	configDBSession   *gorm.DB
+	dataDBSession     map[string]*gorm.DB
+	databaseNodeMap   []model.DatabasesMap
+	influxDBSession   service.ServiceInfluxDB
+	servicePrometheus service.ServicePrometheus
+	serviceLoki       service.ServiceLoki
+	serviceGrafana    service.ServiceGrafana
+	externalDecoder   service.ExternalDecoder
+}
+
+var servicesObject ServicesObject
+
 /* init flags */
 func initFlags() {
 	appFlags.CreateConfigDB = flag.Bool("create-config-db", false, "create config db")
@@ -202,39 +216,41 @@ func main() {
 		os.Exit(0)
 	}
 
-	configDBSession := getConfigDBSession()
-	defer configDBSession.Close()
+	servicesObject.configDBSession = getConfigDBSession()
+	defer servicesObject.configDBSession.Close()
 
 	if *appFlags.CreateTableConfigDB || *appFlags.UpgradeTableConfigDB {
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
+		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
 		os.Exit(0)
 	} else if *appFlags.PopulateTableConfigDB {
 
 		nameHomerConfig := viper.GetString("database_config.name")
-		migration.PopulateHomerConfigTables(configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
+		migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
 
 		os.Exit(0)
 	}
 
 	// configure new db session
-	dataDBSession, databaseNodeMap := getDataDBSession()
-	for val := range dataDBSession {
-		defer dataDBSession[val].Close()
+	servicesObject.dataDBSession, servicesObject.databaseNodeMap = getDataDBSession()
+	for val := range servicesObject.dataDBSession {
+		defer servicesObject.dataDBSession[val].Close()
 	}
 
 	// configure new influx db session
-	influxDBSession := getInfluxDBSession()
-	if influxDBSession.Active {
-		defer influxDBSession.InfluxClient.Close()
+	servicesObject.influxDBSession = getInfluxDBSession()
+	if servicesObject.influxDBSession.Active {
+		defer servicesObject.influxDBSession.InfluxClient.Close()
 	}
 
 	// configure new influx db session
-	servicePrometheus := getPrometheusDBSession()
+	servicesObject.servicePrometheus = getPrometheusDBSession()
 	//defer prometheusService.Close()
 
-	serviceRemote := getRemoteDBSession()
+	servicesObject.serviceLoki = getRemoteDBSession()
 	//defer httpClient.CloseIdleConnections()
+
+	servicesObject.serviceGrafana = getGrafanaSession()
 
 	authType = viper.GetString("auth_settings.type")
 	/* check the auth type */
@@ -276,22 +292,18 @@ func main() {
 
 	/* force to upgrade */
 	if nameHomerConfig := viper.GetString("database_config.name"); nameHomerConfig != "" {
-		migration.CreateHomerConfigTables(configDBSession, nameHomerConfig, true, false)
+		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, true, false)
 	}
 
 	// update version
-	updateVersionApplication(configDBSession)
+	updateVersionApplication(servicesObject.configDBSession)
 
 	// configure to serve WebServices
-	configureAsHTTPServer(dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, databaseNodeMap)
+	configureAsHTTPServer()
 
 }
 
-func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
-	configDBSession *gorm.DB, influxDBSession service.ServiceInfluxDB,
-	servicePrometheus service.ServicePrometheus,
-	serviceRemote service.ServiceRemote,
-	databaseNodeMap []model.DatabasesMap) {
+func configureAsHTTPServer() {
 
 	e := echo.New()
 	// add validation
@@ -336,21 +348,20 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	registerGetRedirect(e, rootPath)
 
 	/* decoder */
-	var externalDecoder service.ExternalDecoder
-	externalDecoder.Active = false
+	servicesObject.externalDecoder.Active = false
 
 	binShark := viper.GetString("decoder_shark.bin")
 	if binShark != "" {
-		externalDecoder.Binary = binShark
-		externalDecoder.Param = viper.GetString("decoder_shark.param")
-		externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
-		externalDecoder.UID = uint32(viper.GetInt("decoder_shark.uid"))
-		externalDecoder.GID = uint32(viper.GetInt("decoder_shark.gid"))
-		externalDecoder.Active = viper.GetBool("decoder_shark.active")
+		servicesObject.externalDecoder.Binary = binShark
+		servicesObject.externalDecoder.Param = viper.GetString("decoder_shark.param")
+		servicesObject.externalDecoder.Protocols = viper.GetStringSlice("decoder_shark.protocols")
+		servicesObject.externalDecoder.UID = uint32(viper.GetInt("decoder_shark.uid"))
+		servicesObject.externalDecoder.GID = uint32(viper.GetInt("decoder_shark.gid"))
+		servicesObject.externalDecoder.Active = viper.GetBool("decoder_shark.active")
 	}
 
 	// perform routing for v1 version of web apis
-	performV1APIRouting(e, dataDBSession, configDBSession, influxDBSession, servicePrometheus, serviceRemote, externalDecoder, databaseNodeMap)
+	performV1APIRouting(e)
 	httpHost := viper.GetString("http_settings.host")
 	httpPort := viper.GetString("http_settings.port")
 	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
@@ -364,24 +375,19 @@ func configureAsHTTPServer(dataDBSession map[string]*gorm.DB,
 	e.Logger.Fatal(e.Start(httpURL))
 }
 
-func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, configDBSession *gorm.DB,
-	influxDBSession service.ServiceInfluxDB,
-	servicePrometheus service.ServicePrometheus,
-	serviceRemote service.ServiceRemote,
-	externalDecoder service.ExternalDecoder,
-	databaseNodeMap []model.DatabasesMap) {
+func performV1APIRouting(e *echo.Echo) {
 
 	// accessible web services will fall in this group
 	acc := e.Group("/api/v3")
 
 	if authType == "ldap" {
-		apirouterv1.RouteUserApis(acc, configDBSession, &ldapClient)
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient)
 	} else {
-		apirouterv1.RouteUserApis(acc, configDBSession, nil)
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil)
 	}
 
 	//subscribe access with authKey
-	apirouterv1.RouteAgentsubAuthKeyApis(acc, configDBSession)
+	apirouterv1.RouteAgentsubAuthKeyApis(acc, servicesObject.configDBSession)
 
 	// restricted web services will fall in this group
 	res := e.Group("/api/v3")
@@ -398,40 +404,42 @@ func performV1APIRouting(e *echo.Echo, dataDBSession map[string]*gorm.DB, config
 
 	/*************** admin access ONLY ***************/
 	// route mapping apis
-	apirouterv1.RouteMappingdApis(res, configDBSession)
+	apirouterv1.RouteMappingdApis(res, servicesObject.configDBSession)
 	// route alias apis
-	apirouterv1.RouteAliasApis(res, configDBSession)
+	apirouterv1.RouteAliasApis(res, servicesObject.configDBSession)
 	// route advanced apis
-	apirouterv1.RouteAdvancedApis(res, configDBSession)
+	apirouterv1.RouteAdvancedApis(res, servicesObject.configDBSession)
 	// route hepsub apis
-	apirouterv1.RouteHepsubApis(res, configDBSession)
+	apirouterv1.RouteHepsubApis(res, servicesObject.configDBSession)
 	// route make auth token
-	apirouterv1.RouteAuthTokenApis(res, configDBSession)
+	apirouterv1.RouteAuthTokenApis(res, servicesObject.configDBSession)
 
 	/*************** PARTLY admin access ONLY ***************/
 	// route user apis
-	apirouterv1.RouteUserDetailsApis(res, configDBSession)
+	apirouterv1.RouteUserDetailsApis(res, servicesObject.configDBSession)
 	// route userSettings apis
-	apirouterv1.RouteUserSettingsApis(res, configDBSession)
+	apirouterv1.RouteUserSettingsApis(res, servicesObject.configDBSession)
 	// route agent sub apis
-	apirouterv1.RouteAgentsubApis(res, configDBSession)
+	apirouterv1.RouteAgentsubApis(res, servicesObject.configDBSession)
 
 	// route hep sub search apis
-	apirouterv1.RouteHepSubSearch(res, configDBSession)
+	apirouterv1.RouteHepSubSearch(res, servicesObject.configDBSession)
 
 	// route search apis
-	apirouterv1.RouteSearchApis(res, dataDBSession, configDBSession, externalDecoder)
+	apirouterv1.RouteSearchApis(res, servicesObject.dataDBSession, servicesObject.configDBSession, servicesObject.externalDecoder)
 	// route dashboards apis
-	apirouterv1.RouteDashboardApis(res, configDBSession)
+	apirouterv1.RouteDashboardApis(res, servicesObject.configDBSession)
 
 	// route profile apis
-	apirouterv1.RouteProfileApis(res, configDBSession, databaseNodeMap)
+	apirouterv1.RouteProfileApis(res, servicesObject.configDBSession, servicesObject.databaseNodeMap)
 	// route RouteStatisticApis apis
-	apirouterv1.RouteStatisticApis(res, influxDBSession)
+	apirouterv1.RouteStatisticApis(res, servicesObject.influxDBSession)
 	// route RouteStatisticApis apis
-	apirouterv1.RoutePrometheusApis(res, servicePrometheus)
+	apirouterv1.RoutePrometheusApis(res, servicesObject.servicePrometheus)
 	// route RouteLokiApis apis
-	apirouterv1.RouteLokiApis(res, serviceRemote)
+	apirouterv1.RouteLokiApis(res, servicesObject.serviceLoki)
+	// route RouteLokiApis apis
+	apirouterv1.RouteGrafanaApis(res, servicesObject.configDBSession, servicesObject.serviceGrafana)
 
 }
 
@@ -647,23 +655,23 @@ func getPrometheusDBSession() service.ServicePrometheus {
 }
 
 // getInfluxDBSession creates a new influxdb session and panics if connection error occurs
-func getRemoteDBSession() service.ServiceRemote {
+func getRemoteDBSession() service.ServiceLoki {
 
 	user := viper.GetString("loki_config.user")
-	password := viper.GetString("lokiconfig.pass")
+	password := viper.GetString("loki_config.pass")
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
 
 	if host == "" {
 		logrus.Println("Loki functions disabled")
-		return service.ServiceRemote{Active: false}
+		return service.ServiceLoki{Active: false}
 	}
 
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
 
-	serviceRemote := service.ServiceRemote{
+	ServiceLoki := service.ServiceLoki{
 		HttpClient: httpClient,
 		User:       user,
 		Password:   password,
@@ -675,7 +683,27 @@ func getRemoteDBSession() service.ServiceRemote {
 	logrus.Println("------------------------------------ ")
 	logrus.Println("**** Loki Session created **** ")
 	logrus.Println("------------------------------------ ")
-	return serviceRemote
+	return ServiceLoki
+}
+
+// getInfluxDBSession creates a new influxdb session and panics if connection error occurs
+func getGrafanaSession() service.ServiceGrafana {
+
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	ServiceGrafana := service.ServiceGrafana{
+		HttpClient: httpClient,
+		User:       "admin",
+		Password:   "",
+		Token:      "",
+		Host:       "http://127.0.0.1:3000",
+		Api:        "",
+		Active:     true,
+	}
+
+	return ServiceGrafana
 }
 
 func readConfig() {
@@ -775,7 +803,7 @@ func bodyDumpHandler(c echo.Context, reqBody, resBody []byte) {
 
 	logrus.Println("================================")
 
-	printRequest(c.Request())
+	//printRequest(c.Request())
 
 	logrus.Println("--------request body-------")
 	printBody(reqBody)

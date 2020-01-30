@@ -196,7 +196,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		logrus.Debug(elemArray)
 
 		if len(elemArray) != 2 {
-			return "", fmt.Errorf("key is wrong: %d", len(elemArray))
+			return "", fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
 		}
 
 		for _, v := range value.Search("callid").Data().([]interface{}) {
@@ -213,12 +213,12 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	}
 
 	if len(hepsubObject) == 0 {
-		return "", fmt.Errorf("no mapping found")
+		return "", fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
 	}
 
 	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
 	if !sMapping.Exists("lookup_profile") || !sMapping.Exists("lookup_field") || !sMapping.Exists("lookup_range") {
-		return "", fmt.Errorf("no mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
 	}
 
 	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
@@ -244,7 +244,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	req, err := http.NewRequest("POST", serverURL, bytes.NewBuffer([]byte(lookupField)))
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", serverURL)
+		logrus.Error("Couldn't make a request to agent. Query:", serverURL)
 		return "", err
 	}
 
@@ -255,14 +255,14 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", serverURL)
+		logrus.Error("Agent HEPSUB: Couldn't make http query:", serverURL)
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	buf, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logrus.Error("Agent HEPSUB: Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 

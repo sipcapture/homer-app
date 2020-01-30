@@ -127,16 +127,19 @@ This section defines how `homer-app` will authenticate its API and UI users. By 
     "type": "internal"
   },
   "ldap_config": {
-    "Base":  "dc=example,dc=com",
-		"Host":  "ldap.example.com",
-		"Port":   389,
-		"UseSSL": false,
-		"BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
-		"BindPassword": "readonlypassword",
-		"UserFilter": "(uid=%s)",
-		"GroupFilter": "(memberUid=%s)",
-		"Attributes": ["givenName", "sn", "mail", "uid"]
-  }
+    "base":  "dc=example,dc=com",
+		"host":  "ldap.example.com",
+		"port":   389,
+    "usessl": false,
+    "skiptls": true,
+		"binddn": "uid=readonlysuer,ou=People,dc=example,dc=com",
+		"bindpassword": "readonlypassword",
+		"userfilter": "(uid=%s)",
+    "groupfilter": "(memberUid=%s)",
+    "admingroup": "admin",
+    "adminmode": true,
+    "attributes": ["givenName", "sn", "mail", "uid"]
+  },
 }
 ```
 

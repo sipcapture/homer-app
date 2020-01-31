@@ -87,19 +87,19 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardId)
 	if err != nil {
-		if cc.ExternalAuth && dashboardId == "home" {
+		if dashboardId == "home" {
 			_, err := dbc.DashBoardService.InsertDashboard(username, dashboardId, jsonschema.DashboardHome)
 			if err != nil {
-				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}
 
 			reply, err = dbc.DashBoardService.GetDashBoard(username, dashboardId)
 			if err != nil {
-				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DashboardNotExists)
 			}
 
 		} else {
-			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DashboardNotExists)
 		}
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
@@ -157,13 +157,9 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 		return err
 	}
 
-	//data := types.JSONText(string(jsonString))
-	//logrus.Println(string(data))
-	//logrus.Println("-----------------------------")
-
 	reply, err := dbc.DashBoardService.InsertDashboard(username, dashboardId, data)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.InsertDashboardFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -202,7 +198,7 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 	dashboardId := url.QueryEscape(c.Param("dashboardId"))
 	reply, err := dbc.DashBoardService.DeleteDashboard(username, dashboardId)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteDashboardFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 

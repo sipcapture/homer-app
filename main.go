@@ -339,9 +339,29 @@ func configureAsHTTPServer() {
 				if strings.HasPrefix(c.Request().RequestURI, "/swagger") {
 					return true
 				}
-				return false
+				return true
 			},
 			Level: 5,
+		}))
+	}
+
+	if gzipStaticEnable := viper.GetBool("http_settings.gzip_static"); gzipStaticEnable {
+
+		e.Pre(middleware.RewriteWithConfig(middleware.RewriteConfig{
+			Skipper: func(c echo.Context) bool {
+
+				if strings.HasSuffix(c.Request().RequestURI, ".js") {
+					if heputils.FileExists(rootPath + c.Request().RequestURI + ".gz") {
+						c.Response().Header().Set(echo.HeaderContentEncoding, "gzip")
+						return false
+					}
+				}
+
+				return true
+			},
+			Rules: map[string]string{
+				"*.js": "$1.js.gz",
+			},
 		}))
 	}
 

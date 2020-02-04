@@ -41,12 +41,12 @@
     "api": "api/prom"
   },
   "http_settings": {
-    "help": "Settings for the HOMER Webapp Server",
+    "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
     "host": "0.0.0.0",
     "port" : 9080,
     "root" : "/usr/local/homer/dist",
     "gzip" : true,
-    "gzip_static" : false,
+    "gzip_static" : true,
     "debug" : false
   },
   "system_settings": {

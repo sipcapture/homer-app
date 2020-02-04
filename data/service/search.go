@@ -399,6 +399,7 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 				newData := gabs.New()
 				newData.Set(v.Data().(interface{}), k)
 				dataElement.Merge(newData)
+
 			case "raw":
 				newData := gabs.New()
 				/* doing sipIsup extraction */
@@ -705,8 +706,12 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		}
 
 		if len(searchTmp) > 0 {
+
+			profileName := strings.TrimPrefix(table, "hep_proto_")
+
 			for val := range searchTmp {
 				searchTmp[val].Node = session
+				searchTmp[val].Profile = profileName
 			}
 			searchData = append(searchData, searchTmp...)
 		}

@@ -207,7 +207,6 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	createString := fmt.Sprintf("\r\nHOMER - filling tables for the config DB [dbname=%s]", homerDBconfig)
 	usersData := []model.TableUser{
 		model.TableUser{
-			Id:         1,
 			UserName:   "admin",
 			PartId:     10,
 			Email:      "root@localhost",
@@ -219,7 +218,6 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			GUID:       uuid.NewV4().String(),
 		},
 		model.TableUser{
-			Id:         2,
 			UserName:   "support",
 			PartId:     10,
 			Email:      "support@localhost",

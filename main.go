@@ -345,7 +345,13 @@ func configureAsHTTPServer() {
 		}))
 	}
 
-	if gzipStaticEnable := viper.GetBool("http_settings.gzip_static"); gzipStaticEnable {
+	gzipStaticEnable := true
+
+	if viper.IsSet("http_settings.gzip_static") {
+		gzipStaticEnable = viper.GetBool("http_settings.gzip_static")
+	}
+
+	if gzipStaticEnable {
 
 		e.Pre(middleware.RewriteWithConfig(middleware.RewriteConfig{
 			Skipper: func(c echo.Context) bool {

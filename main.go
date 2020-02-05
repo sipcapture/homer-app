@@ -47,6 +47,7 @@ import (
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -288,6 +289,14 @@ func main() {
 	authTokenExpire := viper.GetInt("auth_settings.token_expire")
 	if authTokenExpire > 0 {
 		auth.TokenExpiryTime = authTokenExpire
+	}
+
+	if versionPg, err := migration.CheckVersion(servicesObject.configDBSession); err != nil {
+		heputils.Colorize(heputils.ColorRed, "\r\nVersion of DB couldn't be retrieved\r\n")
+	} else if (versionPg / 10000) < jsonschema.MinimumPgSQL {
+		heputils.Colorize(heputils.ColorRed, fmt.Sprintf("\r\nYou don't have required version of PostgreSQL. Please install minimum: %d\r\n", jsonschema.MinimumPgSQL))
+	} else {
+		heputils.Colorize(heputils.ColorBlue, fmt.Sprintf("\r\nPostgreSQL version: %d.%d\r\n", versionPg/10000, versionPg%10000))
 	}
 
 	/* force to upgrade */

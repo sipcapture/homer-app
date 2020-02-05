@@ -154,6 +154,22 @@ func ShowUsers(dataRootDBSession *gorm.DB) {
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
+func CheckVersion(dataRootDBSession *gorm.DB) (int, error) {
+
+	sql2 := "SHOW server_version_num;"
+
+	var VersionNum int
+	rows, _ := dataRootDBSession.Raw(sql2).Rows() // (*sql.Rows, error)
+	defer rows.Close()
+	if rows.Next() {
+		err := rows.Scan(&VersionNum)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return VersionNum, nil
+}
+
 func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typeAction bool, showUpgrade bool) {
 
 	if showUpgrade {

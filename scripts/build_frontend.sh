@@ -14,7 +14,7 @@ if [ "$CONT" = "y" ]; then
   docker run --rm \
   -v $PWD/dist:/dist \
   node:12-alpine \
-  sh -c "apk --update add git && git clone https://github.com/sipcapture/homer-ui /app && cd /app && npm install && npm install -g @angular/cli && npm audit fix && ng build --configuration=production && cp -R /app/dist/homer-ui/* /dist/ && echo 'done!'"
+  sh -c "apk --update add git && git clone https://github.com/sipcapture/homer-ui /app && cd /app && npm install && npm install -g @angular/cli && npm audit fix && npm run build && cp -R /app/dist/homer-ui/* /dist/ && echo 'done!'"
   ls -alF ./dist
 else
   echo "Exiting...";

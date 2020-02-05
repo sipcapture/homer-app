@@ -368,6 +368,7 @@ func configureAsHTTPServer() {
 				if strings.HasSuffix(c.Request().RequestURI, ".js") {
 					if heputils.FileExists(rootPath + c.Request().RequestURI + ".gz") {
 						c.Response().Header().Set(echo.HeaderContentEncoding, "gzip")
+						c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJavaScript)
 						return false
 					}
 				}

@@ -186,7 +186,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			switch k {
 			case "data_header", "protocol_header":
 				dataElement.Merge(v)
-			case "id", "sid", "node":
+			case "id", "sid", "node", "dbnode":
 				newData := gabs.New()
 				newData.Set(v.Data().(interface{}), k)
 				dataElement.Merge(newData)

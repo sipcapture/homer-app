@@ -163,7 +163,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		if len(searchTmp) > 0 {
 			for val := range searchTmp {
-				searchTmp[val].DBNode = session
+				searchTmp[val].Node = session
 				searchTmp[val].DBNode = session
 			}
 

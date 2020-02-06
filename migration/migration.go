@@ -293,6 +293,13 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Param:    "transaction",
 			Data:     jsonschema.ExportConfig,
 		},
+		model.TableGlobalSettings{
+			GUID:     uuid.NewV4().String(),
+			PartId:   1,
+			Category: "search",
+			Param:    "transaction",
+			Data:     jsonschema.TransactionConfig,
+		},
 	}
 
 	agentLocationSession := []model.TableAgentLocationSession{

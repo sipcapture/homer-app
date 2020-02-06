@@ -163,7 +163,8 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		if len(searchTmp) > 0 {
 			for val := range searchTmp {
-				searchTmp[val].Node = session
+				searchTmp[val].DBNode = session
+				searchTmp[val].DBNode = session
 			}
 
 			searchData = append(searchData, searchTmp...)
@@ -297,7 +298,9 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 
 		if len(searchTmp) > 0 {
 			for val := range searchTmp {
+				searchTmp[val].DBNode = session
 				searchTmp[val].Node = session
+
 			}
 			searchData = append(searchData, searchTmp...)
 		}
@@ -381,6 +384,8 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 		if len(searchTmp) > 0 {
 			for val := range searchTmp {
 				searchTmp[val].Node = session
+				searchTmp[val].DBNode = session
+
 			}
 			searchData = append(searchData, searchTmp...)
 		}
@@ -711,6 +716,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 
 			for val := range searchTmp {
 				searchTmp[val].Node = session
+				searchTmp[val].DBNode = session
 				searchTmp[val].Profile = profileName
 			}
 			searchData = append(searchData, searchTmp...)
@@ -953,6 +959,7 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 			if len(searchTmp) > 0 {
 				for val := range searchTmp {
 					searchTmp[val].Node = session
+					searchTmp[val].DBNode = session
 				}
 				searchData = append(searchData, searchTmp...)
 			}
@@ -1030,6 +1037,7 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 		if len(searchTmp) > 0 {
 			for val := range searchTmp {
 				searchTmp[val].Node = session
+				searchTmp[val].DBNode = session
 			}
 			searchData = append(searchData, searchTmp...)
 		}

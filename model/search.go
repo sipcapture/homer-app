@@ -32,6 +32,7 @@ type HepTable struct {
 	ProtocolHeader json.RawMessage `gorm:"column:protocol_header" json:"protocol_header"`
 	DataHeader     json.RawMessage `gorm:"column:data_header" json:"data_header"`
 	Raw            string          `gorm:"column:raw" json:"raw"`
+	DBNode         string          `gorm:"column:-" json:"dbnode"`
 	Node           string          `gorm:"column:-" json:"node"`
 	Profile        string          `gorm:"column:-" json:"profile"`
 }

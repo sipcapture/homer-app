@@ -266,6 +266,8 @@ func main() {
 		ldapClient.Host = viper.GetString("ldap_config.host")
 		ldapClient.Port = viper.GetInt("ldap_config.port")
 		ldapClient.UseSSL = viper.GetBool("ldap_config.usessl")
+		ldapClient.Anonymous = viper.GetBool("ldap_config.anonymous")
+		ldapClient.UserDN = viper.GetString("ldap_config.userdn")
 		ldapClient.BindDN = viper.GetString("ldap_config.binddn")
 		ldapClient.BindPassword = viper.GetString("ldap_config.bindpassword")
 		ldapClient.UserFilter = viper.GetString("ldap_config.userfilter")

@@ -7,6 +7,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+
 	"github.com/sirupsen/logrus"
 	"gopkg.in/ldap.v3"
 )
@@ -24,6 +25,8 @@ type LDAPClient struct {
 	Port               int
 	InsecureSkipVerify bool
 	UseSSL             bool
+	Anonymous          bool
+	UserDN             string
 	SkipTLS            bool
 	AdminGroup         string
 	AdminMode          bool
@@ -86,63 +89,77 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		return false, false, nil, err
 	}
 
-	// First bind with a read only user
-	if lc.BindDN != "" && lc.BindPassword != "" {
-		err := lc.Conn.Bind(lc.BindDN, lc.BindPassword)
+	isAdmin := lc.AdminMode
+	user := map[string]string{}
+
+	if !lc.Anonymous {
+		// First bind with a read only user
+		if lc.BindDN != "" && lc.BindPassword != "" {
+			err := lc.Conn.Bind(lc.BindDN, lc.BindPassword)
+			if err != nil {
+				logrus.Error("Couldn't auth user: ", err)
+				return false, false, nil, err
+			}
+		}
+
+		attributes := append(lc.Attributes, "dn")
+		// Search for the given username
+		searchRequest := ldap.NewSearchRequest(
+			lc.Base,
+			ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+			fmt.Sprintf(lc.UserFilter, username),
+			attributes,
+			nil,
+		)
+
+		sr, err := lc.Conn.Search(searchRequest)
 		if err != nil {
-			logrus.Error("Couldn't auth user: ", err)
 			return false, false, nil, err
 		}
-	}
 
-	attributes := append(lc.Attributes, "dn")
-	// Search for the given username
-	searchRequest := ldap.NewSearchRequest(
-		lc.Base,
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf(lc.UserFilter, username),
-		attributes,
-		nil,
-	)
-
-	sr, err := lc.Conn.Search(searchRequest)
-	if err != nil {
-		return false, false, nil, err
-	}
-
-	if len(sr.Entries) < 1 {
-		return false, false, nil, errors.New("User does not exist")
-	}
-
-	if len(sr.Entries) > 1 {
-		return false, false, nil, errors.New("Too many entries returned")
-	}
-
-	userDN := sr.Entries[0].DN
-	user := map[string]string{}
-	for _, attr := range lc.Attributes {
-		if attr == "dn" {
-			user["dn"] = sr.Entries[0].DN
-		} else {
-			user[attr] = sr.Entries[0].GetAttributeValue(attr)
+		if len(sr.Entries) < 1 {
+			return false, false, nil, errors.New("User does not exist")
 		}
-	}
 
-	if userDN != "" && password != "" {
-		err = lc.Conn.Bind(userDN, password)
-		if err != nil {
-			return false, false, user, err
+		if len(sr.Entries) > 1 {
+			return false, false, nil, errors.New("Too many entries returned")
+		}
+
+		userDN := sr.Entries[0].DN
+		for _, attr := range lc.Attributes {
+			if attr == "dn" {
+				user["dn"] = sr.Entries[0].DN
+			} else {
+				user[attr] = sr.Entries[0].GetAttributeValue(attr)
+			}
+		}
+
+		if userDN != "" && password != "" {
+			err = lc.Conn.Bind(userDN, password)
+			if err != nil {
+				return false, false, user, err
+			}
+		} else {
+			return false, false, user, errors.New("No username/password provided.")
+		}
+
+		// Rebind as the read only user for any further queries
+		if lc.BindDN != "" && lc.BindPassword != "" {
+			err = lc.Conn.Bind(lc.BindDN, lc.BindPassword)
+			if err != nil {
+				return true, isAdmin, user, err
+			}
 		}
 	} else {
-		return false, false, user, errors.New("No username/password provided.")
-	}
 
-	isAdmin := lc.AdminMode
-	// Rebind as the read only user for any further queries
-	if lc.BindDN != "" && lc.BindPassword != "" {
-		err = lc.Conn.Bind(lc.BindDN, lc.BindPassword)
-		if err != nil {
-			return true, isAdmin, user, err
+		if lc.UserDN != "" && username != "" && password != "" {
+			userDN := fmt.Sprintf(lc.UserDN, username)
+			err = lc.Conn.Bind(userDN, password)
+			if err != nil {
+				return false, false, user, err
+			}
+		} else {
+			return false, false, user, errors.New("No username/password provided.")
 		}
 	}
 

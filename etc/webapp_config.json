@@ -74,7 +74,9 @@
     "groupfilter": "(memberUid=%s)",
     "admingroup": "admin",
     "adminmode": true,
-    "attributes": ["givenName", "sn", "mail", "uid"]
+    "attributes": ["givenName", "sn", "mail", "uid"],
+    "anonymous": false,
+    "userdn": "uid=%s,ou=People,dc=example,dc=com"
   },
   "decoder_shark": {
     "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",

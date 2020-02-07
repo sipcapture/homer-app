@@ -142,6 +142,16 @@ This section defines how `homer-app` will authenticate its API and UI users. By 
   },
 }
 ```
+or if you want to make anonymous binding:
+
+```
+  "ldap_config": {
+  ....
+    "anonymous": true,
+    "userdn": "uid=%s,ou=People,dc=example,dc=com"
+  }
+```
+
 
 ### External Decoder Settings
 This section defines an external packet decoder pipeline returning advanced dissection in JSON format:

@@ -54,6 +54,11 @@ func (alc *AliasController) AddAlias(c echo.Context) error {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
+	// validate input request body
+	if err := c.Validate(aliasObject); err != nil {
+		logrus.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	row, _ := alc.AliasService.Add(&aliasObject)
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)

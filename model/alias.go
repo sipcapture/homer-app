@@ -22,10 +22,10 @@ type TableAlias struct {
 	IP string `gorm:"column:ip;type:varchar(60)" json:"ip" validate:"required"`
 	// example: 5060
 	// required: true
-	Port int `gorm:"column:port;type:int" json:"port" validate:"required"`
+	Port *int `gorm:"column:port;type:int;default:0" json:"port" validate:"required"`
 	// example: 32
 	// required: true
-	Mask int `gorm:"column:mask;type:int" json:"mask" validate:"required"`
+	Mask *int `gorm:"column:mask;type:int" json:"mask" validate:"required"`
 	// example: 0
 	// required: true
 	CaptureID  string    `gorm:"column:captureID;type:varchar(20)" json:"captureID" validate:"required"`

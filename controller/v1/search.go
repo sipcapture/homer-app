@@ -48,10 +48,10 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	aliasRowData, _ := sc.AliasService.GetAll()
+	aliasRowData, _ := sc.AliasService.GetAllActive()
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
-		Port := strconv.Itoa(row.Port)
+		Port := strconv.Itoa(*row.Port)
 		aliasData[row.IP+":"+Port] = row.Alias
 	}
 
@@ -155,11 +155,11 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	transactionData, _ := json.Marshal(transactionObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&transactionObject)
-	aliasRowData, _ := sc.AliasService.GetAll()
+	aliasRowData, _ := sc.AliasService.GetAllActive()
 
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
-		Port := strconv.Itoa(row.Port)
+		Port := strconv.Itoa(*row.Port)
 		aliasData[row.IP+":"+Port] = row.Alias
 	}
 
@@ -280,11 +280,11 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
-	aliasRowData, _ := sc.AliasService.GetAll()
+	aliasRowData, _ := sc.AliasService.GetAllActive()
 
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
-		Port := strconv.Itoa(row.Port)
+		Port := strconv.Itoa(*row.Port)
 		aliasData[row.IP+":"+Port] = row.Alias
 	}
 

@@ -27,6 +27,20 @@ func (as *AliasService) GetAll() ([]model.TableAlias, error) {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
+func (as *AliasService) GetAllActive() ([]model.TableAlias, error) {
+
+	alias := []model.TableAlias{}
+	if err := as.Session.Debug().
+		Table("alias").
+		Where("status = true").
+		Find(&alias).Error; err != nil {
+		return alias, err
+	}
+	return alias, nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
 func (as *AliasService) Add(alias *model.TableAlias) (string, error) {
 	u1 := uuid.NewV4()
 	alias.GUID = u1.String()

@@ -284,6 +284,12 @@ func main() {
 			}
 		}
 
+		if viper.IsSet("ldap_config.skipverify") {
+			ldapClient.InsecureSkipVerify = viper.GetBool("ldap_config.skipverify")
+		} else {
+			ldapClient.InsecureSkipVerify = true
+		}
+
 		defer ldapClient.Close()
 	}
 

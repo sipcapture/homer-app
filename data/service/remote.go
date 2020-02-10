@@ -92,7 +92,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	baseUrl.RawQuery = params.Encode() // Escape Query Parameters
 
-	logrus.Error("Couldn't  query:", baseUrl.String())
+	//logrus.Error("Couldn't  query:", baseUrl.String())
 
 	req, err := http.NewRequest("GET", baseUrl.String(), nil)
 

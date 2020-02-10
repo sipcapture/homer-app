@@ -41,7 +41,7 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 
 	reply, err := hsc.HepsubService.GetHepSub()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HepSubRequestFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 

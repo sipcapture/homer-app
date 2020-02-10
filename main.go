@@ -160,7 +160,7 @@ func initFlags() {
 	appFlags.DatabaseRootPassword = flag.String("database-root-password", "", "database-root-password")
 	appFlags.DatabaseHost = flag.String("database-host", "localhost", "database-host")
 	appFlags.DatabasePort = flag.Int("database-port", 5432, "database-port")
-	appFlags.DatabaseRootDB = flag.String("database-root-db", "systems", "database-root-db")
+	appFlags.DatabaseRootDB = flag.String("database-root-db", "postgres", "database-root-db")
 	appFlags.DatabaseHomerNode = flag.String("database-homer-node", "localnode", "database-homer-node")
 	appFlags.DatabaseHomerUser = flag.String("database-homer-user", "homer_user", "database-homer-user")
 	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password")

@@ -42,7 +42,7 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 
 	reply, err := ass.AgentsubService.GetAgentsub()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetAgentSubFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 

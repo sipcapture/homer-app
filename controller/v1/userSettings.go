@@ -42,7 +42,7 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 	userName, isAdmin := auth.IsRequestAdmin(c)
 	reply, err := usc.UserSettingsService.GetAll(userName, isAdmin)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }

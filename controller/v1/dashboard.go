@@ -44,7 +44,11 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 	username := cc.UserName
 	reply, err := dbc.DashBoardService.GetDashBoardsLists(username)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		dbc.DashBoardService.InsertDashboard(username, "home", jsonschema.DashboardHome)
+		reply, err = dbc.DashBoardService.GetDashBoardsLists(username)
+		if err != nil {
+			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
+		}
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -81,19 +85,19 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 	cc := c.(model.AppContext)
 	username := cc.UserName
 
-	dashboardId := c.Param("dashboardId")
+	dashboardID := c.Param("dashboardId")
 
 	logrus.Println("*** Database Session created *** ")
 
-	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardId)
+	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardID)
 	if err != nil {
-		if dashboardId == "home" {
-			_, err := dbc.DashBoardService.InsertDashboard(username, dashboardId, jsonschema.DashboardHome)
+		if dashboardID == "home" {
+			_, err := dbc.DashBoardService.InsertDashboard(username, dashboardID, jsonschema.DashboardHome)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}
 
-			reply, err = dbc.DashBoardService.GetDashBoard(username, dashboardId)
+			reply, err = dbc.DashBoardService.GetDashBoard(username, dashboardID)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DashboardNotExists)
 			}

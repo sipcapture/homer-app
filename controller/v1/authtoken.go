@@ -43,7 +43,7 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 	reply, err := ass.AuthtokenService.GetAuthtoken()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetAuthTokenFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 

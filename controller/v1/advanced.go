@@ -164,7 +164,7 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 	}
 	reply, err = ac.AdvancedService.DeleteAdvancedAgainstGUID(guid)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteAdvancedAgainstFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
@@ -200,7 +200,7 @@ func (ac *AdvancedController) GetAdvancedAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetAdvancedAgainstFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }

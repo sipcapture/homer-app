@@ -85,7 +85,7 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 	transaction := url.QueryEscape(c.Param("transaction"))
 	reply, err := mpc.MappingService.GetMappingFields(id, transaction)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -122,7 +122,7 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
@@ -253,7 +253,7 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	}
 	reply, err = mpc.MappingService.DeleteMappingAgainstGUID(guid)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteMappingSchemaFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
@@ -291,7 +291,7 @@ func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
 	reply, err := mpc.MappingService.GetSmartSuggestionAginstProfile(hepid, profile)
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SmartHepProfileFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }

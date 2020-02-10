@@ -37,7 +37,7 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetProfile()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingHepSubFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -66,7 +66,7 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetProfile()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -95,7 +95,7 @@ func (pc *ProfileController) GetDBNodeList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetDBNodeList()
 	if err != nil {
-		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDBNodeListFailed)
 	}
 
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))

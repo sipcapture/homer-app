@@ -152,17 +152,22 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		}
 	} else {
 
+		logrus.Debug("Sedning anonymous request...")
+
 		if lc.UserDN != "" && username != "" && password != "" {
 			userDN := fmt.Sprintf(lc.UserDN, username)
 			err = lc.Conn.Bind(userDN, password)
 			if err != nil {
+				logrus.Error("error ldap request...", err)
 				return false, false, user, err
 			}
 		} else {
-			return false, false, user, errors.New("No username/password provided.")
+			logrus.Error("No username/password provided...", err)
+			return false, false, user, errors.New("No username/password provided")
 		}
 	}
 
+	logrus.Debug("Sedning response request...", user)
 	return true, isAdmin, user, nil
 }
 

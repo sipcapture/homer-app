@@ -178,8 +178,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 
 	var RemoteLebels RemoteLabels
 
-	json.Unmarshal(buf, &RemoteLebels)
-
+	err = json.Unmarshal(buf, &RemoteLebels)
 	if err != nil {
 		logrus.Error("couldn't decode json body")
 		return "", err

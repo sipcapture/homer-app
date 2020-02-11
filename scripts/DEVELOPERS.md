@@ -32,6 +32,7 @@ PKGNAME="homer-app-$RELEASE-amd64"
 ```
 PKGNAME="homer-app-$RELEASE-amd64"
 package_cloud push qxip/sipcapture/debian/stretch $PKGNAME.deb
+package_cloud push qxip/sipcapture/debian/buster $PKGNAME.deb
 package_cloud push qxip/sipcapture/el/7 $PKGNAME.rpm
 ```
 

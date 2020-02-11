@@ -41,6 +41,7 @@ type ServiceLoki struct {
 	Password   string
 	Host       string
 	Api        string
+	ParamQuery string
 	Active     bool
 }
 

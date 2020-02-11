@@ -82,22 +82,20 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	params.Add("start", strconv.FormatInt(int64(searchFromTime)*1000000, 10))
 	params.Add("end", strconv.FormatInt(int64(searchToTime)*1000000, 10))
 
-	lokiQuery := fmt.Sprintf("%s/%s/query", ps.Host, ps.Api)
+	lokiQuery := fmt.Sprintf("%s/%s/%s", ps.Host, ps.Api, ps.ParamQuery)
 
 	// Let's start with a base url
-	baseUrl, err := url.Parse(lokiQuery)
+	baseURL, err := url.Parse(lokiQuery)
 	if err != nil {
 		logrus.Error("Malformed URL: ", err.Error())
 	}
 
-	baseUrl.RawQuery = params.Encode() // Escape Query Parameters
+	baseURL.RawQuery = params.Encode() // Escape Query Parameters
 
-	//logrus.Error("Couldn't  query:", baseUrl.String())
-
-	req, err := http.NewRequest("GET", baseUrl.String(), nil)
+	req, err := http.NewRequest("GET", baseURL.String(), nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", baseUrl.String())
+		logrus.Error("Couldn't make NewRequest query:", baseURL.String())
 		return "", err
 	}
 
@@ -106,7 +104,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", baseUrl.String())
+		logrus.Error("Couldn't make http query:", baseURL.String())
 		return "", err
 	}
 

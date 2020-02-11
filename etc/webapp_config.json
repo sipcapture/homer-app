@@ -38,7 +38,8 @@
     "user": "admin",
     "pass": "admin",
     "host": "http://127.0.0.1:3100",
-    "api": "api/prom"
+    "api": "loki/api/v1",
+    "param_query": "query_range"
   },
   "http_settings": {
     "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",

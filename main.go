@@ -705,10 +705,20 @@ func getRemoteDBSession() service.ServiceLoki {
 	password := viper.GetString("loki_config.pass")
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
+	param_query := viper.GetString("loki_config.param_query")
 
 	if host == "" {
 		logrus.Println("Loki functions disabled")
 		return service.ServiceLoki{Active: false}
+	}
+
+	/* if the param_query has been not defined - we use the new schema */
+	if param_query == "" {
+		param_query = "query_range"
+	}
+
+	if api == "" {
+		api = "/loki/api/v1"
 	}
 
 	httpClient := &http.Client{
@@ -721,6 +731,7 @@ func getRemoteDBSession() service.ServiceLoki {
 		Password:   password,
 		Host:       host,
 		Api:        api,
+		ParamQuery: param_query,
 		Active:     true,
 	}
 

@@ -583,6 +583,8 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		}
 	}
 
+	var foundCidData []string
+
 	for _, corrs := range correlation.Children() {
 		var from time.Time
 		var to time.Time
@@ -622,8 +624,27 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 					newWhereData = append(newWhereData, newDataArray...)
 				}
 			}
+
+			if len(foundCidData) > 0 {
+				for _, v := range foundCidData {
+					newWhereData = append(newWhereData, v)
+				}
+			}
+
 			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes)
+			if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
+				marshalData, _ = json.Marshal(newDataRow)
+				jsonParsed, _ = gabs.ParseJSON(marshalData)
+				for _, value := range jsonParsed.Children() {
+					elems := value.Search("sid").Data().(string)
+					if !heputils.ItemExists(foundCidData, elems) {
+						foundCidData = append(foundCidData, elems)
+					}
+				}
+			}
+
 			dataRow = append(dataRow, newDataRow...)
+			logrus.Debug("Correlation data len:", len(dataRow))
 		}
 	}
 
@@ -709,6 +730,8 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 			Find(&searchTmp).Error; err != nil {
 			logrus.Errorln("GetTransactionData: We have got error: ", err)
 		}
+
+		logrus.Debug("GetTransactionData: Len: ", len(searchTmp))
 
 		if len(searchTmp) > 0 {
 

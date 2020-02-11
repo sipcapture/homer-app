@@ -88,7 +88,8 @@ When desirable, `homer-app` can be configured to fetch logs from Loki. Configure
     "user": "admin",
     "pass": "admin",
     "host": "http://127.0.0.1:3100",
-    "api": "api/prom"
+    "api": "loki/api/v1",
+    "param_query": "query_range"
   }  
 ```
 

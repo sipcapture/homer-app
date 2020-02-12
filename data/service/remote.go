@@ -69,14 +69,19 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	sLimit := remoteObject.Param.Limit
 	searchFromTime := remoteObject.Timestamp.From
 	searchToTime := remoteObject.Timestamp.To
-	searchString := strings.Fields(remoteObject.Param.Search)
+	searchString := ""
 	searchRegexp := ""
-	if len(searchString) > 1 {
-		searchRegexp = searchString[1]
+
+	i := strings.Index(remoteObject.Param.Search, " ")
+	if i > -1 {
+		searchString = remoteObject.Param.Search[:i]
+		searchRegexp = remoteObject.Param.Search[i+1:]
+	} else {
+		searchString = remoteObject.Param.Search
 	}
 
 	params := url.Values{}
-	params.Add("query", searchString[0])
+	params.Add("query", searchString)
 	params.Add("regexp", searchRegexp)
 	params.Add("limit", strconv.Itoa(sLimit))
 	params.Add("start", strconv.FormatInt(int64(searchFromTime)*1000000, 10))

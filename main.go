@@ -718,7 +718,7 @@ func getRemoteDBSession() service.ServiceLoki {
 	}
 
 	if api == "" {
-		api = "/loki/api/v1"
+		api = "loki/api/v1"
 	}
 
 	httpClient := &http.Client{

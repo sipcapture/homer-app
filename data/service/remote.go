@@ -65,8 +65,8 @@ type RemoteValuesData struct {
 
 // swagger:model LabelData
 type streamsNewResult struct {
-	Stream string     `json:"stream"`
-	Values [][]string `json:"values"`
+	Stream interface{} `json:"stream"`
+	Values [][]string  `json:"values"`
 }
 
 // swagger:model LabelData
@@ -162,7 +162,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 			dataElement.Set(index, "id")
 			dataElement.Set(microTs, "micro_ts")
 			dataElement.Set(dataLabel, "custom_1")
-			dataElement.Set(value.Stream, "custom_2")
+			dataElement.Set(value.Stream.(string), "custom_2")
 			dataReply.ArrayAppend(dataElement.Data(), "data")
 		}
 	}

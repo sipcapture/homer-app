@@ -174,7 +174,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 			responseLabel, _ := json.Marshal(value.Stream)
 			dataElement := gabs.New()
 			dataElement.Set(index, "id")
-			dataElement.Set(microTs, "micro_ts")
+			dataElement.Set(microTs/1000000, "micro_ts")
 			dataElement.Set(dataLabel, "custom_1")
 			dataElement.Set(string(responseLabel), "custom_2")
 			dataReply.ArrayAppend(dataElement.Data(), "data")

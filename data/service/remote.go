@@ -92,7 +92,9 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	elAr := strings.Fields(remoteObject.Param.Search)
 	if len(elAr) > 0 {
 		searchString = elAr[0]
-		searchRegexp = remoteObject.Param.Search[len(searchString)+2:]
+		if (len(searchString) + 2) < len(remoteObject.Param.Search) {
+			searchRegexp = remoteObject.Param.Search[len(searchString)+2:]
+		}
 	}
 
 	if searchString == "" {
@@ -161,10 +163,11 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	for _, value := range remoteValuesData.Data.Streams {
 		for _, entryValue := range value.Values {
 			index++
-			microTs := ""
+			var microTs int64
 			dataLabel := ""
+			microTs = 0
 			if len(entryValue) > 1 {
-				microTs = entryValue[0]
+				microTs, _ = strconv.ParseInt(entryValue[0], 10, 64)
 				dataLabel = entryValue[1]
 			}
 

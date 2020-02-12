@@ -213,7 +213,8 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	}
 
 	if len(hepsubObject) == 0 {
-		return "", fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
+		logrus.Debug("Agent HEPSUB couldn't find agent mapping")
+		return "", nil
 	}
 
 	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)

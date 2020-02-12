@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -88,12 +89,15 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	searchString := ""
 	searchRegexp := ""
 
-	i := strings.Index(remoteObject.Param.Search, " ")
-	if i > -1 {
-		searchString = remoteObject.Param.Search[:i]
-		searchRegexp = remoteObject.Param.Search[i+1:]
-	} else {
-		searchString = remoteObject.Param.Search
+	elAr := strings.Fields(remoteObject.Param.Search)
+	if len(elAr) > 0 {
+		searchString = elAr[0]
+		searchRegexp = remoteObject.Param.Search[len(searchString)+2:]
+	}
+
+	if searchString == "" {
+		logrus.Error("search string is empty")
+		return "", errors.New("empty string search")
 	}
 
 	params := url.Values{}
@@ -109,6 +113,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	baseURL, err := url.Parse(lokiQuery)
 	if err != nil {
 		logrus.Error("Malformed URL: ", err.Error())
+		return "", err
 	}
 
 	baseURL.RawQuery = params.Encode() // Escape Query Parameters
@@ -145,6 +150,11 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 		return "", err
 	}
 
+	if remoteValuesData.Data == nil || remoteValuesData.Data.Streams == nil {
+		logrus.Error("no data found")
+		return "", errors.New("no data found")
+	}
+
 	dataReply := gabs.New()
 	dataReply.Array("data")
 	var index = 0
@@ -158,11 +168,12 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 				dataLabel = entryValue[1]
 			}
 
+			responseLabel, _ := json.Marshal(value.Stream)
 			dataElement := gabs.New()
 			dataElement.Set(index, "id")
 			dataElement.Set(microTs, "micro_ts")
 			dataElement.Set(dataLabel, "custom_1")
-			dataElement.Set(value.Stream.(string), "custom_2")
+			dataElement.Set(string(responseLabel), "custom_2")
 			dataReply.ArrayAppend(dataElement.Data(), "data")
 		}
 	}

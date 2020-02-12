@@ -65,8 +65,8 @@ type RemoteValuesData struct {
 
 // swagger:model LabelData
 type streamsNewResult struct {
-	Stream interface{} `json:"stream"`
-	Values [][]string  `json:"values"`
+	Stream string     `json:"stream"`
+	Values [][]string `json:"values"`
 }
 
 // swagger:model LabelData

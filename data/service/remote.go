@@ -63,6 +63,22 @@ type RemoteValuesData struct {
 	Streams []streamsResult `json:"streams"`
 }
 
+// swagger:model LabelData
+type streamsNewResult struct {
+	Stream interface{} `json:"stream"`
+	Values [][]string  `json:"values"`
+}
+
+// swagger:model LabelData
+type StreamRemoteData struct {
+	Streams    []streamsNewResult `json:"result"`
+	ResultType string             `json:"resultType"`
+}
+type RemoteValuesNewData struct {
+	Success string            `json:"success"`
+	Data    *StreamRemoteData `json:"data"`
+}
+
 // StatisticData: this method create new user in the database
 func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, error) {
 
@@ -121,7 +137,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 		return "", err
 	}
 
-	var remoteValuesData RemoteValuesData
+	var remoteValuesData RemoteValuesNewData
 	json.Unmarshal(buf, &remoteValuesData)
 
 	if err != nil {
@@ -132,14 +148,21 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	dataReply := gabs.New()
 	dataReply.Array("data")
 	var index = 0
-	for _, value := range remoteValuesData.Streams {
-		for _, entryValue := range value.Entries {
+	for _, value := range remoteValuesData.Data.Streams {
+		for _, entryValue := range value.Values {
 			index++
+			microTs := ""
+			dataLabel := ""
+			if len(entryValue) > 1 {
+				microTs = entryValue[0]
+				dataLabel = entryValue[1]
+			}
+
 			dataElement := gabs.New()
 			dataElement.Set(index, "id")
-			dataElement.Set(entryValue.Ts, "micro_ts")
-			dataElement.Set(entryValue.Line, "custom_1")
-			dataElement.Set(value.Labels, "custom_2")
+			dataElement.Set(microTs, "micro_ts")
+			dataElement.Set(dataLabel, "custom_1")
+			dataElement.Set(value.Stream, "custom_2")
 			dataReply.ArrayAppend(dataElement.Data(), "data")
 		}
 	}

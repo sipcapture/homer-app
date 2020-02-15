@@ -85,55 +85,58 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			elems := sData.Search(key).Data().([]interface{})
 			for _, v := range elems {
 				mapData := v.(map[string]interface{})
-				if _, ok := mapData["value"]; ok {
+				if formValue, ok := mapData["value"]; ok {
 
 					if strings.Contains(mapData["name"].(string), ".") {
 						elemArray := strings.Split(mapData["name"].(string), ".")
 						logrus.Debug(elemArray)
 						if mapData["type"].(string) == "integer" {
-							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %d", elemArray[0], elemArray[1], heputils.CheckIntValue(mapData["value"]))
+							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %d", elemArray[0], elemArray[1], heputils.CheckIntValue(formValue))
 						} else {
 							notStr := ""
-							if strings.HasPrefix(mapData["value"].(string), "!") {
+							if strings.HasPrefix(formValue.(string), "!") {
 								notStr = "NOT "
 							}
-							if strings.Contains(mapData["value"].(string), "%") {
-								sql = sql + " AND " + fmt.Sprintf("%s->>'%s' %sLIKE '%s'", elemArray[0], elemArray[1], notStr, heputils.Sanitize(mapData["value"].(string)))
+							if strings.Contains(formValue.(string), "%") && strings.Contains(formValue.(string), ";") {
+								sql = sql + " AND " + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{%s}')", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue.(string)))
+								sql = strings.Replace(sql, ";", ",", -1)
+							} else if strings.Contains(formValue.(string), "%") {
+								sql = sql + " AND " + fmt.Sprintf("%s->>'%s' %sLIKE '%s'", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue.(string)))
 							} else {
 								var valueArray []string
-								if strings.Contains(mapData["value"].(string), ";") {
-									valueArray = strings.Split(mapData["value"].(string), ";")
+								if strings.Contains(formValue.(string), ";") {
+									valueArray = strings.Split(formValue.(string), ";")
 								} else {
-									valueArray = []string{mapData["value"].(string)}
+									valueArray = []string{formValue.(string)}
 								}
 
 								valueArray = heputils.SanitizeTextArray(valueArray)
 								sql = sql + " and " + fmt.Sprintf("%s->>'%s' %sIN ('%s')", elemArray[0], elemArray[1], notStr, strings.Join(valueArray[:], "','"))
-								//sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(mapData["value"].(string)))
+								//sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(formValue.(string)))
 							}
 						}
-					} else if strings.Contains(mapData["value"].(string), "%") {
+					} else if strings.Contains(formValue.(string), "%") {
 						notStr := ""
-						if strings.HasPrefix(mapData["value"].(string), "!") {
+						if strings.HasPrefix(formValue.(string), "!") {
 							notStr = " NOT"
 						}
-						sql = sql + " and " + mapData["name"].(string) + notStr + " LIKE '" + heputils.Sanitize(mapData["value"].(string)) + "'"
+						sql = sql + " and " + mapData["name"].(string) + notStr + " LIKE '" + heputils.Sanitize(formValue.(string)) + "'"
 
 					} else {
 						if mapData["name"].(string) == "limit" {
-							sLimit = heputils.CheckIntValue(mapData["value"])
+							sLimit = heputils.CheckIntValue(formValue)
 						} else if mapData["type"].(string) == "integer" {
-							sql = sql + " AND " + fmt.Sprintf("%s = %d", mapData["name"], heputils.CheckIntValue(mapData["value"]))
+							sql = sql + " AND " + fmt.Sprintf("%s = %d", mapData["name"], heputils.CheckIntValue(formValue))
 						} else {
 							notStr := ""
-							if strings.HasPrefix(mapData["value"].(string), "!") {
+							if strings.HasPrefix(formValue.(string), "!") {
 								notStr = "NOT "
 							}
 							var valueArray []string
-							if strings.Contains(mapData["value"].(string), ";") {
-								valueArray = strings.Split(mapData["value"].(string), ";")
+							if strings.Contains(formValue.(string), ";") {
+								valueArray = strings.Split(formValue.(string), ";")
 							} else {
-								valueArray = []string{mapData["value"].(string)}
+								valueArray = []string{formValue.(string)}
 							}
 							valueArray = heputils.SanitizeTextArray(valueArray)
 							sql = sql + " and " + fmt.Sprintf("%s %sIN ('%s')", mapData["name"], notStr, strings.Join(valueArray[:], "','"))

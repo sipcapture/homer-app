@@ -85,6 +85,7 @@ func (i *arrayFlags) Set(value string) error {
 
 //params for Flags
 type CommandLineFlags struct {
+	InitializeDB              *bool      `json:"initialize_db"`
 	CreateConfigDB            *bool      `json:"create_config_db"`
 	CreateDataDB              *bool      `json:"create_data_db"`
 	CreateTableConfigDB       *bool      `json:"create_table_config"`
@@ -132,6 +133,7 @@ var servicesObject ServicesObject
 
 /* init flags */
 func initFlags() {
+	appFlags.InitializeDB = flag.Bool("initialize_db", false, "initialize the database and create all tables")
 	appFlags.CreateConfigDB = flag.Bool("create-config-db", false, "create config db")
 	appFlags.CreateDataDB = flag.Bool("create-data-db", false, "create data db")
 	appFlags.CreateTableConfigDB = flag.Bool("create-table-db-config", false, "create table in db config")
@@ -920,6 +922,9 @@ func checkHelpVersionFlags() {
 }
 
 func checkAdminFlags() {
+	if *appFlags.InitializeDB {
+		initDB()
+	}
 
 	/* start creating pgsql user */
 	if *appFlags.CreateHomerUser {
@@ -1051,4 +1056,39 @@ func checkAdminFlags() {
 
 		os.Exit(0)
 	}
+}
+
+func initDB() {
+	rootDb, err := migration.GetDataRootDBSession(
+		appFlags.DatabaseRootUser,
+		appFlags.DatabaseRootPassword,
+		appFlags.DatabaseRootDB,
+		appFlags.DatabaseHost,
+		appFlags.DatabasePort,
+	)
+
+	if err != nil {
+		logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+		logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+		panic(err)
+	}
+
+	defer rootDb.Close()
+
+	migration.CreateNewUser(rootDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword)
+	migration.ShowUsers(rootDb)
+
+	migration.CreateHomerDB(rootDb, appFlags.DatabaseHomerData, appFlags.DatabaseHomerUser)
+	migration.CreateHomerDB(rootDb, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerUser)
+
+	migration.CreateHomerRole(rootDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerData)
+
+	servicesObject.configDBSession = getConfigDBSession()
+	defer servicesObject.configDBSession.Close()
+	nameHomerConfig := viper.GetString("database_config.name")
+
+	migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
+	migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
+
+	os.Exit(0)
 }

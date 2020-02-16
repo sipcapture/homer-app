@@ -73,8 +73,8 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 		mapData := v.(map[string]interface{})
 		if formVal, ok := mapData["value"]; ok {
 			formValue := formVal.(string)
-			formName := mapData["name"]
-			formType := mapData["type"]
+			formName := mapData["name"].(string)
+			formType := mapData["type"].(string)
 			notStr := ""
 			equalStr := "="
 			operator := " AND "
@@ -92,11 +92,11 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 				notStr = " NOT "
 				equalStr = " <> "
 			}
-			if formName.(string) == "limit" {
+			if formName == "limit" {
 				sLimit = heputils.CheckIntValue(formValue)
 				continue
-			} else if formName.(string) == "raw" {
-				sql = sql + operator + formName.(string) + notStr + " ILIKE '" + heputils.Sanitize(formValue) + "'"
+			} else if formName == "raw" {
+				sql = sql + operator + formName + notStr + " ILIKE '" + heputils.Sanitize(formValue) + "'"
 				continue
 			}
 
@@ -108,9 +108,10 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 			}
 			valueArray = heputils.SanitizeTextArray(valueArray)
 
-			if strings.Contains(formName.(string), ".") {
-				elemArray := strings.Split(formName.(string), ".")
-				if formType.(string) == "integer" {
+			// data_header or protocal_header values
+			if strings.Contains(formName, ".") {
+				elemArray := strings.Split(formName, ".")
+				if formType == "integer" {
 					sql = sql + operator + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
 					continue
 				}
@@ -125,14 +126,18 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 				} else {
 					sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
 				}
-			} else if strings.Contains(formValue, "%") {
-				sql = sql + operator + formName.(string) + notStr + " LIKE '" + heputils.Sanitize(formValue) + "'"
+				continue
+			}
+
+			if formType == "integer" {
+				sql = sql + operator + fmt.Sprintf("%s%s%d", formName, equalStr, heputils.CheckIntValue(formValue))
+				continue
+			}
+
+			if strings.Contains(formValue, "%") {
+				sql = sql + operator + formName + notStr + " LIKE '" + heputils.Sanitize(formValue) + "'"
 			} else {
-				if formType.(string) == "integer" {
-					sql = sql + operator + fmt.Sprintf("%s%s%d", formName, equalStr, heputils.CheckIntValue(formValue))
-				} else {
-					sql = sql + operator + fmt.Sprintf("%s %sIN ('%s')", formName, notStr, strings.Join(valueArray[:], "','"))
-				}
+				sql = sql + operator + fmt.Sprintf("%s %sIN ('%s')", formName, notStr, strings.Join(valueArray[:], "','"))
 			}
 		}
 	}

@@ -67,90 +67,102 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	return data
 }
 
+func buildQuery(elems []interface{}) (sql string, sLimit int) {
+	sLimit = 200
+	for k, v := range elems {
+		mapData := v.(map[string]interface{})
+		if formVal, ok := mapData["value"]; ok {
+			formValue := formVal.(string)
+			formName := mapData["name"]
+			formType := mapData["type"]
+			notStr := ""
+			equalStr := "="
+			operator := " AND "
+			logrus.Debug(k, ". formName: ", formName)
+			logrus.Debug(k, ". formValue: ", formValue)
+			logrus.Debug(k, ". formType: ", formType)
+
+			if strings.HasPrefix(formValue, "||") {
+				formValue = strings.TrimPrefix(formValue, "||")
+				if k > 0 {
+					operator = " OR "
+				}
+			}
+			if strings.HasPrefix(formValue, "!") {
+				notStr = " NOT "
+				equalStr = " <> "
+			}
+			if formName.(string) == "limit" {
+				sLimit = heputils.CheckIntValue(formValue)
+				continue
+			} else if formName.(string) == "raw" {
+				sql = sql + operator + formName.(string) + notStr + " ILIKE '" + heputils.Sanitize(formValue) + "'"
+				continue
+			}
+
+			var valueArray []string
+			if strings.Contains(formValue, ";") {
+				valueArray = strings.Split(formValue, ";")
+			} else {
+				valueArray = []string{formValue}
+			}
+			valueArray = heputils.SanitizeTextArray(valueArray)
+
+			if strings.Contains(formName.(string), ".") {
+				elemArray := strings.Split(formName.(string), ".")
+				if formType.(string) == "integer" {
+					sql = sql + operator + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
+					continue
+				}
+
+				if strings.Contains(formValue, "%") && strings.Contains(formValue, ";") {
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{%s}')", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue))
+					sql = strings.Replace(sql, ";", ",", -1)
+				} else if strings.Contains(formValue, "%") {
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE '%s'", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue))
+				} else if strings.Contains(formValue, ",") || len(valueArray) > 1 {
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sIN ('%s')", elemArray[0], elemArray[1], notStr, strings.Join(valueArray[:], "','"))
+				} else {
+					sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+				}
+			} else if strings.Contains(formValue, "%") {
+				sql = sql + operator + formName.(string) + notStr + " LIKE '" + heputils.Sanitize(formValue) + "'"
+			} else {
+				if formType.(string) == "integer" {
+					sql = sql + operator + fmt.Sprintf("%s%s%d", formName, equalStr, heputils.CheckIntValue(formValue))
+				} else {
+					sql = sql + operator + fmt.Sprintf("%s %sIN ('%s')", formName, notStr, strings.Join(valueArray[:], "','"))
+				}
+			}
+		}
+	}
+	return sql, sLimit
+}
+
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string) (string, error) {
 	table := "hep_proto_1_default"
-	sLimit := searchObject.Param.Limit
 	searchData := []model.HepTable{}
 	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
 	searchToTime := time.Unix(searchObject.Timestamp.To/int64(time.Microsecond), 0)
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
-	sql := "create_date between ? and ?"
+	sql := "create_date between ? AND ?"
+	var sLimit int
 
 	for key, _ := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
-			for _, v := range elems {
-				mapData := v.(map[string]interface{})
-				if formValue, ok := mapData["value"]; ok {
-
-					if strings.Contains(mapData["name"].(string), ".") {
-						elemArray := strings.Split(mapData["name"].(string), ".")
-						logrus.Debug(elemArray)
-						if mapData["type"].(string) == "integer" {
-							sql = sql + " and " + fmt.Sprintf("(%s->>'%s')::int = %d", elemArray[0], elemArray[1], heputils.CheckIntValue(formValue))
-						} else {
-							notStr := ""
-							if strings.HasPrefix(formValue.(string), "!") {
-								notStr = "NOT "
-							}
-							if strings.Contains(formValue.(string), "%") && strings.Contains(formValue.(string), ";") {
-								sql = sql + " AND " + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{%s}')", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue.(string)))
-								sql = strings.Replace(sql, ";", ",", -1)
-							} else if strings.Contains(formValue.(string), "%") {
-								sql = sql + " AND " + fmt.Sprintf("%s->>'%s' %sLIKE '%s'", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue.(string)))
-							} else {
-								var valueArray []string
-								if strings.Contains(formValue.(string), ";") {
-									valueArray = strings.Split(formValue.(string), ";")
-								} else {
-									valueArray = []string{formValue.(string)}
-								}
-
-								valueArray = heputils.SanitizeTextArray(valueArray)
-								sql = sql + " and " + fmt.Sprintf("%s->>'%s' %sIN ('%s')", elemArray[0], elemArray[1], notStr, strings.Join(valueArray[:], "','"))
-								//sql = sql + " and " + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], eqValue, heputils.Sanitize(formValue.(string)))
-							}
-						}
-					} else if strings.Contains(formValue.(string), "%") {
-						notStr := ""
-						if strings.HasPrefix(formValue.(string), "!") {
-							notStr = " NOT"
-						}
-						sql = sql + " and " + mapData["name"].(string) + notStr + " LIKE '" + heputils.Sanitize(formValue.(string)) + "'"
-
-					} else {
-						if mapData["name"].(string) == "limit" {
-							sLimit = heputils.CheckIntValue(formValue)
-						} else if mapData["type"].(string) == "integer" {
-							sql = sql + " AND " + fmt.Sprintf("%s = %d", mapData["name"], heputils.CheckIntValue(formValue))
-						} else {
-							notStr := ""
-							if strings.HasPrefix(formValue.(string), "!") {
-								notStr = "NOT "
-							}
-							var valueArray []string
-							if strings.Contains(formValue.(string), ";") {
-								valueArray = strings.Split(formValue.(string), ";")
-							} else {
-								valueArray = []string{formValue.(string)}
-							}
-							valueArray = heputils.SanitizeTextArray(valueArray)
-							sql = sql + " and " + fmt.Sprintf("%s %sIN ('%s')", mapData["name"], notStr, strings.Join(valueArray[:], "','"))
-						}
-
-					}
-				}
-			}
+			s, l := buildQuery(elems)
+			sql += s
+			sLimit = l
 		}
 	}
 
 	//var searchData
 	for session := range ss.Session {
-
 		searchTmp := []model.HepTable{}
 
 		/* if node doesnt exists - continue */

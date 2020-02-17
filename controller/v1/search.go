@@ -22,15 +22,22 @@ type SearchController struct {
 	AliasService   *service.AliasService
 }
 
-// swagger:route GET /api/search/call/data search
+// swagger:operation GET /api/search/call/data Search
 //
 // Returns data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -64,13 +71,20 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 
 // swagger:route POST /api/search/call/message search
 //
-// Returns data based upon filtered json
+// Returns message data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -99,11 +113,18 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 //
 // Returns data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -130,13 +151,20 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 
 // swagger:route GET /api/call/transaction search
 //
-// Returns data related to transaction
+// Returns transaction data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -174,13 +202,20 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 // swagger:route GET /api/call/report/qos search
 //
-// Returns qos stats
+// Returns qos data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -209,13 +244,20 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 // swagger:route GET /api/call/report/log search
 //
-// Returns logs related to transaction
+// Returns log data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -255,13 +297,20 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 
 // swagger:route GET /api/v3/export/call/messages/pcap search
 //
-// Returns messages related to transaction
+// Returns pcap data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
@@ -304,13 +353,20 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 // swagger:route GET /api/v3/export/call/messages/text search
 //
-// Returns messages related to transaction
+// Returns text data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer
-//
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey

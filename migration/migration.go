@@ -104,6 +104,22 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", *homerDBdata, *user)
 	dataRootDBSession.Debug().Exec(sql)
 
+	sql2 := "SELECT  schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
+		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%' AND hasindexes = false"
+
+	var Schemaname, Tablename, Tableowner string
+	rows, _ := dataRootDBSession.Raw(sql2).Rows() // (*sql.Rows, error)
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&Schemaname, &Tablename, Tableowner)
+		if err == nil {
+			fmt.Println(fmt.Sprintf("changing owner of [%s].[%s] from [%s] to [%s]", Schemaname, Tablename, Tableowner, *user))
+			sql = fmt.Sprintf("GRANT ALL ON TABLE %s.%s TO %s;", Schemaname, Tablename, *user)
+			dataRootDBSession.Debug().Exec(sql)
+		}
+	}
+
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 

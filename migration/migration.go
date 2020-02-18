@@ -105,7 +105,7 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 	dataRootDBSession.Debug().Exec(sql)
 
 	sql = "SELECT  schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
-		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%' AND hasindexes = true"
+		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%'"
 
 	var Schemaname, Tablename, Tableowner string
 	rows, _ := dataRootDBSession.Debug().Raw(sql).Rows() // (*sql.Rows, error)

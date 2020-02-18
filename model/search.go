@@ -5,23 +5,42 @@ import (
 	"time"
 )
 
+// swagger:model SearchCallData
 type SearchObject struct {
+	// required: true
 	Param struct {
 		Transaction struct {
 		} `json:"transaction"`
-		Limit    int             `json:"limit"`
+		// this controls the number of records to display
+		// example: 200
+		// required: true
+		Limit int `json:"limit"`
+		// this control the type of search one can perform
+		// type: string
+		// format: binary
+		// example: `{"1_call":[{"name":"limit","value":"10","type":"string","hepid":1}]}`
 		Search   json.RawMessage `json:"search"`
 		Location struct {
 			Node []string `json:node`
 		} `json:"location"`
+		// timezone settings
+		// type: object
+		// default: null
 		Timezone struct {
 			Value int    `json:"value"`
 			Name  string `json:"name"`
 		} `json:"timezone"`
 	} `json:"param"`
+	// this control the time range for used for search
 	Timestamp struct {
+		// current timestamp in miliseconds
+		// required :true
+		// example: 1581793200000
 		From int64 `json:"from"`
-		To   int64 `json:"to"`
+		// current timestamp in miliseconds
+		// required :true
+		// example: 1581879599000
+		To int64 `json:"to"`
 	} `json:"timestamp"`
 }
 

@@ -21,7 +21,7 @@ TAG=${TAG:-latest}
 TAG_SLIM=${TAG_SLIM:-slim}
 
 echo "Building HOMER docker ..."
-docker build -t $REPO:$TAG .
+docker build --no-cache -t $REPO:$TAG .
 if [ ! -z "$PUSH" ]; then
   echo "Pushing $REPO:$TAG ..."
   docker push $REPO:$TAG

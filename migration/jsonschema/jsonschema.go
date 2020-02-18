@@ -872,7 +872,7 @@ var FieldsMapping1000default = json.RawMessage(`[
     "hide": true
   },
   {
-    "id": "protocol_header.port",
+    "id": "protocol_header.srcPort",
     "name": "Protocol port",
     "type": "integer",
     "index": "none",
@@ -902,12 +902,22 @@ var FieldsMapping1000default = json.RawMessage(`[
     "hide": true
   },
   {
+    "id": "data_header.event",
+    "name": "Data Event",
+    "type": "string",
+    "index": "none",
+    "form_type": "input",
+    "position": 7,
+    "skip": false,
+    "hide": false
+  },
+  {
     "id": "data_header.medium",
     "name": "Data Medium",
     "type": "string",
     "index": "none",
     "form_type": "input",
-    "position": 7,
+    "position": 8,
     "skip": false,
     "hide": true
   },
@@ -917,7 +927,7 @@ var FieldsMapping1000default = json.RawMessage(`[
     "type": "string",
     "index": "none",
     "form_type": "input",
-    "position": 8,
+    "position": 9,
     "skip": false,
     "hide": false
   },
@@ -927,7 +937,7 @@ var FieldsMapping1000default = json.RawMessage(`[
     "type": "string",
     "index": "none",
     "form_type": "input",
-    "position": 9,
+    "position": 10,
     "skip": false,
     "hide": false
   },
@@ -937,7 +947,7 @@ var FieldsMapping1000default = json.RawMessage(`[
     "type": "string",
     "index": "none",
     "form_type": "input",
-    "position": 10,
+    "position": 11,
     "skip": true,
     "hide": true
   }

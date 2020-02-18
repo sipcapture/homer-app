@@ -86,7 +86,7 @@ func CreateHomerDB(dataRootDBSession *gorm.DB, dbname *string, user *string) {
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
-func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *string, homerDBdata *string) {
+func CreateHomerRole(dataRootDBSession *gorm.DB, dataHomeDBSession *gorm.DB, user *string, homerDBconfig *string, homerDBdata *string) {
 
 	createString := fmt.Sprintf("\r\nHOMER - creating role for user [user=%s dbconfig=%s, dbdata=%s]", *user, *homerDBconfig, *homerDBdata)
 
@@ -108,7 +108,7 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%'"
 
 	var Schemaname, Tablename, Tableowner string
-	rows, _ := dataRootDBSession.Debug().Raw(sql).Rows() // (*sql.Rows, error)
+	rows, _ := dataHomeDBSession.Debug().Raw(sql).Rows() // (*sql.Rows, error)
 	defer rows.Close()
 
 	for rows.Next() {
@@ -116,7 +116,9 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 		if err == nil {
 			fmt.Println(fmt.Sprintf("changing owner of [%s].[%s] from [%s] to [%s]", Schemaname, Tablename, Tableowner, *user))
 			sql = fmt.Sprintf("GRANT ALL ON TABLE %s.%s TO %s;", Schemaname, Tablename, *user)
-			dataRootDBSession.Debug().Exec(sql)
+			dataHomeDBSession.Debug().Exec(sql)
+		} else {
+			logrus.Error(fmt.Sprintf("Some error during pg_catalog.pg_tables query: %s]: \n", err))
 		}
 	}
 

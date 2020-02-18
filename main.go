@@ -1010,7 +1010,21 @@ func checkAdminFlags() {
 
 		defer rootDb.Close()
 
-		migration.CreateHomerRole(rootDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerData)
+		dataDb, err := migration.GetDataRootDBSession(appFlags.DatabaseRootUser,
+			appFlags.DatabaseRootPassword,
+			appFlags.DatabaseHomerData,
+			appFlags.DatabaseHost,
+			appFlags.DatabasePort)
+
+		if err != nil {
+			logrus.Error("Couldn't establish connection to data. Please be sure you can have correct password", err)
+			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			panic(err)
+		}
+
+		defer dataDb.Close()
+
+		migration.CreateHomerRole(rootDb, dataDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerData)
 		migration.ShowUsers(rootDb)
 
 		os.Exit(0)
@@ -1081,7 +1095,23 @@ func initDB() {
 	migration.CreateHomerDB(rootDb, appFlags.DatabaseHomerData, appFlags.DatabaseHomerUser)
 	migration.CreateHomerDB(rootDb, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerUser)
 
-	migration.CreateHomerRole(rootDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerData)
+	databaseDb, err := migration.GetDataRootDBSession(
+		appFlags.DatabaseRootUser,
+		appFlags.DatabaseRootPassword,
+		appFlags.DatabaseHomerData,
+		appFlags.DatabaseHost,
+		appFlags.DatabasePort,
+	)
+
+	if err != nil {
+		logrus.Error("Couldn't establish connection to databaseDb. Please be sure you can have correct password", err)
+		logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+		panic(err)
+	}
+
+	defer databaseDb.Close()
+
+	migration.CreateHomerRole(rootDb, databaseDb, appFlags.DatabaseHomerUser, appFlags.DatabaseHomerConfig, appFlags.DatabaseHomerData)
 
 	servicesObject.configDBSession = getConfigDBSession()
 	defer servicesObject.configDBSession.Close()

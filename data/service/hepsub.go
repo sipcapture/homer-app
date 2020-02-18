@@ -24,7 +24,7 @@ func (hs *HepsubService) GetHepSubAgainstGUID(guid string) (string, error) {
 		return "", err
 	}
 	if len(hepsubObject) == 0 {
-		return "", fmt.Errorf("no advacned settings found for guid %s", guid)
+		return "", fmt.Errorf("no hepsub object found for guid [%s]", guid)
 	}
 	sort.Slice(hepsubObject[:], func(i, j int) bool {
 		return hepsubObject[i].GUID < hepsubObject[j].GUID

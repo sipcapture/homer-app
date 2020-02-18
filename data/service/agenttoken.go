@@ -25,7 +25,7 @@ func (hs *AuthtokenService) GetAuthtokenAgainstGUID(guid string) (string, error)
 		return "", err
 	}
 	if len(AuthtokenObject) == 0 {
-		return "", fmt.Errorf("no advacned settings found for guid %s", guid)
+		return "", fmt.Errorf("token has been not found for guid [%s]", guid)
 	}
 	sort.Slice(AuthtokenObject[:], func(i, j int) bool {
 		return AuthtokenObject[i].GUID < AuthtokenObject[j].GUID

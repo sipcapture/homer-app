@@ -104,11 +104,11 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", *homerDBdata, *user)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql2 := "SELECT  schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
-		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%' AND hasindexes = false"
+	sql = "SELECT  schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
+		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%' AND hasindexes = true"
 
 	var Schemaname, Tablename, Tableowner string
-	rows, _ := dataRootDBSession.Raw(sql2).Rows() // (*sql.Rows, error)
+	rows, _ := dataRootDBSession.Raw(sql).Rows() // (*sql.Rows, error)
 	defer rows.Close()
 
 	for rows.Next() {

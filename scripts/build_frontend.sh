@@ -16,6 +16,9 @@ if [ "$CONT" = "y" ]; then
   node:12-alpine \
   sh -c "apk --update add git && git clone https://github.com/sipcapture/homer-ui /app && cd /app && npm install && npm install -g @angular/cli && npm audit fix && npm run build && cp -R /app/dist/homer-ui/* /dist/ && echo 'done!'"
   ls -alF ./dist
+  VERSION=$(cat src/VERSION.ts | egrep -o '[0-9].[0-9].[0-9]+')
+  echo "$VERSION" > dist/VERSION
+  rm -rf dist.backup
 else
   echo "Exiting...";
 fi

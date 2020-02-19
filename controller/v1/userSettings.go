@@ -44,7 +44,32 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
 	}
-	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}
+
+// swagger:route GET /user/settings/:category settings ListSettings
+//
+// Returns the list of settings
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (usc *UserSettingsController) GetCategory(c echo.Context) error {
+
+	userCategory := c.Param("category")
+	userName, _ := auth.IsRequestAdmin(c)
+	reply, _ := usc.UserSettingsService.GetCategory(userName, userCategory)
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
 // swagger:operation POST /alias alias AddAlias

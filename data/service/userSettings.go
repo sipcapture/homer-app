@@ -39,6 +39,7 @@ func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]by
 	return mappingSchema.CorrelationMapping, nil
 }
 
+/* get all */
 func (ss *UserSettingsService) GetAll(UserName string, isAdmin bool) (string, error) {
 	var userSettings = []model.TableUserSettings{}
 
@@ -47,6 +48,33 @@ func (ss *UserSettingsService) GetAll(UserName string, isAdmin bool) (string, er
 	if !isAdmin {
 		sqlWhere = map[string]interface{}{"username": UserName}
 	}
+
+	if err := ss.Session.Debug().
+		Table("user_settings").
+		Where(sqlWhere).
+		Find(&userSettings).Error; err != nil {
+		return "", errors.New("no users settings found")
+	}
+	data, _ := json.Marshal(userSettings)
+	rows, _ := gabs.ParseJSON(data)
+	// sort the array
+	vals := rows.Data().([]interface{})
+	sort.Slice(vals, func(i, j int) bool {
+		return gabs.Wrap(vals[i]).S("username").Data().(string) < gabs.Wrap(vals[j]).S("username").Data().(string)
+	})
+	count, _ := rows.ArrayCount()
+	reply := gabs.New()
+	reply.Set(count, "count")
+	reply.Set(vals, "data")
+	return reply.String(), nil
+}
+
+/* get only for this user and category */
+func (ss *UserSettingsService) GetCategory(UserName string, UserCategory string) (string, error) {
+
+	var userSettings = []model.TableUserSettings{}
+
+	var sqlWhere = map[string]interface{}{"username": UserName, "category": UserCategory}
 
 	if err := ss.Session.Debug().
 		Table("user_settings").

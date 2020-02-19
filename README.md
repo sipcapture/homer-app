@@ -40,6 +40,7 @@ Before using the application, configure all database parameters using the exampl
 
 NOTE: The default location for settings and provisioning files is `/usr/local/homer`
 
+<!--
 ## Manual dist
 If you are installing the homer-app manualy, you can download the latest compiled version of the frontend:  https://github.com/sipcapture/homer-app/releases/latest . Once you have download a tar.gz of homer-ui, copy the entire files and directories from the archive to the local dist directory (usualy it's /usr/local/homer/dist, but check your webapp_config.json for a correct path).
 If you want to install the latest master, please go to https://github.com/sipcapture/homer-ui and follow the instruction how to build it using npmn and angular@cli.
@@ -53,6 +54,7 @@ cp -Rp dist/* /usr/local/homer/dist/
 ```
 
 NOTE: The default location for settings and provisioning files is `/usr/local/homer`
+-->
 
 #### Usage
 ##### Command Help

@@ -45,7 +45,7 @@ If you are installing the homer-app manualy, in the dist directory of homer-app 
 
 ```
 git clone https://github.com/sipcapture/homer-app homer-app
-cp -Rp dist/* /usr/local/homer/dist/
+cp -Rp homer-app/dist/* /usr/local/homer/dist/
 
 ```
 

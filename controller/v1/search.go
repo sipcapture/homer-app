@@ -69,7 +69,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route POST /api/search/call/message search
+// swagger:operation POST /api/search/call/message search
 //
 // Returns message data based upon filtered json
 // ---
@@ -109,7 +109,7 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route POST /api/search/call/decode/message search
+// swagger:operation POST /api/search/call/decode/message search
 //
 // Returns data based upon filtered json
 // ---
@@ -149,7 +149,7 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/call/transaction search
+// swagger:operation GET /api/call/transaction search
 //
 // Returns transaction data based upon filtered json
 // ---
@@ -200,7 +200,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 }
 
-// swagger:route GET /api/call/report/qos search
+// swagger:operation GET /api/call/report/qos search
 //
 // Returns qos data based upon filtered json
 // ---
@@ -242,7 +242,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 }
 
-// swagger:route GET /api/call/report/log search
+// swagger:operation GET /api/call/report/log search
 //
 // Returns log data based upon filtered json
 // ---
@@ -295,7 +295,7 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:route GET /api/v3/export/call/messages/pcap search
+// swagger:operation GET /api/v3/export/call/messages/pcap search
 //
 // Returns pcap data based upon filtered json
 // ---
@@ -351,7 +351,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 }
 
-// swagger:route GET /api/v3/export/call/messages/text search
+// swagger:operation GET /api/v3/export/call/messages/text search
 //
 // Returns text data based upon filtered json
 // ---

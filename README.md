@@ -94,7 +94,7 @@ The application is able to initialize its database and tables it requires with t
 ```
 -->
 
-*** Please setup the correct credentials for homer_config and homer_data DB in your webapp_config.json !!!
+###### Please setup the correct credentials for homer_config and homer_data DB in your webapp_config.json !!!
 
 ###### Create Table / Migration - connection data will be read from `webapp_config.json`
 ```

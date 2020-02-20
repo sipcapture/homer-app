@@ -565,6 +565,7 @@ func getConfigDBSession() *gorm.DB {
 	host := viper.GetString("database_config.host")
 
 	db, err := gorm.Open("postgres", "host="+host+" user="+user+" dbname="+name+" sslmode=disable password="+password)
+	logrus.Debug("Config connection: host=" + host + " user=" + user + " dbname=" + name + " sslmode=disable")
 
 	if err != nil {
 		logrus.Error(err)

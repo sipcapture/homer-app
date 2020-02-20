@@ -199,7 +199,7 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typ
 		heputils.Colorize(heputils.ColorGreen, createString)
 	}
 
-	configDBSession.AutoMigrate(&model.TableAlias{},
+	db := configDBSession.AutoMigrate(&model.TableAlias{},
 		&model.TableGlobalSettings{},
 		&model.TableMappingSchema{},
 		&model.TableUserSettings{},
@@ -209,6 +209,11 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typ
 		&model.TableVersions{},
 		&model.TableApplications{},
 		&model.TableAuthToken{})
+	if db != nil && db.Error != nil {
+		logrus.Error(fmt.Sprintf("Automigrate failed: with error %s", db.Error))
+	} else {
+		logrus.Debug("Automigrate was success")
+	}
 
 	if showUpgrade {
 		heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
@@ -526,171 +531,232 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	//tablesPopulate
 	var forceIt = force
 	var lenTable = len(tablesPopulate)
-	if !heputils.ElementExists(tablesPopulate, "users") {
+	tableName := "users"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["users"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 		/* User data */
-		if lenTable == 0 || heputils.YesNo("users") {
+		if lenTable == 0 || heputils.YesNo(tableName) {
 
-			heputils.Colorize(heputils.ColorRed, "reinstalling users")
-			configDBSession.Exec("TRUNCATE TABLE users")
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range usersData {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", tableName, db.Error, el.UserName))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
+				}
 			}
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "users",
-				VersionTable: jsonschema.TableVersion["users"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "global_settings") {
+	tableName = "global_settings"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["global_settings"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 
 		/* globalSettingData data */
-		if lenTable == 0 || heputils.YesNo("global_settings") {
+		if lenTable == 0 || heputils.YesNo(tableName) {
 
-			heputils.Colorize(heputils.ColorRed, "reinstalling global_settings")
-			configDBSession.Exec("TRUNCATE TABLE global_settings")
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range globalSettingData {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Param: [%s]", tableName, db.Error, el.Param))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Param: [%s] ", tableName, el.Param))
+				}
 			}
 
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "global_settings",
-				VersionTable: jsonschema.TableVersion["global_settings"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "auth_token") {
+	tableName = "auth_token"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["auth_token"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 
 		/* authTokens data */
-		if lenTable == 0 || heputils.YesNo("auth_token") {
+		if lenTable == 0 || heputils.YesNo(tableName) {
 
-			heputils.Colorize(heputils.ColorRed, "reinstalling auth_token")
-			configDBSession.Exec("TRUNCATE TABLE auth_token")
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range authTokens {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Token: [%s]", tableName, db.Error, el.Token))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Token: [%s]", tableName, el.Token))
+				}
 			}
 
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "auth_token",
-				VersionTable: jsonschema.TableVersion["auth_token"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
+	tableName = "agent_location_session"
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "agent_location_session") {
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["agent_location_session"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 		/* agentLocationSession data */
-		if lenTable == 0 || heputils.YesNo("agent_location_session") {
-			heputils.Colorize(heputils.ColorRed, "reinstalling agent_location_session")
-			configDBSession.Exec("TRUNCATE TABLE agent_location_session")
+		if lenTable == 0 || heputils.YesNo(tableName) {
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range agentLocationSession {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Host:[%s]", tableName, db.Error, el.Host))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Host:[%s]", tableName, el.Host))
+				}
 			}
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "agent_location_session",
-				VersionTable: jsonschema.TableVersion["agent_location_session"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "hepsub_mapping_schema") {
+	tableName = "hepsub_mapping_schema"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["hepsub_mapping_schema"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 		/* hepsubSchema data */
-		if lenTable == 0 || heputils.YesNo("hepsub_mapping_schema") {
-			heputils.Colorize(heputils.ColorRed, "reinstalling hepsub_mapping_schema")
-			configDBSession.Exec("TRUNCATE TABLE hepsub_mapping_schema")
+		if lenTable == 0 || heputils.YesNo(tableName) {
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range hepsubSchema {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Hepid:[%d] Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Hepid:[%d] Profile:[%s]", tableName, el.Hepid, el.Profile))
+				}
 			}
 
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "hepsub_mapping_schema",
-				VersionTable: jsonschema.TableVersion["hepsub_mapping_schema"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "user_settings") {
+	tableName = "user_settings"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["user_settings"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 
 		/* dashboardUsers data */
-		if lenTable == 0 || heputils.YesNo("user_settings") {
-			heputils.Colorize(heputils.ColorRed, "reinstalling user_settings")
-			configDBSession.Exec("TRUNCATE TABLE user_settings")
+		if lenTable == 0 || heputils.YesNo(tableName) {
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range dashboardUsers {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Category: [%s], Param: [%s]", tableName, db.Error, el.Category, el.Param))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Category: [%s], Param: [%s]", tableName, el.Category, el.Param))
+				}
 			}
 
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "user_settings",
-				VersionTable: jsonschema.TableVersion["user_settings"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
 
 	forceIt = force
-	if !heputils.ElementExists(tablesPopulate, "mapping_schema") {
+	tableName = "mapping_schema"
+
+	if !heputils.ElementExists(tablesPopulate, tableName) {
 		forceIt = false
 	}
 
-	if val, ok := createTables["mapping_schema"]; !ok || ok && val || forceIt {
+	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 		/* mappingSchema data */
-		if lenTable == 0 || heputils.YesNo("mapping_schema") {
+		if lenTable == 0 || heputils.YesNo(tableName) {
 
-			heputils.Colorize(heputils.ColorRed, "reinstalling mapping_schema")
-			configDBSession.Exec("TRUNCATE TABLE mapping_schema")
+			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+			configDBSession.Exec("TRUNCATE TABLE " + tableName)
 			for _, el := range mappingSchema {
-				configDBSession.Save(&el)
+				db := configDBSession.Save(&el)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. HEPID:[%d], Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. HEPID:[%d], Profile:[%s]", tableName, el.Hepid, el.Profile))
+				}
 			}
 
 			tableVersions = append(tableVersions, model.TableVersions{
-				NameTable:    "mapping_schema",
-				VersionTable: jsonschema.TableVersion["mapping_schema"],
+				NameTable:    tableName,
+				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
 	}
+
+	tableName = "versions"
 
 	if len(tableVersions) > 0 {
 
 		tableVersions = append(tableVersions, model.TableVersions{
-			NameTable:    "versions",
-			VersionTable: jsonschema.TableVersion["versions"],
+			NameTable:    tableName,
+			VersionTable: jsonschema.TableVersion[tableName],
 		})
 
 		/* tableVersions data */
-		heputils.Colorize(heputils.ColorRed, "reinstalling versions")
+		heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
 		//configDBSession.Exec("TRUNCATE TABLE versions")
 		for _, el := range tableVersions {
 			sql := fmt.Sprintf("DELETE FROM versions WHERE table_name = '%s'", el.NameTable)
-			configDBSession.Exec(sql)
-			configDBSession.Save(&el)
+			db := configDBSession.Exec(sql)
+			if db != nil && db.Error != nil {
+				logrus.Error(fmt.Sprintf("Exec delete failed for table [%s]: with error %s", tableName, db.Error))
+			} else {
+				logrus.Debug("Delete all records for table [" + tableName + "] was success")
+			}
+
+			db = configDBSession.Save(&el)
+			if db != nil && db.Error != nil {
+				logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Table:[%s], Version:[%d]", tableName, db.Error, el.NameTable, el.VersionTable))
+			} else {
+				logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Table:[%s], Version:[%d]", tableName, el.NameTable, el.VersionTable))
+			}
 		}
 	}
 

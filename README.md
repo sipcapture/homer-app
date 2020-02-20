@@ -40,16 +40,21 @@ Before using the application, configure all database parameters using the exampl
 
 NOTE: The default location for settings and provisioning files is `/usr/local/homer`
 
+<!--
 ## Manual dist
-If you are installing the homer-app manualy, please copy the UI dist files (frontend) from https://github.com/sipcapture/homer-ui/tree/master/dist/homer-ui to your local dist directory (usualy it's /usr/local/homer/dist, but check your webapp_config.json for a correct path):
+If you are installing the homer-app manualy, you can download the latest compiled version of the frontend:  https://github.com/sipcapture/homer-app/releases/latest . Once you have download a tar.gz of homer-ui, copy the entire files and directories from the archive to the local dist directory (usualy it's /usr/local/homer/dist, but check your webapp_config.json for a correct path).
+If you want to install the latest master, please go to https://github.com/sipcapture/homer-ui and follow the instruction how to build it using npmn and angular@cli.
 
+1.1.32 - an example here. Please use the latest version!
 ```
-git clone https://github.com/sipcapture/homer-ui homer-ui
-cp -Rp homer-ui/dist/homer-ui/* /usr/local/homer/dist/
+wget https://github.com/sipcapture/homer-app/releases/download/1.1.32/homer-ui-7.7.028.tgz
+tar xzf homer-ui-7.7.028.tgz
+cp -Rp dist/* /usr/local/homer/dist/
 
 ```
 
 NOTE: The default location for settings and provisioning files is `/usr/local/homer`
+-->
 
 #### Usage
 ##### Command Help
@@ -89,9 +94,17 @@ The application is able to initialize its database and tables it requires with t
 ```
 -->
 
+###### Please setup the correct credentials for homer_config and homer_data DB in your webapp_config.json !!!
+if your webapp_config.json isn't in the default directory: "/usr/local/homer/etc", use the flag "-webapp-config-path" to correct it. Same have to be applied to all steps there you read settings from "webapp_config.json"
+
 ###### Create Table / Migration - connection data will be read from `webapp_config.json`
 ```
 ./homer-app -create-table-db-config 
+```
+or
+
+```
+./homer-app -create-table-db-config -webapp-config-path=/etc/webapp_config.json
 ```
 
 ###### Populate DB

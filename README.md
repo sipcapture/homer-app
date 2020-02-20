@@ -95,10 +95,16 @@ The application is able to initialize its database and tables it requires with t
 -->
 
 ###### Please setup the correct credentials for homer_config and homer_data DB in your webapp_config.json !!!
+if your webapp_config.json isn't in the default directory: "/usr/local/homer/etc", use the flag "-webapp-config-path" to correct it. Same have to be applied for all procedures there you read settings from "webapp_config.json"
 
 ###### Create Table / Migration - connection data will be read from `webapp_config.json`
 ```
 ./homer-app -create-table-db-config 
+```
+or
+
+```
+./homer-app -create-table-db-config -webapp-config-path=/etc/webapp_config.json
 ```
 
 ###### Populate DB

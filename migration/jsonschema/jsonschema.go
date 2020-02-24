@@ -1008,7 +1008,7 @@ var CorrelationMapping1call = json.RawMessage(`[
         ]
     },
     {
-        "source_field": "data_header.correlation_id",
+        "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,
         "lookup_profile": "call",
         "lookup_field": "sid",
@@ -1053,7 +1053,7 @@ var CorrelationMapping1registration = json.RawMessage(`[
         ]
     },
     {
-        "source_field": "data_header.correlation_id",
+        "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,
         "lookup_profile": "registration",
         "lookup_field": "sid",
@@ -1087,7 +1087,7 @@ var CorrelationMapping1default = json.RawMessage(`[
         ]
     },
     {
-        "source_field": "data_header.correlation_id",
+        "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,
         "lookup_profile": "default",
         "lookup_field": "sid",

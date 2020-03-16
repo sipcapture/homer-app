@@ -427,6 +427,10 @@ func performV1APIRouting(e *echo.Echo) {
 
 	prefix := *appFlags.APIPrefix
 
+	if viper.IsSet("http_settings.api_prefix") {
+		prefix = viper.GetString("http_settings.api_prefix")
+	}
+
 	// accessible web services will fall in this group
 	acc := e.Group(prefix + "/api/v3")
 
@@ -854,6 +858,10 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 func registerGetRedirect(e *echo.Echo, path string) {
 
 	prefix := *appFlags.APIPrefix
+
+	if viper.IsSet("http_settings.api_prefix") {
+		prefix = viper.GetString("http_settings.api_prefix")
+	}
 
 	e.GET(prefix+"/dashboard/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")

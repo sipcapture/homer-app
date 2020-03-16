@@ -115,6 +115,7 @@ type CommandLineFlags struct {
 	PathWebAppConfig          *string    `json:"path_webapp"`
 	LogPathWebApp             *string    `json:"path_log_webapp"`
 	LogName                   *string    `json:"log_name_webapp"`
+	APIPrefix                 *string    `json:"api_prefix"`
 }
 
 //params for  Services
@@ -172,6 +173,7 @@ func initFlags() {
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
 	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
+	appFlags.APIPrefix = flag.String("webapp-api-prefix", "", "API prefix.")
 
 	flag.Parse()
 }
@@ -423,8 +425,10 @@ func configureAsHTTPServer() {
 
 func performV1APIRouting(e *echo.Echo) {
 
+	prefix := *appFlags.APIPrefix
+
 	// accessible web services will fall in this group
-	acc := e.Group("/api/v3")
+	acc := e.Group(prefix + "/api/v3")
 
 	if authType == "ldap" {
 		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient)
@@ -436,7 +440,7 @@ func performV1APIRouting(e *echo.Echo) {
 	apirouterv1.RouteAgentsubAuthKeyApis(acc, servicesObject.configDBSession)
 
 	// restricted web services will fall in this group
-	res := e.Group("/api/v3")
+	res := e.Group(prefix + "/api/v3")
 	// Configure middleware with the custom claims type
 	config := middleware.JWTConfig{
 		Claims:     &auth.JwtUserClaim{},
@@ -849,39 +853,41 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 
 func registerGetRedirect(e *echo.Echo, path string) {
 
-	e.GET("/dashboard/:name", func(c echo.Context) (err error) {
+	prefix := *appFlags.APIPrefix
+
+	e.GET(prefix+"/dashboard/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/call/:name", func(c echo.Context) (err error) {
+	e.GET(prefix+"/call/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/call/:name/", func(c echo.Context) (err error) {
+	e.GET(prefix+"/call/:name/", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/search/:name", func(c echo.Context) (err error) {
+	e.GET(prefix+"/search/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/search/:name/", func(c echo.Context) (err error) {
+	e.GET(prefix+"/search/:name/", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/registration/:name", func(c echo.Context) (err error) {
+	e.GET(prefix+"/registration/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/registration/:name/", func(c echo.Context) (err error) {
+	e.GET(prefix+"/registration/:name/", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("(system:login)", func(c echo.Context) (err error) {
+	e.GET(prefix+"(system:login)", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 
-	e.GET("/preference/:name", func(c echo.Context) (err error) {
+	e.GET(prefix+"/preference/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
 }

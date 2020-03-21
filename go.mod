@@ -3,6 +3,7 @@ module github.com/sipcapture/homer-app
 go 1.13
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.3.14 // indirect
 	github.com/Jeffail/gabs v1.4.0
 	github.com/Jeffail/gabs/v2 v2.2.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

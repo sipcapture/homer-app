@@ -16,14 +16,14 @@ type RemoteController struct {
 	RemoteService *service.RemoteService
 }
 
-// swagger:route GET /api/v3/seach/remote/label search
+// swagger:route GET /search/remote/label remote remoteRemoteLabel
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -50,14 +50,14 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/seach/remote/values search
+// swagger:route GET /search/remote/values remote remoteRemoteValues
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -85,14 +85,14 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/seach/remote/data search
+// swagger:route GET /search/remote/data remote remoteRemoteData
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:

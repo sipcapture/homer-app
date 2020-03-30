@@ -18,14 +18,14 @@ type AdvancedController struct {
 	AdvancedService *service.AdvancedService
 }
 
-// swagger:route GET /advanced advanced ListAdvancedSettings
+// swagger:route GET /advanced advanced advancedGetAll
 //
-// Returns advanced setting of user
+// Get all advanced items
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -39,9 +39,9 @@ func (ac *AdvancedController) GetAll(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, string(alias))
 }
 
-// swagger:route POST /advanced/protocol ListAdvancedSettings
+// swagger:route POST /advanced advanced advancedAddAdvanced
 //
-// Get mappings
+// Add advanced item
 // ---
 // consumes:
 // - application/json
@@ -79,19 +79,19 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+// swagger:operation PUT /advanced/{guid} advanced advancedUpdateAdvancedAgainstGUID
 //
-// Get mapping against id and profile
+// Update advanced item by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
+//   description: guid of item
 //   required: true
 //   type: string
 // Security:
@@ -130,19 +130,19 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} mapping DeleteMapping
+// swagger:operation DELETE /advanced/{guid} advanced advancedDeleteAdvancedAgainstGUID
 //
-// Get mapping against id and profile
+// Delete advanced item by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
+//   description: guid of item
 //   required: true
 //   type: string
 // Security:
@@ -169,19 +169,19 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /mapping/protocol/{guid} mapping GetMapping
+// swagger:operation GET /advanced/{guid} advanced advancedGetAdvancedAgainstGUID
 //
-// Get mapping against id and profile
+// Get advanced item by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
+//   description: guid of item
 //   required: true
 //   type: string
 // Security:

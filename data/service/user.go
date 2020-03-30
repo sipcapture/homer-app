@@ -157,7 +157,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			userData.UserGroup = val
 		}
 
-		groups, err := us.LdapClient.GetGroupsOfUser(username)
+		groups, err := us.LdapClient.GetGroupsOfUser(user["dn"])
 		if err != nil {
 			logrus.Error("Couldn't get any group for user ", username, ": ", err)
 		} else {

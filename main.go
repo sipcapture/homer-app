@@ -468,6 +468,11 @@ func performV1APIRouting(e *echo.Echo) {
 	// route make auth token
 	apirouterv1.RouteAuthTokenApis(res, servicesObject.configDBSession)
 
+	// route hep_reply apis
+	addr := fmt.Sprintf("%s:%s", viper.Get("hep_relay.host"), viper.Get("hep_relay.port"))
+
+	apirouterv1.RouteWebSocketApis(res, addr)
+
 	/*************** PARTLY admin access ONLY ***************/
 	// route user apis
 	apirouterv1.RouteUserDetailsApis(res, servicesObject.configDBSession)

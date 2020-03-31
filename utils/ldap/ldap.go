@@ -31,6 +31,8 @@ type LDAPClient struct {
 	SkipTLS            bool
 	AdminGroup         string
 	AdminMode          bool
+	UserGroup          string
+	UserMode           bool
 
 	ClientCertificates []tls.Certificate // Adding client certificates
 }

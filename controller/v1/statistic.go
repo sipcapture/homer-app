@@ -16,14 +16,14 @@ type StatisticController struct {
 	StatisticService *service.StatisticService
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:route POST /statistic/data statistic statisticStatisticData
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -54,14 +54,14 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:route GET /statistic/_db statistic statisticGetStatisticDBList
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -86,14 +86,14 @@ func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:route POST /statistic/_retentions statistic statisticGetStatisticRetentionsList
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -125,14 +125,22 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:operation GET /statistic/_measurements/{dbid} statistic statisticGetStatisticMeasurementsList
 //
 // Returns data based upon filtered json
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: dbid
+//   in: path
+//   type: string
+//   description: database id
+//   required: true
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -159,14 +167,14 @@ func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) erro
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:route POST /statistic/_metrics statistic statisticGetStatisticMetricsList
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -198,14 +206,14 @@ func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/statistic/data search
+// swagger:route POST /statistic/_tags statistic statisticGetStatisticTagsList
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:

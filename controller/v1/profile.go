@@ -14,25 +14,6 @@ type ProfileController struct {
 	ProfileService *service.ProfileService
 }
 
-// swagger:route GET /mapping/protocol profile ListProfiles
-//
-// Get mappings
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// Security:
-// - bearer: []
-//
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-// responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
 func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetProfile()
@@ -43,7 +24,7 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 }
 
-// swagger:route GET /admin/profiles profile ListProfiles
+// swagger:route GET /admin/profiles profile profileGetDashboardList
 //
 // Get mappings
 // ---
@@ -60,7 +41,7 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:Hepsubchema
+//   '200': body:HepsubSchema
 //   '400': body:FailureResponse
 func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
@@ -72,7 +53,7 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 }
 
-// swagger:route GET /database/node/list profile ListMapping
+// swagger:route GET /database/node/list profile profileGetDBNodeList
 //
 // Get mappings
 // ---

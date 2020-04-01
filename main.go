@@ -2,7 +2,7 @@
 //
 // Homer-App User interface for WEB AI
 //
-//     Schemes: http
+//     Schemes: http, https
 //     Host: localhost:9080
 //     BasePath: /api/v3
 //     Version: 1.1.2
@@ -16,6 +16,7 @@
 //
 //     Produces:
 //     - application/json
+//
 //     Security:
 //     - bearer
 //

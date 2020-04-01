@@ -16,14 +16,14 @@ type PrometheusController struct {
 	PrometheusService *service.PrometheusService
 }
 
-// swagger:route GET /api/prometheus/data search
+// swagger:route GET /prometheus/data proxy prometheusPrometheusData
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -55,14 +55,14 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/prometheus/value search
+// swagger:route GET /prometheus/value proxy prometheusPrometheusValue
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -94,14 +94,14 @@ func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/prometheus/labels search
+// swagger:route GET /prometheus/labels proxy prometheusPrometheusLabels
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -126,14 +126,14 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/prometheus/label search
+// swagger:route GET /prometheus/label proxy prometheusPrometheusLabelData
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:

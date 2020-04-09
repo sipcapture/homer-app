@@ -55,16 +55,13 @@ func (wb *WebSocketController) RelayHepData(c echo.Context) error {
 			var msg []byte
 			err = websocket.Message.Receive(ws, &msg)
 			if err != nil {
-				c.Logger().Error(err)
+				logrus.Error(fmt.Sprintf("got error while reading data on websocket", err))
+				break
 			}
-			fmt.Printf("%s\n", msg)
-
-			fmt.Fprintf(conn, "Hi UDP Server, How are you doing?")
 			_, err = conn.Write(msg)
-			if err == nil {
-				logrus.Error("Suscess in writing")
-			} else {
-				logrus.Printf("Some error %v\n", err)
+			if err != nil {
+				logrus.Error(fmt.Sprintf("got error while writing data on websocket", err))
+				break
 			}
 		}
 	}).ServeHTTP(c.Response(), c.Request())

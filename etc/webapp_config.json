@@ -10,9 +10,9 @@
     }
   },
   "hep_relay": {
-    "help": "UDP socket to send data on",
+    "help": "UDP socket to send HEP data on",
     "host": "locahost",
-    "port": "9060"
+    "port": 9060
   },
   "database_config": {
     "help": "Settings for PGSQL Database (settings)",

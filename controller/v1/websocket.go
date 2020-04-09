@@ -60,7 +60,7 @@ func (wb *WebSocketController) RelayHepData(c echo.Context) error {
 			}
 			_, err = conn.Write(msg)
 			if err != nil {
-				logrus.Error(fmt.Sprintf("got error while writing data on websocket", err))
+				logrus.Error(fmt.Sprintf("got error while writing data on hep socket", err))
 				break
 			}
 		}

@@ -11,7 +11,7 @@
   },
   "hep_relay": {
     "help": "UDP socket to send HEP data on",
-    "host": "locahost",
+    "host": "127.0.0.1",
     "port": 9060
   },
   "database_config": {

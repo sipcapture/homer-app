@@ -444,6 +444,10 @@ func performV1APIRouting(e *echo.Echo) {
 	//subscribe access with authKey
 	apirouterv1.RouteAgentsubAuthKeyApis(acc, servicesObject.configDBSession)
 
+	// route hep_reply apis
+	addr := fmt.Sprintf("%s:%d", viper.Get("hep_relay.host"), viper.GetInt("hep_relay.port"))
+	apirouterv1.RouteWebSocketApis(acc, addr)
+
 	// restricted web services will fall in this group
 	res := e.Group(prefix + "/api/v3")
 	// Configure middleware with the custom claims type
@@ -468,11 +472,6 @@ func performV1APIRouting(e *echo.Echo) {
 	apirouterv1.RouteHepsubApis(res, servicesObject.configDBSession)
 	// route make auth token
 	apirouterv1.RouteAuthTokenApis(res, servicesObject.configDBSession)
-
-	// route hep_reply apis
-	addr := fmt.Sprintf("%s:%s", viper.Get("hep_relay.host"), viper.Get("hep_relay.port"))
-
-	apirouterv1.RouteWebSocketApis(res, addr)
 
 	/*************** PARTLY admin access ONLY ***************/
 	// route user apis

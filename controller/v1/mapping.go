@@ -274,7 +274,7 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 //   type: string
 // - name: profile
 //   in: path
-//   example: 
+//   example:
 //   description: profile
 //   required: true
 //   type: string

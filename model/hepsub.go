@@ -9,7 +9,7 @@ func (TableHepsubSchema) TableName() string {
 	return "hepsub_mapping_schema"
 }
 
-// swagger:model Hepsubchema
+// swagger:model HepsubSchema
 type TableHepsubSchema struct {
 	ID         int             `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
 	GUID       string          `gorm:"column:guid;type:uuid" json:"guid" validate:"required"`

@@ -9,6 +9,7 @@ func (TableAuthToken) TableName() string {
 	return "auth_token"
 }
 
+// swagger:model AuthToken
 type TableAuthToken struct {
 	ID            int             `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"-"`
 	GUID          string          `gorm:"column:guid;type:uuid" json:"guid"`

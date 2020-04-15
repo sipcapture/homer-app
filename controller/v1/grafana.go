@@ -14,14 +14,14 @@ type GrafanaController struct {
 	GrafanaService *service.GrafanaService
 }
 
-// swagger:route GET /api/v3/proxy/grafana/url search
+// swagger:route GET /proxy/grafana/url proxy grafanaGrafanaURL
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -42,14 +42,14 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/proxy/grafana/org search
+// swagger:route GET /proxy/grafana/org proxy grafanaGrafanaORG
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -75,14 +75,14 @@ func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/proxy/grafana/folders search
+// swagger:route GET /proxy/grafana/folders proxy grafanaGrafanaFolders
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -108,21 +108,27 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/proxy/grafana/dashboards/uid/:uid search
+// swagger:operation GET /proxy/grafana/dashboards/uid/{uid} proxy grafanaGrafanaGetDashboardAgainstUUID
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
+// parameters:
+// - name: uid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: uid
+//   required: true
+//   type: string
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
 //   '200': body:ListUsers
 //   '400': body:UserLoginFailureResponse

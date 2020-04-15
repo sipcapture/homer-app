@@ -25,6 +25,7 @@ func RouteAgentsubApis(acc *echo.Group, session *gorm.DB) {
 
 	acc.GET("/agent/subscribe/:guid", ass.GetAgentsubAgainstGUID)
 	acc.DELETE("/agent/subscribe/:guid", ass.DeleteAgentsubAgainstGUID)
+	acc.PUT("/agent/subscribe/:guid", ass.UpdateAgentsubAgainstGUID)
 
 	/* search */
 	acc.POST("/agent/search/:guid/:type", ass.GetAgentSearchByTypeAndGUID)

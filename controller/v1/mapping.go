@@ -18,9 +18,9 @@ type MappingController struct {
 	MappingService *service.MappingService
 }
 
-// swagger:route GET /mapping/protocols Mapping ListMapping
+// swagger:route GET /mapping/protocol mapping mappingGetMapping
 //
-// Get mappings
+// Get all mappings
 // ---
 // consumes:
 // - application/json
@@ -43,12 +43,11 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
-
 }
 
-// swagger:operation GET /mapping/protocol/{id}/{transaction} Mapping GetMapping
+// swagger:operation GET /mapping/protocol/{id}/{transaction} mapping mappingGetMappingFields
 //
-// Get mapping against id and profile
+// Get mapping using id and transaction
 // ---
 // consumes:
 // - application/json
@@ -91,16 +90,16 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
 }
 
-// swagger:operation GET /mapping/protocol/{guid} Mapping GetMapping
+// swagger:operation GET /mapping/protocol/{guid} mapping mappingGetMappingAgainstGUID
 //
-// Get mapping against id and profile
+// Get mapping using guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
@@ -127,9 +126,9 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route POST /hepsub/protocol Mapping AddMapping
+// swagger:operation POST /mapping/protocol mapping mappingAddMapping
 //
-// Get mappings
+// Add mapping
 // ---
 // consumes:
 // - application/json
@@ -168,16 +167,16 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
+// swagger:operation PUT /mapping/protocol/{guid} mapping mappingUpdateMappingAgainstGUID
 //
-// Get mapping against id and profile
+// Update mapping using guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
@@ -219,16 +218,16 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
+// swagger:operation DELETE /mapping/protocol/{guid} mapping mappingDeleteMappingAgainstGUID
 //
-// Get mapping against id and profile
+// Delete mapping using guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
@@ -258,19 +257,25 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation Delete /mapping/protocol/{guid} Mapping DeleteMapping
+// swagger:operation GET /smart/search/tag/{hepid}/{profile} mapping mappingGetSmartHepProfile
 //
-// Get mapping against id and profile
+// Get smart hep profile using hepid and profile
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// - name: hepid
 //   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
+//   example: 1
+//   description: hepid
+//   required: true
+//   type: string
+// - name: profile
+//   in: path
+//   example:
+//   description: profile
 //   required: true
 //   type: string
 // Security:

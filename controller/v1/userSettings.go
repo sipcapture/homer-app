@@ -20,14 +20,14 @@ type UserSettingsController struct {
 	UserSettingsService *service.UserSettingsService
 }
 
-// swagger:route GET /user/settings settings ListSettings
+// swagger:route GET /user/settings settings settingsGetAll
 //
 // Returns the list of settings
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -47,14 +47,23 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route GET /user/settings/:category settings ListSettings
+// swagger:operation GET /user/settings/{category} settings settingsGetCategory
 //
 // Returns the list of settings
 // ---
+// consumes:
+// - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: category
+//   in: path
+//   description: user settings category
+//   example: dashboard
+//   required: true
+//   type: string
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -72,20 +81,20 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation POST /alias alias AddAlias
+// swagger:operation POST /user/settings settings settingsAddUserSettings
 //
-// Adds alias to system
+// Adds user settings
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: aliasstruct
+// - name: userSettingsStruct
 //   in: body
-//   description: alias parameters
+//   description: TableUserSettings struct
 //   schema:
-//     "$ref": "#/definitions/AliasStruct"
+//     "$ref": "#/definitions/UserSettings"
 //   required: true
 // Security:
 // - bearer: []
@@ -96,8 +105,8 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:UserLoginSuccessResponse
-//   '401': body:UserLoginFailureResponse
+//   '201': body:UserLoginSuccessResponse
+//   '400': body:UserLoginFailureResponse
 func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
@@ -114,9 +123,9 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:operation DELETE /alias/{guid} alias DeleteAlias
+// swagger:operation DELETE /user/settings/{guid} settings settingsDeleteUserSettings
 //
-// Update an existing user
+// Delete user settings
 // ---
 // consumes:
 // - application/json
@@ -126,7 +135,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 // - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: uuid of the alias to delete
+//   description: guid of user settings
 //   required: true
 //   type: string
 // Security:
@@ -138,7 +147,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:AliasStruct
+//   '200': body:SuccessResponse
 func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
@@ -166,9 +175,9 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply.String())
 }
 
-// swagger:operation PUT /alias/{guid} alias UpdateAlias
+// swagger:operation PUT /user/settings/{guid} settings settingsUpdateUserSettings
 //
-// Update an existing user
+// Update user settings
 // ---
 // consumes:
 // - application/json
@@ -178,14 +187,14 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 // - name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: uuid of the alias to update
+//   description: guid of user settings
 //   required: true
 //   type: string
-// - name: area
+// - name: tableUserSettingsStruct
 //   in: body
-//   description: area parameters
+//   description: TableUserSettings
 //   schema:
-//     "$ref": "#/definitions/AliasStruct"
+//     "$ref": "#/definitions/UserSettings"
 //   required: true
 // Security:
 // - bearer: []
@@ -196,7 +205,7 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:AliasStruct
+//   '201': body:SuccessResponse
 func (usc *UserSettingsController) UpdateUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}

@@ -22,7 +22,7 @@ type SearchController struct {
 	AliasService   *service.AliasService
 }
 
-// swagger:operation GET /api/search/call/data Search
+// swagger:operation POST /search/call/data search searchSearchData
 //
 // Returns data based upon filtered json
 // ---
@@ -69,7 +69,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation POST /api/search/call/message search
+// swagger:operation POST /search/call/message search searchGetMessageById
 //
 // Returns message data based upon filtered json
 // ---
@@ -109,7 +109,7 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation POST /api/search/call/decode/message search
+// swagger:operation POST /search/call/decode/message search searchGetDecodeMessageById
 //
 // Returns data based upon filtered json
 // ---
@@ -149,7 +149,7 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation GET /api/call/transaction search
+// swagger:operation POST /call/transaction search searchGetTransaction
 //
 // Returns transaction data based upon filtered json
 // ---
@@ -200,7 +200,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 }
 
-// swagger:operation GET /api/call/report/qos search
+// swagger:operation POST /call/report/qos search searchGetTransactionQos
 //
 // Returns qos data based upon filtered json
 // ---
@@ -242,7 +242,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 }
 
-// swagger:operation GET /api/call/report/log search
+// swagger:operation POST /call/report/log search searchGetTransactionLog
 //
 // Returns log data based upon filtered json
 // ---
@@ -295,7 +295,7 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:operation GET /api/v3/export/call/messages/pcap search
+// swagger:operation POST /export/call/messages/pcap search searchGetMessagesAsPCap
 //
 // Returns pcap data based upon filtered json
 // ---
@@ -351,7 +351,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 }
 
-// swagger:operation GET /api/v3/export/call/messages/text search
+// swagger:operation POST /export/call/messages/text search searchGetMessagesAsText
 //
 // Returns text data based upon filtered json
 // ---

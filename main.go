@@ -2,7 +2,7 @@
 //
 // Homer-App User interface for WEB AI
 //
-//     Schemes: http
+//     Schemes: http, https
 //     Host: localhost:9080
 //     BasePath: /api/v3
 //     Version: 1.1.2
@@ -16,6 +16,7 @@
 //
 //     Produces:
 //     - application/json
+//
 //     Security:
 //     - bearer
 //
@@ -442,6 +443,10 @@ func performV1APIRouting(e *echo.Echo) {
 
 	//subscribe access with authKey
 	apirouterv1.RouteAgentsubAuthKeyApis(acc, servicesObject.configDBSession)
+
+	// route hep_reply apis
+	addr := fmt.Sprintf("%s:%d", viper.Get("hep_relay.host"), viper.GetInt("hep_relay.port"))
+	apirouterv1.RouteWebSocketApis(acc, addr)
 
 	// restricted web services will fall in this group
 	res := e.Group(prefix + "/api/v3")

@@ -19,9 +19,9 @@ type AgentsubController struct {
 	AgentsubService *service.AgentsubService
 }
 
-// swagger:route GET /agent/subscribe agent ListAgents
+// swagger:route GET /agent/subscribe agent agentsSubGetAgentsub
 //
-// Get agent
+// Get all agents
 // ---
 // consumes:
 // - application/json
@@ -48,16 +48,16 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 
 }
 
-// swagger:operation GET /agent/type/{type} agent GetAgentByType
+// swagger:operation GET /agent/type/{type} agent agentsSubGetAgentsubByType
 //
-// Get agent
+// Get agent by type
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: type of agent
+// - name: type
 //   in: path
 //   example: home
 //   description: type of agent
@@ -83,16 +83,16 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /agent/subscribe/{guid} agent GetAgentByGUID
+// swagger:operation GET /agent/subscribe/{guid} agent agentsSubGetAgentsubAgainstGUID
 //
-// Get agent
+// Get agent by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: type of agent
+// - name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of agent
@@ -119,14 +119,21 @@ func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:route POST /agentsub/protocol agent AddAgentsub
+// swagger:operation POST /agent/subscribe agent agentsSubAddAgentsubWithKey
 //
-// Get mappings
+// Add agent
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: AgentsLocation Struct
+//   in: body
+//   description: agent parameters
+//   schema:
+//     "$ref": "#/definitions/AgentsLocation"
+//   required: true
 // Security:
 // - bearer: []
 //
@@ -177,14 +184,21 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:route GET /agent/subscribe/{guid} agent UpdateAgent
+// swagger:operation PUT /agent/subscribe/{guid} agent agentsSubUpdateAgentsubAgainstGUID
 //
-// Get mappings
+// Update agent by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: guid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of agent
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -194,8 +208,8 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   '201': body:AgentsLocation
+//   '400': body:FailureResponse
 func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
@@ -221,16 +235,16 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation DELETE /agent/subscribe/{guid} agent DeleteAgent
+// swagger:operation DELETE /agent/subscribe/{guid} agent agentsSubDeleteAgentsubAgainstGUID
 //
-// Get mappings
+// Delete agent by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: type of agent
+// - name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of agent
@@ -265,14 +279,27 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route POST /agent/search/{guid}/{type} agent CreateAgent
+// swagger:operation POST /agent/search/{guid}/{type} agent agentsSubGetAgentSearchByTypeAndGUID
 //
-// Get mappings
+// Get agent by guid and type
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: guid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of agent
+//   required: true
+//   type: string
+// - name: type
+//   in: path
+//   example: home
+//   description: type of agent
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -306,5 +333,4 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 	}
 
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
-
 }

@@ -68,7 +68,7 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 			logrus.Debugln(counterArray)
 		}
 
-		infQuery = fmt.Sprintf("SELECT %s FROM %s.%s.\"%s\" WHERE time > %d AND %d > time %s GROUP BY time(%s) FILL(null) LIMIT %d;",
+		infQuery = fmt.Sprintf("SELECT %s FROM %s.%s.\"%s\" WHERE time > %d AND %d > time %s GROUP BY time(%s) FILL(null) order by time DESC LIMIT %d;",
 			strings.Join(counterArray, ","), query.Database, query.Retention, query.Main,
 			(statisticObject.Timestamp.From * 1000000),
 			(statisticObject.Timestamp.To * 1000000),

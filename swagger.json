@@ -6,7 +6,8 @@
     "application/json"
   ],
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -25,50 +26,6 @@
   "host": "localhost:9080",
   "basePath": "/api/v3",
   "paths": {
-    "/Hepsubsearch/protocol": {
-      "post": {
-        "security": [
-          {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Hepsubsearch"
-        ],
-        "operationId": "AddHepsubsearch",
-        "responses": {}
-      }
-    },
     "/admin/profiles": {
       "get": {
         "security": [
@@ -109,7 +66,7 @@
         "tags": [
           "profile"
         ],
-        "operationId": "ListProfiles",
+        "operationId": "profileGetDashboardList",
         "responses": {}
       }
     },
@@ -117,6 +74,11 @@
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
             "SecurityDefinitions": []
           },
           {
@@ -138,18 +100,16 @@
             ]
           }
         ],
-        "description": "Returns advanced setting of user",
+        "description": "Get all advanced items",
         "produces": [
           "application/json"
         ],
         "tags": [
           "advanced"
         ],
-        "operationId": "ListAdvancedSettings",
+        "operationId": "advancedGetAll",
         "responses": {}
-      }
-    },
-    "/advanced/protocol": {
+      },
       "post": {
         "security": [
           {
@@ -179,14 +139,106 @@
             ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Add advanced item",
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
         ],
-        "operationId": "ListAdvancedSettings",
+        "tags": [
+          "advanced"
+        ],
+        "operationId": "advancedAddAdvanced",
+        "responses": {}
+      }
+    },
+    "/advanced/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get advanced item by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "advanced"
+        ],
+        "operationId": "advancedGetAdvancedAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update advanced item by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "advanced"
+        ],
+        "operationId": "advancedUpdateAdvancedAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete advanced item by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "advanced"
+        ],
+        "operationId": "advancedDeleteAdvancedAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {}
       }
     },
@@ -194,33 +246,10 @@
       "post": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Get agent by guid and type",
         "consumes": [
           "application/json"
         ],
@@ -230,7 +259,25 @@
         "tags": [
           "agent"
         ],
-        "operationId": "CreateAgent",
+        "operationId": "agentsSubGetAgentSearchByTypeAndGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "home",
+            "description": "type of agent",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {}
       }
     },
@@ -264,7 +311,7 @@
             ]
           }
         ],
-        "description": "Get agent",
+        "description": "Get all agents",
         "consumes": [
           "application/json"
         ],
@@ -274,7 +321,37 @@
         "tags": [
           "agent"
         ],
-        "operationId": "ListAgents",
+        "operationId": "agentsSubGetAgentsub",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Add agent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "agentsSubAddAgentsubWithKey",
+        "parameters": [
+          {
+            "description": "agent parameters",
+            "name": "AgentsLocation Struct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AgentsLocation"
+            }
+          }
+        ],
         "responses": {}
       }
     },
@@ -285,7 +362,7 @@
             "bearer": []
           }
         ],
-        "description": "Get agent",
+        "description": "Get agent by guid",
         "consumes": [
           "application/json"
         ],
@@ -295,13 +372,42 @@
         "tags": [
           "agent"
         ],
-        "operationId": "GetAgentByGUID",
+        "operationId": "agentsSubGetAgentsubAgainstGUID",
         "parameters": [
           {
             "type": "string",
             "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
-            "name": "type of agent",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update agent by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agent"
+        ],
+        "operationId": "agentsSubUpdateAgentsubAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of agent",
+            "name": "guid",
             "in": "path",
             "required": true
           }
@@ -314,7 +420,7 @@
             "bearer": []
           }
         ],
-        "description": "Get mappings",
+        "description": "Delete agent by guid",
         "consumes": [
           "application/json"
         ],
@@ -324,13 +430,13 @@
         "tags": [
           "agent"
         ],
-        "operationId": "DeleteAgent",
+        "operationId": "agentsSubDeleteAgentsubAgainstGUID",
         "parameters": [
           {
             "type": "string",
             "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
-            "name": "type of agent",
+            "name": "guid",
             "in": "path",
             "required": true
           }
@@ -345,7 +451,7 @@
             "bearer": []
           }
         ],
-        "description": "Get agent",
+        "description": "Get agent by type",
         "consumes": [
           "application/json"
         ],
@@ -355,13 +461,13 @@
         "tags": [
           "agent"
         ],
-        "operationId": "GetAgentByType",
+        "operationId": "agentsSubGetAgentsubByType",
         "parameters": [
           {
             "type": "string",
             "example": "home",
             "description": "type of agent",
-            "name": "type of agent",
+            "name": "type",
             "in": "path",
             "required": true
           }
@@ -369,8 +475,8 @@
         "responses": {}
       }
     },
-    "/agentsub/protocol": {
-      "post": {
+    "/alias": {
+      "get": {
         "security": [
           {
             "bearer": [
@@ -399,53 +505,14 @@
             ]
           }
         ],
-        "description": "Get mappings",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "agent"
-        ],
-        "operationId": "AddAgentsub",
-        "responses": {}
-      }
-    },
-    "/alias": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns the list of Users",
+        "description": "Get all aliases",
         "produces": [
           "application/json"
         ],
         "tags": [
           "alias"
         ],
-        "operationId": "ListAlias",
+        "operationId": "aliasGetAllAlias",
         "responses": {}
       },
       "post": {
@@ -454,7 +521,7 @@
             "bearer": []
           }
         ],
-        "description": "Adds alias to system",
+        "description": "Add alias",
         "consumes": [
           "application/json"
         ],
@@ -464,7 +531,7 @@
         "tags": [
           "alias"
         ],
-        "operationId": "AddAlias",
+        "operationId": "aliasAddAlias",
         "parameters": [
           {
             "description": "alias parameters",
@@ -486,7 +553,7 @@
             "bearer": []
           }
         ],
-        "description": "Update an existing user",
+        "description": "Update alias",
         "consumes": [
           "application/json"
         ],
@@ -496,7 +563,7 @@
         "tags": [
           "alias"
         ],
-        "operationId": "UpdateAlias",
+        "operationId": "aliasUpdateAlias",
         "parameters": [
           {
             "type": "string",
@@ -507,8 +574,8 @@
             "required": true
           },
           {
-            "description": "area parameters",
-            "name": "area",
+            "description": "alias parameters",
+            "name": "aliasStruct",
             "in": "body",
             "required": true,
             "schema": {
@@ -524,7 +591,7 @@
             "bearer": []
           }
         ],
-        "description": "Update an existing user",
+        "description": "Delete alias",
         "consumes": [
           "application/json"
         ],
@@ -534,538 +601,18 @@
         "tags": [
           "alias"
         ],
-        "operationId": "DeleteAlias",
+        "operationId": "aliasDeleteAlias",
         "parameters": [
           {
             "type": "string",
             "example": "11111111-1111-1111-1111-111111111111",
-            "description": "uuid of the alias to delete",
+            "description": "guid of the alias",
             "name": "guid",
             "in": "path",
             "required": true
           }
         ],
         "responses": {}
-      }
-    },
-    "/api/call/report/log": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns logs related to transaction",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/call/report/qos": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns qos stats",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/call/transaction": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data related to transaction",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/prometheus/data": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/prometheus/label": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/prometheus/labels": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/prometheus/value": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/search/call/data": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/search/call/decode/message": {
-      "post": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/search/call/message": {
-      "post": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/statistic/data": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/v3/export/call/messages/pcap": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns messages related to transaction",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/v3/export/call/messages/text": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns messages related to transaction",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search",
-        "responses": {}
-      }
-    },
-    "/api/v3/seach/remote/data": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/v3/seach/remote/label": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
-      }
-    },
-    "/api/v3/seach/remote/values": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
       }
     },
     "/auth": {
@@ -1078,9 +625,10 @@
           "application/json"
         ],
         "tags": [
-          "user"
+          "user",
+          "auth"
         ],
-        "operationId": "userLogin",
+        "operationId": "userLoginUser",
         "parameters": [
           {
             "description": "user login structure",
@@ -1095,14 +643,121 @@
         "responses": {}
       }
     },
+    "/call/report/log": {
+      "post": {
+        "description": "Returns log data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetTransactionLog",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/call/report/qos": {
+      "post": {
+        "description": "Returns qos data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetTransactionQos",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/call/transaction": {
+      "post": {
+        "description": "Returns transaction data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetTransaction",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/dashboard/info": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
-        "description": "Get Dashbroad list",
+        "description": "Get all dashboards",
         "consumes": [
           "application/json"
         ],
@@ -1112,7 +767,7 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "ListDashboard",
+        "operationId": "dashboardGetDashBoardLists",
         "responses": {}
       }
     },
@@ -1123,7 +778,7 @@
             "bearer": []
           }
         ],
-        "description": "Get Dashboard Against a GUID",
+        "description": "Get dashboard by param",
         "consumes": [
           "application/json"
         ],
@@ -1133,13 +788,13 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "GetDashboard",
+        "operationId": "dashboardGetDashBoard",
         "parameters": [
           {
             "type": "string",
             "example": "home",
             "description": "param of dashboard",
-            "name": "dashboard id",
+            "name": "dashboard param",
             "in": "path",
             "required": true
           }
@@ -1152,7 +807,7 @@
             "bearer": []
           }
         ],
-        "description": "Add new dashboard",
+        "description": "Add dashboard",
         "consumes": [
           "application/json"
         ],
@@ -1162,22 +817,23 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "CreateDashboard",
+        "operationId": "dashboardInsertDashboard",
         "parameters": [
           {
             "type": "string",
             "example": "home",
             "description": "the param of dashboard",
-            "name": "dashboardid",
+            "name": "dashboard param",
             "in": "path",
             "required": true
           },
           {
             "description": "json of dashboard",
-            "name": "data",
+            "name": "dashboard data",
             "in": "body",
+            "required": true,
             "schema": {
-              "$ref": "#/definitions/UserSettings"
+              "type": "string"
             }
           }
         ],
@@ -1189,7 +845,7 @@
             "bearer": []
           }
         ],
-        "description": "Delete a dashboard",
+        "description": "Delete dashboard",
         "consumes": [
           "application/json"
         ],
@@ -1199,13 +855,13 @@
         "tags": [
           "dashboard"
         ],
-        "operationId": "DeleteDashboard",
+        "operationId": "dashboardDeleteDashboard",
         "parameters": [
           {
             "type": "string",
             "example": "home",
             "description": "the param of dashboard",
-            "name": "param",
+            "name": "dashboard param",
             "in": "path",
             "required": true
           }
@@ -1253,7 +909,63 @@
         "tags": [
           "profile"
         ],
-        "operationId": "ListMapping",
+        "operationId": "profileGetDBNodeList",
+        "responses": {}
+      }
+    },
+    "/export/call/messages/pcap": {
+      "post": {
+        "description": "Returns pcap data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetMessagesAsPCap",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/export/call/messages/text": {
+      "post": {
+        "description": "Returns text data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetMessagesAsText",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
         "responses": {}
       }
     },
@@ -1287,7 +999,7 @@
             ]
           }
         ],
-        "description": "Get HepSub",
+        "description": "Get all hepsub",
         "consumes": [
           "application/json"
         ],
@@ -1295,41 +1007,18 @@
           "application/json"
         ],
         "tags": [
-          "hepsub"
+          "hep"
         ],
-        "operationId": "ListHepsub",
+        "operationId": "hepSubGetHepSub",
         "responses": {}
       },
       "post": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Add new Hepsub information",
         "consumes": [
           "application/json"
         ],
@@ -1337,9 +1026,176 @@
           "application/json"
         ],
         "tags": [
-          "Mapping"
+          "hep"
         ],
-        "operationId": "AddMapping",
+        "operationId": "hepSubAddHepSub",
+        "parameters": [
+          {
+            "description": "hepSub parameters",
+            "name": "hepSubStruct",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchema"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/hepsub/protocol/{guid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get hepsub by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubGetHepSubAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update hepsub by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubUpdateHepSubAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of hepsub item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "hepSub parameters",
+            "name": "hepSubStruct",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchema"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete hepsub by guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubDeleteHepSubAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of hepsub item",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/hepsub/protocol/{id}/{transaction}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get hepsub by id and transaction",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubGetHepSubFields",
+        "parameters": [
+          {
+            "type": "string",
+            "example": 1,
+            "description": "hepid",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "call",
+            "description": "profile",
+            "name": "transaction",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/hepsub/search": {
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Add hepsubsearch item",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubSearchDoHepsubsearch",
         "responses": {}
       }
     },
@@ -1373,7 +1229,7 @@
             ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Get all mappings",
         "consumes": [
           "application/json"
         ],
@@ -1381,9 +1237,28 @@
           "application/json"
         ],
         "tags": [
-          "profile"
+          "mapping"
         ],
-        "operationId": "ListProfiles",
+        "operationId": "mappingGetMapping",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Add mapping",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "mapping"
+        ],
+        "operationId": "mappingAddMapping",
         "responses": {}
       }
     },
@@ -1394,7 +1269,7 @@
             "bearer": []
           }
         ],
-        "description": "Get mapping against id and profile",
+        "description": "Get mapping using guid",
         "consumes": [
           "application/json"
         ],
@@ -1402,15 +1277,44 @@
           "application/json"
         ],
         "tags": [
-          "Mapping"
+          "mapping"
         ],
-        "operationId": "GetMapping",
+        "operationId": "mappingGetMappingAgainstGUID",
         "parameters": [
           {
             "type": "string",
             "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of mapping",
-            "name": "id",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update mapping using guid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "mapping"
+        ],
+        "operationId": "mappingUpdateMappingAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of mapping",
+            "name": "guid",
             "in": "path",
             "required": true
           }
@@ -1423,7 +1327,7 @@
             "bearer": []
           }
         ],
-        "description": "Get mapping against id and profile",
+        "description": "Delete mapping using guid",
         "consumes": [
           "application/json"
         ],
@@ -1431,15 +1335,15 @@
           "application/json"
         ],
         "tags": [
-          "Mapping"
+          "mapping"
         ],
-        "operationId": "DeleteMapping",
+        "operationId": "mappingDeleteMappingAgainstGUID",
         "parameters": [
           {
             "type": "string",
             "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of mapping",
-            "name": "id",
+            "name": "guid",
             "in": "path",
             "required": true
           }
@@ -1454,7 +1358,7 @@
             "bearer": []
           }
         ],
-        "description": "Get mapping against id and profile",
+        "description": "Get mapping using id and transaction",
         "consumes": [
           "application/json"
         ],
@@ -1462,9 +1366,9 @@
           "application/json"
         ],
         "tags": [
-          "Mapping"
+          "mapping"
         ],
-        "operationId": "GetMapping",
+        "operationId": "mappingGetMappingFields",
         "parameters": [
           {
             "type": "string",
@@ -1478,7 +1382,7 @@
         "responses": {}
       }
     },
-    "/mapping/protocols": {
+    "/prometheus/data": {
       "get": {
         "security": [
           {
@@ -1508,7 +1412,287 @@
             ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "prometheusPrometheusData"
+      }
+    },
+    "/prometheus/label": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "prometheusPrometheusLabelData"
+      }
+    },
+    "/prometheus/labels": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "prometheusPrometheusLabels"
+      }
+    },
+    "/prometheus/value": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "prometheusPrometheusValue"
+      }
+    },
+    "/proxy/grafana/dashboards/uid/{uid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "grafanaGrafanaGetDashboardAgainstUUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "uid",
+            "name": "uid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/proxy/grafana/folders": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "grafanaGrafanaFolders"
+      }
+    },
+    "/proxy/grafana/org": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "grafanaGrafanaORG"
+      }
+    },
+    "/proxy/grafana/url": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "grafanaGrafanaURL"
+      }
+    },
+    "/search/call/data": {
+      "post": {
+        "description": "Returns data based upon filtered json",
         "consumes": [
           "application/json"
         ],
@@ -1516,10 +1700,465 @@
           "application/json"
         ],
         "tags": [
-          "Mapping"
+          "search"
         ],
-        "operationId": "ListMapping",
+        "operationId": "searchSearchData",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
         "responses": {}
+      }
+    },
+    "/search/call/decode/message": {
+      "post": {
+        "description": "Returns data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetDecodeMessageById",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/search/call/message": {
+      "post": {
+        "description": "Returns message data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "search"
+        ],
+        "operationId": "searchGetMessageById",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/search/remote/data": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "remote"
+        ],
+        "operationId": "remoteRemoteData"
+      }
+    },
+    "/search/remote/label": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "remote"
+        ],
+        "operationId": "remoteRemoteLabel"
+      }
+    },
+    "/search/remote/values": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "remote"
+        ],
+        "operationId": "remoteRemoteValues"
+      }
+    },
+    "/smart/search/tag/{hepid}/{profile}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Get smart hep profile using hepid and profile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "mapping"
+        ],
+        "operationId": "mappingGetSmartHepProfile",
+        "parameters": [
+          {
+            "type": "string",
+            "example": 1,
+            "description": "hepid",
+            "name": "hepid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "profile",
+            "name": "profile",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/statistic/_db": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticGetStatisticDBList"
+      }
+    },
+    "/statistic/_measurements/{dbid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticGetStatisticMeasurementsList",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "database id",
+            "name": "dbid",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/statistic/_metrics": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticGetStatisticMetricsList"
+      }
+    },
+    "/statistic/_retentions": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticGetStatisticRetentionsList"
+      }
+    },
+    "/statistic/_tags": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticGetStatisticTagsList"
+      }
+    },
+    "/statistic/data": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "statistic"
+        ],
+        "operationId": "statisticStatisticData"
       }
     },
     "/token/auth": {
@@ -1552,7 +2191,7 @@
             ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Get all tokens",
         "consumes": [
           "application/json"
         ],
@@ -1562,39 +2201,16 @@
         "tags": [
           "token"
         ],
-        "operationId": "GetToken",
+        "operationId": "authTokenGetAuthtoken",
         "responses": {}
       },
       "post": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Add token",
         "consumes": [
           "application/json"
         ],
@@ -1604,7 +2220,18 @@
         "tags": [
           "token"
         ],
-        "operationId": "AddAuthToken",
+        "operationId": "authTokenAddAuthToken",
+        "parameters": [
+          {
+            "description": "authToken parameters",
+            "name": "authTokenStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          }
+        ],
         "responses": {}
       }
     },
@@ -1612,33 +2239,10 @@
       "get": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Get token by guid",
         "consumes": [
           "application/json"
         ],
@@ -1648,39 +2252,26 @@
         "tags": [
           "token"
         ],
-        "operationId": "GetTokenAgainstGUID",
+        "operationId": "authTokenGetAuthtokenAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of token",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {}
       },
       "put": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Update token by guid",
         "consumes": [
           "application/json"
         ],
@@ -1690,39 +2281,35 @@
         "tags": [
           "token"
         ],
-        "operationId": "UpdateToken",
+        "operationId": "authTokenUpdateAuthtokenAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of token",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "authToken parameters",
+            "name": "authTokenStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          }
+        ],
         "responses": {}
       },
       "delete": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
             "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Delete token by guid",
         "consumes": [
           "application/json"
         ],
@@ -1732,13 +2319,28 @@
         "tags": [
           "token"
         ],
-        "operationId": "DeleteToken",
+        "operationId": "authTokenDeleteAuthtokenAgainstGUID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
+            "description": "guid of token",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {}
       }
     },
     "/user/settings": {
       "get": {
         "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
           {
             "SecurityDefinitions": []
           },
@@ -1768,13 +2370,148 @@
         "tags": [
           "settings"
         ],
-        "operationId": "ListSettings",
+        "operationId": "settingsGetAll",
+        "responses": {}
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Adds user settings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "settingsAddUserSettings",
+        "parameters": [
+          {
+            "description": "TableUserSettings struct",
+            "name": "userSettingsStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserSettings"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/user/settings/{category}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Returns the list of settings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "settingsGetCategory",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "dashboard",
+            "description": "user settings category",
+            "name": "category",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/user/settings/{guid}": {
+      "put": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Update user settings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "settingsUpdateUserSettings",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of user settings",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "TableUserSettings",
+            "name": "tableUserSettingsStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserSettings"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete user settings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "settingsDeleteUserSettings",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111",
+            "description": "guid of user settings",
+            "name": "guid",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {}
       }
     },
     "/users": {
       "get": {
         "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
           {
             "SecurityDefinitions": []
           },
@@ -1804,7 +2541,7 @@
         "tags": [
           "user"
         ],
-        "operationId": "ListUsers",
+        "operationId": "userGetUser",
         "responses": {}
       },
       "post": {
@@ -1823,7 +2560,7 @@
         "tags": [
           "user"
         ],
-        "operationId": "CreateUser",
+        "operationId": "userCreateUser",
         "parameters": [
           {
             "description": "user structure",
@@ -1855,7 +2592,7 @@
         "tags": [
           "user"
         ],
-        "operationId": "UpdateUser",
+        "operationId": "userUpdateUser",
         "parameters": [
           {
             "type": "string",
@@ -1866,8 +2603,8 @@
             "required": true
           },
           {
-            "description": "area parameters",
-            "name": "area",
+            "description": "user parameters",
+            "name": "createUserStruct",
             "in": "body",
             "required": true,
             "schema": {
@@ -1893,7 +2630,7 @@
         "tags": [
           "user"
         ],
-        "operationId": "DeleteUser",
+        "operationId": "userDeleteUser",
         "parameters": [
           {
             "type": "string",
@@ -1902,6 +2639,31 @@
             "name": "userGuid",
             "in": "path",
             "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/ws": {
+      "get": {
+        "description": "Returns data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "WebSocket",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
           }
         ],
         "responses": {}
@@ -2023,6 +2785,61 @@
         }
       },
       "x-go-name": "TableAlias",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthToken": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "x-go-name": "Active"
+        },
+        "create_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "creator_guid": {
+          "type": "string",
+          "x-go-name": "UserGUID"
+        },
+        "expire_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpireDate"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        },
+        "ip_address": {
+          "type": "string",
+          "x-go-name": "IPAddress"
+        },
+        "lastusage_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "LastUsageDate"
+        },
+        "limit_calls": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "LimitCalls"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "usage_calls": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UsageCalls"
+        },
+        "user_object": {
+          "$ref": "#/definitions/RawMessage"
+        }
+      },
+      "x-go-name": "TableAuthToken",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "CreateUserStruct": {
@@ -2187,7 +3004,7 @@
       "x-go-name": "TableGlobalSettings",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
-    "Hepsubchema": {
+    "HepsubSchema": {
       "type": "object",
       "properties": {
         "guid": {
@@ -2222,19 +3039,16 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "entries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LabelData"
-          },
-          "x-go-name": "Entries"
-        },
-        "labels": {
+        "line": {
           "type": "object",
-          "x-go-name": "Labels"
+          "x-go-name": "Line"
+        },
+        "ts": {
+          "type": "string",
+          "x-go-name": "Ts"
         }
       },
-      "x-go-name": "streamsResult",
+      "x-go-name": "entriesRemoteResult",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {
@@ -2333,6 +3147,93 @@
         "format": "uint8"
       },
       "x-go-package": "encoding/json"
+    },
+    "SearchCallData": {
+      "type": "object",
+      "required": [
+        "param"
+      ],
+      "properties": {
+        "param": {
+          "type": "object",
+          "required": [
+            "limit"
+          ],
+          "properties": {
+            "limit": {
+              "description": "this controls the number of records to display",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit",
+              "example": 200
+            },
+            "location": {
+              "type": "object",
+              "properties": {
+                "Node": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "x-go-name": "Location"
+            },
+            "search": {
+              "$ref": "#/definitions/RawMessage"
+            },
+            "timezone": {
+              "description": "timezone settings\ntype: object",
+              "type": "object",
+              "default": null,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "x-go-name": "Name"
+                },
+                "value": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "Value"
+                }
+              },
+              "x-go-name": "Timezone"
+            },
+            "transaction": {
+              "type": "object",
+              "x-go-name": "Transaction"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "description": "this control the time range for used for search",
+          "type": "object",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "description": "current timestamp in miliseconds",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From",
+              "example": 1581793200000
+            },
+            "to": {
+              "description": "current timestamp in miliseconds",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To",
+              "example": 1581879599000
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-name": "SearchObject",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "SuccessResponse": {
       "type": "object",

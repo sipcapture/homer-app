@@ -19,14 +19,14 @@ type UserController struct {
 	UserService *service.UserService
 }
 
-// swagger:route GET /users user ListUsers
+// swagger:route GET /users user userGetUser
 //
 // Returns the list of Users
 // ---
 // produces:
 // - application/json
 // Security:
-// - bearer
+// - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
@@ -53,7 +53,7 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
 }
 
-// swagger:operation POST /users user CreateUser
+// swagger:operation POST /users user userCreateUser
 //
 // Create a New user
 // ---
@@ -103,7 +103,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }
 
-// swagger:operation PUT /users/{userGuid} user UpdateUser
+// swagger:operation PUT /users/{userGuid} user userUpdateUser
 //
 // Update an existing user
 // ---
@@ -118,9 +118,9 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 //   description: uuid of the user to update
 //   required: true
 //   type: string
-// - name: area
+// - name: createUserStruct
 //   in: body
-//   description: area parameters
+//   description: user parameters
 //   schema:
 //     "$ref": "#/definitions/CreateUserStruct"
 //   required: true
@@ -159,7 +159,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation DELETE /users/{userGuid} user DeleteUser
+// swagger:operation DELETE /users/{userGuid} user userDeleteUser
 //
 // Delete an existing User
 // ---
@@ -196,7 +196,7 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation POST /auth user userLogin
+// swagger:operation POST /auth user auth userLoginUser
 //
 // Returns a JWT Token and UUID attached to user
 // ---

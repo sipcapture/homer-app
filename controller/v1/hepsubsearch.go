@@ -15,9 +15,9 @@ type HepsubsearchController struct {
 	HepsubsearchService *service.HepsubsearchService
 }
 
-// swagger:route POST /Hepsubsearch/protocol Hepsubsearch AddHepsubsearch
+// swagger:operation POST /hepsub/search hep hepSubSearchDoHepsubsearch
 //
-// Get mappings
+// Add hepsubsearch item
 // ---
 // consumes:
 // - application/json

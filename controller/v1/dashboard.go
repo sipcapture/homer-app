@@ -19,9 +19,9 @@ type DashBoardController struct {
 	DashBoardService *service.DashBoardService
 }
 
-// swagger:operation GET /dashboard/info dashboard ListDashboard
+// swagger:route GET /dashboard/info dashboard dashboardGetDashBoardLists
 //
-// Get Dashbroad list
+// Get all dashboards
 // ---
 // consumes:
 // - application/json
@@ -54,16 +54,16 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 }
 
-// swagger:operation GET /dashboard/store/{dashboardId} dashboard GetDashboard
+// swagger:operation GET /dashboard/store/{dashboardId} dashboard dashboardGetDashBoard
 //
-// Get Dashboard Against a GUID
+// Get dashboard by param
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: dashboard id
+// - name: dashboard param
 //   in: path
 //   example: home
 //   description: param of dashboard
@@ -110,26 +110,27 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 }
 
-// swagger:operation POST /dashboard/store/{dashboardId} dashboard CreateDashboard
+// swagger:operation POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
 //
-// Add new dashboard
+// Add dashboard
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: dashboardid
+// - name: dashboard param
 //   in: path
 //   example: home
 //   description: the param of dashboard
 //   required: true
 //   type: string
-// - name: data
+// - name: dashboard data
 //   in: body
-//   description: json of dashboard
 //   schema:
-//     "$ref": "#/definitions/UserSettings"
+//     type: string
+//   required: true
+//   description: json of dashboard
 // Security:
 // - bearer: []
 //
@@ -169,16 +170,16 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
-// swagger:operation DELETE /dashboard/store/{dashboardId} dashboard DeleteDashboard
+// swagger:operation DELETE /dashboard/store/{dashboardId} dashboard dashboardDeleteDashboard
 //
-// Delete a dashboard
+// Delete dashboard
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: param
+// - name: dashboard param
 //   in: path
 //   example: home
 //   description: the param of dashboard

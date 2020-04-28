@@ -20,9 +20,9 @@ type AuthtokenController struct {
 	AuthtokenService *service.AuthtokenService
 }
 
-// swagger:route GET /token/auth token GetToken
+// swagger:route GET /token/auth token authTokenGetAuthtoken
 //
-// Get mappings
+// Get all tokens
 // ---
 // consumes:
 // - application/json
@@ -49,14 +49,21 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 }
 
-// swagger:route GET /token/auth/{guid} token GetTokenAgainstGUID
+// swagger:operation GET /token/auth/{guid} token authTokenGetAuthtokenAgainstGUID
 //
-// Get mappings
+// Get token by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: guid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of token
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //
@@ -78,14 +85,21 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:route POST /token/auth token AddAuthToken
+// swagger:operation POST /token/auth token authTokenAddAuthToken
 //
-// Get mappings
+// Add token
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: authTokenStruct
+//   in: body
+//   description: authToken parameters
+//   schema:
+//     "$ref": "#/definitions/AuthToken"
+//   required: true
 // Security:
 // - bearer: []
 //
@@ -128,14 +142,27 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:route PUT /token/auth/{guid} token UpdateToken
+// swagger:operation PUT /token/auth/{guid} token authTokenUpdateAuthtokenAgainstGUID
 //
-// Get mappings
+// Update token by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: guid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of token
+//   required: true
+//   type: string
+// - name: authTokenStruct
+//   in: body
+//   description: authToken parameters
+//   schema:
+//     "$ref": "#/definitions/AuthToken"
+//   required: true
 // Security:
 // - bearer: []
 //
@@ -172,14 +199,21 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:route DELETE /token/auth/{guid} token DeleteToken
+// swagger:operation DELETE /token/auth/{guid} token authTokenDeleteAuthtokenAgainstGUID
 //
-// Get mappings
+// Delete token by guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// - name: guid
+//   in: path
+//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   description: guid of token
+//   required: true
+//   type: string
 // Security:
 // - bearer: []
 //

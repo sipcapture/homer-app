@@ -84,6 +84,8 @@ func (lc *LDAPClient) Close() {
 func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[string]string, error) {
 
 	err := lc.Connect()
+	defer lc.Close()
+
 	if err != nil {
 		logrus.Error("Couldn't connect to LDAP: ", err)
 		return false, false, nil, err
@@ -174,6 +176,8 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 // GetGroupsOfUser returns the group for a user.
 func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 	err := lc.Connect()
+	defer lc.Close()
+
 	if err != nil {
 		return nil, err
 	}

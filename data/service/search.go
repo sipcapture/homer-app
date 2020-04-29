@@ -213,8 +213,18 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			}
 		}
 
-		srcIPPort := dataElement.S("srcIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
-		dstIPPort := dataElement.S("dstIp").Data().(string) + ":" + strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
+		srcPort, dstPort := "0", "0"
+
+		if dataElement.Exists("srcPort") {
+			srcPort = strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
+		}
+
+		if dataElement.Exists("dstPort") {
+			dstPort = strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
+		}
+
+		srcIPPort := dataElement.S("srcIp").Data().(string) + ":" + srcPort
+		dstIPPort := dataElement.S("dstIp").Data().(string) + ":" + dstPort
 		srcIPPortZero := dataElement.S("srcIp").Data().(string) + ":" + "0"
 		dstIPPortZero := dataElement.S("dstIp").Data().(string) + ":" + "0"
 

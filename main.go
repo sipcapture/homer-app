@@ -535,6 +535,9 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				logrus.Error(fmt.Sprintf("couldn't make connection to [Host: %s, Node: %s, Port: %d]: \n", host, node, port), err)
 				continue
 			} else {
+				db.DB().SetMaxIdleConns(5)
+				db.DB().SetMaxOpenConns(10)
+				db.DB().SetConnMaxLifetime(5 * time.Minute)
 				/* activate logging */
 				db.SetLogger(&logger.GormLogger{})
 				dbMap[val] = db
@@ -564,6 +567,9 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 		db, err := gorm.Open("postgres", connectString)
 
+		db.DB().SetMaxIdleConns(5)
+		db.DB().SetMaxOpenConns(10)
+		db.DB().SetConnMaxLifetime(5 * time.Minute)
 		/* activate logging */
 		db.SetLogger(&logger.GormLogger{})
 

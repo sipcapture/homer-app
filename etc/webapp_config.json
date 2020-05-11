@@ -6,6 +6,7 @@
       "user": "homer_user",
       "pass": "homer_password",
       "name": "homer_data",
+      "keepalive": true,
       "host": "127.0.0.1"
     }
   },
@@ -20,6 +21,7 @@
     "user": "homer_user",
     "pass": "homer_password",
     "name": "homer_config",
+    "keepalive": true,
     "host": "localhost"
   },
   "influxdb_config": {

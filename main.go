@@ -233,7 +233,6 @@ func main() {
 
 		nameHomerConfig := viper.GetString("database_config.name")
 		migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
-
 		os.Exit(0)
 	}
 
@@ -520,6 +519,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			host := viper.GetString(keyData + ".host")
 			node := viper.GetString(keyData + ".node")
 			port := viper.GetInt(keyData + ".port")
+			keepAlive := viper.GetBool(keyData + ".keepalive")
 
 			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d]\n", host, user, name, node, port))
 
@@ -543,6 +543,10 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				dbMap[val] = db
 				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: node, Value: val})
 
+				if keepAlive {
+					go makePingKeepAlive(db, host)
+				}
+
 			}
 
 			logrus.Println("----------------------------------- ")
@@ -556,6 +560,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 		name := viper.GetString("database_data.name")
 		host := viper.GetString("database_data.host")
 		port := viper.GetInt("database_data.port")
+		keepAlive := viper.GetBool("database_data.keepalive")
 
 		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
 
@@ -582,6 +587,10 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 		dbNodeMap = append(dbNodeMap, model.DatabasesMap{Value: "localnode", Name: "LocalNode"})
 
+		if keepAlive {
+			go makePingKeepAlive(db, host)
+		}
+
 		logrus.Println("----------------------------------- ")
 		logrus.Println("*** Database Data Session created *** ")
 		logrus.Println("----------------------------------- ")
@@ -597,6 +606,7 @@ func getConfigDBSession() *gorm.DB {
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
 	port := viper.GetInt("database_config.port")
+	keepAlive := viper.GetBool("database_config.keepalive")
 
 	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
 
@@ -621,6 +631,10 @@ func getConfigDBSession() *gorm.DB {
 	logrus.Println("----------------------------------- ")
 	logrus.Println("*** Database Config Session created *** ")
 	logrus.Println("----------------------------------- ")
+
+	if keepAlive {
+		go makePingKeepAlive(db, host)
+	}
 
 	return db
 }
@@ -1172,4 +1186,20 @@ func initDB() {
 	migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
 
 	os.Exit(0)
+}
+
+// make a ping keep alive
+func makePingKeepAlive(db *gorm.DB, host string) {
+
+	for {
+
+		pingErr := db.DB().Ping()
+		if pingErr != nil {
+			logrus.Error(fmt.Sprintf("couldn't make ping to [Host: %s]: \n", host), pingErr)
+		} else {
+			logrus.Debug("Succesful ping: ", host)
+		}
+
+		time.Sleep(time.Duration(60) * time.Second)
+	}
 }

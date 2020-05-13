@@ -12,7 +12,8 @@
     "user": "homer_user",
     "pass": "homer_password",
     "name": "homer_config",
-    "host": "homer_db_host"
+    "host": "homer_db_host",
+    "keepalive": false,
   },
   "influxdb_config": {
     "user": "influx_user",
@@ -43,7 +44,10 @@
   },
   "system_settings": {
     "logpath": "/usr/local/homer",
-    "logname" : "homer-app.log"
+    "logname" : "homer-app.log",
+    "_loglevels": "can be: fatal, error, warn, info, debug, trace",
+    "loglevel": "homer_loglevel",
+    "logstdout": false
   },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",

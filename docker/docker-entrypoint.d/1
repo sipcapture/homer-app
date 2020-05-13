@@ -10,6 +10,12 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$DB_HOST" ]; then sed -i "s/homer_db_host/${DB_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_USER" ]; then sed -i "s/homer_user/${DB_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_PASS" ]; then sed -i "s/homer_password/${DB_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
+
+   if [ -n "$DB_KEEPALIVE" -a "$DB_KEEPALIVE" == "true" ]; then sed -i -e "s/keepalive\":.*$/keepalive\": true,/g" /usr/local/homer/etc/webapp_config.json;
+   else sed -i -e "s/keepalive\":.*$/keepalive\": false,/g" /usr/local/homer/etc/webapp_config.json; fi
+
+   if [ -n "$HOMER_LOGLEVEL" ]; then sed -i "s/homer_loglevel/${HOMER_LOGLEVEL}/g" /usr/local/homer/etc/webapp_config.json; 
+   else sed -i "s/homer_loglevel/error/g" /usr/local/homer/etc/webapp_config.json; fi
    
    if [ -n "$INFLUX_HOST" ]; then sed -i "s/influx_host/${INFLUX_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$INFLUX_USER" ]; then sed -i "s/influx_user/${INFLUX_USER}/g" /usr/local/homer/etc/webapp_config.json; fi

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"os/exec"
 	"sort"
@@ -223,10 +224,26 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			dstPort = strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
 		}
 
-		srcIPPort := dataElement.S("srcIp").Data().(string) + ":" + srcPort
-		dstIPPort := dataElement.S("dstIp").Data().(string) + ":" + dstPort
-		srcIPPortZero := dataElement.S("srcIp").Data().(string) + ":" + "0"
-		dstIPPortZero := dataElement.S("dstIp").Data().(string) + ":" + "0"
+		srcIP := dataElement.S("srcIp").Data().(string)
+		dstIP := dataElement.S("dstIp").Data().(string)
+
+		srcIPPort := srcIP + ":" + srcPort
+		dstIPPort := dstIP + ":" + dstPort
+		srcIPPortZero := dstIP + ":" + "0"
+		dstIPPortZero := dstIP + ":" + "0"
+
+		testInput := net.ParseIP(srcIP)
+		if testInput.To4() != nil && testInput.To16() == nil {
+			srcIPPort = "[" + srcIP + "]:" + srcPort
+			srcIPPortZero = "[" + dstIP + "]:" + "0"
+		}
+
+		testInput = net.ParseIP(dstIP)
+		if testInput.To4() != nil && testInput.To16() == nil {
+			dstIPPort = "[" + dstIP + "]:" + dstPort
+			dstIPPortZero = "[" + dstIP + "]:" + "0"
+
+		}
 
 		if _, ok := aliasData[srcIPPort]; ok {
 			alias.Set(srcIPPort, aliasData[srcIPPort])
@@ -901,8 +918,22 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 
 		callElement.SrcID = callElement.SrcHost + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
 		callElement.DstID = callElement.DstHost + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+
 		srcIPPort := callElement.SrcIP + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
 		dstIPPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+
+		testInput := net.ParseIP(callElement.SrcHost)
+		if testInput.To4() != nil && testInput.To16() == nil {
+			srcIPPort = "[" + callElement.SrcIP + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
+			callElement.SrcID = "[" + callElement.SrcHost + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
+
+		}
+
+		testInput = net.ParseIP(callElement.DstIP)
+		if testInput.To4() != nil && testInput.To16() == nil {
+			dstIPPort = "[" + callElement.DstIP + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+			callElement.DstID = "[" + callElement.DstHost + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+		}
 
 		srcIPPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
 		dstIPPortZero := callElement.DstIP + ":" + strconv.Itoa(0)

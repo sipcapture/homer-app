@@ -13,7 +13,7 @@
     "pass": "homer_password",
     "name": "homer_config",
     "host": "homer_db_host",
-    "keepalive": false
+    "keepalive": homer_db_keepalive
   },
   "influxdb_config": {
     "user": "influx_user",

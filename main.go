@@ -519,7 +519,12 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			host := viper.GetString(keyData + ".host")
 			node := viper.GetString(keyData + ".node")
 			port := viper.GetInt(keyData + ".port")
-			keepAlive := viper.GetBool(keyData + ".keepalive")
+
+			/* keep alive is on by default */
+			keepAlive := true
+			if viper.IsSet(keyData + ".keepalive") {
+				keepAlive = viper.GetBool(keyData + ".keepalive")
+			}
 
 			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d]\n", host, user, name, node, port))
 
@@ -560,7 +565,12 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 		name := viper.GetString("database_data.name")
 		host := viper.GetString("database_data.host")
 		port := viper.GetInt("database_data.port")
-		keepAlive := viper.GetBool("database_data.keepalive")
+
+		/* keep alive is on by default */
+		keepAlive := true
+		if viper.IsSet("database_data.keepalive") {
+			keepAlive = viper.GetBool("database_data.keepalive")
+		}
 
 		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
 
@@ -606,7 +616,12 @@ func getConfigDBSession() *gorm.DB {
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
 	port := viper.GetInt("database_config.port")
-	keepAlive := viper.GetBool("database_config.keepalive")
+
+	/* keep alive is on by default */
+	keepAlive := true
+	if viper.IsSet("database_config.keepalive") {
+		keepAlive = viper.GetBool("database_config.keepalive")
+	}
 
 	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
 

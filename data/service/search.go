@@ -233,13 +233,13 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		dstIPPortZero := dstIP + ":" + "0"
 
 		testInput := net.ParseIP(srcIP)
-		if testInput.To4() != nil && testInput.To16() == nil {
+		if testInput.To16() != nil {
 			srcIPPort = "[" + srcIP + "]:" + srcPort
 			srcIPPortZero = "[" + dstIP + "]:" + "0"
 		}
 
 		testInput = net.ParseIP(dstIP)
-		if testInput.To4() != nil && testInput.To16() == nil {
+		if testInput.To16() != nil {
 			dstIPPort = "[" + dstIP + "]:" + dstPort
 			dstIPPortZero = "[" + dstIP + "]:" + "0"
 
@@ -923,14 +923,13 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		dstIPPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
 
 		testInput := net.ParseIP(callElement.SrcHost)
-		if testInput.To4() != nil && testInput.To16() == nil {
+		if testInput.To16() != nil {
 			srcIPPort = "[" + callElement.SrcIP + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
 			callElement.SrcID = "[" + callElement.SrcHost + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-
 		}
 
 		testInput = net.ParseIP(callElement.DstIP)
-		if testInput.To4() != nil && testInput.To16() == nil {
+		if testInput.To16() != nil {
 			dstIPPort = "[" + callElement.DstIP + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
 			callElement.DstID = "[" + callElement.DstHost + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
 		}

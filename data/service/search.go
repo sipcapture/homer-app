@@ -1049,6 +1049,11 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 			}
 		}
 
+		/* lets sort it */
+		sort.Slice(searchData, func(i, j int) bool {
+			return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
+		})
+
 		response, _ := json.Marshal(searchData)
 		row, _ := gabs.ParseJSON(response)
 		for _, value := range row.Children() {

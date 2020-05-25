@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
@@ -97,14 +98,52 @@ func (mps *MappingService) DeleteMappingAgainstGUID(guid string) (string, error)
 // this method gets all the mapping from database
 func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile string) (string, error) {
 
-	reply := gabs.New()
+	var mappingObject model.TableMappingSchema
+	if err := mps.Session.Debug().Table("mapping_schema").
+		Where("hepid = ? and profile = ?", hepid, profile).
+		Take(&mappingObject).Error; err != nil {
+		return "", err
+	}
+	if mappingObject.MappingSettings == nil {
+		return "", fmt.Errorf("data was not found")
+	}
 
-	var configSample = json.RawMessage(`[
-		{"value":"sip.From_user","name":"sip.From_user"},
-		{"value":"sip.To_user","name":"sip.To_user"},
-		{"value":"sip.Ruri","name":"sip.Ruri"}
-	]`)
+	sData, _ := gabs.ParseJSON(mappingObject.FieldsMapping)
+	dataObject := gabs.New()
 
-	reply.Set(configSample, "data")
-	return reply.String(), nil
+	for _, v := range sData.Children() {
+
+		if !v.Exists("form_type") || !v.Exists("skip") || !v.Exists("hide") || !v.Exists("name") || !v.Exists("id") {
+			continue
+		}
+
+		formTypeField := v.Search("form_type").Data().(string)
+		idField := v.Search("id").Data().(string)
+		skipField := v.Search("skip").Data().(bool)
+
+		if formTypeField == "multiselect" || formTypeField == "smart-input" || skipField == true {
+			continue
+		}
+		dataElement := gabs.New()
+		valueField := idField
+
+		if strings.HasPrefix(idField, "protocol_header.") {
+			valueField = strings.Replace(idField, "protocol_header.", "net.", -1)
+		}
+
+		if hepid == "1" {
+			if strings.HasPrefix(idField, "data_header.") {
+				valueField = strings.Replace(idField, "data_header.", "sip.", -1)
+			}
+			dataElement.Set(idField, "value")
+			dataElement.Set(valueField, "name")
+		} else {
+			dataElement.Set(idField, "value")
+			dataElement.Set(idField, "name")
+		}
+
+		dataObject.ArrayAppend(dataElement.Data(), "data")
+	}
+
+	return dataObject.String(), nil
 }

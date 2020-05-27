@@ -545,6 +545,17 @@ var FieldsMapping1default = json.RawMessage(`[
     "position": 23,
     "skip": true,
     "hide": true
+  },
+  {
+    "id": "smartinput",
+    "name": "Smart Input",
+    "type": "string",
+    "index": "none",
+    "form_type": "smart-input",
+    "form_api": "/smart/search/tag/:hepid/:hepprofile",
+    "position": 24,
+    "skip": false,
+    "hide": true
   }
   ]
 `)

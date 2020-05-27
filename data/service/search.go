@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -76,6 +77,36 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 			formValue := formVal.(string)
 			formName := mapData["name"].(string)
 			formType := mapData["type"].(string)
+
+			if formName == "smartinput" {
+				r := regexp.MustCompile("[^\\s]+")
+				//eqReg := regexp.MustCompile("[\\=\\!=(LIKE)\\s]+")
+				eqReg := regexp.MustCompile("\\=|\\!=|LIKE|\\s+")
+				sqlElem := r.FindAllString(formValue, -1)
+				for sKey, sValue := range sqlElem {
+					sValue = strings.Replace(sValue, " ", "", -1)
+					valElem := eqReg.Split(sValue, -1)
+					fmt.Println("SKEY: ", sKey)
+					fmt.Println("SVALUE: ", sValue)
+					fmt.Println("LEN: ", len(valElem))
+					fmt.Println("VALB: ", valElem)
+
+					if len(valElem) != 3 {
+						continue
+					}
+
+					fmt.Println("VALEL: ", valElem)
+					if strings.Contains(sValue, ".") {
+						//elemArray := strings.Split(sValue, ".")
+						//sql = sql + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
+						continue
+					}
+
+				}
+
+				continue
+			}
+
 			notStr := ""
 			equalStr := "="
 			operator := " AND "
@@ -116,7 +147,6 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 					sql = sql + operator + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
 					continue
 				}
-
 				if strings.Contains(formValue, "%") && strings.Contains(formValue, ";") {
 					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{%s}')", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue))
 					sql = strings.Replace(sql, ";", ",", -1)

@@ -94,7 +94,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 				value := ""
 				typeValue := "string"
 				operator := ""
-				endEl := ""
+				endEl := " AND "
 
 				hdr := FIRST
 

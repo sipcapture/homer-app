@@ -9,7 +9,6 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -69,6 +68,15 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	return data
 }
 
+const (
+	// enum
+	FIRST  = 1
+	VALUE  = 2
+	EQUALS = 3
+	END    = 4
+	RESET  = 10
+)
+
 func buildQuery(elems []interface{}) (sql string, sLimit int) {
 	sLimit = 200
 	for k, v := range elems {
@@ -79,29 +87,91 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 			formType := mapData["type"].(string)
 
 			if formName == "smartinput" {
-				r := regexp.MustCompile("[^\\s]+")
-				//eqReg := regexp.MustCompile("[\\=\\!=(LIKE)\\s]+")
-				eqReg := regexp.MustCompile("\\=|\\!=|LIKE|\\s+")
-				sqlElem := r.FindAllString(formValue, -1)
-				for sKey, sValue := range sqlElem {
-					sValue = strings.Replace(sValue, " ", "", -1)
-					valElem := eqReg.Split(sValue, -1)
-					fmt.Println("SKEY: ", sKey)
-					fmt.Println("SVALUE: ", sValue)
-					fmt.Println("LEN: ", len(valElem))
-					fmt.Println("VALB: ", valElem)
 
-					if len(valElem) != 3 {
-						continue
+				totalLen := len(formValue)
+				index := 0
+				key := ""
+				value := ""
+				typeValue := "string"
+				operator := ""
+				endEl := ""
+
+				hdr := FIRST
+
+				for i := 0; i < totalLen; i++ {
+
+					switch {
+					case hdr == FIRST:
+						/* = */
+						if formValue[i] == '=' {
+							hdr = VALUE
+							operator = " = "
+							key = strings.Replace(formValue[index:i], " ", "", -1)
+							value = ""
+							index = i
+							/* formValue != */
+						} else if formValue[i] == '!' && formValue[(i+1)] == '=' {
+							hdr = VALUE
+							operator = " != "
+							key = strings.Replace(formValue[index:i], " ", "", -1)
+							value = ""
+							i++
+							index = i
+						} else if formValue[i] == 'L' && i < (totalLen-4) && formValue[i+1] == 'I' && formValue[i+3] == 'E' {
+							operator = " LIKE "
+							hdr = VALUE
+							key = strings.Replace(formValue[index:i], " ", "", -1)
+							i += 3
+							index = i
+						}
+					case hdr == VALUE:
+						/* = */
+						if formValue[i] == ' ' {
+							index = i
+						} else if formValue[i] == '"' {
+							typeValue = "string"
+							i++
+							index = i
+							hdr = END
+							/* formValue != */
+						} else {
+							typeValue = "integer"
+							index = i
+							hdr = END
+						}
+					case hdr == END:
+						if formValue[i] == '"' || formValue[i] == ' ' || i == (totalLen-1) {
+							value = formValue[index:i]
+							hdr = RESET
+							i++
+							index = i
+							if strings.Contains(key, ".") {
+								elemArray := strings.Split(key, ".")
+								if typeValue == "integer" {
+									sql = sql + endEl + fmt.Sprintf("(%s->>'%s')::int%s%d ", elemArray[0], elemArray[1], operator, heputils.CheckIntValue(value))
+								} else {
+									sql = sql + endEl + fmt.Sprintf("%s->>'%s'%s'%s' ", elemArray[0], elemArray[1], operator, value)
+								}
+							} else if formType == "integer" {
+								sql = sql + endEl + fmt.Sprintf("%s%s%d ", key, operator, heputils.CheckIntValue(value))
+							} else {
+								sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
+							}
+							continue
+						}
+					case hdr == RESET:
+						if i < (totalLen-2) && formValue[i] == 'O' && formValue[i+1] == 'R' {
+							endEl = " OR "
+							hdr = FIRST
+							i += 2
+							index = i
+						} else if i < (totalLen-3) && formValue[i] == 'A' && formValue[i+1] == 'N' && formValue[i+2] == 'D' {
+							endEl = " AND "
+							hdr = FIRST
+							i += 3
+							index = i
+						}
 					}
-
-					fmt.Println("VALEL: ", valElem)
-					if strings.Contains(sValue, ".") {
-						//elemArray := strings.Split(sValue, ".")
-						//sql = sql + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
-						continue
-					}
-
 				}
 
 				continue

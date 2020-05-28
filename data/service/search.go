@@ -88,13 +88,14 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 
 			if formName == "smartinput" {
 
+				upperCaseValue := strings.ToUpper(formValue)
 				totalLen := len(formValue)
 				index := 0
 				key := ""
 				value := ""
 				typeValue := "string"
 				operator := ""
-				endEl := " AND "
+				endEl := " AND ("
 
 				hdr := FIRST
 
@@ -103,21 +104,21 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 					switch {
 					case hdr == FIRST:
 						/* = */
-						if formValue[i] == '=' {
+						if upperCaseValue[i] == '=' {
 							hdr = VALUE
 							operator = " = "
 							key = strings.Replace(formValue[index:i], " ", "", -1)
 							value = ""
 							index = i
 							/* formValue != */
-						} else if formValue[i] == '!' && formValue[(i+1)] == '=' {
+						} else if upperCaseValue[i] == '!' && upperCaseValue[(i+1)] == '=' {
 							hdr = VALUE
 							operator = " != "
 							key = strings.Replace(formValue[index:i], " ", "", -1)
 							value = ""
 							i++
 							index = i
-						} else if formValue[i] == 'L' && i < (totalLen-4) && formValue[i+1] == 'I' && formValue[i+3] == 'E' {
+						} else if upperCaseValue[i] == 'L' && i < (totalLen-4) && upperCaseValue[i+1] == 'I' && upperCaseValue[i+3] == 'E' {
 							operator = " LIKE "
 							hdr = VALUE
 							key = strings.Replace(formValue[index:i], " ", "", -1)
@@ -128,7 +129,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 						/* = */
 						if formValue[i] == ' ' {
 							index = i
-						} else if formValue[i] == '"' {
+						} else if upperCaseValue[i] == '"' {
 							typeValue = "string"
 							i++
 							index = i
@@ -140,7 +141,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 							hdr = END
 						}
 					case hdr == END:
-						if formValue[i] == '"' || formValue[i] == ' ' || i == (totalLen-1) {
+						if upperCaseValue[i] == '"' || upperCaseValue[i] == ' ' || i == (totalLen-1) {
 							value = formValue[index:i]
 							hdr = RESET
 							i++
@@ -160,12 +161,12 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 							continue
 						}
 					case hdr == RESET:
-						if i < (totalLen-2) && formValue[i] == 'O' && formValue[i+1] == 'R' {
+						if i < (totalLen-2) && upperCaseValue[i] == 'O' && upperCaseValue[i+1] == 'R' {
 							endEl = " OR "
 							hdr = FIRST
 							i += 2
 							index = i
-						} else if i < (totalLen-3) && formValue[i] == 'A' && formValue[i+1] == 'N' && formValue[i+2] == 'D' {
+						} else if i < (totalLen-3) && upperCaseValue[i] == 'A' && upperCaseValue[i+1] == 'N' && upperCaseValue[i+2] == 'D' {
 							endEl = " AND "
 							hdr = FIRST
 							i += 3
@@ -173,7 +174,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 						}
 					}
 				}
-
+				sql += ")"
 				continue
 			}
 

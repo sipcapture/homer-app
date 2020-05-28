@@ -84,7 +84,6 @@ func (lc *LDAPClient) Close() {
 func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[string]string, error) {
 
 	err := lc.Connect()
-	defer lc.Close()
 
 	if err != nil {
 		logrus.Error("Couldn't connect to LDAP: ", err)

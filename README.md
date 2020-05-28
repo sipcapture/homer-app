@@ -13,6 +13,7 @@ If you're just interested in using `homer-app`, download, configure and run the 
 #### Requirements
 * golang 1.13+
 * postgres 11+
+* git 2.7+
 * optional
   * prometheus
   * influxdb

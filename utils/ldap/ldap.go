@@ -105,26 +105,33 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		}
 
 		attributes := append(lc.Attributes, "dn")
+		userFilter := fmt.Sprintf(lc.UserFilter, username) 
 		// Search for the given username
 		searchRequest := ldap.NewSearchRequest(
 			lc.Base,
 			ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-			fmt.Sprintf(lc.UserFilter, username),
+			userFilter,
 			attributes,
 			nil,
 		)
 
 		sr, err := lc.Conn.Search(searchRequest)
 		if err != nil {
+			logrus.Error("Couldn't execute search request: ", err)
+			logrus.Debug("LDAP search failed with base ", lc.Base, " and user filter ", userFilter)
 			return false, false, nil, err
 		}
 
 		if len(sr.Entries) < 1 {
-			return false, false, nil, errors.New("User does not exist")
+			err := errors.New("User does not exist")
+			logrus.Error("Could not find user: ", err)
+			return false, false, nil, err
 		}
 
 		if len(sr.Entries) > 1 {
-			return false, false, nil, errors.New("Too many entries returned")
+			err := errors.New("Too many entries returned")
+			logrus.Error("Could not find user: ", err)
+			return false, false, nil, err
 		}
 
 		userDN := sr.Entries[0].DN
@@ -142,19 +149,22 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 				return false, false, user, err
 			}
 		} else {
-			return false, false, user, errors.New("No username/password provided.")
+			err := logrus.Error("No username/password provided")
+			logrus.Error("Could not auth user: ", err)
+			return false, false, user, err
 		}
 
 		// Rebind as the read only user for any further queries
 		if lc.BindDN != "" && lc.BindPassword != "" {
 			err = lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 			if err != nil {
+				logrus.Error("Couldn't rebind with provided BindDN and BindPassword: ", err)
 				return true, isAdmin, user, err
 			}
 		}
 	} else {
 
-		logrus.Debug("Sedning anonymous request...")
+		logrus.Debug("Sending anonymous request...")
 
 		if lc.UserDN != "" && username != "" && password != "" {
 			userDN := fmt.Sprintf(lc.UserDN, username)
@@ -169,7 +179,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		}
 	}
 
-	logrus.Debug("Sedning response request...", user)
+	logrus.Debug("Sending response request...", user)
 	return true, isAdmin, user, nil
 }
 

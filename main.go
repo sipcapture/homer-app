@@ -275,10 +275,16 @@ func main() {
 		ldapClient.BindDN = viper.GetString("ldap_config.binddn")
 		ldapClient.BindPassword = viper.GetString("ldap_config.bindpassword")
 		ldapClient.UserFilter = viper.GetString("ldap_config.userfilter")
-		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
 		ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
 		ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
 		ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
+		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
+		
+		if viper.IsSet("ldap_config.groupattribute") {
+			ldapClient.GroupAttribute = viper.GetString("ldap_config.groupattribute")
+		} else {
+			ldapClient.GroupAttribute = "cn";
+		}
 
 		if viper.IsSet("ldap_config.skiptls") {
 			ldapClient.SkipTLS = viper.GetBool("ldap_config.skiptls")

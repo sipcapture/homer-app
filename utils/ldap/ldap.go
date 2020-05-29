@@ -18,6 +18,7 @@ type LDAPClient struct {
 	BindDN             string
 	BindPassword       string
 	GroupFilter        string // e.g. "(memberUid=%s)"
+	GroupAttribute     string // e.g. "memberOf" / "cn"
 	Host               string
 	ServerName         string
 	UserFilter         string // e.g. "(uid=%s)"
@@ -195,7 +196,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 		lc.Base,
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		fmt.Sprintf(lc.GroupFilter, username),
-		[]string{"cn"}, // can it be something else than "cn"?
+		[]string{lc.GroupAttribute},
 		nil,
 	)
 	sr, err := lc.Conn.Search(searchRequest)
@@ -204,7 +205,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 	}
 	groups := []string{}
 	for _, entry := range sr.Entries {
-		groups = append(groups, entry.GetAttributeValue("cn"))
+		groups = append(groups, entry.GetAttributeValues(lc.GroupAttribute)...)
 	}
 	return groups, nil
 }

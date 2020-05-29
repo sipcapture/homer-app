@@ -29,7 +29,7 @@
     "user": "influx_user",
     "pass": "influx_password",
     "name": "homer_config",
-    "host": "http://127.0.0.1:8086" ,
+    "host": "http://127.0.0.1:8086",
     "database": "homer",
     "policy": "autogen"
   },
@@ -51,16 +51,16 @@
   "http_settings": {
     "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
     "host": "0.0.0.0",
-    "port" : 9080,
-    "root" : "/usr/local/homer/dist",
-    "gzip" : true,
-    "gzip_static" : true,
-    "debug" : false
+    "port": 9080,
+    "root": "/usr/local/homer/dist",
+    "gzip": true,
+    "gzip_static": true,
+    "debug": false
   },
   "system_settings": {
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",
-    "logname" : "homer-app.log",
+    "logname": "homer-app.log",
     "_loglevels": "can be: fatal, error, warn, info, debug, trace",
     "loglevel": "error",
     "logstdout": false
@@ -71,15 +71,16 @@
     "token_expire": 1200
   },
   "ldap_config": {
-    "base":  "dc=example,dc=com",
-		"host":  "ldap.example.com",
-		"port":   389,
+    "base": "dc=example,dc=com",
+    "host": "ldap.example.com",
+    "port": 389,
     "usessl": false,
     "skiptls": true,
-		"binddn": "uid=readonlysuer,ou=People,dc=example,dc=com",
-		"bindpassword": "readonlypassword",
-		"userfilter": "(uid=%s)",
+    "binddn": "uid=readonlysuer,ou=People,dc=example,dc=com",
+    "bindpassword": "readonlypassword",
+    "userfilter": "(uid=%s)",
     "groupfilter": "(memberUid=%s)",
+    "groupattribute": "cn",
     "admingroup": "admin",
     "adminmode": true,
     "attributes": ["givenName", "sn", "mail", "uid"],
@@ -91,6 +92,6 @@
     "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",
     "active": false,
     "bin": "/usr/bin/tshark",
-    "protocols":  ["1_call","1_registration", "1_default"]
+    "protocols": ["1_call", "1_registration", "1_default"]
   }
 }

@@ -1,6 +1,6 @@
 {
   "database_data": {
-    "local":{
+    "local": {
       "node": "LocalNode",
       "user": "homer_user",
       "pass": "homer_password",
@@ -19,7 +19,7 @@
     "user": "influx_user",
     "pass": "influx_pass",
     "name": "homer_config",
-    "host": "http://influx_host:8086" ,
+    "host": "http://influx_host:8086",
     "database": "homer",
     "policy": "autogen"
   },
@@ -37,14 +37,14 @@
   },
   "http_settings": {
     "host": "0.0.0.0",
-    "port" : 80,
-    "root" : "/usr/local/homer/dist",
-    "gzip" : true,
-    "debug" : false
+    "port": 80,
+    "root": "/usr/local/homer/dist",
+    "gzip": true,
+    "debug": false
   },
   "system_settings": {
     "logpath": "/usr/local/homer",
-    "logname" : "homer-app.log",
+    "logname": "homer-app.log",
     "_comment": "loglevel can be: fatal, error, warn, info, debug, trace",
     "loglevel": "homer_loglevel",
     "logstdout": false
@@ -54,14 +54,15 @@
     "type": "internal"
   },
   "ldap_config": {
-    "Base":  "dc=example,dc=com",
-		"Host":  "ldap.example.com",
-		"Port":   389,
-		"UseSSL": false,
-		"BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
-		"BindPassword": "readonlypassword",
-		"UserFilter": "(uid=%s)",
-		"GroupFilter": "(memberUid=%s)",
-		"Attributes": "\"givenName\", \"sn\", \"mail\", \"uid\""
+    "Base": "dc=example,dc=com",
+    "Host": "ldap.example.com",
+    "Port": 389,
+    "UseSSL": false,
+    "BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
+    "BindPassword": "readonlypassword",
+    "UserFilter": "(uid=%s)",
+    "GroupFilter": "(memberUid=%s)",
+    "GroupAttribute": "cn",
+    "Attributes": "\"givenName\", \"sn\", \"mail\", \"uid\""
   }
 }

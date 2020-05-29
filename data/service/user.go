@@ -159,9 +159,13 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 
 		groups, err := us.LdapClient.GetGroupsOfUser(username)
 		if err != nil {
-			logrus.Error("Couldn't get any group for user: ", username)
+			logrus.Error("Couldn't get any group for user ", username, ": ", err)
 		} else {
-			if heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
+			logrus.Debug("Found groups for user ", username, ": ", groups)
+			// ElementExists returns true if the given slice is empty, so we explicitly check that here
+			// to prevent users with no groups from becoming admins
+			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
+				logrus.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
 			}
 		}

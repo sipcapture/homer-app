@@ -149,7 +149,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 				return false, false, user, err
 			}
 		} else {
-			err := logrus.Error("No username/password provided")
+			err := errors.New("No username/password provided")
 			logrus.Error("Could not auth user: ", err)
 			return false, false, user, err
 		}

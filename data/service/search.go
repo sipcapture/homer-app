@@ -47,23 +47,19 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	//jsString := "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
 	// "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
 
+	logrus.Debug("Inside JS script: Callids: ", callIds)
+
 	vm.Set("data", callIds)
 
 	v, err := vm.RunString(jsString)
-
 	if err != nil {
-		logrus.Errorln("Script error", err)
+		logrus.Errorln("Javascript Script error:", err)
 		return nil
 	}
 
 	data := v.Export().([]interface{})
 
-	//fmt.Println("RESULT", data[0])
-	//b := make([]interface{}, len(a))
-	/* for i := range data {
-		fmt.Println("VAL", data[i])
-	}
-	*/
+	logrus.Debug("Inside JS output data: ", data)
 
 	return data
 }
@@ -765,9 +761,9 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 
 			if corrs.Exists("input_function_js") {
 				inputFunction := corrs.Search("input_function_js").Data().(string)
-				//fmt.Println("Input function", inputFunction)
+				logrus.Debug("Input function: ", inputFunction)
 				newDataArray := executeJSFunction(inputFunction, newWhereData)
-				//fmt.Println("input array", newWhereData)
+				logrus.Debug("sid array after JS:", newWhereData)
 				if newDataArray != nil {
 					newWhereData = append(newWhereData, newDataArray...)
 				}

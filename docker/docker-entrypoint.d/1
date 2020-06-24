@@ -34,7 +34,8 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LOKI_PASS" ]; then sed -i "s/loki_pass/${LOKI_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
 
    if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$HTTP_PORT" ]; then sed -i "s/9080/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$HTTP_PORT" ]; then sed -i "s/homer_web_port/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; 
+   else sed -i "s/homer_web_port/80/g" /usr/local/homer/etc/webapp_config.json; fi
 
    echo "Pre-Flight provisioning completed!"
 

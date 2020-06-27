@@ -1010,7 +1010,9 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		}
 		if dataElement.Exists("raw") {
 			callElement.RuriUser = dataElement.S("raw").Data().(string)
-			callElement.RuriUser = callElement.RuriUser[:50]
+			if len(callElement.RuriUser) > 50 {
+				callElement.RuriUser = callElement.RuriUser[:50]			
+			}			
 		}
 
 		callElement.SrcID = callElement.SrcHost + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)

@@ -326,13 +326,13 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		srcIPPort := srcIP + ":" + srcPort
 		dstIPPort := dstIP + ":" + dstPort
-		srcIPPortZero := dstIP + ":" + "0"
+		srcIPPortZero := srcIP + ":" + "0"
 		dstIPPortZero := dstIP + ":" + "0"
 
 		testInput := net.ParseIP(srcIP)
 		if testInput.To4() == nil && testInput.To16() != nil {
 			srcIPPort = "[" + srcIP + "]:" + srcPort
-			srcIPPortZero = "[" + dstIP + "]:" + "0"
+			srcIPPortZero = "[" + srcIP + "]:" + "0"
 		}
 
 		testInput = net.ParseIP(dstIP)
@@ -343,15 +343,15 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 
 		if _, ok := aliasData[srcIPPort]; ok {
-			alias.Set(srcIPPort, aliasData[srcIPPort])
+			alias.Set(aliasData[srcIPPort],srcIPPort)
 		} else if _, ok := aliasData[srcIPPortZero]; ok {
-			alias.Set(srcIPPort, aliasData[srcIPPortZero])
+			alias.Set(aliasData[srcIPPortZero],srcIPPort)
 		}
 
 		if _, ok := aliasData[dstIPPort]; ok {
-			alias.Set(dstIPPort, aliasData[dstIPPort])
-		} else if _, ok := aliasData[srcIPPortZero]; ok {
-			alias.Set(dstIPPort, aliasData[dstIPPortZero])
+			alias.Set(aliasData[dstIPPort],dstIPPort)
+		} else if _, ok := aliasData[dstIPPortZero]; ok {
+			alias.Set(aliasData[dstIPPortZero],dstIPPort)
 		}
 		if !alias.Exists(srcIPPort) {
 			alias.Set(srcIPPort, srcIPPort)

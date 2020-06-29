@@ -343,15 +343,15 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 
 		if _, ok := aliasData[srcIPPort]; ok {
-			alias.Set(aliasData[srcIPPort],srcIPPort)
+			alias.Set(aliasData[srcIPPort], srcIPPort)
 		} else if _, ok := aliasData[srcIPPortZero]; ok {
-			alias.Set(aliasData[srcIPPortZero],srcIPPort)
+			alias.Set(aliasData[srcIPPortZero], srcIPPort)
 		}
 
 		if _, ok := aliasData[dstIPPort]; ok {
-			alias.Set(aliasData[dstIPPort],dstIPPort)
+			alias.Set(aliasData[dstIPPort], dstIPPort)
 		} else if _, ok := aliasData[dstIPPortZero]; ok {
-			alias.Set(aliasData[dstIPPortZero],dstIPPort)
+			alias.Set(aliasData[dstIPPortZero], dstIPPort)
 		}
 		if !alias.Exists(srcIPPort) {
 			alias.Set(srcIPPort, srcIPPort)
@@ -787,6 +787,24 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 				}
 			}
 
+			/* post_aggregation_field need to re-implement this function */
+			/* https://github.com/sipcapture/homer-app/blob/nodejs/server/classes/searchdata.js#L630-L667 */
+			/*
+				if corrs.Exists("post_aggregation_field") {
+					postAggreagtionField := corrs.Search("post_aggregation_field").Data().(string)
+					if len(postAggreagtionField) > 0 {
+						marshalData, _ = json.Marshal(newDataRow)
+						jsonParsed, _ = gabs.ParseJSON(marshalData)
+						for _, value := range jsonParsed.Children() {
+							elems := value.Search(postAggreagtionField).Data().(string)
+							if !heputils.ItemExists(foundCidData, elems) {
+								foundCidData = append(foundCidData, elems)
+							}
+						}
+					}
+				}
+			*/
+
 			dataRow = append(dataRow, newDataRow...)
 			logrus.Debug("Correlation data len:", len(dataRow))
 		}
@@ -1011,8 +1029,8 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		if dataElement.Exists("raw") {
 			callElement.RuriUser = dataElement.S("raw").Data().(string)
 			if len(callElement.RuriUser) > 50 {
-				callElement.RuriUser = callElement.RuriUser[:50]			
-			}			
+				callElement.RuriUser = callElement.RuriUser[:50]
+			}
 		}
 
 		callElement.SrcID = callElement.SrcHost + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)

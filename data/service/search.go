@@ -40,7 +40,7 @@ type ExternalDecoder struct {
 	Active    bool     `json:"active"`
 }
 
-func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
+func executeJSInputFunction(jsString string, callIds []interface{}) []interface{} {
 
 	vm := goja.New()
 
@@ -48,6 +48,7 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	// "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
 
 	logrus.Debug("Inside JS script: Callids: ", callIds)
+	logrus.Debug("Script: ", jsString)
 
 	vm.Set("data", callIds)
 
@@ -60,6 +61,31 @@ func executeJSFunction(jsString string, callIds []interface{}) []interface{} {
 	data := v.Export().([]interface{})
 
 	logrus.Debug("Inside JS output data: ", data)
+
+	return data
+}
+
+func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.HepTable {
+
+	vm := goja.New()
+
+	//jsString := "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
+	// "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
+
+	logrus.Debug("Inside JS script: Callids: ", dataRow)
+	logrus.Debug("Script: ", jsString)
+
+	vm.Set("data", dataRow)
+
+	v, err := vm.RunString(jsString)
+	if err != nil {
+		logrus.Errorln("Javascript Script error:", err)
+		return nil
+	}
+
+	data := v.Export().([]model.HepTable)
+
+	logrus.Debug("Data output data: ", data)
 
 	return data
 }
@@ -676,7 +702,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 //this method create new user in the database
 //it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int, nodes []string) (string, error) {
+	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
@@ -762,10 +788,26 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			if corrs.Exists("input_function_js") {
 				inputFunction := corrs.Search("input_function_js").Data().(string)
 				logrus.Debug("Input function: ", inputFunction)
-				newDataArray := executeJSFunction(inputFunction, newWhereData)
-				logrus.Debug("sid array after JS:", newWhereData)
+				newDataArray := executeJSInputFunction(inputFunction, newWhereData)
+				logrus.Debug("sid array before JS:", newWhereData)
 				if newDataArray != nil {
 					newWhereData = append(newWhereData, newDataArray...)
+				}
+			}
+
+			if corrs.Exists("input_script") {
+				inputScript := corrs.Search("input_script").Data().(string)
+				logrus.Debug("Input function: ", inputScript)
+				dataScript, err := settingService.GetScriptByParam("scripts", inputScript)
+				if err == nil {
+					scriptNew, _ := strconv.Unquote(dataScript)
+					logrus.Debug("OUR script:", scriptNew)
+					newDataArray := executeJSInputFunction(scriptNew, newWhereData)
+					logrus.Debug("sid array before JS:", newWhereData)
+					if newDataArray != nil {
+						newWhereData = append(newWhereData, newDataArray...)
+						logrus.Debug("sid array after JS:", newWhereData)
+					}
 				}
 			}
 
@@ -807,6 +849,22 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 
 			dataRow = append(dataRow, newDataRow...)
 			logrus.Debug("Correlation data len:", len(dataRow))
+
+			if corrs.Exists("output_script") {
+				outputScript := corrs.Search("output_script").Data().(string)
+				logrus.Debug("Output function: ", outputScript)
+				dataScript, err := settingService.GetScriptByParam("scripts", outputScript)
+				if err == nil {
+					scriptNew, _ := strconv.Unquote(dataScript)
+					logrus.Debug("OUR script:", scriptNew)
+					newDataRaw := executeJSOutputFunction(scriptNew, dataRow)
+					logrus.Debug("sid array before JS:", newDataRaw)
+					if newDataRaw != nil {
+						dataRow = newDataRaw
+						logrus.Debug("sid array after JS:", dataRow)
+					}
+				}
+			}
 		}
 	}
 
@@ -873,7 +931,8 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom, timeTo time.Time, nodes []string) ([]model.HepTable, error) {
+func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
+	timeTo time.Time, nodes []string) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
 	//transactionData := model.TransactionResponse{}

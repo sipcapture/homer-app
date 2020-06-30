@@ -194,7 +194,8 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 	searchTable := "hep_proto_1_default'"
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 0, transactionObject.Param.Location.Node)
+		correlation, false, aliasData, 0, transactionObject.Param.Location.Node,
+		sc.SettingService)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
 
@@ -339,7 +340,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchTable := "hep_proto_1_default'"
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1, searchObject.Param.Location.Node)
+	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1, searchObject.Param.Location.Node, sc.SettingService)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
@@ -390,7 +391,8 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 	searchTable := "hep_proto_1_default'"
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 2, searchObject.Param.Location.Node)
+		correlation, false, aliasData, 2, searchObject.Param.Location.Node,
+		sc.SettingService)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
 	if err := c.String(http.StatusOK, reply); err != nil {

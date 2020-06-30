@@ -39,6 +39,20 @@ func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]by
 	return mappingSchema.CorrelationMapping, nil
 }
 
+// get Category by param
+func (as *UserSettingsService) GetScriptByParam(category string, scriptName string) (string, error) {
+
+	var userGlobalSettings = model.TableGlobalSettings{}
+	if err := as.Session.Debug().
+		Table("global_settings").
+		Where("category = ? AND param = ? AND partid = 10", category, scriptName).
+		First(&userGlobalSettings).Error; err != nil {
+		return "", errors.New("no users settings found")
+	}
+
+	return string(userGlobalSettings.Data), nil
+}
+
 /* get all */
 func (ss *UserSettingsService) GetAll(UserName string, isAdmin bool) (string, error) {
 	var userSettings = []model.TableUserSettings{}

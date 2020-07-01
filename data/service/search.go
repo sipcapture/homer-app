@@ -50,6 +50,7 @@ func executeJSInputFunction(jsString string, callIds []interface{}) []interface{
 	logrus.Debug("Inside JS script: Callids: ", callIds)
 	logrus.Debug("Script: ", jsString)
 
+	vm.Set("scriptPrintf", ScriptPrintf)
 	vm.Set("data", callIds)
 
 	v, err := vm.RunString(jsString)
@@ -65,17 +66,21 @@ func executeJSInputFunction(jsString string, callIds []interface{}) []interface{
 	return data
 }
 
+func ScriptPrintf(val interface{}) {
+
+	logrus.Debug("script:", val)
+}
+
 func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.HepTable {
 
 	vm := goja.New()
 
-	//jsString := "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
-	// "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
-
-	logrus.Debug("Inside JS script: Callids: ", dataRow)
+	//logrus.Debug("Inside JS script: Callids: ", dataRow)
 	logrus.Debug("Script: ", jsString)
-
-	vm.Set("data", dataRow)
+	vm.Set("scriptPrintf", ScriptPrintf)
+	marshalData, _ := json.Marshal(dataRow)
+	sData, _ := gabs.ParseJSON(marshalData)
+	vm.Set("data", sData.Data())
 
 	v, err := vm.RunString(jsString)
 	if err != nil {
@@ -83,11 +88,19 @@ func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.
 		return nil
 	}
 
-	data := v.Export().([]model.HepTable)
+	returnData := []model.HepTable{}
 
-	logrus.Debug("Data output data: ", data)
+	data := v.Export().([]interface{})
 
-	return data
+	marshalData, _ = json.Marshal(data)
+
+	err = json.Unmarshal(marshalData, &returnData)
+	if err != nil {
+		logrus.Errorln("Couldnt unmarshal:", err)
+		return nil
+	}
+
+	return returnData
 }
 
 const (
@@ -858,10 +871,10 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 					scriptNew, _ := strconv.Unquote(dataScript)
 					logrus.Debug("OUR script:", scriptNew)
 					newDataRaw := executeJSOutputFunction(scriptNew, dataRow)
-					logrus.Debug("sid array before JS:", newDataRaw)
+					//logrus.Debug("sid array before JS:", newDataRaw)
 					if newDataRaw != nil {
 						dataRow = newDataRaw
-						logrus.Debug("sid array after JS:", dataRow)
+						//logrus.Debug("sid array after JS:", dataRow)
 					}
 				}
 			}

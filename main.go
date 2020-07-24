@@ -278,12 +278,20 @@ func main() {
 		ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
 		ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
 		ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
+		ldapClient.UserGroup = viper.GetString("ldap_config.usergroup")
+		ldapClient.UserMode = viper.GetBool("ldap_config.usermode")
 		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
-		
+
+		if viper.IsSet("ldap_config.UseDNForGroupSearch") {
+			ldapClient.UseDNForGroupSearch = viper.GetBool("ldap_config.UseDNForGroupSearch")
+		} else {
+			ldapClient.UseDNForGroupSearch = false
+		}
+
 		if viper.IsSet("ldap_config.groupattribute") {
 			ldapClient.GroupAttribute = viper.GetString("ldap_config.groupattribute")
 		} else {
-			ldapClient.GroupAttribute = "cn";
+			ldapClient.GroupAttribute = "cn"
 		}
 
 		if viper.IsSet("ldap_config.skiptls") {

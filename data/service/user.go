@@ -157,16 +157,20 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			userData.UserGroup = val
 		}
 
-		groups, err := us.LdapClient.GetGroupsOfUser(user["dn"])
-		//fmt.Println("LDAP returned groups: ", groups)
+		userid := username
 
-		//AdminMode mode takes priority over UserMode when both are true
-		userData.IsAdmin = us.LdapClient.AdminMode
+		// Microsoft AD implementations require DN for 1.2.840.113556.1.4.1941 recursive group query
+		if us.LdapClient.UseDNForGroupSearch == true {
+			userid = user["dn"]
+		}
+
+		groups, err := us.LdapClient.GetGroupsOfUser(userid)
+		//fmt.Println("LDAP returned groups: ", groups)
 
 		if err != nil {
 			logrus.Error("Couldn't get any group for user ", username, ": ", err)
 			if us.LdapClient.UserMode == false && us.LdapClient.AdminMode == false {
-				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
+				return "", userData, errors.New("Couldn't fetch any LDAP group and membership is required for login")
 			}
 		} else {
 			logrus.Debug("Found groups for user ", username, ": ", groups)
@@ -175,11 +179,18 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
 				logrus.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
-			} else if heputils.ElementExists(groups, us.LdapClient.UserGroup) {
+			} else if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.UserGroup) {
+				logrus.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
 				userData.IsAdmin = false
 			} else {
-				if us.LdapClient.UserMode == false && us.LdapClient.AdminMode == false {
-					return "", userData, errors.New("admin or user group membership is required for login")
+				if userData.IsAdmin == false && us.LdapClient.UserMode == true {
+					logrus.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
+				}
+				if userData.IsAdmin == true {
+					logrus.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
+				}
+				if userData.IsAdmin == false && us.LdapClient.UserMode == false {
+					return "", userData, errors.New("failed group match. Group membership is required for login because AdminMode and UserMode are false")
 				}
 			}
 		}

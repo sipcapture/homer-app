@@ -424,17 +424,33 @@ func configureAsHTTPServer() {
 
 	// perform routing for v1 version of web apis
 	performV1APIRouting(e)
-	httpHost := viper.GetString("http_settings.host")
-	httpPort := viper.GetString("http_settings.port")
-	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+	if viper.GetBool("https_settings.enable") {
+		httpsHost := viper.GetString("https_settings.host")
+		httpsPort := viper.GetString("https_settings.port")
+		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
 
-	heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
-	heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
+		httpsCert := viper.GetString("https_settings.cert")
+		httpsKey := viper.GetString("https_settings.key")
+		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
 
-	//Doc Swagger for future. For now - external
-	/* e.GET("/swagger/*", echoSwagger.WrapHandler)
-	 */
-	e.Logger.Fatal(e.Start(httpURL))
+		//Doc Swagger for future. For now - external
+		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
+		 */
+		e.Logger.Fatal(e.StartTLS(httpsURL, httpsCert, httpsKey))
+	}else{
+		httpHost := viper.GetString("http_settings.host")
+		httpPort := viper.GetString("http_settings.port")
+		httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+
+		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
+
+		//Doc Swagger for future. For now - external
+		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
+		 */
+		e.Logger.Fatal(e.Start(httpURL))
+	}
 }
 
 func performV1APIRouting(e *echo.Echo) {
@@ -1232,3 +1248,4 @@ func makePingKeepAlive(db *gorm.DB, host string) {
 		time.Sleep(time.Duration(60) * time.Second)
 	}
 }
+

@@ -57,6 +57,14 @@
     "gzip_static": true,
     "debug": false
   },
+  "https_settings": {
+    "help": "SSL settings for homer-app",
+    "enable": true,
+    "host": "0.0.0.0",
+    "port": 443,
+    "cert": "/usr/local/homer/tls/cert.pem",
+    "key": "/usr/local/homer/tls/key.pem"
+  },
   "system_settings": {
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",

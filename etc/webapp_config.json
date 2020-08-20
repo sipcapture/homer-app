@@ -59,7 +59,7 @@
   },
   "https_settings": {
     "help": "SSL settings for homer-app",
-    "enable": true,
+    "enable": false,
     "host": "0.0.0.0",
     "port": 443,
     "cert": "/usr/local/homer/tls/cert.pem",

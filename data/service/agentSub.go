@@ -79,17 +79,24 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 
 // this method gets all users from database
 func (hs *AgentsubService) GetAuthKeyByHeaderToken(token string) (string, error) {
-	var tokenObject []model.TableAuthToken
+	var tokenObject model.TableAuthToken
 	var count int
 	if err := hs.Session.Debug().Table("auth_token").
 		Where("expire_date > NOW() AND active = true AND token = ? ", token).
 		Find(&tokenObject).Count(&count).Error; err != nil {
 		return "", err
 	}
-	if len(tokenObject) == 0 {
+	if count== 0 {
 		return "", fmt.Errorf("no auth_token found or it has been expired: [%s]", token)
 	}
 
+	tokenObject.LastUsageDate = time.Now()
+
+	if err := hs.Session.Debug().Table("auth_token").
+		Where("token = ?", token).
+		Update(&tokenObject).Error; err != nil {
+		return "", err
+	}
 	response, _ := json.Marshal(tokenObject)
 	dataElement, _ := gabs.ParseJSON(response)
 

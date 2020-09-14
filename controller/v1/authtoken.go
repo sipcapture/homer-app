@@ -3,6 +3,7 @@ package controllerv1
 import (
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
@@ -135,6 +136,8 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	u.Token = heputils.GenerateToken()
 	u.UserObject = jsonschema.AgentObjectforAuthToken
 	u.IPAddress = "0.0.0.0/0"
+	u.CreateDate = time.Now()
+	u.LastUsageDate = time.Now()
 	reply, err := ass.AuthtokenService.AddAuthtoken(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -192,6 +195,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	u.GUID = guid
+	u.LastUsageDate = time.Now()
 	reply, err = ass.AuthtokenService.UpdateAuthtokenAgainstGUID(guid, u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

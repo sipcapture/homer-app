@@ -52,6 +52,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/ldap"
 	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sirupsen/logrus"
@@ -72,6 +73,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 var appFlags CommandLineFlags
 var ldapClient ldap.LDAPClient
 var authType string
+var httpAuth httpauth.Client
 
 type arrayFlags []string
 
@@ -264,7 +266,8 @@ func main() {
 	}
 
 	/* Check LDAP here */
-	if authType == "ldap" {
+	switch authType {
+	case "ldap":
 		logrus.Println("Ldap implementation here")
 		ldapClient.Base = viper.GetString("ldap_config.base")
 		ldapClient.Host = viper.GetString("ldap_config.host")
@@ -307,8 +310,10 @@ func main() {
 		} else {
 			ldapClient.InsecureSkipVerify = true
 		}
-
 		defer ldapClient.Close()
+	case "http_auth":
+		httpAuth.URL = viper.GetString("http_auth.url")
+		httpAuth.InsecureSkipVerify = viper.GetBool("skipverify")
 	}
 
 	/* apply token expire - default 1200 */
@@ -438,7 +443,7 @@ func configureAsHTTPServer() {
 		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
 		 */
 		e.Logger.Fatal(e.StartTLS(httpsURL, httpsCert, httpsKey))
-	}else{
+	} else {
 		httpHost := viper.GetString("http_settings.host")
 		httpPort := viper.GetString("http_settings.port")
 		httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
@@ -464,10 +469,13 @@ func performV1APIRouting(e *echo.Echo) {
 	// accessible web services will fall in this group
 	acc := e.Group(prefix + "/api/v3")
 
-	if authType == "ldap" {
-		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient)
-	} else {
-		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil)
+	switch authType {
+	case "ldap":
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient, nil)
+	case "http_auth":
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil, &httpAuth)
+	default:
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil, nil)
 	}
 
 	//subscribe access with authKey
@@ -1248,4 +1256,3 @@ func makePingKeepAlive(db *gorm.DB, host string) {
 		time.Sleep(time.Duration(60) * time.Second)
 	}
 }
-

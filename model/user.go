@@ -42,6 +42,11 @@ type TableUser struct {
 	CreatedAt time.Time `gorm:"column:created_at;default:current_timestamp;not null" json:"-"`
 }
 
+type HTTPAUTHResp struct {
+	Auth bool      `json:"auth" validate:"required"`
+	Data TableUser `json:"data" validate:"required"`
+}
+
 // swagger:model UserLoginSuccessResponse
 type UserTokenSuccessfulResponse struct {
 	// the token

@@ -86,7 +86,7 @@ func (hs *AgentsubService) GetAuthKeyByHeaderToken(token string) (string, error)
 		Find(&tokenObject).Count(&count).Error; err != nil {
 		return "", err
 	}
-	if count== 0 {
+	if count == 0 {
 		return "", fmt.Errorf("no auth_token found or it has been expired: [%s]", token)
 	}
 

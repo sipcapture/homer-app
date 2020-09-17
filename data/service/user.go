@@ -7,17 +7,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/httpauth"
+	"github.com/sirupsen/logrus"
+
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/ldap"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
 	ServiceConfig
 	LdapClient *ldap.LDAPClient
+	HttpAuth   *httpauth.Client
 }
 
 // this method gets all users from database
@@ -136,7 +139,9 @@ func (us *UserService) DeleteUser(user *model.TableUser) error {
 func (us *UserService) LoginUser(username, password string) (string, model.TableUser, error) {
 	userData := model.TableUser{}
 
-	if us.LdapClient != nil {
+	switch {
+	case us.LdapClient != nil:
+
 		ok, isAdmin, user, err := us.LdapClient.Authenticate(username, password)
 		if err != nil {
 			errorString := fmt.Sprintf("Error authenticating user %s: %+v", username, err)
@@ -144,7 +149,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		}
 
 		if !ok {
-			return "", userData, errors.New("Authenticating failed for user")
+			return "", userData, errors.New("authenticating failed for user")
 		}
 
 		userData.UserName = username
@@ -170,7 +175,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		if err != nil {
 			logrus.Error("Couldn't get any group for user ", username, ": ", err)
 			if us.LdapClient.UserMode == false && us.LdapClient.AdminMode == false {
-				return "", userData, errors.New("Couldn't fetch any LDAP group and membership is required for login")
+				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
 			}
 		} else {
 			logrus.Debug("Found groups for user ", username, ": ", groups)
@@ -194,8 +199,21 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 				}
 			}
 		}
-
-	} else {
+	case us.HttpAuth != nil:
+		response, err := us.HttpAuth.Authenticate(username, password)
+		if err != nil {
+			return "", userData, errors.New("password is not correct")
+		}
+		if !response.Auth {
+			return "", userData, errors.New("password is not correct")
+		}
+		userData = response.Data
+		userData.IsAdmin = false
+		userData.ExternalAuth = false
+		if userData.UserGroup != "" && strings.Contains(strings.ToLower(userData.UserGroup), "admin") {
+			userData.IsAdmin = true
+		}
+	default:
 		if err := us.Session.Debug().Table("users").Where("username =?", username).Find(&userData).Error; err != nil {
 			return "", userData, errors.New("user is not found")
 		}

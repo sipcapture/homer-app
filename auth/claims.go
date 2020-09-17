@@ -12,6 +12,7 @@ import (
 type JwtUserClaim struct {
 	UserName     string `json:"username"`
 	UserAdmin    bool   `json:"useradmin"`
+	UserGroup    string `json:"usergroup"`
 	ExternalAuth bool   `json:"externalauth"`
 	jwt.StandardClaims
 }
@@ -27,6 +28,7 @@ func Token(user model.TableUser) (string, error) {
 	claims := &JwtUserClaim{
 		user.UserName,
 		user.IsAdmin,
+		user.UserGroup,
 		user.ExternalAuth,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),

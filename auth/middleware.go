@@ -19,6 +19,7 @@ func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
 			Context:      c,
 			UserName:     claims.UserName,
 			Admin:        claims.UserAdmin,
+			UserGroup:    claims.UserGroup,
 			ExternalAuth: claims.ExternalAuth,
 		}
 		if err := next(appContext); err != nil {
@@ -46,4 +47,12 @@ func IsRequestAdmin(c echo.Context) (string, bool) {
 	claims := user.Claims.(*JwtUserClaim)
 	isAdmin := claims.UserAdmin
 	return claims.UserName, isAdmin
+}
+
+/* check if it's admin */
+func GetUserGroup(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+
+	claims := user.Claims.(*JwtUserClaim)
+	return claims.UserGroup
 }

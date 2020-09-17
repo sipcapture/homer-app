@@ -18,6 +18,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/dop251/goja"
 	"github.com/shomali11/util/xconditions"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -715,7 +716,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 //this method create new user in the database
 //it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService) (string, error) {
+	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService, userGroup string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
@@ -730,7 +731,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes)
+	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup)
 	marshalData, _ := json.Marshal(dataRow)
 
 	jsonParsed, _ := gabs.ParseJSON(marshalData)
@@ -830,7 +831,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 				}
 			}
 
-			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes)
+			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup)
 			if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
 				marshalData, _ = json.Marshal(newDataRow)
 				jsonParsed, _ = gabs.ParseJSON(marshalData)
@@ -945,11 +946,18 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
-	timeTo time.Time, nodes []string) ([]model.HepTable, error) {
+	timeTo time.Time, nodes []string, userGroup string) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
 	//transactionData := model.TransactionResponse{}
 	query := fieldKey + " in (?) and create_date between ? and ?"
+
+	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logrus.Debug("USERGROUP ", userGroup)
+
+	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
+		query = query + " AND " + config.Setting.IsolateGroup
+	}
 
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */

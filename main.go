@@ -46,6 +46,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
@@ -187,6 +188,9 @@ func main() {
 	/* first check admin flags */
 	checkHelpVersionFlags()
 
+	cfg := new(config.HomerSettingServer)
+	config.Setting = *cfg
+
 	// read system configurations and expose through viper
 	readConfig()
 
@@ -256,6 +260,12 @@ func main() {
 	//defer httpClient.CloseIdleConnections()
 
 	servicesObject.serviceGrafana = getGrafanaSession()
+
+	/***********************************/
+	config.Setting.IsolateQuery = viper.GetString("group_settings.isolate_query")
+	config.Setting.IsolateGroup = viper.GetString("group_settings.isolate_group")
+
+	/***********************************/
 
 	authType = viper.GetString("auth_settings.type")
 	/* check the auth type */
@@ -438,7 +448,7 @@ func configureAsHTTPServer() {
 		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
 		 */
 		e.Logger.Fatal(e.StartTLS(httpsURL, httpsCert, httpsKey))
-	}else{
+	} else {
 		httpHost := viper.GetString("http_settings.host")
 		httpPort := viper.GetString("http_settings.port")
 		httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
@@ -1248,4 +1258,3 @@ func makePingKeepAlive(db *gorm.DB, host string) {
 		time.Sleep(time.Duration(60) * time.Second)
 	}
 }
-

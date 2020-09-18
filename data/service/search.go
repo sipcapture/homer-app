@@ -956,7 +956,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 	logrus.Debug("USERGROUP ", userGroup)
 
 	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
-		query = query + " AND " + config.Setting.IsolateGroup
+		query = query + " AND " + config.Setting.IsolateQuery
 	}
 
 	for session := range ss.Session {

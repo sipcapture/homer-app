@@ -73,11 +73,6 @@
     "loglevel": "error",
     "logstdout": false
   },
-  "group_settings": {
-    "_comment": "some group settings",
-    "isolate_query": "data_header->>'X-Tag' = 'true'",
-    "isolate_group": "external"
-  },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",

@@ -44,6 +44,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/mcuadros/go-defaults"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/config"
@@ -191,6 +192,7 @@ func main() {
 	checkHelpVersionFlags()
 
 	cfg := new(config.HomerSettingServer)
+	defaults.SetDefaults(cfg) //<-- This set the defaults values
 	config.Setting = *cfg
 
 	// read system configurations and expose through viper

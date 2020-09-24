@@ -731,7 +731,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup)
+	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup, false)
 	marshalData, _ := json.Marshal(dataRow)
 
 	jsonParsed, _ := gabs.ParseJSON(marshalData)
@@ -779,6 +779,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		lookupField := corrs.Search("lookup_field").Data().(string)
 		lookupRange := corrs.Search("lookup_range").Data().([]interface{})
 		newWhereData := dataSrcField[sourceField]
+		likeSearch := false
 
 		if len(newWhereData) == 0 {
 			continue
@@ -830,8 +831,11 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 					newWhereData = append(newWhereData, v)
 				}
 			}
+			if corrs.Exists("like_search") && corrs.Search("like_search").Data().(bool) {
+				likeSearch = true
+			}
 
-			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup)
+			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup, likeSearch)
 			if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
 				marshalData, _ = json.Marshal(newDataRow)
 				jsonParsed, _ = gabs.ParseJSON(marshalData)
@@ -946,11 +950,18 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
-	timeTo time.Time, nodes []string, userGroup string) ([]model.HepTable, error) {
+	timeTo time.Time, nodes []string, userGroup string, likeSearch bool) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
+	query := "create_date between ? AND ? "
 	//transactionData := model.TransactionResponse{}
-	query := fieldKey + " in (?) and create_date between ? and ?"
+	if likeSearch {
+		query += "AND " + fieldKey + " LIKE ANY(ARRAY[?])"
+	} else {
+		query += "AND " + fieldKey + " in (?)"
+	}
+
+	//query := fieldKey + " in (?) and create_date between ? and ?"
 
 	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
 	logrus.Debug("USERGROUP ", userGroup)
@@ -968,7 +979,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).
-			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
+			Where(query, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339), dataWhere).
 			Find(&searchTmp).Error; err != nil {
 			logrus.Errorln("GetTransactionData: We have got error: ", err)
 		}

@@ -284,7 +284,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string) (string, error) {
+func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string, userGroup string) (string, error) {
 	table := "hep_proto_1_default"
 	searchData := []model.HepTable{}
 	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
@@ -292,6 +292,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? AND ?"
+
+	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logrus.Debug("USERGROUP ", userGroup)
+
+	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
+		sql = sql + " AND " + config.Setting.IsolateQuery
+	}
+
 	var sLimit int
 
 	for key, _ := range sData.ChildrenMap() {

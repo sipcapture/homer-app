@@ -62,8 +62,9 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		Port := strconv.Itoa(*row.Port)
 		aliasData[row.IP+":"+Port] = row.Alias
 	}
+	userGroup := auth.GetUserGroup(c)
 
-	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData)
+	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup)
 	if err != nil {
 		logrus.Println(responseData)
 	}

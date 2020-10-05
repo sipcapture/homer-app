@@ -574,9 +574,14 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				keepAlive = viper.GetBool(keyData + ".keepalive")
 			}
 
-			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d]\n", host, user, name, node, port))
+			sslMode := "disable"
+			if viper.IsSet(keyData + ".sslmode") {
+				sslMode = viper.GetString(keyData + ".sslmode")
+			}
 
-			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s]\n", host, user, name, node, port, sslMode))
+
+			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 			if port != 0 {
 				connectString += fmt.Sprintf(" port=%d", port)
@@ -622,7 +627,12 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
 
-		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+		sslMode := "disable"
+		if viper.IsSet("database_data.sslmode") {
+			sslMode = viper.GetString("database_data.sslmode")
+		}
+
+		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 		if port != 0 {
 			connectString += fmt.Sprintf(" port=%d", port)
@@ -671,7 +681,12 @@ func getConfigDBSession() *gorm.DB {
 		keepAlive = viper.GetBool("database_config.keepalive")
 	}
 
-	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+	sslMode := "disable"
+	if viper.IsSet("database_config.sslmode") {
+		sslMode = viper.GetString("database_config.sslmode")
+	}
+
+	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 	if port != 0 {
 		connectString += fmt.Sprintf(" port=%d", port)

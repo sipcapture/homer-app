@@ -112,6 +112,7 @@ type CommandLineFlags struct {
 	DatabaseHost              *string    `json:"root_host"`
 	DatabasePort              *int       `json:"root_port"`
 	DatabaseRootDB            *string    `json:"root_db"`
+	DatabaseSSLMode           *string    `json:"sslmode_db"`
 	DatabaseHomerNode         *string    `json:"homer_node"`
 	DatabaseHomerUser         *string    `json:"homer_user"`
 	DatabaseHomerPassword     *string    `json:"homer_password"`
@@ -168,13 +169,13 @@ func initFlags() {
 	appFlags.DatabaseRootPassword = flag.String("database-root-password", "", "database-root-password")
 	appFlags.DatabaseHost = flag.String("database-host", "localhost", "database-host")
 	appFlags.DatabasePort = flag.Int("database-port", 5432, "database-port")
+	appFlags.DatabaseSSLMode = flag.String("database-ssl-mode", "disable", "database-ssl-mode")
 	appFlags.DatabaseRootDB = flag.String("database-root-db", "postgres", "database-root-db")
 	appFlags.DatabaseHomerNode = flag.String("database-homer-node", "localnode", "database-homer-node")
 	appFlags.DatabaseHomerUser = flag.String("database-homer-user", "homer_user", "database-homer-user")
 	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password")
 	appFlags.DatabaseHomerConfig = flag.String("database-homer-config", "homer_config", "database-homer-config")
 	appFlags.DatabaseHomerData = flag.String("database-homer-data", "homer_data", "database-homer-data")
-
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
 	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
@@ -1078,7 +1079,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1099,7 +1101,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1120,7 +1123,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1145,7 +1149,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1159,7 +1164,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseHomerData,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection to data. Please be sure you can have correct password", err)
@@ -1179,7 +1185,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1201,7 +1208,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1224,7 +1232,7 @@ func initDB() {
 		appFlags.DatabaseRootDB,
 		appFlags.DatabaseHost,
 		appFlags.DatabasePort,
-	)
+		appFlags.DatabaseSSLMode)
 
 	if err != nil {
 		logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1246,7 +1254,7 @@ func initDB() {
 		appFlags.DatabaseHomerData,
 		appFlags.DatabaseHost,
 		appFlags.DatabasePort,
-	)
+		appFlags.DatabaseSSLMode)
 
 	if err != nil {
 		logrus.Error("Couldn't establish connection to databaseDb. Please be sure you can have correct password", err)

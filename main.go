@@ -224,10 +224,12 @@ func main() {
 
 	/* now check if we do write to config */
 	if *appFlags.SaveHomerDbConfigToConfig {
-		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig, appFlags.DatabaseHost, appFlags.DatabaseHomerNode)
+		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig,
+			appFlags.DatabaseHost, appFlags.DatabaseHomerNode, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	} else if *appFlags.SaveHomerDbDataToConfig {
-		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerData, appFlags.DatabaseHost)
+		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword,
+			appFlags.DatabaseHomerData, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	}
 
@@ -925,9 +927,9 @@ func readConfig() {
 	}
 }
 
-func applyDBDataParamToConfig(user *string, password *string, dbname *string, host *string, node *string) {
+func applyDBDataParamToConfig(user *string, password *string, dbname *string, host *string, node *string, sslmode *string) {
 
-	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, node=%s]", *user, *password, *dbname, *host, *node)
+	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, node=%s, sslmode=%s]", *user, *password, *dbname, *host, *node, *sslmode)
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
@@ -936,6 +938,7 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 	viper.Set("database_data."+*node+".name", *dbname)
 	viper.Set("database_data."+*node+".host", *host)
 	viper.Set("database_data."+*node+".node", *node)
+	viper.Set("database_data."+*node+".sslmode", *sslmode)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -945,9 +948,9 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 	}
 }
 
-func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string) {
+func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string, sslmode *string) {
 
-	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s]", *user, *password, *dbname, *host)
+	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, sslmode=%s]", *user, *password, *dbname, *host, *sslmode)
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
@@ -955,6 +958,7 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 	viper.Set("database_config.pass", *password)
 	viper.Set("database_config.name", *dbname)
 	viper.Set("database_config.host", *host)
+	viper.Set("database_config.sslmode", *sslmode)
 
 	err := viper.WriteConfig()
 	if err != nil {

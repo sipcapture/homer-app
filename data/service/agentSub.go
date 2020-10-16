@@ -188,41 +188,17 @@ func (hs *AgentsubService) GetAgentsubAgainstGUIDAndType(guid string, typeReques
 func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject, typeRequest string) (string, error) {
 
 	var hepsubObject []model.TableHepsubSchema
-	/*
-		response, _ := json.Marshal(agentObject)
-		dataElement, _ := gabs.ParseJSON(response)
-	*/
-
-	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
-	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
-		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
-	}
-
-	lookupRanges := sMapping.Search("lookup_ranges")
-
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
-
 	dataPost := gabs.New()
 
-	for key, value := range sData.ChildrenMap() {
+	for key := range sData.ChildrenMap() {
 
 		elemArray := strings.Split(key, "_")
 		logrus.Debug(elemArray)
 
 		if len(elemArray) != 2 {
 			return "", fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
-		}
-
-		if lookupRanges != nil {
-
-			for k := range lookupRanges.ChildrenMap() {
-				dataV := value.Search(k).Data().([]interface{})
-				dataPost.Set(dataV, k)
-			}
-		} else {
-			dataV := value.Search("callid").Data()
-			dataPost.Set(dataV, "callid")
 		}
 
 		hepID, _ := strconv.Atoi(elemArray[0])
@@ -237,6 +213,29 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	if len(hepsubObject) == 0 {
 		logrus.Debug("Agent HEPSUB couldn't find agent mapping")
 		return "", nil
+	}
+
+	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
+	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
+		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+	}
+
+	lookupRanges := sMapping.Search("lookup_ranges")
+
+	for _, value := range sData.ChildrenMap() {
+
+		if lookupRanges != nil {
+
+			for k := range lookupRanges.ChildrenMap() {
+				dataV := value.Search(k).Data().([]interface{})
+				dataPost.Set(dataV, k)
+			}
+		} else {
+			dataV := value.Search("callid").Data()
+			dataPost.Set(dataV, "callid")
+		}
+
+		break
 	}
 
 	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)

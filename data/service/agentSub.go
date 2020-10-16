@@ -193,9 +193,17 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		dataElement, _ := gabs.ParseJSON(response)
 	*/
 
+	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
+	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
+		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+	}
+
+	lookupRanges := sMapping.Search("lookup_ranges")
+
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
-	var dataCallid []interface{}
+
+	dataPost := gabs.New()
 
 	for key, value := range sData.ChildrenMap() {
 
@@ -206,8 +214,15 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 			return "", fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
 		}
 
-		for _, v := range value.Search("callid").Data().([]interface{}) {
-			dataCallid = append(dataCallid, v)
+		if lookupRanges != nil {
+
+			for k := range lookupRanges.ChildrenMap() {
+				dataV := value.Search(k).Data().([]interface{})
+				dataPost.Set(dataV, k)
+			}
+		} else {
+			dataV := value.Search("callid").Data()
+			dataPost.Set(dataV, "callid")
 		}
 
 		hepID, _ := strconv.Atoi(elemArray[0])
@@ -224,11 +239,6 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		return "", nil
 	}
 
-	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
-	if !sMapping.Exists("lookup_profile") || !sMapping.Exists("lookup_field") || !sMapping.Exists("lookup_range") {
-		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
-	}
-
 	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
 	lookupField := sMapping.Search("lookup_field").Data().(string)
 	lookupRange := sMapping.Search("lookup_range").Data().([]interface{})
@@ -240,9 +250,9 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		timeTo = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
 	}
 
-	callIDJson, _ := json.Marshal(dataCallid)
+	//callIDJson, _ := json.Marshal(dataCallid)
 
-	lookupField = strings.ReplaceAll(lookupField, "$source_field", string(callIDJson))
+	lookupField = strings.ReplaceAll(lookupField, "$source_field", dataPost.String())
 	lookupField = strings.ReplaceAll(lookupField, "$fromts", fmt.Sprintf("%v", (timeFrom.Unix()*int64(time.Microsecond)+(int64(timeFrom.Nanosecond())/int64(time.Microsecond)))))
 	lookupField = strings.ReplaceAll(lookupField, "$tots", fmt.Sprintf("%v", (timeTo.Unix()*int64(time.Microsecond)+(int64(timeTo.Nanosecond())/int64(time.Microsecond)))))
 

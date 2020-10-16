@@ -220,13 +220,13 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
 	}
 
-	lookupRanges := sMapping.Search("lookup_ranges")
+	lookupFields := sMapping.Search("source_fields")
 
 	for _, value := range sData.ChildrenMap() {
 
-		if lookupRanges != nil {
+		if lookupFields != nil {
 
-			for k := range lookupRanges.ChildrenMap() {
+			for k := range lookupFields.ChildrenMap() {
 				dataV := value.Search(k).Data().([]interface{})
 				dataPost.Set(dataV, k)
 			}

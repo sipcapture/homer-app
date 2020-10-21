@@ -1,5 +1,6 @@
 *.swp
 # direnv and nix-shell
+homer-app
 .envrc
 default.nix
 .direnv.*

@@ -7,17 +7,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/httpauth"
+	"github.com/sirupsen/logrus"
+
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/ldap"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
 	ServiceConfig
 	LdapClient *ldap.LDAPClient
+	HttpAuth   *httpauth.Client
 }
 
 // this method gets all users from database
@@ -136,7 +139,9 @@ func (us *UserService) DeleteUser(user *model.TableUser) error {
 func (us *UserService) LoginUser(username, password string) (string, model.TableUser, error) {
 	userData := model.TableUser{}
 
-	if us.LdapClient != nil {
+	switch {
+	case us.LdapClient != nil:
+
 		ok, isAdmin, user, err := us.LdapClient.Authenticate(username, password)
 		if err != nil {
 			errorString := fmt.Sprintf("Error authenticating user %s: %+v", username, err)
@@ -144,7 +149,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		}
 
 		if !ok {
-			return "", userData, errors.New("Authenticating failed for user")
+			return "", userData, errors.New("authenticating failed for user")
 		}
 
 		userData.UserName = username
@@ -157,9 +162,21 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			userData.UserGroup = val
 		}
 
-		groups, err := us.LdapClient.GetGroupsOfUser(username)
+		userid := username
+
+		// Microsoft AD implementations require DN for 1.2.840.113556.1.4.1941 recursive group query
+		if us.LdapClient.UseDNForGroupSearch == true {
+			userid = user["dn"]
+		}
+
+		groups, err := us.LdapClient.GetGroupsOfUser(userid)
+		//fmt.Println("LDAP returned groups: ", groups)
+
 		if err != nil {
 			logrus.Error("Couldn't get any group for user ", username, ": ", err)
+			if us.LdapClient.UserMode == false && us.LdapClient.AdminMode == false {
+				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
+			}
 		} else {
 			logrus.Debug("Found groups for user ", username, ": ", groups)
 			// ElementExists returns true if the given slice is empty, so we explicitly check that here
@@ -167,10 +184,36 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
 				logrus.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
+			} else if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.UserGroup) {
+				logrus.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
+				userData.IsAdmin = false
+			} else {
+				if userData.IsAdmin == false && us.LdapClient.UserMode == true {
+					logrus.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
+				}
+				if userData.IsAdmin == true {
+					logrus.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
+				}
+				if userData.IsAdmin == false && us.LdapClient.UserMode == false {
+					return "", userData, errors.New("failed group match. Group membership is required for login because AdminMode and UserMode are false")
+				}
 			}
 		}
-
-	} else {
+	case us.HttpAuth != nil:
+		response, err := us.HttpAuth.Authenticate(username, password)
+		if err != nil {
+			return "", userData, errors.New("password is not correct")
+		}
+		if !response.Auth {
+			return "", userData, errors.New("password is not correct")
+		}
+		userData = response.Data
+		userData.IsAdmin = false
+		userData.ExternalAuth = false
+		if userData.UserGroup != "" && strings.Contains(strings.ToLower(userData.UserGroup), "admin") {
+			userData.IsAdmin = true
+		}
+	default:
 		if err := us.Session.Debug().Table("users").Where("username =?", username).Find(&userData).Error; err != nil {
 			return "", userData, errors.New("user is not found")
 		}

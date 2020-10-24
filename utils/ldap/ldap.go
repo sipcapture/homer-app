@@ -13,24 +13,27 @@ import (
 )
 
 type LDAPClient struct {
-	Attributes         []string
-	Base               string
-	BindDN             string
-	BindPassword       string
-	GroupFilter        string // e.g. "(memberUid=%s)"
-	GroupAttribute     string // e.g. "memberOf" / "cn"
-	Host               string
-	ServerName         string
-	UserFilter         string // e.g. "(uid=%s)"
-	Conn               *ldap.Conn
-	Port               int
-	InsecureSkipVerify bool
-	UseSSL             bool
-	Anonymous          bool
-	UserDN             string
-	SkipTLS            bool
-	AdminGroup         string
-	AdminMode          bool
+	Attributes          []string
+	Base                string
+	BindDN              string
+	BindPassword        string
+	GroupFilter         string // e.g. "(memberUid=%s)"
+	GroupAttribute      string // e.g. "memberOf" / "cn"
+	Host                string
+	ServerName          string
+	UserFilter          string // e.g. "(uid=%s)"
+	Conn                *ldap.Conn
+	Port                int
+	InsecureSkipVerify  bool
+	UseSSL              bool
+	Anonymous           bool
+	UserDN              string
+	SkipTLS             bool
+	AdminGroup          string
+	AdminMode           bool
+	UserGroup           string
+	UserMode            bool
+	UseDNForGroupSearch bool
 
 	ClientCertificates []tls.Certificate // Adding client certificates
 }
@@ -105,7 +108,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		}
 
 		attributes := append(lc.Attributes, "dn")
-		userFilter := fmt.Sprintf(lc.UserFilter, username) 
+		userFilter := fmt.Sprintf(lc.UserFilter, username)
 		// Search for the given username
 		searchRequest := ldap.NewSearchRequest(
 			lc.Base,

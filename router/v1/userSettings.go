@@ -19,7 +19,7 @@ func RouteUserSettingsApis(acc *echo.Group, session *gorm.DB) {
 	acc.GET("/user/settings/:category", urc.GetCategory)
 
 	acc.POST("/user/settings", urc.AddUserSettings)
-	acc.DELETE("/user/settings/:guid", urc.DeleteUserSettings)
-	acc.PUT("/user/settings/:guid", urc.UpdateUserSettings)
+	acc.DELETE("/user/settings/:category", urc.DeleteUserSettings)
+	acc.PUT("/user/settings/:category", urc.UpdateUserSettings)
 
 }

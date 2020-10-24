@@ -13,6 +13,7 @@ require (
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
+	github.com/go-resty/resty/v2 v2.3.0
 	github.com/go-sourcemap/sourcemap v2.1.2+incompatible // indirect
 	github.com/google/gopacket v1.1.17
 	github.com/influxdata/influxdb1-client v0.0.0-20190809212627-fc22c7df067e
@@ -25,6 +26,7 @@ require (
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/manifoldco/promptui v0.7.0
+	github.com/mcuadros/go-defaults v1.2.0
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/satori/go.uuid v1.2.0
 	github.com/shomali11/util v0.0.0-20190608141102-c39c2521a2ab
@@ -33,7 +35,7 @@ require (
 	github.com/tebeka/strftime v0.1.3 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20191105034135-c7e5f84aec59
-	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
+	golang.org/x/net v0.0.0-20200513185701-a91f0712d120
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0
 	gopkg.in/ldap.v3 v3.1.0

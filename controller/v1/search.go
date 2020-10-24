@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -61,8 +62,9 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		Port := strconv.Itoa(*row.Port)
 		aliasData[row.IP+":"+Port] = row.Alias
 	}
+	userGroup := auth.GetUserGroup(c)
 
-	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData)
+	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup)
 	if err != nil {
 		logrus.Println(responseData)
 	}
@@ -193,9 +195,11 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	searchTable := "hep_proto_1_default'"
 
+	userGroup := auth.GetUserGroup(c)
+
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
 		correlation, false, aliasData, 0, transactionObject.Param.Location.Node,
-		sc.SettingService)
+		sc.SettingService, userGroup)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
 
@@ -339,8 +343,10 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 	}
 
 	searchTable := "hep_proto_1_default'"
+	userGroup := auth.GetUserGroup(c)
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1, searchObject.Param.Location.Node, sc.SettingService)
+	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1,
+		searchObject.Param.Location.Node, sc.SettingService, userGroup)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
@@ -390,9 +396,11 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	searchTable := "hep_proto_1_default'"
 
+	userGroup := auth.GetUserGroup(c)
+
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
 		correlation, false, aliasData, 2, searchObject.Param.Location.Node,
-		sc.SettingService)
+		sc.SettingService, userGroup)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
 	if err := c.String(http.StatusOK, reply); err != nil {

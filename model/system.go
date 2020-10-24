@@ -8,5 +8,6 @@ type AppContext struct {
 	echo.Context
 	UserName     string `json:"username"`
 	Admin        bool   `json:"admin"`
+	UserGroup    string `json:"usergroup"`
 	ExternalAuth bool   `json:"externalauth"`
 }

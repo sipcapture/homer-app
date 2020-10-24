@@ -24,12 +24,20 @@ var MinimumPgSQL = 10
 
 var DashboardHome = json.RawMessage(`{"id":"home","name":"Home","alias":"home","selectedItem":"","title":"Home","weight":10,"widgets":[{"x":0,"y":0,"cols":2,"rows":1,"name":"clock","title":"clock","id":"clock214","output":{},"config":{"id":"clock214","datePattern":"YYYY-MM-DD","location":{"value":-60,"offset":"+1","name":"Europe/Amsterdam","desc":"Central European Time"},"showseconds":false,"timePattern":"HH:mm:ss","title":"Home Clock"}},{"x":0,"y":1,"cols":2,"rows":3,"name":"display-results","title":"display-results","id":"display-results370","output":{},"config":{"id":"display-results370","title":"CALL SIP SEARCH","group":"Search","name":"protosearch","description":"Display Search Form component","refresh":false,"sizeX":2,"sizeY":2,"config":{"title":"CALL SIP SEARCH","searchbutton":true,"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"call","value":"call"}},"uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","fields":[{"field_name":"data_header.from_user","hepid":1,"name":"1:call:data_header.from_user","selection":"SIP From user","type":"string"},{"field_name":"data_header.to_user","hepid":1,"name":"1:call:data_header.to_user","selection":"SIP To user","type":"string"},{"field_name":"data_header.method","hepid":1,"name":"1:call:data_header.method","selection":"SIP Method","type":"string"},{"field_name":"data_header.callid","hepid":1,"name":"1:call:data_header.callid","selection":"SIP Callid","type":"string"},{"field_name":"limit","hepid":1,"name":"1:call:limit","selection":"Query Limit","type":"string"},{"field_name":"targetResultsContainer","hepid":1,"name":"1:call:targetResultsContainer","selection":"Results Container","type":"string"}],"row":0,"col":1,"cols":2,"rows":2,"x":0,"y":1,"protocol_id":{"name":"SIP","value":100}}},{"x":2,"y":0,"cols":4,"rows":4,"name":"result","title":"result","id":"result560","output":{}}],"config":{"margins":[10,10],"columns":"6","pushing":true,"draggable":{"handle":".box-header"},"resizable":{"enabled":true,"handles":["n","e","s","w","ne","se","sw","nw"]}}}`)
 
-var CorrelationMappingdefault = json.RawMessage(`{"source_field": "data_header.callid",
-      "lookup_id": 0,
-      "lookup_type": "pubsub",
-      "lookup_profile": "cdr",
-      "lookup_field": "{\"data\":$source_field,\"fromts\":$fromts,\"tots\":$tots}",
-	  "lookup_range": [-300, 200]}`)
+var CorrelationMappingdefault = json.RawMessage(`{
+  "lookup_id": 0,
+  "lookup_type": "pubsub",
+  "lookup_field": "{\"data\":$source_field,\"fromts\":$fromts,\"tots\":$tots}",
+  "lookup_range": [
+      -300,
+      200
+  ],
+  "source_fields": {
+      "sid": "data_header.sid",
+      "source_ip": "data_header.srcIp"
+  },
+  "lookup_profile": "cdr"
+}`)
 
 var EmptyJson = json.RawMessage(`{}`)
 
@@ -1011,7 +1019,7 @@ var CorrelationMapping1call = json.RawMessage(`[
     {
         "source_field": "data_header.callid",
         "lookup_id": 5,
-        "lookup_profile": "call",
+        "lookup_profile": "default",
         "lookup_field": "sid",
         "lookup_range": [
             -300,
@@ -1056,7 +1064,7 @@ var CorrelationMapping1registration = json.RawMessage(`[
     {
         "source_field": "data_header.callid",
         "lookup_id": 5,
-        "lookup_profile": "registration",
+        "lookup_profile": "default",
         "lookup_field": "sid",
         "lookup_range": [
             -300,

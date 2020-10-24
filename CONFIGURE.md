@@ -122,6 +122,10 @@ If the loglevel is >= info , the stdout will be enabled automaticaly.
 
 ### Authentication Settings
 This section defines how `homer-app` will authenticate its API and UI users. By default, uses internal database.
+`adminmode` and `usermode` defines privilege level of user that performed successful LDAP bind but didn't match
+any defined group, if both are false login wil fail. If both are true, `adminmode` takes precedece.
+For Active Directory recursive group search use `"groupfilter": "(member:1.2.840.113556.1.4.1941:=%s)"`
+
 ```  
   "auth_settings": {
     "_comment": "The type param can be internal, ldap",
@@ -137,8 +141,11 @@ This section defines how `homer-app` will authenticate its API and UI users. By 
 		"bindpassword": "readonlypassword",
 		"userfilter": "(uid=%s)",
     "groupfilter": "(memberUid=%s)",
-    "admingroup": "admin",
+    "admingroup": "HOMER_admin",
     "adminmode": true,
+    "usergroup": "HOMER_user",
+    "usermode": true,
+
     "attributes": ["givenName", "sn", "mail", "uid"]
   },
 }

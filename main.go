@@ -44,14 +44,17 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/mcuadros/go-defaults"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/ldap"
 	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sirupsen/logrus"
@@ -72,6 +75,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 var appFlags CommandLineFlags
 var ldapClient ldap.LDAPClient
 var authType string
+var httpAuth httpauth.Client
 
 type arrayFlags []string
 
@@ -108,6 +112,7 @@ type CommandLineFlags struct {
 	DatabaseHost              *string    `json:"root_host"`
 	DatabasePort              *int       `json:"root_port"`
 	DatabaseRootDB            *string    `json:"root_db"`
+	DatabaseSSLMode           *string    `json:"sslmode_db"`
 	DatabaseHomerNode         *string    `json:"homer_node"`
 	DatabaseHomerUser         *string    `json:"homer_user"`
 	DatabaseHomerPassword     *string    `json:"homer_password"`
@@ -164,13 +169,13 @@ func initFlags() {
 	appFlags.DatabaseRootPassword = flag.String("database-root-password", "", "database-root-password")
 	appFlags.DatabaseHost = flag.String("database-host", "localhost", "database-host")
 	appFlags.DatabasePort = flag.Int("database-port", 5432, "database-port")
+	appFlags.DatabaseSSLMode = flag.String("database-ssl-mode", "disable", "database-ssl-mode")
 	appFlags.DatabaseRootDB = flag.String("database-root-db", "postgres", "database-root-db")
 	appFlags.DatabaseHomerNode = flag.String("database-homer-node", "localnode", "database-homer-node")
 	appFlags.DatabaseHomerUser = flag.String("database-homer-user", "homer_user", "database-homer-user")
 	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password")
 	appFlags.DatabaseHomerConfig = flag.String("database-homer-config", "homer_config", "database-homer-config")
 	appFlags.DatabaseHomerData = flag.String("database-homer-data", "homer_data", "database-homer-data")
-
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
 	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
@@ -186,6 +191,10 @@ func main() {
 
 	/* first check admin flags */
 	checkHelpVersionFlags()
+
+	cfg := new(config.HomerSettingServer)
+	defaults.SetDefaults(cfg) //<-- This set the defaults values
+	config.Setting = *cfg
 
 	// read system configurations and expose through viper
 	readConfig()
@@ -215,10 +224,12 @@ func main() {
 
 	/* now check if we do write to config */
 	if *appFlags.SaveHomerDbConfigToConfig {
-		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig, appFlags.DatabaseHost, appFlags.DatabaseHomerNode)
+		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig,
+			appFlags.DatabaseHost, appFlags.DatabaseHomerNode, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	} else if *appFlags.SaveHomerDbDataToConfig {
-		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerData, appFlags.DatabaseHost)
+		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword,
+			appFlags.DatabaseHomerData, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	}
 
@@ -257,6 +268,12 @@ func main() {
 
 	servicesObject.serviceGrafana = getGrafanaSession()
 
+	/***********************************/
+	config.Setting.IsolateQuery = viper.GetString("group_settings.isolate_query")
+	config.Setting.IsolateGroup = viper.GetString("group_settings.isolate_group")
+
+	/***********************************/
+
 	authType = viper.GetString("auth_settings.type")
 	/* check the auth type */
 	if authType == "" {
@@ -264,7 +281,8 @@ func main() {
 	}
 
 	/* Check LDAP here */
-	if authType == "ldap" {
+	switch authType {
+	case "ldap":
 		logrus.Println("Ldap implementation here")
 		ldapClient.Base = viper.GetString("ldap_config.base")
 		ldapClient.Host = viper.GetString("ldap_config.host")
@@ -278,12 +296,20 @@ func main() {
 		ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
 		ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
 		ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
+		ldapClient.UserGroup = viper.GetString("ldap_config.usergroup")
+		ldapClient.UserMode = viper.GetBool("ldap_config.usermode")
 		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
-		
+
+		if viper.IsSet("ldap_config.UseDNForGroupSearch") {
+			ldapClient.UseDNForGroupSearch = viper.GetBool("ldap_config.UseDNForGroupSearch")
+		} else {
+			ldapClient.UseDNForGroupSearch = false
+		}
+
 		if viper.IsSet("ldap_config.groupattribute") {
 			ldapClient.GroupAttribute = viper.GetString("ldap_config.groupattribute")
 		} else {
-			ldapClient.GroupAttribute = "cn";
+			ldapClient.GroupAttribute = "cn"
 		}
 
 		if viper.IsSet("ldap_config.skiptls") {
@@ -299,8 +325,10 @@ func main() {
 		} else {
 			ldapClient.InsecureSkipVerify = true
 		}
-
 		defer ldapClient.Close()
+	case "http_auth":
+		httpAuth.URL = viper.GetString("http_auth.url")
+		httpAuth.InsecureSkipVerify = viper.GetBool("skipverify")
 	}
 
 	/* apply token expire - default 1200 */
@@ -416,17 +444,33 @@ func configureAsHTTPServer() {
 
 	// perform routing for v1 version of web apis
 	performV1APIRouting(e)
-	httpHost := viper.GetString("http_settings.host")
-	httpPort := viper.GetString("http_settings.port")
-	httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+	if viper.GetBool("https_settings.enable") {
+		httpsHost := viper.GetString("https_settings.host")
+		httpsPort := viper.GetString("https_settings.port")
+		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
 
-	heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
-	heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
+		httpsCert := viper.GetString("https_settings.cert")
+		httpsKey := viper.GetString("https_settings.key")
+		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
 
-	//Doc Swagger for future. For now - external
-	/* e.GET("/swagger/*", echoSwagger.WrapHandler)
-	 */
-	e.Logger.Fatal(e.Start(httpURL))
+		//Doc Swagger for future. For now - external
+		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
+		 */
+		e.Logger.Fatal(e.StartTLS(httpsURL, httpsCert, httpsKey))
+	} else {
+		httpHost := viper.GetString("http_settings.host")
+		httpPort := viper.GetString("http_settings.port")
+		httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
+
+		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
+
+		//Doc Swagger for future. For now - external
+		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
+		 */
+		e.Logger.Fatal(e.Start(httpURL))
+	}
 }
 
 func performV1APIRouting(e *echo.Echo) {
@@ -440,10 +484,13 @@ func performV1APIRouting(e *echo.Echo) {
 	// accessible web services will fall in this group
 	acc := e.Group(prefix + "/api/v3")
 
-	if authType == "ldap" {
-		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient)
-	} else {
-		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil)
+	switch authType {
+	case "ldap":
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient, nil)
+	case "http_auth":
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil, &httpAuth)
+	default:
+		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, nil, nil)
 	}
 
 	//subscribe access with authKey
@@ -532,9 +579,14 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				keepAlive = viper.GetBool(keyData + ".keepalive")
 			}
 
-			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d]\n", host, user, name, node, port))
+			sslMode := "disable"
+			if viper.IsSet(keyData + ".sslmode") {
+				sslMode = viper.GetString(keyData + ".sslmode")
+			}
 
-			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s]\n", host, user, name, node, port, sslMode))
+
+			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 			if port != 0 {
 				connectString += fmt.Sprintf(" port=%d", port)
@@ -580,7 +632,12 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
 
-		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+		sslMode := "disable"
+		if viper.IsSet("database_data.sslmode") {
+			sslMode = viper.GetString("database_data.sslmode")
+		}
+
+		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 		if port != 0 {
 			connectString += fmt.Sprintf(" port=%d", port)
@@ -629,7 +686,12 @@ func getConfigDBSession() *gorm.DB {
 		keepAlive = viper.GetBool("database_config.keepalive")
 	}
 
-	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, name, password)
+	sslMode := "disable"
+	if viper.IsSet("database_config.sslmode") {
+		sslMode = viper.GetString("database_config.sslmode")
+	}
+
+	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
 	if port != 0 {
 		connectString += fmt.Sprintf(" port=%d", port)
@@ -865,9 +927,9 @@ func readConfig() {
 	}
 }
 
-func applyDBDataParamToConfig(user *string, password *string, dbname *string, host *string, node *string) {
+func applyDBDataParamToConfig(user *string, password *string, dbname *string, host *string, node *string, sslmode *string) {
 
-	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, node=%s]", *user, *password, *dbname, *host, *node)
+	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, node=%s, sslmode=%s]", *user, *password, *dbname, *host, *node, *sslmode)
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
@@ -876,6 +938,7 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 	viper.Set("database_data."+*node+".name", *dbname)
 	viper.Set("database_data."+*node+".host", *host)
 	viper.Set("database_data."+*node+".node", *node)
+	viper.Set("database_data."+*node+".sslmode", *sslmode)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -885,9 +948,9 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 	}
 }
 
-func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string) {
+func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string, sslmode *string) {
 
-	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s]", *user, *password, *dbname, *host)
+	createString := fmt.Sprintf("\r\nHOMER - writing data to config [user=%s password=%s, dbname=%s, host=%s, sslmode=%s]", *user, *password, *dbname, *host, *sslmode)
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
@@ -895,6 +958,7 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 	viper.Set("database_config.pass", *password)
 	viper.Set("database_config.name", *dbname)
 	viper.Set("database_config.host", *host)
+	viper.Set("database_config.sslmode", *sslmode)
 
 	err := viper.WriteConfig()
 	if err != nil {
@@ -1019,7 +1083,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1040,7 +1105,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1061,7 +1127,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1086,7 +1153,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1100,7 +1168,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseHomerData,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection to data. Please be sure you can have correct password", err)
@@ -1120,7 +1189,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1142,7 +1212,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseRootPassword,
 			appFlags.DatabaseRootDB,
 			appFlags.DatabaseHost,
-			appFlags.DatabasePort)
+			appFlags.DatabasePort,
+			appFlags.DatabaseSSLMode)
 
 		if err != nil {
 			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1165,7 +1236,7 @@ func initDB() {
 		appFlags.DatabaseRootDB,
 		appFlags.DatabaseHost,
 		appFlags.DatabasePort,
-	)
+		appFlags.DatabaseSSLMode)
 
 	if err != nil {
 		logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
@@ -1187,7 +1258,7 @@ func initDB() {
 		appFlags.DatabaseHomerData,
 		appFlags.DatabaseHost,
 		appFlags.DatabasePort,
-	)
+		appFlags.DatabaseSSLMode)
 
 	if err != nil {
 		logrus.Error("Couldn't establish connection to databaseDb. Please be sure you can have correct password", err)

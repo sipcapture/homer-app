@@ -80,17 +80,24 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 
 // this method gets all users from database
 func (hs *AgentsubService) GetAuthKeyByHeaderToken(token string) (string, error) {
-	var tokenObject []model.TableAuthToken
+	var tokenObject model.TableAuthToken
 	var count int
 	if err := hs.Session.Debug().Table("auth_token").
 		Where("expire_date > NOW() AND active = true AND token = ? ", token).
 		Find(&tokenObject).Count(&count).Error; err != nil {
 		return "", err
 	}
-	if len(tokenObject) == 0 {
+	if count == 0 {
 		return "", fmt.Errorf("no auth_token found or it has been expired: [%s]", token)
 	}
 
+	tokenObject.LastUsageDate = time.Now()
+
+	if err := hs.Session.Debug().Table("auth_token").
+		Where("token = ?", token).
+		Update(&tokenObject).Error; err != nil {
+		return "", err
+	}
 	response, _ := json.Marshal(tokenObject)
 	dataElement, _ := gabs.ParseJSON(response)
 
@@ -182,26 +189,17 @@ func (hs *AgentsubService) GetAgentsubAgainstGUIDAndType(guid string, typeReques
 func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject, typeRequest string) (string, error) {
 
 	var hepsubObject []model.TableHepsubSchema
-	/*
-		response, _ := json.Marshal(agentObject)
-		dataElement, _ := gabs.ParseJSON(response)
-	*/
-
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
-	var dataCallid []interface{}
+	dataPost := gabs.New()
 
-	for key, value := range sData.ChildrenMap() {
+	for key := range sData.ChildrenMap() {
 
 		elemArray := strings.Split(key, "_")
 		logrus.Debug(elemArray)
 
 		if len(elemArray) != 2 {
 			return "", fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
-		}
-
-		for _, v := range value.Search("callid").Data().([]interface{}) {
-			dataCallid = append(dataCallid, v)
 		}
 
 		hepID, _ := strconv.Atoi(elemArray[0])
@@ -219,8 +217,26 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	}
 
 	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
-	if !sMapping.Exists("lookup_profile") || !sMapping.Exists("lookup_field") || !sMapping.Exists("lookup_range") {
+	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
 		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+	}
+
+	lookupFields := sMapping.Search("source_fields")
+
+	for _, value := range sData.ChildrenMap() {
+
+		if lookupFields != nil {
+
+			for k := range lookupFields.ChildrenMap() {
+				dataV := value.Search(k).Data().([]interface{})
+				dataPost.Set(dataV, k)
+			}
+		} else {
+			dataV := value.Search("callid").Data()
+			dataPost.Set(dataV, "callid")
+		}
+
+		break
 	}
 
 	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
@@ -234,9 +250,9 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		timeTo = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
 	}
 
-	callIDJson, _ := json.Marshal(dataCallid)
+	//callIDJson, _ := json.Marshal(dataCallid)
 
-	lookupField = strings.ReplaceAll(lookupField, "$source_field", string(callIDJson))
+	lookupField = strings.ReplaceAll(lookupField, "$source_field", dataPost.String())
 	lookupField = strings.ReplaceAll(lookupField, "$fromts", fmt.Sprintf("%v", (timeFrom.Unix()*int64(time.Microsecond)+(int64(timeFrom.Nanosecond())/int64(time.Microsecond)))))
 	lookupField = strings.ReplaceAll(lookupField, "$tots", fmt.Sprintf("%v", (timeTo.Unix()*int64(time.Microsecond)+(int64(timeTo.Nanosecond())/int64(time.Microsecond)))))
 

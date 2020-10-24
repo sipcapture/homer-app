@@ -18,6 +18,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/dop251/goja"
 	"github.com/shomali11/util/xconditions"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -283,7 +284,7 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string) (string, error) {
+func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string, userGroup string) (string, error) {
 	table := "hep_proto_1_default"
 	searchData := []model.HepTable{}
 	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
@@ -291,6 +292,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? AND ?"
+
+	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logrus.Debug("USERGROUP ", userGroup)
+
+	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
+		sql = sql + " AND " + config.Setting.IsolateQuery
+	}
+
 	var sLimit int
 
 	for key, _ := range sData.ChildrenMap() {
@@ -715,7 +724,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 //this method create new user in the database
 //it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService) (string, error) {
+	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService, userGroup string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
@@ -730,7 +739,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes)
+	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup, false)
 	marshalData, _ := json.Marshal(dataRow)
 
 	jsonParsed, _ := gabs.ParseJSON(marshalData)
@@ -778,6 +787,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		lookupField := corrs.Search("lookup_field").Data().(string)
 		lookupRange := corrs.Search("lookup_range").Data().([]interface{})
 		newWhereData := dataSrcField[sourceField]
+		likeSearch := false
 
 		if len(newWhereData) == 0 {
 			continue
@@ -829,8 +839,11 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 					newWhereData = append(newWhereData, v)
 				}
 			}
+			if corrs.Exists("like_search") && corrs.Search("like_search").Data().(bool) {
+				likeSearch = true
+			}
 
-			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes)
+			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup, likeSearch)
 			if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
 				marshalData, _ = json.Marshal(newDataRow)
 				jsonParsed, _ = gabs.ParseJSON(marshalData)
@@ -945,11 +958,25 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
-	timeTo time.Time, nodes []string) ([]model.HepTable, error) {
+	timeTo time.Time, nodes []string, userGroup string, likeSearch bool) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
+	query := "create_date between ? AND ? "
 	//transactionData := model.TransactionResponse{}
-	query := fieldKey + " in (?) and create_date between ? and ?"
+	if likeSearch {
+		query += "AND " + fieldKey + " LIKE ANY(ARRAY[?])"
+	} else {
+		query += "AND " + fieldKey + " in (?)"
+	}
+
+	//query := fieldKey + " in (?) and create_date between ? and ?"
+
+	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logrus.Debug("USERGROUP ", userGroup)
+
+	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
+		query = query + " AND " + config.Setting.IsolateQuery
+	}
 
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */
@@ -960,7 +987,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).
-			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
+			Where(query, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339), dataWhere).
 			Find(&searchTmp).Error; err != nil {
 			logrus.Errorln("GetTransactionData: We have got error: ", err)
 		}

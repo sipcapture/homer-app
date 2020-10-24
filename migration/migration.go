@@ -18,10 +18,10 @@ type RollesTable struct {
 }
 
 // getSession creates a new root session and panics if connection error occurs
-func GetDataRootDBSession(user *string, password *string, dbname *string, host *string, port *int) (*gorm.DB, error) {
+func GetDataRootDBSession(user *string, password *string, dbname *string, host *string, port *int, sslmode *string) (*gorm.DB, error) {
 
 	//connectString := fmt.Sprintf("host=%s port=%d user=%s dbname=%s ssldmode=disable password=%s", *host, *port, *user, *dbname, *password)
-	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable", *host, *user, *dbname)
+	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s", *host, *user, *dbname, *sslmode)
 
 	if *port != 0 {
 		connectString += fmt.Sprintf(" port=%d", *port)
@@ -280,7 +280,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			IPAddress:     "0.0.0.0/0",
 			LastUsageDate: time.Now(),
 			CreateDate:    time.Now(),
-			ExpireDate:    time.Now().Add(time.Duration(720) * time.Hour),
+			ExpireDate:    time.Now().Add(720 * time.Hour),
 			UsageCalls:    0,
 			LimitCalls:    1000,
 			Active:        &[]bool{true}[0],

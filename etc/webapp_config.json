@@ -57,6 +57,14 @@
     "gzip_static": true,
     "debug": false
   },
+  "https_settings": {
+    "help": "SSL settings for homer-app",
+    "enable": false,
+    "host": "0.0.0.0",
+    "port": 443,
+    "cert": "/usr/local/homer/tls/cert.pem",
+    "key": "/usr/local/homer/tls/key.pem"
+  },
   "system_settings": {
     "help": "Settings for HOMER logs",
     "logpath": "/usr/local/homer/log",
@@ -66,7 +74,7 @@
     "logstdout": false
   },
   "auth_settings": {
-    "_comment": "The type param can be internal, ldap",
+    "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",
     "token_expire": 1200
   },
@@ -83,10 +91,16 @@
     "groupattribute": "cn",
     "admingroup": "admin",
     "adminmode": true,
-    "attributes": ["givenName", "sn", "mail", "uid"],
+    "usergroup": "HOMER_user",
+    "usermode": true,
+    "attributes": ["dn", "givenName", "sn", "mail", "uid"],
     "skipverify": true,
     "anonymous": false,
     "userdn": "uid=%s,ou=People,dc=example,dc=com"
+  },
+  "http_auth": {
+    "url": "http://localhost:1323",
+    "skipverify": true
   },
   "decoder_shark": {
     "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",

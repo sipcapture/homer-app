@@ -152,7 +152,7 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
 
-	userObject.GUID = c.Param("guid")
+	userObject.GUID = c.Param("category")
 	userName, isAdmin := auth.IsRequestAdmin(c)
 
 	data, err := usc.UserSettingsService.Get(&userObject, userName, isAdmin)
@@ -219,7 +219,7 @@ func (usc *UserSettingsController) UpdateUserSettings(c echo.Context) error {
 		logrus.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
-	userObject.GUID = c.Param("guid")
+	userObject.GUID = c.Param("category")
 	userName, isAdmin := auth.IsRequestAdmin(c)
 
 	data, err := usc.UserSettingsService.Get(&userObject, userName, isAdmin)
@@ -228,6 +228,7 @@ func (usc *UserSettingsController) UpdateUserSettings(c echo.Context) error {
 		reply.Set(userObject.GUID, "data")
 		reply.Set(fmt.Sprintf("the userobject with id %s were not found", userObject.GUID), "message")
 	}
+
 	userObject.CreateDate = time.Now()
 	userObject.Id = data.Id
 	if err := usc.UserSettingsService.Update(&userObject, userName, isAdmin); err != nil {

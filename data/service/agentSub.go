@@ -192,69 +192,76 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	dataPost := gabs.New()
+	var lookupField string
 
-	for key := range sData.ChildrenMap() {
+	if typeRequest == "download" {
+		logrus.Debug("Download", searchObject)
+		lookupField = string(searchObject.Param.Search)
 
-		elemArray := strings.Split(key, "_")
-		logrus.Debug(elemArray)
+	} else {
+		for key := range sData.ChildrenMap() {
 
-		if len(elemArray) != 2 {
-			return nil, fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
-		}
+			elemArray := strings.Split(key, "_")
+			logrus.Debug(elemArray)
 
-		hepID, _ := strconv.Atoi(elemArray[0])
-		if err := hs.Session.Debug().Table("hepsub_mapping_schema").
-			Where("profile = ? AND hepid = ?", elemArray[1], hepID).
-			Find(&hepsubObject).Error; err != nil {
-			return nil, err
-		}
-		break
-	}
-
-	if len(hepsubObject) == 0 {
-		logrus.Debug("Agent HEPSUB couldn't find agent mapping")
-		return nil, fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
-	}
-
-	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
-	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
-		return nil, fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
-	}
-
-	lookupFields := sMapping.Search("source_fields")
-
-	for _, value := range sData.ChildrenMap() {
-
-		if lookupFields != nil {
-
-			for k := range lookupFields.ChildrenMap() {
-				dataV := value.Search(k).Data().([]interface{})
-				dataPost.Set(dataV, k)
+			if len(elemArray) != 2 {
+				return nil, fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
 			}
-		} else {
-			dataV := value.Search("callid").Data()
-			dataPost.Set(dataV, "callid")
+
+			hepID, _ := strconv.Atoi(elemArray[0])
+			if err := hs.Session.Debug().Table("hepsub_mapping_schema").
+				Where("profile = ? AND hepid = ?", elemArray[1], hepID).
+				Find(&hepsubObject).Error; err != nil {
+				return nil, err
+			}
+			break
 		}
 
-		break
+		if len(hepsubObject) == 0 {
+			logrus.Debug("Agent HEPSUB couldn't find agent mapping")
+			return nil, fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
+		}
+
+		sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
+		if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
+			return nil, fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+		}
+
+		lookupFields := sMapping.Search("source_fields")
+
+		for _, value := range sData.ChildrenMap() {
+
+			if lookupFields != nil {
+
+				for k := range lookupFields.ChildrenMap() {
+					dataV := value.Search(k).Data().([]interface{})
+					dataPost.Set(dataV, k)
+				}
+			} else {
+				dataV := value.Search("callid").Data()
+				dataPost.Set(dataV, "callid")
+			}
+
+			break
+		}
+
+		//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
+		lookupField = sMapping.Search("lookup_field").Data().(string)
+		lookupRange := sMapping.Search("lookup_range").Data().([]interface{})
+
+		timeFrom := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
+		timeTo := time.Unix(searchObject.Timestamp.To/int64(time.Microsecond), 0)
+		if len(lookupRange) > 0 {
+			timeFrom = timeFrom.Add(time.Duration(lookupRange[0].(float64)) * time.Second).UTC()
+			timeTo = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
+		}
+
+		//callIDJson, _ := json.Marshal(dataCallid)
+
+		lookupField = strings.ReplaceAll(lookupField, "$source_field", dataPost.String())
+		lookupField = strings.ReplaceAll(lookupField, "$fromts", fmt.Sprintf("%v", (timeFrom.Unix()*int64(time.Microsecond)+(int64(timeFrom.Nanosecond())/int64(time.Microsecond)))))
+		lookupField = strings.ReplaceAll(lookupField, "$tots", fmt.Sprintf("%v", (timeTo.Unix()*int64(time.Microsecond)+(int64(timeTo.Nanosecond())/int64(time.Microsecond)))))
 	}
-
-	//lookupProfile := sMapping.Search("lookup_profile").Data().(string)
-	lookupField := sMapping.Search("lookup_field").Data().(string)
-	lookupRange := sMapping.Search("lookup_range").Data().([]interface{})
-
-	timeFrom := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
-	timeTo := time.Unix(searchObject.Timestamp.To/int64(time.Microsecond), 0)
-	if len(lookupRange) > 0 {
-		timeFrom = timeFrom.Add(time.Duration(lookupRange[0].(float64)) * time.Second).UTC()
-		timeTo = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
-	}
-
-	//callIDJson, _ := json.Marshal(dataCallid)
-
-	lookupField = strings.ReplaceAll(lookupField, "$source_field", dataPost.String())
-	lookupField = strings.ReplaceAll(lookupField, "$fromts", fmt.Sprintf("%v", (timeFrom.Unix()*int64(time.Microsecond)+(int64(timeFrom.Nanosecond())/int64(time.Microsecond)))))
-	lookupField = strings.ReplaceAll(lookupField, "$tots", fmt.Sprintf("%v", (timeTo.Unix()*int64(time.Microsecond)+(int64(timeTo.Nanosecond())/int64(time.Microsecond)))))
 
 	serverURL := fmt.Sprintf("%s://%s:%d%s/%s", agentObject.Protocol, agentObject.Host, agentObject.Port, agentObject.Path, typeRequest)
 	serverNODE := agentObject.Node

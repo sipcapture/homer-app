@@ -195,8 +195,12 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	var lookupField string
 
 	if typeRequest == "download" {
-		logrus.Debug("Download", searchObject)
-		lookupField = string(searchObject.Param.Search)
+		Data, _ := json.Marshal(searchObject.Param.Search)
+		sData, _ := gabs.ParseJSON(Data)
+		for _, sdata := range sData.ChildrenMap() {
+			lookupField = sdata.String()
+		}
+		logrus.Debug("Download: ", lookupField)
 
 	} else {
 		for key := range sData.ChildrenMap() {

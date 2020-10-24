@@ -284,22 +284,17 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		return "", err
 	}
 
-	responseData, _ := gabs.ParseJSON(buf)
-
 	if typeRequest == "download" {
 		var buffer bytes.Buffer
 		export := exportwriter.NewWriter(buffer)
-
-		for _, h := range responseData.Children() {
-			err := export.WriteDataPcapBuffer(h)
-			if err != nil {
-				logrus.Errorln("write error to the download buffer", err)
-			}
+		_, err := export.Buffer.Write(buf)
+		if err != nil {
+			logrus.Errorln("write error to the download buffer", err)
 		}
-
 		return export.Buffer.String(), nil
 
 	} else {
+		responseData, _ := gabs.ParseJSON(buf)
 		reply := gabs.New()
 		reply.Set("request answer", "message")
 		reply.Set(serverNODE, "node")

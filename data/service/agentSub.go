@@ -14,6 +14,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sirupsen/logrus"
 )
 
@@ -268,10 +269,27 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	}
 
 	responseData, _ := gabs.ParseJSON(buf)
-	reply := gabs.New()
-	reply.Set("request answer", "message")
-	reply.Set(serverNODE, "node")
-	reply.Set(agentObject.GUID, "uuid")
-	reply.Set(responseData.Data(), "data")
-	return reply.String(), nil
+
+	if typeRequest == "download" {
+		var buffer bytes.Buffer
+		export := exportwriter.NewWriter(buffer)
+
+		for _, h := range responseData.Children() {
+			err := export.WriteDataPcapBuffer(h)
+			if err != nil {
+				logrus.Errorln("write error to the download buffer", err)
+			}
+		}
+
+		return export.Buffer.String(), nil
+
+	} else {
+		reply := gabs.New()
+		reply.Set("request answer", "message")
+		reply.Set(serverNODE, "node")
+		reply.Set(agentObject.GUID, "uuid")
+		reply.Set(responseData.Data(), "data")
+		return reply.String(), nil
+	}
+
 }

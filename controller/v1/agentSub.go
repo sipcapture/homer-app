@@ -1,6 +1,7 @@
 package controllerv1
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -332,5 +333,15 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+	if typeRequest == "download" {
+		c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
+		if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
+			logrus.Error(err.Error())
+		}
+
+		c.Response().Flush()
+		return nil
+	} else {
+		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+	}
 }

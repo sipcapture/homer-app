@@ -186,7 +186,7 @@ func (hs *AgentsubService) GetAgentsubAgainstGUIDAndType(guid string, typeReques
 }
 
 // this method gets all users from database
-func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject, typeRequest string) (string, error) {
+func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSession, searchObject model.SearchObject, typeRequest string) ([]byte, error) {
 
 	var hepsubObject []model.TableHepsubSchema
 	Data, _ := json.Marshal(searchObject.Param.Search)
@@ -199,26 +199,26 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		logrus.Debug(elemArray)
 
 		if len(elemArray) != 2 {
-			return "", fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
+			return nil, fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
 		}
 
 		hepID, _ := strconv.Atoi(elemArray[0])
 		if err := hs.Session.Debug().Table("hepsub_mapping_schema").
 			Where("profile = ? AND hepid = ?", elemArray[1], hepID).
 			Find(&hepsubObject).Error; err != nil {
-			return "", err
+			return nil, err
 		}
 		break
 	}
 
 	if len(hepsubObject) == 0 {
 		logrus.Debug("Agent HEPSUB couldn't find agent mapping")
-		return "", nil
+		return nil, fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
 	}
 
 	sMapping, _ := gabs.ParseJSON(hepsubObject[0].Mapping)
 	if !sMapping.Exists("lookup_profile") || (!sMapping.Exists("lookup_field") && !sMapping.Exists("lookup_fields")) || !sMapping.Exists("lookup_range") {
-		return "", fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
+		return nil, fmt.Errorf("Agent HEPSUB: the hepsub mapping corrupted: lookup_profile, lookup_field, lookup_range - have to be present")
 	}
 
 	lookupFields := sMapping.Search("source_fields")
@@ -263,7 +263,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 
 	if err != nil {
 		logrus.Error("Couldn't make a request to agent. Query:", serverURL)
-		return "", err
+		return nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -274,14 +274,14 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	resp, err := client.Do(req)
 	if err != nil {
 		logrus.Error("Agent HEPSUB: Couldn't make http query:", serverURL)
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	buf, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		logrus.Error("Agent HEPSUB: Couldn't read the data from IO-Buffer")
-		return "", err
+		return nil, err
 	}
 
 	if typeRequest == "download" {
@@ -291,7 +291,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		if err != nil {
 			logrus.Errorln("write error to the download buffer", err)
 		}
-		return export.Buffer.String(), nil
+		return export.Buffer.Bytes(), nil
 
 	} else {
 		responseData, _ := gabs.ParseJSON(buf)
@@ -300,7 +300,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		reply.Set(serverNODE, "node")
 		reply.Set(agentObject.GUID, "uuid")
 		reply.Set(responseData.Data(), "data")
-		return reply.String(), nil
+		return reply.Bytes(), nil
 	}
 
 }

@@ -334,14 +334,13 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 	}
 
 	if typeRequest == "download" {
-		c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
-		if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
+		c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s-%s.pcap", guid, time.Now().Format(time.RFC3339)))
+		if err := c.Blob(http.StatusOK, "application/octet-stream", reply); err != nil {
 			logrus.Error(err.Error())
 		}
-
 		c.Response().Flush()
 		return nil
 	} else {
-		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, reply)
 	}
 }

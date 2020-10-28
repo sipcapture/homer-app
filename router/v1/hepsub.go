@@ -17,9 +17,9 @@ func RouteHepsubApis(acc *echo.Group, session *gorm.DB) {
 	}
 	// get all dashboards
 
-	acc.GET("/hepsub/protocol/:id/:transaction", hs.GetHepSubFields, auth.IsAdmin)
-	acc.GET("/hepsub/protocol", hs.GetHepSub, auth.IsAdmin)
-	acc.GET("/hepsub/protocol/:guid", hs.GetHepSubAgainstGUID, auth.IsAdmin)
+	acc.GET("/hepsub/protocol/:id/:transaction", hs.GetHepSubFields)
+	acc.GET("/hepsub/protocol", hs.GetHepSub)
+	acc.GET("/hepsub/protocol/:guid", hs.GetHepSubAgainstGUID)
 	acc.POST("/hepsub/protocol", hs.AddHepSub, auth.IsAdmin)
 	acc.PUT("/hepsub/protocol/:guid", hs.UpdateHepSubAgainstGUID, auth.IsAdmin)
 	acc.DELETE("/hepsub/protocol/:guid", hs.DeleteHepSubAgainstGUID, auth.IsAdmin)

@@ -148,3 +148,38 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
+
+// swagger:route GET /api/v3/proxy/grafana/search/:uid search
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error {
+
+	uuidDashboard := c.Param("uid")
+
+	err := pc.GrafanaService.SetGrafanaObject()
+	if err != nil {
+		logrus.Error("Grafana service is not configured")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
+	}
+
+	responseData, err := pc.GrafanaService.GrafanaGetFoldersdByUUUID(uuidDashboard)
+	if err != nil {
+		logrus.Println(responseData)
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}

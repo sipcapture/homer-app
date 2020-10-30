@@ -195,3 +195,45 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 	return sData.String(), nil
 
 }
+
+//LabelsData: this method get all Grafana labels from database
+func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error) {
+
+	grafanaQuery := fmt.Sprintf("%s/api/search?folderIds=%s", ps.Host, uuid)
+
+	req, err := http.NewRequest("GET", grafanaQuery, nil)
+
+	if err != nil {
+		logrus.Error("Couldn't make NewRequest query:", grafanaQuery)
+		return "", err
+	}
+
+	// This one line implements the authentication required for the task.
+	if ps.Password != "" && ps.User != "" {
+		req.SetBasicAuth(ps.User, ps.Password)
+	}
+
+	req.Header.Add("Authorization", "Bearer "+ps.Token+"=")
+
+	data, err := ps.HttpClient.Do(req)
+	if err != nil {
+		logrus.Error("Couldn't make http query:", grafanaQuery)
+		return "", err
+	}
+
+	defer data.Body.Close()
+
+	buf, _ := ioutil.ReadAll(data.Body)
+	if err != nil {
+		logrus.Error("Couldn't read the data from IO-Buffer")
+		return "", err
+	}
+
+	sData, err := gabs.ParseJSON(buf)
+	if err != nil {
+		logrus.Error("couldn't encode json body")
+		return "", err
+	}
+	return sData.String(), nil
+
+}

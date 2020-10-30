@@ -296,6 +296,22 @@ var FieldsMapping1call = json.RawMessage(`[
 	  "hide": true
   },
   {
+    "id": "profile",
+    "name": "Profile",
+    "type": "string",
+    "index": "none",
+    "form_type": "select",
+    "form_default": [
+        "call",
+        "registration",
+        "default"
+    ],
+    "position": 23,
+    "skip": false,
+    "hide": true,
+    "profile": true
+  },
+  {
     "id": "node",
     "name": "Node",
     "type": "string",

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VERSION=$($PWD/homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
+VERSION=$($PWD/homer-app -version | egrep -o '[0-9]+.[0-9]+.[0-9]+')
 
 PACKAGE="homer-app"
-RELEASE=${VERSION:-"7.7.0"}
+RELEASE=${VERSION:-"0.0.0"}
 ARCH="amd64"
 
 # CHECK FOR DOCKER

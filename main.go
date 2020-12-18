@@ -100,6 +100,7 @@ type CommandLineFlags struct {
 	DeleteHomerUser           *bool      `json:"delete_homer_user"`
 	ShowVersion               *bool      `json:"version"`
 	ForcePopulate             *bool      `json:"force_insert"`
+	ForcePasswordDB           *string    `json:"force_password"`
 	TablesPopulate            arrayFlags `json:"force_tables"`
 	RevokeHomerRole           *bool      `json:"revoke_homer_role"`
 	CreateHomerRole           *bool      `json:"create_homer_role"`
@@ -153,6 +154,7 @@ func initFlags() {
 	appFlags.ShowDbUsers = flag.Bool("show-db-users", false, "show db users")
 
 	appFlags.ForcePopulate = flag.Bool("force-populate", false, "force populate all records to config")
+	appFlags.ForcePasswordDB = flag.String("force-password", "", "force password for AWS setups")
 
 	flag.Var(&appFlags.TablesPopulate, "populate-table", "force to populate only current tables")
 
@@ -679,6 +681,11 @@ func getConfigDBSession() *gorm.DB {
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
 	port := viper.GetInt("database_config.port")
+
+	/* force DB config */
+	if *appFlags.ForcePasswordDB != "" {
+		password = *appFlags.ForcePasswordDB
+	}
 
 	/* keep alive is on by default */
 	keepAlive := true

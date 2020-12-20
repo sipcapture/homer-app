@@ -746,19 +746,20 @@ var FieldsMapping34default = json.RawMessage(`[
 ]`)
 
 var FieldsMapping100default = json.RawMessage(`[
-    {
+  {
       "id": "sid",
       "type": "string",
       "index": "secondary",
+      "alias": "callid",
       "name": "Session ID",
       "form_type": "input",
       "position": 1,
       "skip": false,
       "hide": false,
       "sid_type": true
-    },
-    {
-      "id": "protocol_header.correlation_id",
+  },
+  {
+      "id": "correlation_id",
       "name": "Correlation ID",
       "type": "string",
       "index": "none",
@@ -767,9 +768,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "skip": false,
       "hide": true,
       "sid_type": true
-    },
-    {
-      "id": "protocol_header.srcIp",
+  },
+  {
+      "id": "srcIp",
       "name": "Source IP",
       "type": "string",
       "index": "none",
@@ -777,9 +778,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 3,
       "skip": false,
       "hide": false
-    },
-    {
-      "id": "protocol_header.srcPort",
+  },
+  {
+      "id": "srcPort",
       "name": "Src Port",
       "type": "integer",
       "index": "none",
@@ -787,9 +788,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 4,
       "skip": false,
       "hide": false
-    },
-    {
-      "id": "protocol_header.dstIp",
+  },
+  {
+      "id": "dstIp",
       "name": "Destination IP",
       "type": "string",
       "index": "none",
@@ -797,9 +798,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 5,
       "skip": false,
       "hide": false
-    },
-    {
-      "id": "protocol_header.dstPort",
+  },
+  {
+      "id": "dstPort",
       "name": "Dst Port",
       "type": "integer",
       "index": "none",
@@ -807,9 +808,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 6,
       "skip": false,
       "hide": false
-    },
-    {
-      "id": "protocol_header.timeSeconds",
+  },
+  {
+      "id": "timeSeconds",
       "name": "Timeseconds",
       "type": "integer",
       "index": "none",
@@ -817,9 +818,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 7,
       "skip": false,
       "hide": true
-    },
-    {
-      "id": "protocol_header.timeUseconds",
+  },
+  {
+      "id": "timeUseconds",
       "name": "Usecond time",
       "type": "integer",
       "index": "none",
@@ -827,9 +828,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 8,
       "skip": false,
       "hide": true
-    },
-    {
-      "id": "protocol_header.payloadType",
+  },
+  {
+      "id": "payloadType",
       "name": "Payload type",
       "type": "integer",
       "index": "none",
@@ -837,9 +838,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 9,
       "skip": false,
       "hide": true
-    },
-    {
-      "id": "protocol_header.captureId",
+  },
+  {
+      "id": "captureId",
       "name": "Capture ID",
       "type": "integer",
       "index": "none",
@@ -847,9 +848,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 10,
       "skip": false,
       "hide": true
-    },
-    {
-      "id": "protocol_header.capturePass",
+  },
+  {
+      "id": "capturePass",
       "name": "Capture Pass",
       "type": "string",
       "index": "none",
@@ -857,9 +858,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 12,
       "skip": true,
       "hide": true
-    },
-    {
-      "id": "protocol_header.protocolFamily",
+  },
+  {
+      "id": "protocolFamily",
       "name": "Proto Family",
       "type": "integer",
       "index": "none",
@@ -867,9 +868,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 13,
       "skip": false,
       "hide": true
-    },
-    {
-      "id": "protocol_header.protocol",
+  },
+  {
+      "id": "protocol",
       "name": "Protocol Type",
       "type": "integer",
       "index": "none",
@@ -877,8 +878,8 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 14,
       "skip": false,
       "hide": true
-    },
-    {
+  },
+  {
       "id": "raw",
       "name": "RAW",
       "type": "string",
@@ -887,8 +888,8 @@ var FieldsMapping100default = json.RawMessage(`[
       "position": 15,
       "skip": true,
       "hide": true
-    }
-  ]`)
+  }
+]`)
 
 var FieldsMapping1000default = json.RawMessage(`[
   {

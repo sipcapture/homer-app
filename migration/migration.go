@@ -10,6 +10,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type RollesTable struct {
@@ -241,7 +242,15 @@ func checkHomerConfigTables(configDBSession *gorm.DB) map[string]bool {
 	return createTables
 }
 
-func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool, tablesPopulate []string) {
+func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool, tablesPopulate []string, password string) {
+
+	if password != "" {
+		jsonschema.DefaultAdminPassword = password
+		jsonschema.DefaultSupportPassword = password
+	}
+
+	hashedAdminPassword, _ := bcrypt.GenerateFromPassword([]byte(jsonschema.DefaultAdminPassword), bcrypt.DefaultCost)
+	hashedSupportPassword, _ := bcrypt.GenerateFromPassword([]byte(jsonschema.DefaultSupportPassword), bcrypt.DefaultCost)
 
 	createString := fmt.Sprintf("\r\nHOMER - filling tables for the config DB [dbname=%s]", homerDBconfig)
 	usersData := []model.TableUser{
@@ -253,7 +262,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			LastName:   "Admin",
 			Department: "Develop",
 			UserGroup:  "admin",
-			Hash:       string(jsonschema.DefaultAdminPassword),
+			Hash:       string(hashedAdminPassword),
 			GUID:       uuid.NewV4().String(),
 		},
 		model.TableUser{
@@ -264,7 +273,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			LastName:   "Support",
 			Department: "Develop",
 			UserGroup:  "admin",
-			Hash:       string(jsonschema.DefaultSupportPassword),
+			Hash:       string(hashedSupportPassword),
 			GUID:       uuid.NewV4().String(),
 		},
 	}
@@ -761,4 +770,39 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	}
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
+}
+
+func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName string, userPassword string) error {
+
+	createString := fmt.Sprintf("\r\nHOMER - updating user [dbname=%s]", homerDBconfig)
+
+	user := model.TableUser{}
+
+	if err := configDBSession.Debug().Table("users").Where("username = ? ", userName).Find(&user); err != nil {
+		logrus.Error(fmt.Sprintf("Coudn't find user [%s]: with error %s.", userName, configDBSession.Error))
+		return err.Error
+	}
+
+	/*********************************************/
+	heputils.Colorize(heputils.ColorRed, createString)
+
+	// get new instance of user data source
+	user.CreatedAt = time.Now()
+	password := []byte(userPassword)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", "users", configDBSession.Error, userName))
+		return err
+	}
+	user.Hash = string(hashedPassword)
+
+	err = configDBSession.Debug().Table("users").Model(&model.TableUser{}).Where("username =  ?", userName).Update(&user).Error
+	if err != nil {
+		logrus.Error(fmt.Sprintf("Coudn't update user [%s]: with error %s.", userName, configDBSession.Error))
+		return err
+	}
+
+	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
+
+	return nil
 }

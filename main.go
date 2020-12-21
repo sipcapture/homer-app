@@ -101,6 +101,8 @@ type CommandLineFlags struct {
 	ShowVersion               *bool      `json:"version"`
 	ForcePopulate             *bool      `json:"force_insert"`
 	ForcePasswordDB           *string    `json:"force_password"`
+	UpdateUIUser              *string    `json:"update_ui_user"`
+	UpdateUIPassword          *string    `json:"update_ui_password"`
 	TablesPopulate            arrayFlags `json:"force_tables"`
 	RevokeHomerRole           *bool      `json:"revoke_homer_role"`
 	CreateHomerRole           *bool      `json:"create_homer_role"`
@@ -155,6 +157,9 @@ func initFlags() {
 
 	appFlags.ForcePopulate = flag.Bool("force-populate", false, "force populate all records to config")
 	appFlags.ForcePasswordDB = flag.String("force-password", "", "force password for AWS setups")
+
+	appFlags.UpdateUIUser = flag.String("update-ui-user", "", "update user ui")
+	appFlags.UpdateUIPassword = flag.String("update-ui-password", "", "update password for user")
 
 	flag.Var(&appFlags.TablesPopulate, "populate-table", "force to populate only current tables")
 
@@ -237,15 +242,21 @@ func main() {
 
 	servicesObject.configDBSession = getConfigDBSession()
 	defer servicesObject.configDBSession.Close()
+	nameHomerConfig := viper.GetString("database_config.name")
 
 	if *appFlags.CreateTableConfigDB || *appFlags.UpgradeTableConfigDB {
-		nameHomerConfig := viper.GetString("database_config.name")
 		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
 		os.Exit(0)
 	} else if *appFlags.PopulateTableConfigDB {
+		migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate,
+			*appFlags.ForcePasswordDB)
+		os.Exit(0)
+	}
 
-		nameHomerConfig := viper.GetString("database_config.name")
-		migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
+	if *appFlags.UpdateUIUser != "" && *appFlags.UpdateUIPassword != "" {
+		logrus.Println(fmt.Sprintf("Updating password for user: [%s]\n", *appFlags.UpdateUIUser))
+		migration.UpdateHomerUser(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpdateUIUser, *appFlags.UpdateUIPassword)
+
 		os.Exit(0)
 	}
 
@@ -681,11 +692,6 @@ func getConfigDBSession() *gorm.DB {
 	name := viper.GetString("database_config.name")
 	host := viper.GetString("database_config.host")
 	port := viper.GetInt("database_config.port")
-
-	/* force DB config */
-	if *appFlags.ForcePasswordDB != "" {
-		password = *appFlags.ForcePasswordDB
-	}
 
 	/* keep alive is on by default */
 	keepAlive := true
@@ -1282,7 +1288,7 @@ func initDB() {
 	nameHomerConfig := viper.GetString("database_config.name")
 
 	migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpgradeTableConfigDB, true)
-	migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
+	migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate, *appFlags.ForcePasswordDB)
 
 	os.Exit(0)
 }

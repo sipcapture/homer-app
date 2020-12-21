@@ -2,8 +2,6 @@ package jsonschema
 
 import (
 	"encoding/json"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 // this is version
@@ -41,8 +39,8 @@ var CorrelationMappingdefault = json.RawMessage(`{
 
 var EmptyJson = json.RawMessage(`{}`)
 
-var DefaultAdminPassword, _ = bcrypt.GenerateFromPassword([]byte("sipcapture"), bcrypt.DefaultCost)
-var DefaultSupportPassword, _ = bcrypt.GenerateFromPassword([]byte("sipcapture"), bcrypt.DefaultCost)
+var DefaultAdminPassword = "sipcapture"
+var DefaultSupportPassword = "sipcapture"
 
 var GrafanaConfig = json.RawMessage(`{"host": "http://grafana:3000","user": "admin","password":"admin","token": "ABCDEFGHKLMN"}`)
 

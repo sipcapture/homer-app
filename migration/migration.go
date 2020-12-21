@@ -777,10 +777,9 @@ func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName st
 	createString := fmt.Sprintf("\r\nHOMER - updating user [dbname=%s]", homerDBconfig)
 
 	user := model.TableUser{}
-
-	if err := configDBSession.Debug().Table("users").Where("username = ? ", userName).Find(&user); err != nil {
-		logrus.Error(fmt.Sprintf("Coudn't find user [%s]: with error %s.", userName, configDBSession.Error))
-		return err.Error
+	if err := configDBSession.Debug().Table("users").Where("username = ? ", userName).Find(&user).Error; err != nil {
+		logrus.Error("Coudn't find user [", userName, "]: with error:", err)
+		return err
 	}
 
 	/*********************************************/

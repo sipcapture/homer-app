@@ -392,6 +392,15 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		},
 		model.TableUserSettings{
 			GUID:       uuid.NewV4().String(),
+			UserName:   "admin",
+			Param:      "registration",
+			PartId:     10,
+			Category:   "dashboard",
+			Data:       jsonschema.RegisterDashboard,
+			CreateDate: time.Now(),
+		},
+		model.TableUserSettings{
+			GUID:       uuid.NewV4().String(),
 			UserName:   "support",
 			Param:      "home",
 			PartId:     10,

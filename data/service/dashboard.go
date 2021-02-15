@@ -41,6 +41,13 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 			dashboardElement.Href = row.S("param").Data().(string)
 			dashboardElement.Id = row.S("param").Data().(string)
 		}
+		if row.Exists("shared") {
+			if row.S("shared").Data().(bool) {
+				dashboardElement.Shared = 1
+			} else {
+				dashboardElement.Shared = 0
+			}
+		}
 		if row.Exists("data") {
 			dashboardElement.Name = row.S("data", "name").Data().(string)
 			dashboardElement.Weight = row.S("data", "weight").Data().(float64)

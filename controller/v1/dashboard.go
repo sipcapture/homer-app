@@ -170,6 +170,64 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
+// swagger:operation POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
+//
+// Add dashboard
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// - name: dashboard param
+//   in: path
+//   example: home
+//   description: the param of dashboard
+//   required: true
+//   type: string
+// - name: dashboard data
+//   in: body
+//   schema:
+//     type: string
+//   required: true
+//   description: json of dashboard
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '200': body:UserSettings
+//   '400': body:FailureResponse
+func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
+
+	cc := c.(model.AppContext)
+	username := cc.UserName
+	dashboardId := url.QueryEscape(c.Param("dashboardId"))
+
+	var jsonData map[string]interface{} = map[string]interface{}{}
+	if err := c.Bind(&jsonData); err != nil {
+		logrus.Println(err)
+		return err
+	}
+
+	data, err := json.Marshal(jsonData)
+	if err != nil {
+		logrus.Println(err)
+		return err
+	}
+
+	reply, err := dbc.DashBoardService.UpdateDashboard(username, dashboardId, data)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.InsertDashboardFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
 // swagger:operation DELETE /dashboard/store/{dashboardId} dashboard dashboardDeleteDashboard
 //
 // Delete dashboard

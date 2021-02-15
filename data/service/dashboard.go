@@ -2,12 +2,14 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"sort"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/heputils"
 )
 
 type DashBoardService struct {
@@ -17,7 +19,7 @@ type DashBoardService struct {
 // this method gets all users from database
 func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) {
 	var userSettings []*model.TableUserSettings
-	if err := us.Session.Table("user_settings").Where("username = ? AND category = 'dashboard'", username).
+	if err := us.Session.Table("user_settings").Where("category = 'dashboard' AND (username = ? OR (data ->> 'shared' = 'true' OR data ->> 'shared' = '1'))", username).
 		Find(&userSettings).Error; err != nil {
 		return "", err
 	}
@@ -41,16 +43,17 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 			dashboardElement.Href = row.S("param").Data().(string)
 			dashboardElement.Id = row.S("param").Data().(string)
 		}
-		if row.Exists("shared") {
-			if row.S("shared").Data().(bool) {
-				dashboardElement.Shared = 1
-			} else {
-				dashboardElement.Shared = 0
-			}
-		}
 		if row.Exists("data") {
 			dashboardElement.Name = row.S("data", "name").Data().(string)
 			dashboardElement.Weight = row.S("data", "weight").Data().(float64)
+
+			if row.Exists("data", "shared") {
+				if heputils.CheckBoolValue(row.S("data", "shared").Data()) {
+					dashboardElement.Shared = 1
+				} else {
+					dashboardElement.Shared = 0
+				}
+			}
 		}
 		dashboardList = append(dashboardList, dashboardElement)
 	}
@@ -71,7 +74,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 // this method gets all users from database
 func (us *DashBoardService) GetDashBoard(username, param string) (string, error) {
 	var userSettings model.TableUserSettings
-	if err := us.Session.Table("user_settings").Where("username = ? AND category = 'dashboard' and param = ? ", username, param).
+	if err := us.Session.Table("user_settings").Where("(username = ? OR (data ->> 'shared' = 'true' OR data ->> 'shared' = '1')) AND category = 'dashboard' and param = ? ", username, param).
 		Find(&userSettings).Error; err != nil {
 		return "", err
 	}
@@ -100,12 +103,53 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 	newDashboard.CreateDate = time.Now()
 	newDashboard.Data = data
 
+	var userSettings model.TableUserSettings
+	result := us.Session.Table("user_settings").Where("(username != ? AND category = 'dashboard' and param = ? and partid = ?", newDashboard.UserName,
+		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
+
+	if result.RowsAffected > 0 {
+		return "", fmt.Errorf("this is not my dashboard")
+	}
+
 	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard' and param = ? and partid = ? ", newDashboard.UserName, newDashboard.Param, newDashboard.PartId).
 		Delete(&model.TableUserSettings{}).Error; err != nil {
 		return "", err
 	}
 
 	if err := us.Session.Debug().Table("user_settings").Save(&newDashboard).Error; err != nil {
+		return "", err
+	}
+
+	reply := gabs.New()
+	reply.Set(3, "total")
+	reply.Set("ok", "status")
+	reply.Set("ok", "auth")
+
+	return reply.String(), nil
+}
+
+// this method gets all users from database
+func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data json.RawMessage) (string, error) {
+
+	newDashboard := model.TableUserSettings{}
+	u2 := uuid.NewV4()
+	newDashboard.GUID = u2.String()
+	newDashboard.Param = dashboardId
+	newDashboard.PartId = 10
+	newDashboard.UserName = username
+	newDashboard.Category = "dashboard"
+	newDashboard.CreateDate = time.Now()
+	newDashboard.Data = data
+
+	var userSettings model.TableUserSettings
+	result := us.Session.Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?", newDashboard.UserName,
+		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
+
+	if result.RowsAffected == 0 {
+		return "", fmt.Errorf("dashboard doesn't exist")
+	}
+
+	if err := us.Session.Debug().Table("user_settings").Update(&newDashboard).Error; err != nil {
 		return "", err
 	}
 

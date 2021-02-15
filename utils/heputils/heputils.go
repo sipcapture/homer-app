@@ -58,6 +58,26 @@ func CheckFloatValue(val interface{}) float64 {
 }
 
 //import  checkFloatValue
+func CheckBoolValue(val interface{}) bool {
+	if val != nil {
+		myType := reflect.TypeOf(val)
+		switch myType.Kind() {
+		case reflect.Bool:
+			return val.(bool)
+		case reflect.Float64:
+			if val.(float64) == 0 {
+				return false
+			} else {
+				return true
+			}
+		default:
+			return false
+		}
+	}
+	return false
+}
+
+//import  checkFloatValue
 func CheckIntValue(val interface{}) int {
 	if val != nil {
 		myType := reflect.TypeOf(val)

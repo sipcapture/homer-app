@@ -192,7 +192,13 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 							} else if formType == "integer" {
 								sql = sql + endEl + fmt.Sprintf("%s%s%d ", key, operator, heputils.CheckIntValue(value))
 							} else {
-								sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
+								if value == "isEmpty" {
+									sql = sql + endEl + fmt.Sprintf("%s%s''", key, operator)
+								} else if value == "isNull" && key == "=" {
+									sql = sql + endEl + fmt.Sprintf("%s is NULL", key)
+								} else {
+									sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
+								}
 							}
 							continue
 						}
@@ -262,7 +268,18 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 				} else if strings.Contains(formValue, ",") || len(valueArray) > 1 {
 					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sIN ('%s')", elemArray[0], elemArray[1], notStr, strings.Join(valueArray[:], "','"))
 				} else {
-					sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+
+					if len(valueArray) == 1 {
+						if valueArray[0] == "isEmpty" {
+							sql = sql + operator + fmt.Sprintf("%s->>'%s' %s ''", elemArray[0], elemArray[1], equalStr)
+						} else if valueArray[0] == "isNull" && equalStr == "=" {
+							sql = sql + operator + fmt.Sprintf("%s->>'%s' is NULL", elemArray[0], elemArray[1])
+						} else {
+							sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+						}
+					} else {
+						sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+					}
 				}
 				continue
 			}

@@ -6,6 +6,8 @@
 [Unit]
 Description=Homer API Server and UI Webapplication
 After=network.target
+#Uncomment it only if you have postgresql on the same host!
+#After=network.target postgresql.service
 
 [Service]
 WorkingDirectory=/usr/local/homer

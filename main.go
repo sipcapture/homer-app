@@ -379,6 +379,40 @@ func configureAsHTTPServer() {
 	/* hide bunner */
 	e.HideBanner = true
 
+	if viper.IsSet("grafana_config.host") {
+		config.Setting.GRAFANA_SETTINGS.URL = viper.GetString("grafana_config.host")
+	}
+
+	if viper.IsSet("grafana_config.path") {
+		config.Setting.GRAFANA_SETTINGS.Path = viper.GetString("grafana_config.path")
+	}
+
+	if viper.IsSet("grafana_config.token") {
+		config.Setting.GRAFANA_SETTINGS.AuthKey = viper.GetString("grafana_config.token")
+	}
+
+	// Reverse Proxy
+	url1, err := url.Parse(config.Setting.GRAFANA_SETTINGS.URL)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
+	/* target grafana */
+	e.Use(GrafanaHeader)
+
+	targets := []*middleware.ProxyTarget{
+		{
+			URL: url1,
+		},
+	}
+
+	e.Group(config.Setting.GRAFANA_SETTINGS.Path, middleware.ProxyWithConfig(middleware.ProxyConfig{
+		Balancer: middleware.NewRoundRobinBalancer(targets),
+		Rewrite: map[string]string{
+			config.Setting.GRAFANA_SETTINGS.Path + "/*": "/$1",
+		},
+	}))
+
 	/* static */
 	rootPath := viper.GetString("http_settings.root")
 	if rootPath == "" {
@@ -1278,6 +1312,16 @@ func initDB() {
 	migration.PopulateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, *appFlags.ForcePopulate, appFlags.TablesPopulate)
 
 	os.Exit(0)
+}
+
+// ServerHeader middleware adds a `Server` header to the response.
+func GrafanaHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		if strings.HasPrefix(c.Request().RequestURI, config.Setting.GRAFANA_SETTINGS.Path) {
+			c.Request().Header.Add("Authorization", "Bearer "+config.Setting.GRAFANA_SETTINGS.AuthKey)
+		}
+		return next(c)
+	}
 }
 
 // make a ping keep alive

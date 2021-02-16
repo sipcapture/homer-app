@@ -20,6 +20,8 @@ func RouteDashboardApis(acc *echo.Group, session *gorm.DB) {
 	acc.GET("/dashboard/store/:dashboardId", dbc.GetDashBoard)
 	// insert new dashboard
 	acc.POST("/dashboard/store/:dashboardId", dbc.InsertDashboard)
+	// insert new dashboard
+	acc.PUT("/dashboard/store/:dashboardId", dbc.InsertDashboard)
 	// delete dashboard
 	acc.DELETE("/dashboard/store/:dashboardId", dbc.DeleteDashboard)
 

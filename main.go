@@ -38,6 +38,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
+
 	_ "github.com/influxdata/influxdb1-client" // this is important because of the bug in go mod
 	client "github.com/influxdata/influxdb1-client/v2"
 	"github.com/jinzhu/gorm"
@@ -125,6 +127,7 @@ type CommandLineFlags struct {
 	LogPathWebApp             *string    `json:"path_log_webapp"`
 	LogName                   *string    `json:"log_name_webapp"`
 	APIPrefix                 *string    `json:"api_prefix"`
+	WatchConfig               *bool      `json:"watch_config"`
 }
 
 //params for  Services
@@ -187,6 +190,7 @@ func initFlags() {
 	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 	appFlags.APIPrefix = flag.String("webapp-api-prefix", "", "API prefix.")
+	appFlags.WatchConfig = flag.Bool("watch-config", false, "Watch the configuration for changes")
 
 	flag.Parse()
 }
@@ -206,25 +210,7 @@ func main() {
 	// read system configurations and expose through viper
 	readConfig()
 
-	logPath := viper.GetString("system_settings.logpath")
-	logName := viper.GetString("system_settings.logname")
-	logLevel := viper.GetString("system_settings.loglevel")
-	logStdout := viper.GetBool("system_settings.logstdout")
-
-	if *appFlags.LogPathWebApp != "" {
-		logPath = *appFlags.LogPathWebApp
-	} else if logPath == "" {
-		logPath = "log"
-	}
-
-	if *appFlags.LogName != "" {
-		logName = *appFlags.LogName
-	} else if logPath == "" {
-		logName = "webapp.log"
-	}
-
-	// initialize logger
-	logger.InitLogger(logPath, logName, logLevel, logStdout)
+	configureLogging()
 
 	/* first check admin flags */
 	checkAdminFlags()
@@ -232,7 +218,7 @@ func main() {
 	/* now check if we do write to config */
 	if *appFlags.SaveHomerDbConfigToConfig {
 		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword,
-			appFlags.DatabaseHomerData, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)	
+			appFlags.DatabaseHomerData, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	} else if *appFlags.SaveHomerDbDataToConfig {
 		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig,
@@ -260,6 +246,43 @@ func main() {
 		os.Exit(0)
 	}
 
+	configureServiceObjects()
+
+	/* force to upgrade */
+	if nameHomerConfig := viper.GetString("database_config.name"); nameHomerConfig != "" {
+		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, true, false)
+	}
+
+	// update version
+	updateVersionApplication(servicesObject.configDBSession)
+
+	// configure to serve WebServices
+	configureAsHTTPServer()
+
+}
+
+func configureLogging() {
+	logPath := viper.GetString("system_settings.logpath")
+	logName := viper.GetString("system_settings.logname")
+	logLevel := viper.GetString("system_settings.loglevel")
+	logStdout := viper.GetBool("system_settings.logstdout")
+
+	if *appFlags.LogPathWebApp != "" {
+		logPath = *appFlags.LogPathWebApp
+	} else if logPath == "" {
+		logPath = "log"
+	}
+
+	if *appFlags.LogName != "" {
+		logName = *appFlags.LogName
+	} else if logPath == "" {
+		logName = "webapp.log"
+	}
+	// initialize logger
+	logger.InitLogger(logPath, logName, logLevel, logStdout)
+}
+
+func configureServiceObjects() {
 	// configure new db session
 	servicesObject.dataDBSession, servicesObject.databaseNodeMap = getDataDBSession()
 	for val := range servicesObject.dataDBSession {
@@ -358,17 +381,6 @@ func main() {
 		heputils.Colorize(heputils.ColorBlue, fmt.Sprintf("\r\nPostgreSQL version: %d.%d\r\n", versionPg/10000, versionPg%10000))
 	}
 
-	/* force to upgrade */
-	if nameHomerConfig := viper.GetString("database_config.name"); nameHomerConfig != "" {
-		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, true, false)
-	}
-
-	// update version
-	updateVersionApplication(servicesObject.configDBSession)
-
-	// configure to serve WebServices
-	configureAsHTTPServer()
-
 }
 
 func configureAsHTTPServer() {
@@ -389,7 +401,7 @@ func configureAsHTTPServer() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
 
-	/* hide bunner */
+	/* hide banner */
 	e.HideBanner = true
 
 	if viper.IsSet("grafana_config.host") {
@@ -518,6 +530,7 @@ func configureAsHTTPServer() {
 		 */
 		e.Logger.Fatal(e.Start(httpURL))
 	}
+
 }
 
 func performV1APIRouting(e *echo.Echo) {
@@ -971,6 +984,14 @@ func readConfig() {
 		fmt.Println("No configuration file loaded: ", err)
 		logrus.Errorln("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
+	}
+	if *appFlags.WatchConfig {
+		viper.OnConfigChange(func(in fsnotify.Event) {
+			configureLogging()
+			configureServiceObjects()
+
+		})
+		viper.WatchConfig()
 	}
 }
 

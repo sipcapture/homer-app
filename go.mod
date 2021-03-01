@@ -3,14 +3,13 @@ module github.com/sipcapture/homer-app
 go 1.13
 
 require (
-	github.com/ClickHouse/clickhouse-go v1.3.14 // indirect
 	github.com/Jeffail/gabs v1.4.0
 	github.com/Jeffail/gabs/v2 v2.2.0
-	github.com/aarzilli/golua v0.0.0-20200214131735-421e0de0aa20 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dlclark/regexp2 v1.2.0 // indirect
 	github.com/dop251/goja v0.0.0-20191203121440-007eef3bc40f
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
+	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/go-resty/resty/v2 v2.3.0

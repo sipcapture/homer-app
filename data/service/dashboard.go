@@ -111,7 +111,7 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 	newDashboard.Data = data
 
 	var userSettings model.TableUserSettings
-	result := us.Session.Table("user_settings").Where("(username != ? AND category = 'dashboard' and param = ? and partid = ?", newDashboard.UserName,
+	result := us.Session.Table("user_settings").Where("(username != ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
 		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
 
 	if result.RowsAffected > 0 {
@@ -150,7 +150,7 @@ func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data j
 
 	var userSettings model.TableUserSettings
 
-	result := us.Session.Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?", newDashboard.UserName,
+	result := us.Session.Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
 		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
 
 	if result.RowsAffected == 0 || userSettings.UserName != username {

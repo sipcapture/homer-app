@@ -23,32 +23,38 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 		Find(&userSettings).Error; err != nil {
 		return "", err
 	}
-	data, _ := json.Marshal(userSettings)
+
 	dashboardElement := model.DashBoardElement{
 		CssClass: "fa",
 		Href:     "",
 		Id:       "",
 		Name:     "undefined",
 		Param:    "",
+		Owner:    "",
 		Shared:   0,
 		Type:     0,
 		Weight:   10,
 	}
-	rows, _ := gabs.ParseJSON(data)
-	dashboardList := []model.DashBoardElement{}
-	count := 0
-	for _, row := range rows.Children() {
-		count++
-		if row.Exists("param") {
-			dashboardElement.Href = row.S("param").Data().(string)
-			dashboardElement.Id = row.S("param").Data().(string)
-		}
-		if row.Exists("data") {
-			dashboardElement.Name = row.S("data", "name").Data().(string)
-			dashboardElement.Weight = row.S("data", "weight").Data().(float64)
 
-			if row.Exists("data", "shared") {
-				if heputils.CheckBoolValue(row.S("data", "shared").Data()) {
+	dashboardList := []model.DashBoardElement{}
+
+	for _, usrS := range userSettings {
+
+		dashboardElement.Owner = usrS.UserName
+		dashboardElement.Href = usrS.Param
+		dashboardElement.Id = usrS.Param
+		dashObject, _ := gabs.ParseJSON(usrS.Data)
+
+		if dashObject.Exists("param") {
+			dashboardElement.Href = dashObject.S("param").Data().(string)
+			dashboardElement.Id = dashObject.S("param").Data().(string)
+		}
+		if dashObject.Exists("data") {
+			dashboardElement.Name = dashObject.S("data", "name").Data().(string)
+			dashboardElement.Weight = dashObject.S("data", "weight").Data().(float64)
+
+			if dashObject.Exists("data", "shared") {
+				if heputils.CheckBoolValue(dashObject.S("data", "shared").Data()) {
 					dashboardElement.Shared = 1
 				} else {
 					dashboardElement.Shared = 0
@@ -63,7 +69,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	})
 
 	reply := gabs.New()
-	reply.Set(count, "total")
+	reply.Set(len(dashboardList), "total")
 	reply.Set(dashboardList, "data")
 	reply.Set("ok", "status")
 	reply.Set("ok", "auth")
@@ -83,6 +89,7 @@ func (us *DashBoardService) GetDashBoard(username, param string) (string, error)
 	data := userSettings.Data
 	reply := gabs.New()
 	reply.Set(1, "total")
+	reply.Set(userSettings.UserName, "owner")
 	reply.Set(data, "data")
 	reply.Set("ok", "status")
 	reply.Set("ok", "auth")
@@ -142,10 +149,11 @@ func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data j
 	newDashboard.Data = data
 
 	var userSettings model.TableUserSettings
+
 	result := us.Session.Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?", newDashboard.UserName,
 		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
 
-	if result.RowsAffected == 0 {
+	if result.RowsAffected == 0 || userSettings.UserName != username {
 		return "", fmt.Errorf("dashboard doesn't exist")
 	}
 

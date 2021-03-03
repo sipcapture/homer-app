@@ -39,6 +39,7 @@ type DashBoardElement struct {
 	CssClass string  `json:"cssclass"`
 	Href     string  `json:"href"`
 	Id       string  `json:"id"`
+	Owner    string  `json:"owner"`
 	Name     string  `json:"name"`
 	Param    string  `json:"param"`
 	Shared   int     `json:"shared"`

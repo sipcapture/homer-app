@@ -21,7 +21,7 @@ func RouteDashboardApis(acc *echo.Group, session *gorm.DB) {
 	// insert new dashboard
 	acc.POST("/dashboard/store/:dashboardId", dbc.InsertDashboard)
 	// insert new dashboard
-	acc.PUT("/dashboard/store/:dashboardId", dbc.InsertDashboard)
+	acc.PUT("/dashboard/store/:dashboardId", dbc.UpdateDashboard)
 	// delete dashboard
 	acc.DELETE("/dashboard/store/:dashboardId", dbc.DeleteDashboard)
 

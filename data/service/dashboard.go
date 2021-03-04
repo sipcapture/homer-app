@@ -70,8 +70,6 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 		} else {
 			logrus.Error("Dashboard has null in the name....")
 		}
-
-		dashboardList = append(dashboardList, dashboardElement)
 	}
 
 	sort.Slice(dashboardList[:], func(i, j int) bool {

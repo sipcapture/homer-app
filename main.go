@@ -667,13 +667,13 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: node, Value: val})
 
 				if keepAlive {
-					go makePingKeepAlive(db, host)
+					go makePingKeepAlive(db, host, "data", node)
 				}
 
 			}
 
 			logrus.Println("----------------------------------- ")
-			logrus.Println("*** Database Config Session created *** ")
+			logrus.Println("*** Database Data Session created *** ")
 			logrus.Println("----------------------------------- ")
 		}
 	} else {
@@ -721,7 +721,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 		dbNodeMap = append(dbNodeMap, model.DatabasesMap{Value: "localnode", Name: "LocalNode"})
 
 		if keepAlive {
-			go makePingKeepAlive(db, host)
+			go makePingKeepAlive(db, host, "data", "localnode")
 		}
 
 		logrus.Println("----------------------------------- ")
@@ -776,7 +776,7 @@ func getConfigDBSession() *gorm.DB {
 	logrus.Println("----------------------------------- ")
 
 	if keepAlive {
-		go makePingKeepAlive(db, host)
+		go makePingKeepAlive(db, host, "config", "localnode")
 	}
 
 	return db
@@ -1359,15 +1359,16 @@ func GrafanaHeader(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 // make a ping keep alive
-func makePingKeepAlive(db *gorm.DB, host string) {
+func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 
 	for {
 
 		pingErr := db.DB().Ping()
 		if pingErr != nil {
-			logrus.Error(fmt.Sprintf("couldn't make ping to [Host: %s]: \n", host), pingErr)
+			logrus.Error(fmt.Sprintf("couldn't make ping to [Host: %s], Type: [%s], Node: [%s]  Error: [%v]",
+				host, typeData, node, pingErr))
 		} else {
-			logrus.Debug("Succesful ping: ", host)
+			logrus.Debug(fmt.Printf("Succesful ping: %s, Type: %s, Node: %s", host, typeData, node))
 		}
 
 		time.Sleep(time.Duration(60) * time.Second)

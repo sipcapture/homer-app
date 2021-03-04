@@ -165,8 +165,8 @@ func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data j
 		return "", fmt.Errorf("dashboard doesn't exist")
 	}
 
-	if err := us.Session.Debug().Table("user_settings").Update(&newDashboard).Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
-		newDashboard.Param, newDashboard.PartId).Error; err != nil {
+	if err := us.Session.Debug().Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
+		newDashboard.Param, newDashboard.PartId).Update(&newDashboard).Error; err != nil {
 		return "", err
 	}
 

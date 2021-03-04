@@ -285,15 +285,17 @@ func configureLogging() {
 func configureServiceObjects() {
 	// configure new db session
 	servicesObject.dataDBSession, servicesObject.databaseNodeMap = getDataDBSession()
-	for val := range servicesObject.dataDBSession {
+	/* for val := range servicesObject.dataDBSession {
 		defer servicesObject.dataDBSession[val].Close()
 	}
+	*/
 
 	// configure new influx db session
 	servicesObject.influxDBSession = getInfluxDBSession()
-	if servicesObject.influxDBSession.Active {
+	/*if servicesObject.influxDBSession.Active {
 		defer servicesObject.influxDBSession.InfluxClient.Close()
 	}
+	*/
 
 	// configure new influx db session
 	servicesObject.servicePrometheus = getPrometheusDBSession()
@@ -614,6 +616,18 @@ func performV1APIRouting(e *echo.Echo) {
 
 }
 
+/* retries */
+func RetryHandler(n int, f func() (bool, error)) error {
+	ok, er := f()
+	if ok && er == nil {
+		return nil
+	}
+	if n-1 > 0 {
+		return RetryHandler(n-1, f)
+	}
+	return er
+}
+
 // getSession creates a new mongo session and panics if connection error occurs
 func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
@@ -652,22 +666,58 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				connectString += fmt.Sprintf(" port=%d", port)
 			}
 
-			db, err := gorm.Open("postgres", connectString)
+			dbA, err := gorm.Open("postgres", connectString)
 
 			if err != nil {
 				logrus.Error(fmt.Sprintf("couldn't make connection to [Host: %s, Node: %s, Port: %d]: \n", host, node, port), err)
 				continue
 			} else {
-				db.DB().SetMaxIdleConns(5)
-				db.DB().SetMaxOpenConns(10)
-				db.DB().SetConnMaxLifetime(5 * time.Minute)
+				dbA.DB().SetMaxIdleConns(5)
+				dbA.DB().SetMaxOpenConns(10)
+				dbA.DB().SetConnMaxLifetime(5 * time.Minute)
 				/* activate logging */
-				db.SetLogger(&logger.GormLogger{})
-				dbMap[val] = db
+				dbA.SetLogger(&logger.GormLogger{})
+				dbMap[val] = dbA
+
 				dbNodeMap = append(dbNodeMap, model.DatabasesMap{Name: node, Value: val})
 
 				if keepAlive {
-					go makePingKeepAlive(db, host, "data", node)
+
+					go makePingKeepAlive(dbA, host, "data", node)
+
+					// auto-connect，ping per 60s, re-connect on fail or error with intervels 3s, 3s, 15s, 30s, 60s, 60s ...
+					/* go func(dbConfig string, db *gorm.DB) {
+						var intervals = []time.Duration{3 * time.Second, 3 * time.Second, 15 * time.Second, 30 * time.Second, 60 * time.Second}
+						for {
+							time.Sleep(60 * time.Second)
+							if e := db.DB().Ping(); e != nil {
+								logrus.Error(fmt.Sprintf("couldn't make ping to [Connect: %s]  Error: [%v]", dbConfig, e))
+							L:
+								for i := 0; i < len(intervals); i++ {
+									e2 := RetryHandler(3, func() (bool, error) {
+										var e error
+										db, e = gorm.Open("postgres", dbConfig)
+										if e != nil {
+											logrus.Error(fmt.Sprintf("couldn't make connect to [Connect: %s]  Error: [%v]", dbConfig, e))
+											return false, e
+										}
+										return true, nil
+									})
+									if e2 != nil {
+										fmt.Println(e.Error())
+										time.Sleep(intervals[i])
+										if i == len(intervals)-1 {
+											i--
+										}
+										continue
+									}
+									break L
+								}
+
+							}
+						}
+					}(connectString, dbA)
+					*/
 				}
 
 			}

@@ -10,6 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sirupsen/logrus"
 )
 
 type DashBoardService struct {
@@ -24,43 +25,52 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 		return "", err
 	}
 
-	dashboardElement := model.DashBoardElement{
-		CssClass: "fa",
-		Href:     "",
-		Id:       "",
-		Name:     "undefined",
-		Param:    "",
-		Owner:    "",
-		Shared:   0,
-		Type:     0,
-		Weight:   10,
-	}
-
 	dashboardList := []model.DashBoardElement{}
 
 	for _, usrS := range userSettings {
+
+		dashboardElement := model.DashBoardElement{
+			CssClass: "fa",
+			Href:     "",
+			Id:       "",
+			Name:     "undefined",
+			Param:    "",
+			Owner:    "",
+			Shared:   0,
+			Type:     0,
+			Weight:   10,
+		}
 
 		dashboardElement.Owner = usrS.UserName
 		dashboardElement.Href = usrS.Param
 		dashboardElement.Id = usrS.Param
 		dashObject, _ := gabs.ParseJSON(usrS.Data)
 
-		if dashObject.Exists("param") {
-			dashboardElement.Href = dashObject.S("param").Data().(string)
-			dashboardElement.Id = dashObject.S("param").Data().(string)
-		}
-		if dashObject.Exists("data") {
-			dashboardElement.Name = dashObject.S("data", "name").Data().(string)
-			dashboardElement.Weight = dashObject.S("data", "weight").Data().(float64)
+		if dashObject.S("name") != nil && dashObject.S("name").Data() != nil {
+			dashboardElement.Name = dashObject.S("name").Data().(string)
+			dashboardElement.Weight = dashObject.S("weight").Data().(float64)
 
-			if dashObject.Exists("data", "shared") {
+			if dashObject.S("param") != nil && dashObject.S("param").Data() != nil {
+				dashboardElement.Param = dashObject.S("param").Data().(string)
+			}
+
+			if dashObject.S("type") != nil && dashObject.S("type").Data() != nil {
+				dashboardElement.Type = heputils.CheckIntValue(dashObject.S("type").Data().(float64))
+			}
+
+			if dashObject.S("shared") != nil && dashObject.S("shared").Data() != nil {
 				if heputils.CheckBoolValue(dashObject.S("data", "shared").Data()) {
 					dashboardElement.Shared = 1
 				} else {
 					dashboardElement.Shared = 0
 				}
 			}
+
+			dashboardList = append(dashboardList, dashboardElement)
+		} else {
+			logrus.Error("Dashboard has null in the name....")
 		}
+
 		dashboardList = append(dashboardList, dashboardElement)
 	}
 

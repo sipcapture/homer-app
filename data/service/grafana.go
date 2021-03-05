@@ -87,7 +87,7 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 		req.SetBasicAuth(ps.User, ps.Password)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+ps.Token+"=")
+	req.Header.Add("Authorization", "Bearer "+ps.Token)
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
@@ -129,7 +129,7 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 		req.SetBasicAuth(ps.User, ps.Password)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+ps.Token+"=")
+	req.Header.Add("Authorization", "Bearer "+ps.Token)
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
@@ -171,7 +171,7 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 		req.SetBasicAuth(ps.User, ps.Password)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+ps.Token+"=")
+	req.Header.Add("Authorization", "Bearer "+ps.Token)
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
@@ -213,7 +213,7 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 		req.SetBasicAuth(ps.User, ps.Password)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+ps.Token+"=")
+	req.Header.Add("Authorization", "Bearer "+ps.Token)
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {

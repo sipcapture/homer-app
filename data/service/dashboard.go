@@ -20,9 +20,26 @@ type DashBoardService struct {
 // this method gets all users from database
 func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) {
 	var userSettings []*model.TableUserSettings
-	if err := us.Session.Table("user_settings").Where("category = 'dashboard' AND (username = ? OR (data ->> 'shared' = 'true' OR data ->> 'shared' = '1'))", username).
+
+	var count int
+	if err := us.Session.Debug().Table("user_settings").Where("category = 'dashboard' AND (username = ? and param = ?)", username, "home").
+		Find(&userSettings).Count(&count).Error; err != nil {
+		return "", err
+	}
+
+	if len(userSettings) == 0 || count == 0 {
+		logrus.Error("no home dashboard ..")
+		return "", fmt.Errorf("no home dashboard here")
+	}
+
+	if err := us.Session.Debug().Table("user_settings").Where("category = 'dashboard' AND (username = ? OR (data ->> 'shared' = 'true' OR data ->> 'shared' = '1'))", username).
 		Find(&userSettings).Error; err != nil {
 		return "", err
+	}
+
+	if len(userSettings) == 0 {
+		logrus.Error("no dashboard at all....")
+		return "", fmt.Errorf("no dashboard here")
 	}
 
 	dashboardList := []model.DashBoardElement{}
@@ -119,11 +136,15 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 	newDashboard.Data = data
 
 	var userSettings model.TableUserSettings
-	result := us.Session.Table("user_settings").Where("(username != ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
-		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
 
-	if result.RowsAffected > 0 {
-		return "", fmt.Errorf("this is not my dashboard")
+	if dashboardId != "home" {
+		result := us.Session.Table("user_settings").Where("(username != ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,
+			newDashboard.Param, newDashboard.PartId).Find(&userSettings)
+
+		if result.RowsAffected > 0 {
+			return "", fmt.Errorf("this is not my dashboard")
+		}
+
 	}
 
 	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard' and param = ? and partid = ? ", newDashboard.UserName, newDashboard.Param, newDashboard.PartId).
@@ -141,6 +162,26 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 	reply.Set("ok", "auth")
 
 	return reply.String(), nil
+}
+
+// this method gets all users from database
+func (us *DashBoardService) InsertDashboardHome(username string, data json.RawMessage) (string, error) {
+
+	newDashboard := model.TableUserSettings{}
+	u2 := uuid.NewV4()
+	newDashboard.GUID = u2.String()
+	newDashboard.Param = "home"
+	newDashboard.PartId = 10
+	newDashboard.UserName = username
+	newDashboard.Category = "dashboard"
+	newDashboard.CreateDate = time.Now()
+	newDashboard.Data = data
+
+	if err := us.Session.Debug().Table("user_settings").Save(&newDashboard).Error; err != nil {
+		return "", err
+	}
+
+	return "done", nil
 }
 
 // this method gets all users from database
@@ -162,7 +203,7 @@ func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data j
 		newDashboard.Param, newDashboard.PartId).Find(&userSettings)
 
 	if result.RowsAffected == 0 || userSettings.UserName != username {
-		return "", fmt.Errorf("dashboard doesn't exist")
+		return "not my dashboard", nil
 	}
 
 	if err := us.Session.Debug().Table("user_settings").Where("(username = ? AND category = 'dashboard' and param = ? and partid = ?)", newDashboard.UserName,

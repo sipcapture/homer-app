@@ -44,7 +44,7 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 	username := cc.UserName
 	reply, err := dbc.DashBoardService.GetDashBoardsLists(username)
 	if err != nil {
-		dbc.DashBoardService.InsertDashboard(username, "home", jsonschema.DashboardHome)
+		dbc.DashBoardService.InsertDashboardHome(username, jsonschema.DashboardHome)
 		reply, err = dbc.DashBoardService.GetDashBoardsLists(username)
 		if err != nil {
 			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
@@ -92,7 +92,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardID)
 	if err != nil {
 		if dashboardID == "home" {
-			_, err := dbc.DashBoardService.InsertDashboard(username, dashboardID, jsonschema.DashboardHome)
+			_, err := dbc.DashBoardService.InsertDashboardHome(username, jsonschema.DashboardHome)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}

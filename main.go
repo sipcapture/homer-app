@@ -1418,7 +1418,7 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 			logrus.Error(fmt.Sprintf("couldn't make ping to [Host: %s], Type: [%s], Node: [%s]  Error: [%v]",
 				host, typeData, node, pingErr))
 		} else {
-			logrus.Debug(fmt.Printf("Succesful ping: %s, Type: %s, Node: %s", host, typeData, node))
+			logrus.Debug(fmt.Printf("Successful ping: %s, Type: %s, Node: %s", host, typeData, node))
 		}
 
 		time.Sleep(time.Duration(60) * time.Second)

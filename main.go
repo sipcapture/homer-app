@@ -311,6 +311,18 @@ func configureServiceObjects() {
 	config.Setting.IsolateGroup = viper.GetString("group_settings.isolate_group")
 
 	/***********************************/
+	if viper.IsSet("transaction_settings.deduplicate") {
+
+		if viper.IsSet("transaction_settings.deduplicate.model") {
+			config.Setting.TRANSACTION_SETTINGS.DedupModel = viper.GetString("transaction_settings.deduplicate.model")
+		}
+
+		if viper.IsSet("transaction_settings.deduplicate.global") {
+			config.Setting.TRANSACTION_SETTINGS.GlobalDeduplicate = viper.GetBool("transaction_settings.deduplicate.global")
+		}
+	}
+
+	/***********************************/
 
 	authType = viper.GetString("auth_settings.type")
 	/* check the auth type */

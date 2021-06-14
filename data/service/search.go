@@ -969,7 +969,26 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 			list = append(list, entry)
 		}
 	}
-	return list
+
+	if config.Setting.TRANSACTION_SETTINGS.GlobalDeduplicate {
+
+		logrus.Debug("Transaction size after first filter:", len(list))
+		keys2 := make(map[string]string)
+		list2 := []model.HepTable{}
+		for _, entry := range list {
+			var protocolHeader map[string]interface{}
+			json.Unmarshal(entry.ProtocolHeader, &protocolHeader)
+			dataKey := entry.Raw
+			if value, exists := keys2[dataKey]; value == protocolHeader["captureId"].(string) || !exists {
+				keys2[dataKey] = protocolHeader["captureId"].(string)
+				list2 = append(list2, entry)
+			}
+		}
+		logrus.Debug("Transaction size after second filter:", len(list2))
+		return list2
+	} else {
+		return list
+	}
 }
 
 // this method create new user in the database

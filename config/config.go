@@ -14,4 +14,9 @@ type HomerSettingServer struct {
 		Path     string `default:"/grafana"`
 		Enable   bool   `default:"false"`
 	}
+
+	TRANSACTION_SETTINGS struct {
+		DedupModel        string `default:"message-ip-pair"`
+		GlobalDeduplicate bool   `default:"false"`
+	}
 }

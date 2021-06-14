@@ -321,33 +321,85 @@ func configureServiceObjects() {
 	/* Check LDAP here */
 	switch authType {
 	case "ldap":
-		logrus.Println("Ldap implementation here")
+
+		defaults.SetDefaults(&ldapClient) //<-- This set the defaults values
+
 		ldapClient.Base = viper.GetString("ldap_config.base")
 		ldapClient.Host = viper.GetString("ldap_config.host")
 		ldapClient.Port = viper.GetInt("ldap_config.port")
-		ldapClient.UseSSL = viper.GetBool("ldap_config.usessl")
-		ldapClient.Anonymous = viper.GetBool("ldap_config.anonymous")
-		ldapClient.UserDN = viper.GetString("ldap_config.userdn")
-		ldapClient.BindDN = viper.GetString("ldap_config.binddn")
-		ldapClient.BindPassword = viper.GetString("ldap_config.bindpassword")
-		ldapClient.UserFilter = viper.GetString("ldap_config.userfilter")
-		ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
-		ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
-		ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
-		ldapClient.UserGroup = viper.GetString("ldap_config.usergroup")
-		ldapClient.UserMode = viper.GetBool("ldap_config.usermode")
-		ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
 
-		if viper.IsSet("ldap_config.UseDNForGroupSearch") {
-			ldapClient.UseDNForGroupSearch = viper.GetBool("ldap_config.UseDNForGroupSearch")
-		} else {
-			ldapClient.UseDNForGroupSearch = false
+		if viper.IsSet("ldap_config.userdn") {
+			ldapClient.UserDN = viper.GetString("ldap_config.userdn")
 		}
 
-		if viper.IsSet("ldap_config.groupattribute") {
-			ldapClient.GroupAttribute = viper.GetString("ldap_config.groupattribute")
-		} else {
-			ldapClient.GroupAttribute = "cn"
+		if viper.IsSet("ldap_config.usessl") {
+			ldapClient.UseSSL = viper.GetBool("ldap_config.usessl")
+		}
+
+		if viper.IsSet("ldap_config.deref") {
+			ldapClient.DerefName = viper.GetString("ldap_config.deref")
+			/* lets fix it */
+			if ldapClient.DerefName != "" {
+				for index, x := range ldap.DerefMap {
+					if x == ldapClient.DerefName {
+						ldapClient.DerefValue = index
+						break
+					}
+				}
+			}
+		}
+
+		if viper.IsSet("ldap_config.scope") {
+			ldapClient.ScopeName = viper.GetString("ldap_config.scope")
+			/* lets fix it */
+			if ldapClient.ScopeName != "" {
+				for index, x := range ldap.ScopeMap {
+					if x == ldapClient.ScopeName {
+						ldapClient.ScopeValue = index
+						break
+					}
+				}
+			}
+		}
+
+		if viper.IsSet("ldap_config.anonymous") {
+			ldapClient.Anonymous = viper.GetBool("ldap_config.anonymous")
+		}
+		if viper.IsSet("ldap_config.binddn") {
+			ldapClient.BindDN = viper.GetString("ldap_config.binddn")
+		}
+		if viper.IsSet("ldap_config.bindpassword") {
+			ldapClient.BindPassword = viper.GetString("ldap_config.bindpassword")
+		}
+		if viper.IsSet("ldap_config.userfilter") {
+			ldapClient.UserFilter = viper.GetString("ldap_config.userfilter")
+		}
+		if viper.IsSet("ldap_config.groupfilter") {
+			ldapClient.GroupFilter = viper.GetString("ldap_config.groupfilter")
+		}
+		if viper.IsSet("ldap_config.attributes") {
+			ldapClient.Attributes = viper.GetStringSlice("ldap_config.attributes")
+		}
+		if viper.IsSet("ldap_config.group_attributes") {
+			ldapClient.GroupAttribute = viper.GetStringSlice("ldap_config.group_attributes")
+		}
+		if viper.IsSet("ldap_config.admingroup") {
+			ldapClient.AdminGroup = viper.GetString("ldap_config.admingroup")
+		}
+		if viper.IsSet("ldap_config.usergroup") {
+			ldapClient.UserGroup = viper.GetString("ldap_config.usergroup")
+		}
+		if viper.IsSet("ldap_config.usermode") {
+			ldapClient.UserMode = viper.GetBool("ldap_config.usermode")
+		}
+		if viper.IsSet("ldap_config.adminmode") {
+			ldapClient.AdminMode = viper.GetBool("ldap_config.adminmode")
+		}
+		if viper.IsSet("ldap_config.searchlimit") {
+			ldapClient.SearchLimit = viper.GetInt("ldap_config.searchlimit")
+		}
+		if viper.IsSet("ldap_config.grouplimit") {
+			ldapClient.GroupLimit = viper.GetInt("ldap_config.grouplimit")
 		}
 
 		if viper.IsSet("ldap_config.skiptls") {
@@ -363,7 +415,27 @@ func configureServiceObjects() {
 		} else {
 			ldapClient.InsecureSkipVerify = true
 		}
+
+		if viper.IsSet("ldap_config.short_group") {
+			ldapClient.ShortGroup = viper.GetBool("ldap_config.short_group")
+		}
+
+		if viper.IsSet("ldap_config.short_dn_group") {
+			ldapClient.ShortDNForGroup = viper.GetBool("ldap_config.short_dn_group")
+		}
+
+		if viper.IsSet("ldap_config.nested_group") {
+			ldapClient.NestedGroup = viper.GetBool("ldap_config.nested_group")
+		}
+
+		if viper.IsSet("ldap_config.UseDNForGroupSearch") {
+			ldapClient.UseDNForGroupSearch = viper.GetBool("ldap_config.UseDNForGroupSearch")
+		} else {
+			ldapClient.UseDNForGroupSearch = true
+		}
+
 		defer ldapClient.Close()
+
 	case "http_auth":
 		httpAuth.URL = viper.GetString("http_auth.url")
 		httpAuth.InsecureSkipVerify = viper.GetBool("skipverify")

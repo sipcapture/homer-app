@@ -3,6 +3,7 @@ package controllerv1
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"strconv"
 	"time"
@@ -59,8 +60,16 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	aliasRowData, _ := sc.AliasService.GetAllActive()
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
-		Port := strconv.Itoa(*row.Port)
-		aliasData[row.IP+":"+Port] = row.Alias
+		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
+
+		ip, ipnet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			return err
+		}
+
+		for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+			aliasData[ip.String()+":"+Port] = row.Alias
+		}
 	}
 	userGroup := auth.GetUserGroup(c)
 
@@ -69,6 +78,15 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		logrus.Println(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+func inc(ip net.IP) {
+	for j := len(ip) - 1; j >= 0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
+			break
+		}
+	}
 }
 
 // swagger:operation POST /search/call/message search searchGetMessageById
@@ -189,8 +207,16 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
-		Port := strconv.Itoa(*row.Port)
-		aliasData[row.IP+":"+Port] = row.Alias
+		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
+
+		ip, ipnet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			return err
+		}
+
+		for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+			aliasData[ip.String()+":"+Port] = row.Alias
+		}
 	}
 
 	searchTable := "hep_proto_1_default'"

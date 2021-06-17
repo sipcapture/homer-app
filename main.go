@@ -218,10 +218,10 @@ func main() {
 	/* now check if we do write to config */
 	if *appFlags.SaveHomerDbConfigToConfig {
 		applyDBConfigParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword,
-			appFlags.DatabaseHomerData, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)
+			appFlags.DatabaseHomerConfig, appFlags.DatabaseHost, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	} else if *appFlags.SaveHomerDbDataToConfig {
-		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerConfig,
+		applyDBDataParamToConfig(appFlags.DatabaseHomerUser, appFlags.DatabaseHomerPassword, appFlags.DatabaseHomerData,
 			appFlags.DatabaseHost, appFlags.DatabaseHomerNode, appFlags.DatabaseSSLMode)
 		os.Exit(0)
 	}

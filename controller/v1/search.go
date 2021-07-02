@@ -61,7 +61,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
 		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
-
+		Port := strconv.Itoa(*row.Port)
 		ip, ipnet, err := net.ParseCIDR(cidr)
 		if err != nil {
 			return err
@@ -208,7 +208,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 	aliasData := make(map[string]string)
 	for _, row := range aliasRowData {
 		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
-
+		Port := strconv.Itoa(*row.Port)
 		ip, ipnet, err := net.ParseCIDR(cidr)
 		if err != nil {
 			return err

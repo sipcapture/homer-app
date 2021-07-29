@@ -1047,6 +1047,10 @@ func getRemoteDBSession() service.ServiceLoki {
 
 	user := viper.GetString("loki_config.user")
 	password := viper.GetString("loki_config.pass")
+	if viper.IsSet("loki_config.password") {
+		password = viper.GetString("loki_config.password")
+	}
+
 	host := viper.GetString("loki_config.host")
 	api := viper.GetString("loki_config.api")
 	paramQuery := viper.GetString("loki_config.param_query")

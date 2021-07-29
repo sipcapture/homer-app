@@ -25,7 +25,8 @@ type RemoteService struct {
 // Greet : describe what this function does
 // RemoteLabels : describe what this function does
 type RemoteLabels struct {
-	Values []string `json:"values"`
+	Success string   `json:"success"`
+	Values  []string `json:"data"`
 }
 
 // swagger:model LabelData

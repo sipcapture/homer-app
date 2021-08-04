@@ -23,6 +23,7 @@ import (
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger/function"
+	"github.com/sipcapture/homer-app/utils/sipparser"
 	"github.com/sirupsen/logrus"
 )
 
@@ -1161,10 +1162,23 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		if dataElement.Exists("sid") {
 			callElement.Sid = dataElement.S("sid").Data().(string)
 		}
+
 		if dataElement.Exists("raw") {
+
 			callElement.RuriUser = dataElement.S("raw").Data().(string)
-			if len(callElement.RuriUser) > 50 {
-				callElement.RuriUser = callElement.RuriUser[:50]
+			callElement.RuriUser = callElement.RuriUser[:50]
+
+			if dataElement.Exists("payloadType") && dataElement.S("payloadType").Data().(float64) == 1 {
+
+				str := dataElement.S("raw").Data().(string)
+				sip := sipparser.ParseMsg(str)
+
+				if !dataElement.Exists("from_domain") && sip.FromHost != "" {
+					dataElement.Set(sip.FromHost, "from_domain")
+				}
+				if !dataElement.Exists("to_domain") && sip.ToHost != "" {
+					dataElement.Set(sip.FromHost, "to_domain")
+				}
 			}
 		}
 

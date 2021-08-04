@@ -12,48 +12,6 @@ import (
 	"strings"
 )
 
-const (
-	// SIP request or response
-	SIP_REQUEST  = "REQUEST"
-	SIP_RESPONSE = "RESPONSE"
-	// SIP Methods
-	SIP_METHOD_INVITE    = "INVITE"
-	SIP_METHOD_ACK       = "ACK"
-	SIP_METHOD_OPTIONS   = "OPTIONS"
-	SIP_METHOD_BYE       = "BYE"
-	SIP_METHOD_CANCEL    = "CANCEL"
-	SIP_METHOD_REGISTER  = "REGISTER"
-	SIP_METHOD_INFO      = "INFO"
-	SIP_METHOD_PRACK     = "PRACK"
-	SIP_METHOD_SUBSCRIBE = "SUBSCRIBE"
-	SIP_METHOD_NOTIFY    = "NOTIFY"
-	SIP_METHOD_UPDATE    = "UPDATE"
-	SIP_METHOD_MESSAGE   = "MESSAGE"
-	SIP_METHOD_REFER     = "REFER"
-	SIP_METHOD_PUBLISH   = "PUBLISH"
-	// SIP Headers
-	SIP_HDR_CALL_ID              = "call-id"
-	SIP_HDR_CALL_ID_CMP          = "i"
-	SIP_HDR_CONTACT              = "contact"
-	SIP_HDR_CONTACT_CMP          = "m"
-	SIP_HDR_CONTENT_DISPOSITION  = "content-disposition"
-	SIP_HDR_CONTENT_ENCODING     = "content-encoding"
-	SIP_HDR_CONTENT_ENCODING_CMP = "e"
-	SIP_HDR_CONTENT_LANGUAGE     = "content-language"
-	SIP_HDR_CONTENT_LENGTH       = "content-length"
-	SIP_HDR_CONTENT_LENGTH_CMP   = "l"
-	SIP_HDR_CONTENT_TYPE         = "content-type"
-	SIP_HDR_CONTENT_TYPE_CMP     = "c"
-	SIP_HDR_CSEQ                 = "cseq"
-	SIP_HDR_FROM                 = "from"
-	SIP_HDR_FROM_CMP             = "f"
-	SIP_HDR_TO                   = "to"         // RFC3261
-	SIP_HDR_TO_CMP               = "t"          // RFC3261
-	SIP_HDR_USER_AGENT           = "user-agent" // RFC3261
-	SIP_HDR_X_RTP_STAT           = "x-rtp-stat"
-	SIP_HDR_X_RTP_STAT_ADD       = "x-rtp-stat-add"
-)
-
 /*
 var (
 	SIP_METHODS = []string{
@@ -78,15 +36,15 @@ var (
 type parseStartLineStateFn func(s *StartLine) parseStartLineStateFn
 
 type StartLine struct {
-	Error    error
-	Val      string
-	Type     string
-	Method   string
-	URI      *URI
-	Resp     string
-	RespText string
-	Proto    string
-	Version  string
+	Error    error  //internal error condition
+	Val      string //StartLine as a String
+	Type     string //one of SIP_REQUEST or SIP_RESPONSE
+	Method   string //INV, ACK, BYE etc
+	URI      *URI   //Request URI; sip:alice@chicago.com
+	Resp     string //Response code: e.g. 200, 400
+	RespText string //Response String e.g. "Trying"
+	Proto    string //e.g. "SIP" in the string "SIP/2.0"
+	Version  string //e.g. "2.0" in the string "SIP/2.0"
 }
 
 func (s *StartLine) run() {

@@ -43,23 +43,25 @@ type SipMsg struct {
 	State            string
 	Error            error
 	Msg              string
+	CallingParty     *CallingPartyInfo
 	Body             string
+	Authorization    *Authorization
 	AuthVal          string
 	AuthUser         string
 	ContentLength    string
 	ContentType      string
-	From             string
+	From             *From
 	FromUser         string
 	FromHost         string
 	FromTag          string
 	MaxForwards      string
 	Organization     string
-	To               string
+	To               *From
 	ToUser           string
 	ToHost           string
 	ToTag            string
 	Expires          string
-	Contact          string
+	Contact          *From
 	ContactVal       string
 	ContactUser      string
 	ContactHost      string
@@ -69,7 +71,7 @@ type SipMsg struct {
 	XHeader          []string
 	CHeader          []string
 	CustomHeader     map[string]string
-	Cseq             string
+	Cseq             *Cseq
 	CseqMethod       string
 	CseqVal          string
 	ReasonVal        string
@@ -79,9 +81,11 @@ type SipMsg struct {
 	Privacy          string
 	RemotePartyIdVal string
 	DiversionVal     string
+	RemotePartyId    *RemotePartyId
 	PAssertedIdVal   string
 	PaiUser          string
 	PaiHost          string
+	PAssertedId      *PAssertedId
 	UserAgent        string
 	Server           string
 	URIHost          string
@@ -89,11 +93,12 @@ type SipMsg struct {
 	URIUser          string
 	FirstMethod      string
 	FirstResp        string
-	Type             string
 	FirstRespText    string
+	Profile          string
 	eof              int
 	hdr              string
 	hdrv             string
+	//Reason           *Reason
 	//Via                []*Via
 	//StartLine          *StartLine
 	//Headers            []*Header
@@ -162,22 +167,34 @@ func (s *SipMsg) addHdr(str string) {
 			s.parseFrom(s.hdrv)
 		case s.hdr == "T" || s.hdr == "t":
 			s.parseTo(s.hdrv)
+		case s.hdr == "M" || s.hdr == "m":
+			s.ContactVal = s.hdrv
+			s.parseContact(str)
+		case s.hdr == "V" || s.hdr == "v":
+			s.parseVia(s.hdrv)
 		case s.hdr == "C" || s.hdr == "c":
 			s.ContentType = s.hdrv
 		case s.hdr == "L" || s.hdr == "l":
 			s.ContentLength = s.hdrv
+		case s.hdr == "u":
 		}
 	} else if len(s.hdr) == 2 {
 		// To header
 		s.parseTo(s.hdrv)
 	} else {
 		switch {
+		case s.hdr == "Via" || s.hdr == "VIA" || s.hdr == "via":
+			s.parseVia(s.hdrv)
 		case s.hdr == "From" || s.hdr == "FROM" || s.hdr == "from":
 			s.parseFrom(s.hdrv)
 		case s.hdr == "Call-ID" || s.hdr == "CALL-ID" || s.hdr == "Call-Id" || s.hdr == "Call-id" || s.hdr == "call-id":
 			s.CallID = s.hdrv
 		case s.hdr == "CSeq" || s.hdr == "CSEQ" || s.hdr == "Cseq" || s.hdr == "cseq":
 			s.CseqVal = s.hdrv
+			s.parseCseq(s.hdrv)
+		case s.hdr == "Contact" || s.hdr == "CONTACT" || s.hdr == "contact":
+			s.ContactVal = s.hdrv
+			s.parseContact(str)
 		case s.hdr == "User-Agent" || s.hdr == "USER-AGENT" || s.hdr == "user-agent":
 			s.UserAgent = s.hdrv
 		case s.hdr == "Server" || s.hdr == "server":
@@ -186,8 +203,53 @@ func (s *SipMsg) addHdr(str string) {
 			s.ContentType = s.hdrv
 		case s.hdr == "Content-Length" || s.hdr == "CONTENT-LENGTH" || s.hdr == "content-length":
 			s.ContentLength = s.hdrv
+		case s.hdr == "Accept" || s.hdr == "Accept-Encoding" || s.hdr == "Accept-Language":
+			//s.parseAccept(s.hdrv)
+		case s.hdr == "Allow":
+			//s.parseAllow(s.hdrv)
+		case s.hdr == "Allow‑Events":
+			//s.parseAllowEvents(s.hdrv)
+		case s.hdr == "Authorization" || s.hdr == "authorization" || s.hdr == "Proxy-Authorization" || s.hdr == "proxy-authorization":
+			s.parseAuthorization(s.hdrv)
+		case s.hdr == "Content-Disposition":
+			//s.parseContentDisposition(s.hdrv)
+		case s.hdr == "Route":
+			//s.parseRoute(s.hdrv)
+		case s.hdr == "Record-Route":
+			//s.parseRecordRoute(s.hdrv)
+		case s.hdr == "Max-Forwards" || s.hdr == "MAX-FORWARDS" || s.hdr == "max-forwards":
+			s.MaxForwards = s.hdrv
+		case s.hdr == "Organization" || s.hdr == "organization":
+			s.Organization = s.hdrv
+		case s.hdr == "P-Asserted-Identity" || s.hdr == "p-asserted-identity":
+			s.PAssertedIdVal = s.hdrv
+			s.parsePAssertedId(s.hdrv)
+		case s.hdr == "Proxy-Authenticate" || s.hdr == "proxy-authenticate":
+			//s.parseProxyAuthenticate(s.hdrv)
+		case s.hdr == "RAck":
+			//s.parseRack(s.hdrv)
+		case s.hdr == "Reason" || s.hdr == "reason":
+			s.ReasonVal = s.hdrv
+			//s.parseReason(s.hdrv)
+		case s.hdr == "Remote-Party-Id" || s.hdr == "remote-party-id":
+			s.RemotePartyIdVal = s.hdrv
+		case s.hdr == "Diversion" || s.hdr == "diversion":
+			s.DiversionVal = s.hdrv
+		case s.hdr == "Supported":
+			//s.parseSupported(s.hdrv)
+		case s.hdr == "Unsupported":
+			//s.parseUnsupported(s.hdrv)
+		case s.hdr == "Warning":
+			//s.parseWarning(s.hdrv)
+		case s.hdr == "WWW-Authenticate":
+			//s.parseWWWAuthenticate(s.hdrv)
+		case s.hdr == "Privacy" || s.hdr == "privacy":
+			s.Privacy = s.hdrv
 		case s.hdr == "X-RTP-Stat":
 			s.parseRTPStat(s.hdrv)
+		case s.hdr == "Expires":
+			s.Expires = s.hdrv
+		default:
 		}
 	}
 }
@@ -206,6 +268,71 @@ func GetSIPHeaderVal(header string, data string) (val string) {
 		}
 	}
 	return ""
+}
+
+func (s *SipMsg) GetCallingParty(str string) error {
+	switch {
+	case str == CALLING_PARTY_RPID:
+		return s.getCallingPartyRpid()
+	case str == CALLING_PARTY_PAID:
+		return s.getCallingPartyPaid()
+	}
+	return s.getCallingPartyDefault()
+}
+
+func (s *SipMsg) getCallingPartyDefault() error {
+	if s.From == nil {
+		return errors.New("getCallingPartyDefault err: no from header found")
+	}
+	if s.From.URI == nil {
+		return errors.New("getCallingPartyDefault err: no uri found in from header")
+	}
+	s.CallingParty = &CallingPartyInfo{Name: s.From.Name, Number: s.From.URI.User}
+	return nil
+}
+
+func (s *SipMsg) getCallingPartyPaid() error {
+	if s.PAssertedId == nil {
+		if s.PAssertedIdVal == "" {
+			return s.getCallingPartyDefault()
+		}
+		s.parsePAssertedId(s.PAssertedIdVal)
+		if s.Error != nil {
+			return s.Error
+		}
+		if s.PAssertedId.URI == nil {
+			return errors.New("getCallingPartyPaid err: p-asserted-id uri is nil")
+		}
+		s.CallingParty = &CallingPartyInfo{Name: s.PAssertedId.Name, Number: s.PAssertedId.URI.User}
+		return nil
+	}
+	if s.PAssertedId.URI == nil {
+		return errors.New("getCallingPartyPaid err: p-asserted-id uri is nil")
+	}
+	s.CallingParty = &CallingPartyInfo{Name: s.PAssertedId.Name, Number: s.PAssertedId.URI.User}
+	return nil
+}
+
+func (s *SipMsg) getCallingPartyRpid() error {
+	if s.RemotePartyId == nil {
+		if s.RemotePartyIdVal == "" {
+			return s.getCallingPartyDefault()
+		}
+		s.parseRemotePartyId(s.RemotePartyIdVal)
+		if s.Error != nil {
+			return s.Error
+		}
+		if s.RemotePartyId.URI == nil {
+			return errors.New("getCallingPartyRpid err: remote party id uri is nil")
+		}
+		s.CallingParty = &CallingPartyInfo{Name: s.RemotePartyId.Name, Number: s.RemotePartyId.URI.User}
+		return nil
+	}
+	if s.RemotePartyId.URI == nil {
+		return errors.New("getCallingPartyRpid err: remote party id uri is nil")
+	}
+	s.CallingParty = &CallingPartyInfo{Name: s.RemotePartyId.Name, Number: s.RemotePartyId.URI.User}
+	return nil
 }
 
 /* func (s *SipMsg) parseAccept(str string) {
@@ -227,22 +354,69 @@ func GetSIPHeaderVal(header string, data string) (val string) {
 	}
 } */
 
+func (s *SipMsg) parseAuthorization(str string) {
+	s.Authorization = &Authorization{Val: str}
+	if s.Error = s.Authorization.parse(); s.Error == nil {
+		s.AuthUser = s.Authorization.Username
+		s.AuthVal = s.Authorization.Val
+	}
+}
+
+func (s *SipMsg) parseContact(str string) {
+	s.Contact = getFrom(str)
+	if s.Contact.Error == nil {
+		s.ContactUser = s.Contact.URI.User
+		s.ContactHost = s.Contact.URI.Host
+		s.ContactPort = s.Contact.URI.PortInt
+	} else {
+		s.Error = s.Contact.Error
+	}
+}
+
+func (s *SipMsg) ParseContact(str string) {
+	s.parseContact(str)
+}
+
 /* func (s *SipMsg) parseContentDisposition(str string) {
 	s.ContentDisposition = &ContentDisposition{Val: str}
 	s.ContentDisposition.parse()
 } */
 
+func (s *SipMsg) parseCseq(str string) {
+	s.Cseq = &Cseq{Val: str}
+	if s.Error = s.Cseq.parse(); s.Error == nil {
+		s.CseqMethod = s.Cseq.Method
+	}
+}
+
 func (s *SipMsg) parseFrom(str string) {
-	s.From = str
-	/*
-		if s.From.Error == nil {
-			s.FromUser = s.From.URI.User
-			s.FromHost = s.From.URI.Host
-			s.FromTag = s.From.Tag
-		} else {
-			s.Error = s.From.Error
+	s.From = getFrom(str)
+	if s.From.Error == nil {
+		s.FromUser = s.From.URI.User
+		s.FromHost = s.From.URI.Host
+		s.FromTag = s.From.Tag
+	} else {
+		s.Error = s.From.Error
+	}
+}
+
+func (s *SipMsg) parsePAssertedId(str string) {
+	s.PAssertedId = &PAssertedId{Val: str}
+	s.PAssertedId.parse()
+	if s.PAssertedId.Error == nil {
+		if s.PaiUser == "" {
+			s.PaiUser = s.PAssertedId.URI.User
 		}
-	*/
+		if s.PaiHost == "" {
+			s.PaiHost = s.PAssertedId.URI.Host
+		}
+	} else {
+		s.PaiUser = s.PAssertedIdVal
+	}
+}
+
+func (s *SipMsg) ParsePAssertedId(str string) {
+	s.parsePAssertedId(str)
 }
 
 /* func (s *SipMsg) parseProxyAuthenticate(str string) {
@@ -253,6 +427,11 @@ func (s *SipMsg) parseFrom(str string) {
 /* func (s *SipMsg) parseRack(str string) {
 	s.Rack = &Rack{Val: str}
 	s.Error = s.Rack.parse()
+} */
+
+/* func (s *SipMsg) parseReason(str string) {
+	s.Reason = &Reason{Val: str}
+	s.Reason.parse()
 } */
 
 func (s *SipMsg) parseRTPStat(str string) {
@@ -286,6 +465,18 @@ func (s *SipMsg) parseRTPStat(str string) {
 	}
 	return
 } */
+
+func (s *SipMsg) parseRemotePartyId(str string) {
+	s.RemotePartyId = &RemotePartyId{Val: str}
+	s.RemotePartyId.parse()
+	if s.RemotePartyId.Error != nil {
+		s.Error = s.RemotePartyId.Error
+	}
+}
+
+func (s *SipMsg) ParseRemotePartyId(str string) {
+	s.parseRemotePartyId(str)
+}
 
 /* func (s *SipMsg) parseRequire(str string) {
 	s.Require = getCommaSeperated(str)
@@ -326,7 +517,6 @@ func (s *SipMsg) parseStartLine(str string) {
 	sLine := ParseStartLine(str)
 	s.FirstMethod = sLine.Method
 	s.FirstResp = sLine.Resp
-	s.Type = sLine.Type
 	s.FirstRespText = sLine.RespText
 	if sLine.URI != nil {
 		s.URIHost = sLine.URI.Host
@@ -346,16 +536,44 @@ func (s *SipMsg) parseStartLine(str string) {
 } */
 
 func (s *SipMsg) parseTo(str string) {
-	s.To = str
-	/*
-		if s.To.Error == nil {
-			s.ToUser = s.To.URI.User
-			s.ToHost = s.To.URI.Host
-			s.ToTag = s.To.Tag
-		} else {
-			s.Error = s.To.Error
-		}
+	s.To = getFrom(str)
+	if s.To.Error == nil {
+		s.ToUser = s.To.URI.User
+		s.ToHost = s.To.URI.Host
+		s.ToTag = s.To.Tag
+	} else {
+		s.Error = s.To.Error
+	}
+}
+
+/* func (s *SipMsg) parseUnsupported(str string) {
+	s.Unsupported = getCommaSeperated(str)
+	if s.Unsupported == nil {
+		s.Unsupported = []string{str}
+	}
+} */
+
+func (s *SipMsg) parseVia(str string) {
+	/* 	vs := &vias{via: str}
+	   	vs.parse()
+	   	if vs.err != nil {
+	   		s.Error = vs.err
+	   		return
+	   	}
+	   	for _, v := range vs.vias {
+	   		s.Via = append(s.Via, v)
+	   	}
 	*/
+	s.ViaOne = str
+	if a := strings.Index(str, "branch="); a > -1 && a < len(str) {
+		b := str[a:]
+		l := len(b)
+		if c := strings.Index(b, ";"); c > -1 && c < l && l > 7 {
+			s.ViaOneBranch = b[7:c]
+		} else if l > 7 {
+			s.ViaOneBranch = b[7:]
+		}
+	}
 }
 
 /* func (s *SipMsg) parseWarning(str string) {
@@ -407,12 +625,12 @@ func getBody(s *SipMsg) sipParserStateFn {
 	return getHeaders
 }
 
-func ParseMsg(str string) (s *SipMsg) {
+func ParseMsg(str string, xcid, cheader []string) (s *SipMsg) {
 	headersEnd := strings.Index(str, "\r\n\r\n")
 	if headersEnd == -1 {
 		headersEnd = strings.LastIndex(str, "\r\n")
 	}
-	s = &SipMsg{Msg: str, eof: headersEnd}
+	s = &SipMsg{Msg: str, XHeader: xcid, CHeader: cheader, eof: headersEnd}
 	if s.eof == -1 {
 		s.Error = errors.New("ParseMsg: err parsing msg no SIP eof found")
 		return s

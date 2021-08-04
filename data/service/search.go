@@ -1171,7 +1171,10 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			if dataElement.Exists("payloadType") && dataElement.S("payloadType").Data().(float64) == 1 {
 
 				str := dataElement.S("raw").Data().(string)
-				sip := sipparser.ParseMsg(str)
+
+				x := []string{"From", "To"}
+
+				sip := sipparser.ParseMsg(str, x, nil)
 
 				if !dataElement.Exists("from_domain") && sip.FromHost != "" {
 					dataElement.Set(sip.FromHost, "from_domain")

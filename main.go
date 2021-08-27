@@ -1223,6 +1223,15 @@ func registerGetRedirect(e *echo.Echo, path string) {
 	e.GET(prefix+"/preference/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})
+
+	e.GET("transaction/:name", func(c echo.Context) (err error) {
+		return c.File(path + "/index.html")
+	})
+
+	e.GET("search/:name", func(c echo.Context) (err error) {
+		return c.File(path + "/index.html")
+	})
+
 }
 
 // middle ware handler

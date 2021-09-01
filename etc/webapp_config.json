@@ -84,6 +84,10 @@
     "loglevel": "error",
     "logstdout": false
   },
+  "dashboard_settings": {
+    "_comment": "Here you can define a customs dashboards home",
+    "dashboard_home": "/usr/local/homer/etc/dashboard_home.json"
+  },
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",

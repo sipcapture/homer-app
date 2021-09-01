@@ -322,6 +322,11 @@ func configureServiceObjects() {
 		}
 	}
 
+	/*********** DASHBOARD *******************/
+	if viper.IsSet("dashboard_settings.dashboard_home") {
+		config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard = viper.GetString("dashboard_settings.dashboard_home")
+	}
+
 	/***********************************/
 
 	authType = viper.GetString("auth_settings.type")

@@ -2,10 +2,12 @@ package controllerv1
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
@@ -44,7 +46,19 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 	username := cc.UserName
 	reply, err := dbc.DashBoardService.GetDashBoardsLists(username)
 	if err != nil {
-		dbc.DashBoardService.InsertDashboardHome(username, jsonschema.DashboardHome)
+
+		var dashboardHome []byte
+
+		if config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard != "" {
+			dashboardHome, err = ioutil.ReadFile(config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard) // just pass the file name
+			if err != nil {
+				dashboardHome = jsonschema.DashboardHome
+			}
+		} else {
+			dashboardHome = jsonschema.DashboardHome
+		}
+
+		dbc.DashBoardService.InsertDashboardHome(username, dashboardHome)
 		reply, err = dbc.DashBoardService.GetDashBoardsLists(username)
 		if err != nil {
 			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
@@ -92,7 +106,19 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardID)
 	if err != nil {
 		if dashboardID == "home" {
-			_, err := dbc.DashBoardService.InsertDashboardHome(username, jsonschema.DashboardHome)
+
+			var dashboardHome []byte
+
+			if config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard != "" {
+				dashboardHome, err = ioutil.ReadFile(config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard) // just pass the file name
+				if err != nil {
+					dashboardHome = jsonschema.DashboardHome
+				}
+			} else {
+				dashboardHome = jsonschema.DashboardHome
+			}
+
+			_, err := dbc.DashBoardService.InsertDashboardHome(username, dashboardHome)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}

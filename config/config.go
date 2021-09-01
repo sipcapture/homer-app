@@ -19,4 +19,8 @@ type HomerSettingServer struct {
 		DedupModel        string `default:"message-ip-pair"`
 		GlobalDeduplicate bool   `default:"false"`
 	}
+
+	DASHBOARD_SETTINGS struct {
+		ExternalHomeDashboard string `default:""`
+	}
 }

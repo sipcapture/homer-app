@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sirupsen/logrus"
 )

@@ -1228,6 +1228,10 @@ func registerGetRedirect(e *echo.Echo, path string) {
 		return c.File(path + "/index.html")
 	})
 
+	e.GET("/search/result/:name", func(c echo.Context) (err error) {
+		return c.File(path + "/index.html")
+	})
+
 	e.GET("/search/:name", func(c echo.Context) (err error) {
 		return c.File(path + "/index.html")
 	})

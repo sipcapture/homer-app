@@ -53,7 +53,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 			Name:     "undefined",
 			Param:    "",
 			Owner:    "",
-			Shared:   0,
+			Shared:   false,
 			Type:     0,
 			Weight:   10,
 		}
@@ -76,10 +76,11 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 			}
 
 			if dashObject.S("shared") != nil && dashObject.S("shared").Data() != nil {
-				if heputils.CheckBoolValue(dashObject.S("data", "shared").Data()) {
-					dashboardElement.Shared = 1
+
+				if heputils.CheckBoolValue(dashObject.S("shared").Data()) {
+					dashboardElement.Shared = true
 				} else {
-					dashboardElement.Shared = 0
+					dashboardElement.Shared = false
 				}
 			}
 

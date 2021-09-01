@@ -42,7 +42,7 @@ type DashBoardElement struct {
 	Owner    string  `json:"owner"`
 	Name     string  `json:"name"`
 	Param    string  `json:"param"`
-	Shared   int     `json:"shared"`
+	Shared   bool    `json:"shared"`
 	Type     int     `json:"type"`
 	Weight   float64 `json:"weight"`
 }

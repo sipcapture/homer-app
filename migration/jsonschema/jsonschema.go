@@ -20,7 +20,155 @@ var TableVersion = map[string]int{
 
 var MinimumPgSQL = 10
 
-var DashboardHome = json.RawMessage(`{"id":"home","name":"Home","alias":"home","selectedItem":"","title":"Home","weight":10,"widgets":[{"x":0,"y":0,"cols":2,"rows":1,"name":"clock","title":"clock","id":"clock214","output":{},"config":{"id":"clock214","datePattern":"YYYY-MM-DD","location":{"value":-60,"offset":"+1","name":"Europe/Amsterdam","desc":"Central European Time"},"showseconds":false,"timePattern":"HH:mm:ss","title":"Home Clock"}},{"x":0,"y":1,"cols":2,"rows":3,"name":"display-results","title":"display-results","id":"display-results370","output":{},"config":{"id":"display-results370","title":"CALL SIP SEARCH","group":"Search","name":"protosearch","description":"Display Search Form component","refresh":false,"sizeX":2,"sizeY":2,"config":{"title":"CALL SIP SEARCH","searchbutton":true,"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"call","value":"call"}},"uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","fields":[{"field_name":"data_header.from_user","hepid":1,"name":"1:call:data_header.from_user","selection":"SIP From user","type":"string"},{"field_name":"data_header.to_user","hepid":1,"name":"1:call:data_header.to_user","selection":"SIP To user","type":"string"},{"field_name":"data_header.method","hepid":1,"name":"1:call:data_header.method","selection":"SIP Method","type":"string"},{"field_name":"data_header.callid","hepid":1,"name":"1:call:data_header.callid","selection":"SIP Callid","type":"string"},{"field_name":"limit","hepid":1,"name":"1:call:limit","selection":"Query Limit","type":"string"},{"field_name":"targetResultsContainer","hepid":1,"name":"1:call:targetResultsContainer","selection":"Results Container","type":"string"}],"row":0,"col":1,"cols":2,"rows":2,"x":0,"y":1,"protocol_id":{"name":"SIP","value":100}}},{"x":2,"y":0,"cols":4,"rows":4,"name":"result","title":"result","id":"result560","output":{}}],"config":{"margins":[10,10],"columns":"6","pushing":true,"draggable":{"handle":".box-header"},"resizable":{"enabled":true,"handles":["n","e","s","w","ne","se","sw","nw"]}}}`)
+var DashboardHome = json.RawMessage(`{
+    "alias": "home",
+    "config": {
+        "columns": 28,
+        "draggable": { "handle": ".box-header" },
+        "gridType": "scrollVertical",
+        "ignoreMinSize": "warning",
+        "margins": [10, 10],
+        "maxrows": 28,
+        "pushing": false,
+        "resizable": {
+            "enabled": true,
+            "handles": ["n", "e", "s", "w", "ne", "se", "sw", "nw"]
+        }
+    },
+    "dashboardId": "home",
+    "id": "home",
+    "isLocked": false,
+    "name": "Home",
+    "param": "home",
+    "selectedItem": "",
+    "shared": false,
+    "title": "Home",
+    "type": 3,
+    "weight": 10,
+    "widgets": [
+        {
+            "activeTab": true,
+            "cols": 6,
+            "config": {
+                "config": {
+                    "title": "CALL SIP SEARCH",
+                    "searchbutton": true,
+                    "protocol_id": { "name": "SIP", "value": 1 },
+                    "protocol_profile": { "name": "call", "value": "call" }
+                },
+                "countFieldColumns": 1,
+                "fields": [
+                    {
+                        "field_name": "data_header.from_user",
+                        "hepid": 1,
+                        "name": "1:call:data_header.from_user",
+                        "selection": "SIP From user",
+                        "type": "string"
+                    },
+                    {
+                        "field_name": "data_header.to_user",
+                        "hepid": 1,
+                        "name": "1:call:data_header.to_user",
+                        "selection": "SIP To user",
+                        "type": "string"
+                    },
+                    {
+                        "field_name": "data_header.method",
+                        "hepid": 1,
+                        "name": "1:call:data_header.method",
+                        "selection": "SIP Method",
+                        "type": "string"
+                    },
+                    {
+                        "field_name": "data_header.callid",
+                        "hepid": 1,
+                        "name": "1:call:data_header.callid",
+                        "selection": "SIP Callid",
+                        "type": "string"
+                    },
+                    {
+                        "field_name": "limit",
+                        "hepid": 1,
+                        "name": "1:call:limit",
+                        "selection": "Query Limit",
+                        "type": "string"
+                    },
+                    {
+                        "field_name": "targetResultsContainer",
+                        "hepid": 1,
+                        "name": "1:call:targetResultsContainer",
+                        "selection": "Results Container",
+                        "type": "string"
+                    }
+                ],
+                "title": "CALL SIP SEARCH"
+            },
+            "id": "display-results-1",
+            "isWarning": true,
+            "layerIndex": 2,
+            "minItemCols": 1,
+            "minItemRows": 1,
+            "name": "display-results",
+            "output": {},
+            "rows": 9,
+            "strongIndex": "ProtosearchWidgetComponent",
+            "tabGroup": "tabIndex-298361",
+            "title": "TDR Call Search",
+            "x": 0,
+            "y": 0
+        },
+        {
+            "cols": 22,
+            "config": { "title": "Widget Result" },
+            "id": "RESULT-1",
+            "isWarning": true,
+            "layerIndex": 2,
+            "minHeight": 400,
+            "minItemCols": 1,
+            "minItemRows": 1,
+            "minWidth": 650,
+            "name": "RESULT",
+            "output": {},
+            "rows": 12,
+            "strongIndex": "ResultWidgetComponent",
+            "tabGroup": "tabIndex-522642",
+            "title": "RESULT-1",
+            "x": 6,
+            "y": 0
+        },
+        {
+            "cols": 6,
+            "config": {
+                "datePattern": "YYYY-MM-DD",
+                "fontSizeClock": 20,
+                "fontSizeDate": 20,
+                "id": "clock-1",
+                "location": {
+                    "desc": "Europe/Amsterdam",
+                    "name": "Europe/Amsterdam",
+                    "offset": "+2"
+                },
+                "radius": 177.46875,
+                "showAnalog": "Digital",
+                "showDate": true,
+                "showseconds": false,
+                "timePattern": "HH:mm:ss",
+                "title": "Home Clock"
+            },
+            "id": "clock-1",
+            "layerIndex": 2,
+            "name": "clock",
+            "output": {},
+            "rows": 3,
+            "strongIndex": "ClockWidgetComponent",
+            "tabGroup": "tabIndex-306538",
+            "title": "World Clock",
+            "x": 0,
+            "y": 9
+        }
+    ]
+}
+`)
 var RegisterDashboard = json.RawMessage(`{"alias":"registration","config":{"columns":5,"gridType":"scrollVertical","ignoreMinSize":"Ignore","maxrows":3,"pushing":true},"id":"registration","name":"REGISTRATION","param":"registration-dashboard","selectedItem":"","shared":false,"type":1,"weight":10,"widgets":[{"cols":1,"config":{"col":1,"cols":2,"config":{"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"registration","value":"registration"},"searchbutton":true,"title":"Registration Search"},"countFieldColumns":1,"description":"Display Search Form component","fields":[{"field_name":"data_header.method","hepid":1,"name":"1:registration:data_header.method","selection":"SIP Method","type":"string","value":""},{"field_name":"targetResultsContainer","hepid":1,"name":"1:registration:targetResultsContainer","selection":"Results Container","type":"string","value":""},{"field_name":"data_header.protocol","hepid":1,"name":"1:registration:data_header.protocol","selection":"SIP Protocol","type":"string","value":""}],"group":"Search","id":"display-results537","name":"protosearch","refresh":false,"row":0,"rows":2,"sizeX":2,"sizeY":2,"title":"Registration Search","uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","x":0,"y":1},"id":"display-results537","name":"display-results","output":{},"rows":2,"strongIndex":"ProtosearchWidgetComponent","title":"Proto Search","x":0,"y":0},{"cols":4,"id":"result356","name":"result","output":{},"rows":2,"strongIndex":"ResultWidgetComponent","title":"Display Results","x":1,"y":0}]}`)
 
 var CorrelationMappingdefault = json.RawMessage(`{

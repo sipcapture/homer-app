@@ -330,6 +330,11 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 	}
 
+	//IPisolateSQL
+	for _, ip := range searchObject.Param.WhiteList {
+		sql = sql + fmt.Sprintf(" AND (data_header->>'srcIp' != '%s' AND data_header->>'dstIp' != '%s' ) ", ip, ip)
+	}
+
 	//var searchData
 	for session := range ss.Session {
 		searchTmp := []model.HepTable{}

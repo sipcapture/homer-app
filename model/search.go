@@ -19,7 +19,17 @@ type SearchObject struct {
 		// type: string
 		// format: binary
 		// example: `{"1_call":[{"name":"limit","value":"10","type":"string","hepid":1}]}`
-		Search   json.RawMessage `json:"search"`
+		Search json.RawMessage `json:"search"`
+		// ips to be removed from search
+		// required: false
+		// type: array
+		// items:
+		//  type: string
+		// 	example: ["192.1698.10.20"]
+		WhiteList []string `json:"whitelist"`
+		// location
+		// required: false
+		// type: object
 		Location struct {
 			Node []string `json:node`
 		} `json:"location"`

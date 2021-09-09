@@ -20,6 +20,8 @@ var TableVersion = map[string]int{
 
 var MinimumPgSQL = 10
 
+var AuthTypesConfig = `{"internal": {"name": "Internal","type": "internal","position": 1, "enable": true},"ldap": {"name": "LDAP", "type": "ldap", "position": 2, "enable": false}}`
+
 var DashboardHome = json.RawMessage(`{
     "alias": "home",
     "config": {

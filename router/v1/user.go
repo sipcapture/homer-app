@@ -36,4 +36,7 @@ func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClien
 	}
 	// user login
 	acc.POST("/auth", urc.LoginUser)
+
+	//list of auths
+	acc.GET("/auth/type/list", urc.GetAuthTypeList)
 }

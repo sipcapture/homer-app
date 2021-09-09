@@ -1,12 +1,15 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"hash/fnv"
 	"strings"
 	"time"
 
+	uuid "github.com/satori/go.uuid"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sirupsen/logrus"
@@ -238,4 +241,27 @@ func hashString(s string) uint32 {
 	h := fnv.New32a()
 	h.Write([]byte(s))
 	return h.Sum32()
+}
+
+// this method gets all users from database
+func (us *UserService) GetAuthTypeList() ([]byte, error) {
+
+	var userGlobalSettings = model.TableGlobalSettings{}
+
+	userGlobalSettings = model.TableGlobalSettings{
+		Id:         1,
+		GUID:       uuid.NewV4().String(),
+		PartId:     10,
+		Category:   "system",
+		Param:      "authtypes",
+		Data:       json.RawMessage(jsonschema.AuthTypesConfig),
+		CreateDate: time.Now(),
+	}
+
+	oj := model.SuccessfulResponse{}
+	oj.Data = userGlobalSettings.Data
+	oj.Count = 1
+	oj.Message = "all good"
+
+	return json.Marshal(oj)
 }

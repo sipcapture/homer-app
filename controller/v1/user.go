@@ -242,3 +242,40 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 	response, _ := json.Marshal(loginObject)
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }
+
+// swagger:route GET /auth/type/list Users SuccessResponse
+//
+// Returns data from server
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) GetAuthTypeList(c echo.Context) error {
+
+	reply, err := uc.UserService.GetAuthTypeList()
+
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "not possible")
+	}
+
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, reply)
+
+}

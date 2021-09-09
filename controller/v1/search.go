@@ -214,12 +214,14 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
 		Port := strconv.Itoa(*row.Port)
 		ip, ipnet, err := net.ParseCIDR(cidr)
-		if err != nil {
-			return err
-		}
 
-		for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
-			aliasData[ip.String()+":"+Port] = row.Alias
+		if err != nil {
+			logrus.Println("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logrus.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+		} else {
+			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+				aliasData[ip.String()+":"+Port] = row.Alias
+			}
 		}
 	}
 

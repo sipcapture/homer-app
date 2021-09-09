@@ -330,11 +330,6 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 	}
 
-	//IPisolateSQL
-	for _, ip := range searchObject.Param.WhiteList {
-		sql = sql + fmt.Sprintf(" AND (data_header->>'srcIp' != '%s' AND data_header->>'dstIp' != '%s' ) ", ip, ip)
-	}
-
 	//var searchData
 	for session := range ss.Session {
 		searchTmp := []model.HepTable{}
@@ -747,14 +742,16 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 //this method create new user in the database
 //it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService, userGroup string) (string, error) {
+	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService,
+	userGroup string, whitelist []string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
 		table = "hep_proto_" + key
-		for _, v := range value.Search("callid").Data().([]interface{}) {
-			dataWhere = append(dataWhere, v)
-		}
+		//for _, v := range value.Search("callid").Data().([]interface{}) {
+		//	dataWhere = append(dataWhere, v)
+		//}
+		dataWhere = append(dataWhere, value.Search("callid").Data().([]interface{})...)
 	}
 
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
@@ -762,7 +759,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
 	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup, false)
+	dataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup, false, whitelist)
 	marshalData, _ := json.Marshal(dataRow)
 
 	jsonParsed, _ := gabs.ParseJSON(marshalData)
@@ -866,7 +863,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 				likeSearch = true
 			}
 
-			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup, likeSearch)
+			newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup, likeSearch, whitelist)
 			if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
 				marshalData, _ = json.Marshal(newDataRow)
 				jsonParsed, _ = gabs.ParseJSON(marshalData)
@@ -1000,7 +997,7 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
-	timeTo time.Time, nodes []string, userGroup string, likeSearch bool) ([]model.HepTable, error) {
+	timeTo time.Time, nodes []string, userGroup string, likeSearch bool, whitelist []string) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
 	query := "create_date between ? AND ? "
@@ -1018,6 +1015,10 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 
 	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
 		query = query + " AND " + config.Setting.IsolateQuery
+	}
+
+	for _, ip := range whitelist {
+		query = query + fmt.Sprintf(" AND (protocol_header->>'srcIp' != '%s' AND protocol_header->>'dstIp' != '%s' ) ", ip, ip)
 	}
 
 	for session := range ss.Session {

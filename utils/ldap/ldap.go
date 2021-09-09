@@ -51,7 +51,7 @@ type LDAPClient struct {
 	GroupFilter         string   `default:"(memberUid=%s)"`
 	GroupAttribute      []string `default:"[memberOf]"`
 	Host                string   `default:"127.0.0.1"`
-	ServerName          string   `default:"ldap_auth"`
+	ServerName          string   `default:""`
 	UserFilter          string   `default:"(uid=%s)"`
 	Conn                *ldap.Conn
 	Port                int    `default:"389"`

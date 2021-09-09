@@ -1172,7 +1172,11 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		if dataElement.Exists("raw") {
 
 			callElement.RuriUser = dataElement.S("raw").Data().(string)
-			callElement.RuriUser = callElement.RuriUser[:50]
+			lenMax := 50
+			if len(callElement.RuriUser) < lenMax {
+				lenMax = len(callElement.RuriUser)
+			}
+			callElement.RuriUser = callElement.RuriUser[:lenMax]
 
 			if dataElement.Exists("payloadType") && dataElement.S("payloadType").Data().(float64) == 1 {
 

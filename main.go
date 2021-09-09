@@ -341,9 +341,19 @@ func configureServiceObjects() {
 
 		defaults.SetDefaults(&ldapClient) //<-- This set the defaults values
 
-		ldapClient.Base = viper.GetString("ldap_config.base")
-		ldapClient.Host = viper.GetString("ldap_config.host")
-		ldapClient.Port = viper.GetInt("ldap_config.port")
+		if viper.IsSet("ldap_config.base") {
+			ldapClient.Base = viper.GetString("ldap_config.base")
+		}
+		if viper.IsSet("ldap_config.host") {
+			ldapClient.Host = viper.GetString("ldap_config.host")
+		}
+		if viper.IsSet("ldap_config.port") {
+			ldapClient.Port = viper.GetInt("ldap_config.port")
+		}
+
+		if viper.IsSet("ldap_config.servername") {
+			ldapClient.ServerName = viper.GetString("ldap_config.servername")
+		}
 
 		if viper.IsSet("ldap_config.userdn") {
 			ldapClient.UserDN = viper.GetString("ldap_config.userdn")

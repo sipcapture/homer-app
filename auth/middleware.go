@@ -34,8 +34,8 @@ func IsAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(*JwtUserClaim)
 		isAdmin := claims.UserAdmin
-		if isAdmin == false {
-			return echo.ErrUnauthorized
+		if !isAdmin {
+			return echo.NewHTTPError(403, "This API requires admin access. The AuthToken in use!")
 		}
 		return next(c)
 	}

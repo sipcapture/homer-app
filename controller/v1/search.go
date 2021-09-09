@@ -75,7 +75,9 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 
 	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup)
 	if err != nil {
-		logrus.Println(responseData)
+		logrus.Error("Error during data select: ", err.Error())
+		logrus.Error("Error data select: ", responseData)
+		return httpresponse.CreateBadResponse(&c, http.StatusServiceUnavailable, webmessages.BadDatabaseRetrieve)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

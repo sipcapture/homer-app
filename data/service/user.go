@@ -1,6 +1,8 @@
 package service
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -157,6 +159,8 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 
 		userData.UserName = username
 		userData.Id = int(hashString(username))
+		hash := md5.Sum([]byte(username))
+		userData.GUID = hex.EncodeToString(hash[:])
 		userData.Password = password
 		userData.FirstName = username
 		userData.IsAdmin = isAdmin
@@ -168,7 +172,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		userid := username
 
 		// Microsoft AD implementations require DN for 1.2.840.113556.1.4.1941 recursive group query
-		if us.LdapClient.UseDNForGroupSearch == true {
+		if us.LdapClient.UseDNForGroupSearch {
 			userid = user["dn"]
 		}
 
@@ -177,7 +181,7 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 
 		if err != nil {
 			logrus.Error("Couldn't get any group for user ", username, ": ", err)
-			if us.LdapClient.UserMode == false && us.LdapClient.AdminMode == false {
+			if !us.LdapClient.UserMode && !us.LdapClient.AdminMode {
 				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
 			}
 		} else {
@@ -191,13 +195,15 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 				logrus.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
 				userData.IsAdmin = false
 			} else {
-				if userData.IsAdmin == false && us.LdapClient.UserMode == true {
+				if !userData.IsAdmin && us.LdapClient.UserMode {
 					logrus.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
+					userData.UserGroup = "user"
 				}
-				if userData.IsAdmin == true {
+				if userData.IsAdmin {
 					logrus.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
+					userData.UserGroup = "admin"
 				}
-				if userData.IsAdmin == false && us.LdapClient.UserMode == false {
+				if !userData.IsAdmin && !us.LdapClient.UserMode {
 					return "", userData, errors.New("failed group match. Group membership is required for login because AdminMode and UserMode are false")
 				}
 			}

@@ -64,13 +64,15 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		Port := strconv.Itoa(*row.Port)
 		ip, ipnet, err := net.ParseCIDR(cidr)
 		if err != nil {
-			return err
-		}
-
-		for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
-			aliasData[ip.String()+":"+Port] = row.Alias
+			logrus.Println("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logrus.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+		} else {
+			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+				aliasData[ip.String()+":"+Port] = row.Alias
+			}
 		}
 	}
+
 	userGroup := auth.GetUserGroup(c)
 
 	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup)

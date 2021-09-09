@@ -49,10 +49,29 @@ func IsRequestAdmin(c echo.Context) (string, bool) {
 	return claims.UserName, isAdmin
 }
 
-/* check if it's admin */
+/* get user group */
 func GetUserGroup(c echo.Context) string {
-	user := c.Get("user").(*jwt.Token)
 
-	claims := user.Claims.(*JwtUserClaim)
-	return claims.UserGroup
+	logrus.Println("Preparing to get user...")
+
+	if c.Get("user") != nil {
+		logrus.Println("Preparing to get user [1] ")
+
+		user := c.Get("user").(*jwt.Token)
+		if user != nil {
+			logrus.Println("Preparing to get user [1] ")
+			claims := user.Claims.(*JwtUserClaim)
+			logrus.Println("Preparing to get user [3] ")
+			logrus.Println("Preparing to get user [4] ", claims.UserGroup)
+			return claims.UserGroup
+		} else {
+			logrus.Println("Couldn't get object user to check group - send to guest!")
+			logrus.Error("Couldn't get object user to check group - send to guest!")
+			return "guest"
+		}
+	} else {
+		logrus.Println("Couldn't retrieve user group - send to guest!")
+		logrus.Error("Couldn't retrieve user group - send to guest!")
+		return "guest"
+	}
 }

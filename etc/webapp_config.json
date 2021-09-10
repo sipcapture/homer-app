@@ -118,7 +118,7 @@
     "skipverify": true
   },
   "decoder_shark": {
-    "_comment": "Here you can do packet decoding to using tshark application. Please define uid, gid if you run the app under root",
+    "_comment": "Here you can do packet decoding using tshark application. Please define uid, gid if you run the app under root",
     "active": false,
     "bin": "/usr/bin/tshark",
     "protocols": ["1_call", "1_registration", "1_default"]

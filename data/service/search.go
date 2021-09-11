@@ -114,7 +114,7 @@ const (
 	RESET  = 10
 )
 
-func buildQuery(elems []interface{}) (sql string, sLimit int) {
+func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 	sLimit = 200
 	for k, v := range elems {
 		mapData := v.(map[string]interface{})
@@ -224,6 +224,11 @@ func buildQuery(elems []interface{}) (sql string, sLimit int) {
 			notStr := ""
 			equalStr := "="
 			operator := " AND "
+
+			if orLogic {
+				operator = " OR "
+			}
+
 			logrus.Debug(k, ". formName: ", formName)
 			logrus.Debug(k, ". formValue: ", formValue)
 			logrus.Debug(k, ". formType: ", formType)
@@ -324,7 +329,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
-			s, l := buildQuery(elems)
+			s, l := buildQuery(elems, searchObject.Param.OrLogic)
 			sql += s
 			sLimit = l
 		}

@@ -20,6 +20,10 @@ type SearchObject struct {
 		// format: binary
 		// example: `{"1_call":[{"name":"limit","value":"10","type":"string","hepid":1}]}`
 		Search json.RawMessage `json:"search"`
+		// this control the type of search one can perform
+		// type: boolean
+		// example: false
+		OrLogic bool `json:"orlogic"`
 		// ips to be removed from search
 		// required: false
 		// type: array

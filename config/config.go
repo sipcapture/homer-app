@@ -23,4 +23,14 @@ type HomerSettingServer struct {
 	DASHBOARD_SETTINGS struct {
 		ExternalHomeDashboard string `default:""`
 	}
+
+	DECODER_SHARK struct {
+		Bin        string   `default:"/usr/local/bin/tshark"`
+		Param      string   `default:""`
+		Protocols  []string `default:""`
+		UID        uint32   `default:"0"`
+		GID        uint32   `default:"0"`
+		ImportNode string   `default:""`
+		Enable     bool     `default:"false"`
+	}
 }

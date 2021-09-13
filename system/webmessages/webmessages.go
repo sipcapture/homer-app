@@ -32,5 +32,6 @@ const (
 	UserCreationFailed          = "failed to Create User"
 	SuccessfullyCreatedUser     = "successfully created user"
 	UserRequestFormatIncorrect  = "request format is not correct"
+	BadPCAPData                 = "bad pcap data"
 	BadDatabaseRetrieve         = "db data retrieve error"
 )

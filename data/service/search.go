@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,6 +18,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/dop251/goja"
+	"github.com/jinzhu/gorm"
 	"github.com/shomali11/util/xconditions"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
@@ -1443,4 +1445,216 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 	reply.Set(total, "total")
 	reply.Set(dataReply.Data(), "data")
 	return reply.String(), nil
+}
+
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
+func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, error) {
+
+	if config.Setting.DECODER_SHARK.Enable {
+		logrus.Debug("Decoded KEY")
+		logrus.Debug("Trying to debug using external decoder")
+		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", config.Setting.DECODER_SHARK.Bin, config.Setting.DECODER_SHARK.Param, config.Setting.DECODER_SHARK.Protocols))
+		rootExecute := false
+		cmd := exec.Command(config.Setting.DECODER_SHARK.Bin, "-Q", "-T", "json", "-o", "rtp.heuristic_rtp:TRUE", "-l", "-i", "-", config.Setting.DECODER_SHARK.Param)
+		/*check if we root under root - changing to an user */
+		uid, gid := os.Getuid(), os.Getgid()
+
+		if uid == 0 || gid == 0 {
+			logrus.Info(fmt.Sprintf("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
+			if config.Setting.DECODER_SHARK.UID != 0 && config.Setting.DECODER_SHARK.GID != 0 {
+				logrus.Info(fmt.Sprintf("Changing to: UID: [%d], GID: [%d]", uid, gid))
+				cmd.SysProcAttr = &syscall.SysProcAttr{
+					Credential: &syscall.Credential{
+						Uid: config.Setting.DECODER_SHARK.UID, Gid: config.Setting.DECODER_SHARK.GID,
+						NoSetGroups: true,
+					},
+				}
+			} else {
+				logrus.Error("You run external decoder under root! Please set UID/GID in the config")
+				rootExecute = true
+			}
+		}
+
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			logrus.Error("Bad cmd stdin", err)
+			return 0, 0, err
+		}
+		go func() {
+			defer stdin.Close()
+			io.WriteString(stdin, buf.String())
+		}()
+
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			logrus.Error("Bad combined output: ", err)
+			return 0, 0, err
+		}
+
+		var skipElement = 0
+
+		/* this is fix if you run the webapp under root */
+		if rootExecute {
+			/* limit search String */
+			maxEl := len(out)
+			if maxEl > 100 {
+				maxEl = 100
+			}
+			for i := 0; i < maxEl; i++ {
+				if string(out[i]) == "[" || string(out[i]) == "{" {
+					skipElement = i
+					break
+				}
+			}
+		}
+
+		//tmpRawData := model.TableRawData{}
+		//for session := range ss.Session {
+		var session *gorm.DB
+
+		if config.Setting.DECODER_SHARK.ImportNode != "" {
+			if val, ok := ss.Session[config.Setting.DECODER_SHARK.ImportNode]; ok {
+				session = val
+			} else {
+				keys := reflect.ValueOf(ss.Session).MapKeys()
+				session = ss.Session[keys[0].String()]
+			}
+		} else {
+			keys := reflect.ValueOf(ss.Session).MapKeys()
+			session = ss.Session[keys[0].String()]
+		}
+
+		badCounter := 0
+		goodCounter := 0
+		var addTimeDifferent time.Duration
+		addTimeDifferent = 0
+
+		sData, err := gabs.ParseJSON(out[skipElement:])
+		for _, dataElement := range sData.Children() {
+
+			protocolHeader := gabs.New()
+			dataHeader := gabs.New()
+			var ipProto, srcPort, dstPort uint16
+			var sourceIp, destinationIp string
+
+			if dataElement.Exists("_source", "layers") {
+
+				tmpData := model.TableRawData{}
+
+				layerData := dataElement.S("_source", "layers")
+
+				if layerData.Exists("frame", "frame.time_epoch") {
+					timeArray := strings.Split(layerData.S("frame", "frame.time_epoch").Data().(string), ".")
+					timeSec, _ := strconv.ParseInt(timeArray[0], 10, 64)
+					timeUSec, _ := strconv.ParseInt(timeArray[1], 10, 64)
+					unixTimeUTC := time.Unix(timeSec, timeUSec) //gives unix time stamp in utc
+
+					if now {
+						if addTimeDifferent == 0 {
+							tNow := time.Now()
+							addTimeDifferent = tNow.Sub(unixTimeUTC)
+						}
+						unixTimeUTC = unixTimeUTC.Add(addTimeDifferent)
+					}
+
+					tmpData.CreateDate = unixTimeUTC
+				}
+
+				if layerData.Exists("ip", "ip.proto") {
+					val, _ := strconv.ParseUint(layerData.S("ip", "ip.proto").Data().(string), 10, 16)
+					ipProto = uint16(val)
+					protocolHeader.Set(ipProto, "proto")
+				}
+
+				if layerData.Exists("ip", "ip.version") {
+					val := layerData.S("ip", "ip.version").Data().(string)
+					protocolHeader.Set(val, "ip_version")
+				}
+
+				/* Check IP */
+				if layerData.Exists("ip", "ip.src") {
+					val := layerData.S("ip", "ip.src").Data().(string)
+					protocolHeader.Set(val, "srcIp")
+				}
+				if layerData.Exists("ip", "ip.dst") {
+					val := layerData.S("ip", "ip.dst").Data().(string)
+					protocolHeader.Set(val, "dstIp")
+				}
+
+				/* udp */
+				if ipProto == 17 {
+					if layerData.Exists("udp", "udp.srcport") {
+						val, _ := strconv.ParseUint(layerData.S("udp", "udp.srcport").Data().(string), 10, 16)
+						srcPort = uint16(val)
+						protocolHeader.Set(srcPort, "srcPort")
+					}
+					if layerData.Exists("udp", "udp.dstport") {
+						val, _ := strconv.ParseUint(layerData.S("udp", "udp.dstport").Data().(string), 10, 16)
+						dstPort = uint16(val)
+						protocolHeader.Set(dstPort, "dstPort")
+					}
+					/* tcp */
+				} else if ipProto == 5 {
+					if layerData.Exists("tcp", "tcp.srcport") {
+						val, _ := strconv.ParseUint(layerData.S("tcp", "tcp.srcport").Data().(string), 10, 16)
+						srcPort = uint16(val)
+						protocolHeader.Set(srcPort, "srcPort")
+					}
+					if layerData.Exists("tcp", "tcp.dstport") {
+						val, _ := strconv.ParseUint(layerData.S("tcp", "tcp.dstport").Data().(string), 10, 16)
+						dstPort = uint16(val)
+						protocolHeader.Set(dstPort, "dstPort")
+					}
+					/* sctp */
+				} else if ipProto == 132 {
+					if layerData.Exists("sctp", "sctp.srcport") {
+						val, _ := strconv.ParseUint(layerData.S("sctp", "sctp.srcport").Data().(string), 10, 16)
+						srcPort = uint16(val)
+						protocolHeader.Set(srcPort, "srcPort")
+					}
+					if layerData.Exists("sctp", "sctp.dstport") {
+						val, _ := strconv.ParseUint(layerData.S("sctp", "sctp.dstport").Data().(string), 10, 16)
+						dstPort = uint16(val)
+						protocolHeader.Set(dstPort, "dstPort")
+					}
+				}
+
+				hashIPPort := fmt.Sprintf("%s:%d->%s:%d", sourceIp, srcPort, destinationIp, dstPort)
+				tmpData.SID = strconv.FormatUint(uint64(heputils.Hash32(hashIPPort)), 10)
+
+				if layerData.Exists("frame") {
+					frame := layerData.S("frame").Data()
+					data := gabs.New()
+					data.Set(frame, "frame")
+					tmpData.Raw = data.Bytes()
+				}
+
+				dataHeader.Set(tmpData.SID, "callid")
+				dataHeader.Set("event", "method")
+
+				tmpData.ProtocolHeader = protocolHeader.Data().([]byte)
+				tmpData.DataHeader = dataHeader.Data().([]byte)
+
+				db := session.Save(&tmpData)
+				if db != nil && db.Error != nil {
+					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s.", tmpData.TableName(), db.Error.Error()))
+				} else {
+					logrus.Debug(fmt.Sprintf("Save for table [%s] was success.", tmpData.TableName()))
+				}
+
+				goodCounter++
+			}
+		}
+
+		if err != nil {
+			logrus.Error(fmt.Sprintf("Error commmit transaction Error: %s", err.Error()))
+			return goodCounter, badCounter, err
+		}
+
+		//logrus.Debug("DDD:", sData)
+		return goodCounter, badCounter, err
+	}
+
+	return 0, 0, fmt.Errorf("tshark has been not enabled")
 }

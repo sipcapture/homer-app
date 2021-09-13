@@ -1,13 +1,16 @@
 package controllerv1
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
@@ -445,4 +448,148 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	//return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
 
+}
+
+// swagger:route POST /import/data/pcap Import GetMessagesAsPCap
+//
+// Returns pcap data based upon filtered json
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/ExportCallData"
+//   required: true
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
+
+	file, err := c.FormFile("fileKey")
+	if err != nil {
+		logrus.Error("GetDataAsPCap fileKey was not found: ", err.Error())
+		return err
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		logrus.Error("GetDataAsPCap couldn't open it: ", err.Error())
+		return err
+	}
+	defer src.Close()
+
+	buf := bytes.NewBuffer(nil)
+
+	// Copy
+	if _, err = io.Copy(buf, src); err != nil {
+		logrus.Error("GetDataAsPCap couldn't copy it: ", err.Error())
+		return err
+	}
+
+	goodCounter, badCounter, err := sc.SearchService.ImportPcapData(buf, false)
+	if err != nil {
+		logrus.Error("Bad decoding: ", err)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.BadPCAPData)
+	} else {
+		reply := gabs.New()
+		report := gabs.New()
+		report.Set(goodCounter, "inserted")
+		report.Set(badCounter, "rejected")
+		reply.Set(report.Data(), "data")
+		reply.Set("All good", "message")
+
+		return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply.String())
+	}
+}
+
+// swagger:route POST /import/data/pcap/now Import GetMessagesAsPCapNow
+//
+// Returns pcap data based upon filtered json
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/ExportCallData"
+//   required: true
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (sc *SearchController) GetDataAsPCapNow(c echo.Context) error {
+
+	file, err := c.FormFile("fileKey")
+	if err != nil {
+		logrus.Error("GetDataAsPCap fileKey was not found: ", err.Error())
+		return err
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		logrus.Error("GetDataAsPCap couldn't open it: ", err.Error())
+		return err
+	}
+	defer src.Close()
+
+	buf := bytes.NewBuffer(nil)
+
+	// Copy
+	if _, err = io.Copy(buf, src); err != nil {
+		logrus.Error("GetDataAsPCap couldn't copy it: ", err.Error())
+		return err
+	}
+
+	goodCounter, badCounter, err := sc.SearchService.ImportPcapData(buf, true)
+	if err != nil {
+		logrus.Error("Bad decoding: ", err)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.BadPCAPData)
+	} else {
+		reply := gabs.New()
+		report := gabs.New()
+		report.Set(goodCounter, "inserted")
+		report.Set(badCounter, "rejected")
+		reply.Set(report.Data(), "data")
+		reply.Set("All good", "message")
+
+		return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply.String())
+	}
 }

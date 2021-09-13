@@ -32,5 +32,9 @@ func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSes
 	acc.POST("/export/call/messages/pcap", src.GetMessagesAsPCap)
 	acc.POST("/export/call/messages/text", src.GetMessagesAsText)
 
+	/* import data */
+	acc.POST("/import/data/pcap", src.GetDataAsPCap)
+	acc.POST("/import/data/pcap/now", src.GetDataAsPCapNow)
+
 	//acc.POST("/api/call/report/log", src.HepSub)
 }

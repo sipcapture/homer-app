@@ -2,6 +2,7 @@ package heputils
 
 import (
 	"fmt"
+	"hash/fnv"
 	"log"
 	"math/rand"
 	"os"
@@ -30,11 +31,11 @@ var HomerLogo = `
         \  \:\           
          \__\:\  
      ___ /  /::\     
-    /__/\  /:/\:\     _____ _____    
-    \  \:\/:/__\/    |___  |___  |   
-     \  \::/            / /   / / 
-      \  \:\           / /   / /          
-       \  \:\         /_(_) /_/               
+    /__/\  /:/\:\     _____     
+    \  \:\/:/__\/    |___  |    
+     \  \::/            / /   
+      \  \:\           / /             
+       \  \:\         /_/               
         \__\/         
 
 `
@@ -280,4 +281,11 @@ func FileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+// make a hash
+func Hash32(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }

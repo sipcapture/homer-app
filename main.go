@@ -592,6 +592,7 @@ func configureAsHTTPServer() {
 	/* decoder */
 	servicesObject.externalDecoder.Active = false
 
+	/* old */
 	binShark := viper.GetString("decoder_shark.bin")
 	if binShark != "" {
 		servicesObject.externalDecoder.Binary = binShark
@@ -600,6 +601,38 @@ func configureAsHTTPServer() {
 		servicesObject.externalDecoder.UID = uint32(viper.GetInt("decoder_shark.uid"))
 		servicesObject.externalDecoder.GID = uint32(viper.GetInt("decoder_shark.gid"))
 		servicesObject.externalDecoder.Active = viper.GetBool("decoder_shark.active")
+	}
+
+	//  DECODER - SHARK
+	if viper.IsSet("decoder_shark.bin") {
+		config.Setting.DECODER_SHARK.Bin = viper.GetString("decoder_shark.bin")
+	}
+
+	if viper.IsSet("decoder_shark.param") {
+		config.Setting.DECODER_SHARK.Param = viper.GetString("decoder_shark.param")
+	}
+
+	if viper.IsSet("decoder_shark.import_node") {
+		config.Setting.DECODER_SHARK.ImportNode = viper.GetString("decoder_shark.import_node")
+	}
+
+	if viper.IsSet("decoder_shark.protocols") {
+		config.Setting.DECODER_SHARK.Protocols = viper.GetStringSlice("decoder_shark.protocols")
+	}
+
+	if viper.IsSet("decoder_shark.uid") {
+		config.Setting.DECODER_SHARK.UID = uint32(viper.GetInt("decoder_shark.uid"))
+	}
+
+	if viper.IsSet("decoder_shark.gid") {
+		config.Setting.DECODER_SHARK.GID = uint32(viper.GetInt("decoder_shark.gid"))
+	}
+	if viper.IsSet("decoder_shark.active") {
+		config.Setting.DECODER_SHARK.Enable = viper.GetBool("decoder_shark.active")
+	}
+
+	if viper.IsSet("decoder_shark.enable") {
+		config.Setting.DECODER_SHARK.Enable = viper.GetBool("decoder_shark.enable")
 	}
 
 	// perform routing for v1 version of web apis

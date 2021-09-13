@@ -103,7 +103,14 @@
     "bindpassword": "readonlypassword",
     "userfilter": "(uid=%s)",
     "groupfilter": "(memberUid=%s)",
-    "groupattribute": "cn",
+    "group_attributes": [
+      "cn",
+      "memberOf",
+      "GroupAttribute",
+      "distinguishedName",
+      "dn",
+      "member"
+    ],
     "admingroup": "admin",
     "adminmode": true,
     "usergroup": "HOMER_user",

@@ -130,7 +130,7 @@ func (us *UserService) DeleteUser(user *model.TableUser) error {
 	newUser := model.TableUser{}
 
 	if us.Session.Where("guid =?", user.GUID).Find(&newUser).RecordNotFound() {
-		return errors.New(fmt.Sprintf("the user with id '%s' was not found", user.GUID))
+		return fmt.Errorf("the user with id '%s' was not found", user.GUID)
 	}
 	err := us.Session.Debug().Where("guid =?", user.GUID).Delete(&model.TableUser{}).Error
 	if err != nil {

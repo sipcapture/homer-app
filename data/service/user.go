@@ -149,8 +149,12 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 
 		ok, isAdmin, user, err := us.LdapClient.Authenticate(username, password)
 		if err != nil {
-			errorString := fmt.Sprintf("Error authenticating user %s: %+v", username, err)
-			return "", userData, errors.New(errorString)
+			/* second try after reconnect */
+			ok, isAdmin, user, err = us.LdapClient.Authenticate(username, password)
+			if err != nil {
+				errorString := fmt.Sprintf("Error authenticating user %s: %+v", username, err)
+				return "", userData, errors.New(errorString)
+			}
 		}
 
 		if !ok {

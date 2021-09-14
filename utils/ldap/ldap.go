@@ -143,7 +143,9 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		if lc.BindDN != "" && lc.BindPassword != "" {
 			err := lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 			if err != nil {
-				logrus.Error("Couldn't auth user: ", err)
+				logrus.Error("Couldn't auth user and force to reconnect: ", err)
+				lc.Close()
+				/* second try */
 				return false, false, nil, err
 			}
 		}

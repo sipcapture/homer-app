@@ -117,8 +117,8 @@ func Colorize(color Color, message string) {
 
 func Sanitize(text string) string {
 
-	if strings.HasPrefix(text, "!") {
-		text = strings.TrimPrefix(text, "!")
+	if strings.HasPrefix(text, "!=") {
+		text = strings.TrimPrefix(text, "!=")
 	}
 
 	return strings.NewReplacer(

@@ -241,7 +241,7 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 					operator = " OR "
 				}
 			}
-			if strings.HasPrefix(formValue, "!") {
+			if strings.HasPrefix(formValue, "!=") {
 				notStr = " NOT "
 				equalStr = " <> "
 			}

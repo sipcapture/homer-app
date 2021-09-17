@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"github.com/Jeffail/gabs"
 	"github.com/sipcapture/homer-app/model"
@@ -87,17 +86,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	sLimit := remoteObject.Param.Limit
 	searchFromTime := remoteObject.Timestamp.From
 	searchToTime := remoteObject.Timestamp.To
-	searchString := ""
-	searchRegexp := ""
-
-	elAr := strings.Fields(remoteObject.Param.Search)
-	if len(elAr) > 0 {
-		searchString = elAr[0]
-		if (len(searchString) + 2) < len(remoteObject.Param.Search) {
-			searchRegexp = remoteObject.Param.Search[len(searchString)+2:]
-		}
-	}
-
+	searchString := remoteObject.Param.Search
 	if searchString == "" {
 		logrus.Error("search string is empty")
 		return "", errors.New("empty string search")
@@ -105,7 +94,6 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	params := url.Values{}
 	params.Add("query", searchString)
-	params.Add("regexp", searchRegexp)
 	params.Add("limit", strconv.Itoa(sLimit))
 	params.Add("start", strconv.FormatInt(int64(searchFromTime)*1000000, 10))
 	params.Add("end", strconv.FormatInt(int64(searchToTime)*1000000, 10))

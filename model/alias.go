@@ -28,7 +28,7 @@ type TableAlias struct {
 	Mask *int `gorm:"column:mask;type:int" json:"mask" validate:"required,numeric"`
 	// example: 0
 	// required: true
-	CaptureID  string    `gorm:"column:captureID;type:varchar(20)" json:"captureID" validate:"required,numeric"`
+	CaptureID  string    `gorm:"column:captureID;type:varchar(20)" json:"captureID" validate:"required"`
 	Status     *bool     `gorm:"column:status;type:bool" json:"status" validate:"required"`
 	CreateDate time.Time `gorm:"column:create_date;default:current_timestamp;not null" json:"-"`
 }

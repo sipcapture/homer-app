@@ -131,7 +131,8 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 
 	responseData, err := sc.SearchService.GetMessageByID(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logrus.Println("error during get message by id: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

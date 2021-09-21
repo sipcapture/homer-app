@@ -580,6 +580,11 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 			if key == "1_call" {
 				sipExist = true
 			}
+
+			if !sData.Exists(key, "id") {
+				return "", fmt.Errorf("no ID has been provided")
+			}
+
 			elems := sData.Search(key, "id").Data().(float64)
 			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
 		}

@@ -149,34 +149,23 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		capInfo.Timestamp, _ = time.Parse(time.RFC3339, packet.CreateDate)
 	}
 	capInfo.InterfaceIndex = 1
-	// Create a properly formed packet, just with
-	// empty details. Should fill out MAC addresses,
-	// IP addresses, etc.
+	ethType := layers.EthernetTypeIPv4
 
-	// This time lets fill out some information
+	/* test if SrcHost is IPv6 */
+	testInput := net.ParseIP(packet.SrcIP)
+	if testInput.To4() == nil && testInput.To16() != nil {
+		ethType = layers.EthernetTypeIPv6
+	}
+	/* test if DstHost is IPv6 */
+	testInput = net.ParseIP(packet.DstIP)
+	if testInput.To4() == nil && testInput.To16() != nil {
+		ethType = layers.EthernetTypeIPv6
+	}
+
 	ethernetLayer := &layers.Ethernet{
 		SrcMAC:       net.HardwareAddr{0x02, 0x5d, 0x69, 0x74, 0x20, 0x12},
 		DstMAC:       net.HardwareAddr{0x06, 0x3d, 0x20, 0x12, 0x10, 0x20},
-		EthernetType: layers.EthernetTypeIPv4,
-	}
-
-	ipLayer := &layers.IPv4{
-		SrcIP:    net.ParseIP(packet.SrcIP),
-		DstIP:    net.ParseIP(packet.DstIP),
-		Version:  4,
-		TTL:      54,
-		TOS:      124,
-		Protocol: layers.IPProtocolUDP,
-	}
-
-	udpLayer := &layers.UDP{
-		SrcPort: layers.UDPPort(packet.SrcPort),
-		DstPort: layers.UDPPort(packet.DstPort),
-	}
-
-	err := udpLayer.SetNetworkLayerForChecksum(ipLayer)
-	if err != nil {
-		return nil
+		EthernetType: ethType,
 	}
 
 	buffer := gopacket.NewSerializeBuffer()
@@ -184,17 +173,70 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		FixLengths:       true,
 		ComputeChecksums: true,
 	}
-	err = gopacket.SerializeLayers(buffer, opts,
-		ethernetLayer, ipLayer, udpLayer,
-		gopacket.Payload(packet.Message),
-	)
-	if err != nil {
-		return err
+
+	if ethType == layers.EthernetTypeIPv4 {
+
+		ipLayer := &layers.IPv4{
+			SrcIP:    net.ParseIP(packet.SrcIP),
+			DstIP:    net.ParseIP(packet.DstIP),
+			Version:  4,
+			TTL:      54,
+			Protocol: layers.IPProtocolUDP,
+		}
+
+		udpLayer := &layers.UDP{
+			SrcPort: layers.UDPPort(packet.SrcPort),
+			DstPort: layers.UDPPort(packet.DstPort),
+		}
+
+		err := udpLayer.SetNetworkLayerForChecksum(ipLayer)
+		if err != nil {
+			return nil
+		}
+
+		err = gopacket.SerializeLayers(buffer, opts,
+			ethernetLayer, ipLayer, udpLayer,
+			gopacket.Payload(packet.Message),
+		)
+
+		if err != nil {
+			return err
+		}
+
+	} else {
+
+		ipLayer := &layers.IPv6{
+			SrcIP:      net.ParseIP(packet.SrcIP),
+			DstIP:      net.ParseIP(packet.DstIP),
+			Version:    6,
+			HopLimit:   64,
+			NextHeader: layers.IPProtocolUDP,
+		}
+
+		udpLayer := &layers.UDP{
+			SrcPort: layers.UDPPort(packet.SrcPort),
+			DstPort: layers.UDPPort(packet.DstPort),
+		}
+
+		err := udpLayer.SetNetworkLayerForChecksum(ipLayer)
+		if err != nil {
+			return nil
+		}
+
+		err = gopacket.SerializeLayers(buffer, opts,
+			ethernetLayer, ipLayer, udpLayer,
+			gopacket.Payload(packet.Message),
+		)
+
+		if err != nil {
+			return err
+		}
 	}
+
 	capInfo.Length = len(buffer.Bytes())
 	capInfo.CaptureLength = capInfo.Length
 
-	err = w.WritePcapPacket(capInfo, buffer.Bytes())
+	err := w.WritePcapPacket(capInfo, buffer.Bytes())
 
 	return err
 }

@@ -67,7 +67,7 @@ EOF
 }
 
 echo "Create release $VERSION for repo: $repo_full_name branch: $branch"
-curl -s --data "$(generate_post_data)" "https://api.github.com/repos/$owner/$repo/releases?access_token=$github_api_token"
+curl -sH "$AUTH" --data "$(generate_post_data)" "https://api.github.com/repos/$owner/$repo/releases"
 
 # Read asset tags.
 response=$(curl -sH "$AUTH" $GH_TAGS)
@@ -82,4 +82,3 @@ echo "Uploading asset... "
 # Construct url
 GH_ASSET="https://uploads.github.com/repos/$owner/$repo/releases/$id/assets?name=$(basename $filename)"
 curl "$GITHUB_OAUTH_BASIC" --data-binary @"$filename" -H "Authorization: token $github_api_token" -H "Content-Type: application/octet-stream" $GH_ASSET
-

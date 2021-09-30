@@ -640,6 +640,12 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 				dataElement.Merge(newData)
 			}
 		}
+
+		if dataElement.Exists("timeSeconds") {
+			createDate := int64(dataElement.S("timeSeconds").Data().(float64)*1000000 + dataElement.S("timeUseconds").Data().(float64))
+			dataElement.Set(createDate/1000, "create_ts")
+		}
+
 		dataReply.ArrayAppend(dataElement.Data())
 	}
 	dataKeys := gabs.Wrap([]interface{}{})
@@ -1172,6 +1178,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			callElement.CreateDate = ts / 1000
 			callElement.MicroTs = callElement.CreateDate
 			dataElement.Set(callElement.MicroTs, "create_date")
+			dataElement.Set(callElement.MicroTs, "create_ts")
 		}
 
 		if dataElement.Exists("protocol") {

@@ -146,7 +146,7 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 	}
 
 	dataReply := gabs.New()
-	dataReply.ArrayAppend(dataObject.Data(), "data")
+	dataReply.Set(dataObject.Data(), "data")
 
 	return dataReply.String(), nil
 }

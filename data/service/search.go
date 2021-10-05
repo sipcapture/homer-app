@@ -442,6 +442,12 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		if err := dataReply.ArrayAppend(dataElement.Data()); err != nil {
 			logrus.Errorln("Bad assigned array")
 		}
+
+		//back compatible
+		if dataElement.Exists("id") && !dataElement.Exists("uuid") {
+			myId := int64(dataElement.S("id").Data().(float64))
+			dataElement.Set(myId, "uuid")
+		}
 	}
 
 	dataKeys := gabs.Wrap([]interface{}{})
@@ -490,8 +496,27 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 	for key := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
-			elems := sData.Search(key, "id").Data().(float64)
-			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
+
+			var elems float64
+
+			if !sData.Exists(key, "id") && !sData.Exists(key, "uuid") {
+				return "", fmt.Errorf("no ID or UUID has been provided")
+			}
+
+			if sData.Exists(key, "id") {
+				elems = sData.Search(key, "id").Data().(float64)
+				sql = sql + " AND id = " + fmt.Sprintf("%d", int(elems))
+
+			} else if sData.Exists(key, "uuid") {
+
+				elems := sData.Search(key, "uuid").Data().([]interface{})
+				keyData := []string{}
+				for _, val := range elems {
+					keyData = append(keyData, fmt.Sprintf("%v", val))
+				}
+				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
+			}
+
 			/* check if we have to decode */
 			if ss.Decoder.Active && heputils.ItemExists(ss.Decoder.Protocols, key) {
 				doDecode = true
@@ -581,12 +606,24 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 				sipExist = true
 			}
 
-			if !sData.Exists(key, "id") {
-				return "", fmt.Errorf("no ID has been provided")
+			var elems float64
+			if !sData.Exists(key, "id") && !sData.Exists(key, "uuid") {
+				return "", fmt.Errorf("no ID or UUID has been provided")
 			}
 
-			elems := sData.Search(key, "id").Data().(float64)
-			sql = sql + " and id = " + fmt.Sprintf("%d", int(elems))
+			if sData.Exists(key, "id") {
+				elems = sData.Search(key, "id").Data().(float64)
+				sql = sql + " AND id = " + fmt.Sprintf("%d", int(elems))
+
+			} else if sData.Exists(key, "uuid") {
+
+				elems := sData.Search(key, "uuid").Data().([]interface{})
+				keyData := []string{}
+				for _, val := range elems {
+					keyData = append(keyData, fmt.Sprintf("%v", val))
+				}
+				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
+			}
 		}
 	}
 
@@ -644,6 +681,14 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 		if dataElement.Exists("timeSeconds") {
 			createDate := int64(dataElement.S("timeSeconds").Data().(float64)*1000000 + dataElement.S("timeUseconds").Data().(float64))
 			dataElement.Set(createDate/1000, "create_ts")
+			dataElement.Set(createDate/1000, "micro_ts")
+		}
+
+		//make back compatible to hepic DB
+		//back compatible
+		if dataElement.Exists("id") && !dataElement.Exists("uuid") {
+			myId := int64(dataElement.S("id").Data().(float64))
+			dataElement.Set(myId, "uuid")
 		}
 
 		dataReply.ArrayAppend(dataElement.Data())
@@ -791,7 +836,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			for _, corrChild := range correlation.Search().Children() {
 				sf := corrChild.Search("source_field").Data().(string)
 				nKey := make(map[string][]interface{})
-				if strings.Index(sf, ".") > -1 {
+				if strings.Contains(sf, ".") {
 					elemArray := strings.Split(sf, ".")
 					switch child.Search(elemArray[0], elemArray[1]).Data().(type) {
 					case string:
@@ -1019,14 +1064,12 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 
 	searchData := []model.HepTable{}
 	query := "create_date between ? AND ? "
-	//transactionData := model.TransactionResponse{}
+
 	if likeSearch {
 		query += "AND " + fieldKey + " LIKE ANY(ARRAY[?])"
 	} else {
 		query += "AND " + fieldKey + " in (?)"
 	}
-
-	//query := fieldKey + " in (?) and create_date between ? and ?"
 
 	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
 	logrus.Debug("USERGROUP ", userGroup)
@@ -1179,6 +1222,8 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			callElement.MicroTs = callElement.CreateDate
 			dataElement.Set(callElement.MicroTs, "create_date")
 			dataElement.Set(callElement.MicroTs, "create_ts")
+			dataElement.Set(callElement.MicroTs, "micro_ts")
+
 		}
 
 		if dataElement.Exists("protocol") {
@@ -1306,9 +1351,8 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 	reply := gabs.New()
 	requestData, _ := gabs.ParseJSON(data)
 	for _, value := range requestData.Search("param", "search").ChildrenMap() {
-		//table = "hep_proto_" + key
-		for _, v := range value.Search("callid").Data().([]interface{}) {
-			dataWhere = append(dataWhere, v)
+		if value.Exists("callid") {
+			dataWhere = append(dataWhere, value.Search("callid").Data().([]interface{})...)
 		}
 	}
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
@@ -1379,7 +1423,6 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 		dataQos.Set(totalEl, "total")
 		dataQos.Set(dataReply.Data(), "data")
 		reply.Set(dataQos.Data(), xconditions.IfThenElse(i == 0, "rtcp", "rtp").(string))
-
 	}
 
 	return reply.String(), nil
@@ -1395,9 +1438,8 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 	dataReply := gabs.Wrap([]interface{}{})
 	requestData, _ := gabs.ParseJSON(data)
 	for _, value := range requestData.Search("param", "search").ChildrenMap() {
-		//table = "hep_proto_" + key
-		for _, v := range value.Search("callid").Data().([]interface{}) {
-			dataWhere = append(dataWhere, v)
+		if value.Exists("callid") {
+			dataWhere = append(dataWhere, value.Search("callid").Data().([]interface{})...)
 		}
 	}
 	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)

@@ -127,7 +127,11 @@ or
 ./homer-app -populate-table-db-config -force-populate -populate-table=mapping_schema -populate-table=user_settings
 ```
 
+###### Reset UI password for any user: 
+```
+./homer-app -update-ui-user=admin -update-ui-password=mypassword
 
+```
 
 ------------
 <!--

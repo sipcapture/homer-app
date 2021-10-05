@@ -296,6 +296,7 @@ func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
 	reply, err := mpc.MappingService.GetSmartSuggestionAginstProfile(hepid, profile)
 	if err != nil {
+		logrus.Error("Error during map generator: ", err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SmartHepProfileFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))

@@ -615,6 +615,38 @@
         "responses": {}
       }
     },
+    "/api/v3/proxy/grafana/search/:uid": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "search"
+      }
+    },
     "/auth": {
       "post": {
         "description": "Returns a JWT Token and UUID attached to user",
@@ -641,6 +673,76 @@
           }
         ],
         "responses": {}
+      }
+    },
+    "/auth/type/list": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Returns data from server",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SuccessResponse",
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/call/report/log": {
@@ -1197,6 +1299,174 @@
         ],
         "operationId": "hepSubSearchDoHepsubsearch",
         "responses": {}
+      }
+    },
+    "/import/data/pcap": {
+      "post": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Returns pcap data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Import"
+        ],
+        "operationId": "GetMessagesAsPCap",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/import/data/pcap/now": {
+      "post": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Returns pcap data based upon filtered json",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Import"
+        ],
+        "operationId": "GetMessagesAsPCapNow",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/mapping/protocol": {
@@ -2836,7 +3106,8 @@
           "x-go-name": "UsageCalls"
         },
         "user_object": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "UserObject"
         }
       },
       "x-go-name": "TableAuthToken",
@@ -2920,13 +3191,16 @@
           "type": "string",
           "x-go-name": "Name"
         },
+        "owner": {
+          "type": "string",
+          "x-go-name": "Owner"
+        },
         "param": {
           "type": "string",
           "x-go-name": "Param"
         },
         "shared": {
-          "type": "integer",
-          "format": "int64",
+          "type": "boolean",
           "x-go-name": "Shared"
         },
         "type": {
@@ -2981,7 +3255,8 @@
           "example": "profile"
         },
         "data": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "Data"
         },
         "guid": {
           "description": "should be a unique value representing user",
@@ -3021,7 +3296,8 @@
           "x-go-name": "Hepid"
         },
         "mapping": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "Mapping"
         },
         "profile": {
           "type": "string",
@@ -3039,16 +3315,19 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "line": {
-          "type": "object",
-          "x-go-name": "Line"
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LabelData"
+          },
+          "x-go-name": "Entries"
         },
-        "ts": {
-          "type": "string",
-          "x-go-name": "Ts"
+        "labels": {
+          "type": "object",
+          "x-go-name": "Labels"
         }
       },
-      "x-go-name": "entriesRemoteResult",
+      "x-go-name": "streamsResult",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListUsers": {
@@ -3076,20 +3355,24 @@
       "type": "object",
       "properties": {
         "correlation_mapping": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "CorrelationMapping"
         },
         "create_index": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "CreateIndex"
         },
         "create_table": {
           "type": "string",
           "x-go-name": "CreateTable"
         },
         "fields_mapping": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "FieldsMapping"
         },
         "fields_settings": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "MappingSettings"
         },
         "guid": {
           "type": "string",
@@ -3124,10 +3407,12 @@
           "x-go-name": "Retention"
         },
         "schema_mapping": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "SchemaMapping"
         },
         "schema_settings": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "SchemaSettings"
         },
         "version": {
           "type": "integer",
@@ -3137,16 +3422,6 @@
       },
       "x-go-name": "TableMappingSchema",
       "x-go-package": "github.com/sipcapture/homer-app/model"
-    },
-    "RawMessage": {
-      "description": "It implements Marshaler and Unmarshaler and can\nbe used to delay JSON decoding or precompute a JSON encoding.",
-      "type": "array",
-      "title": "RawMessage is a raw encoded JSON value.",
-      "items": {
-        "type": "integer",
-        "format": "uint8"
-      },
-      "x-go-package": "encoding/json"
     },
     "SearchCallData": {
       "type": "object",
@@ -3168,6 +3443,7 @@
               "example": 200
             },
             "location": {
+              "description": "location",
               "type": "object",
               "properties": {
                 "Node": {
@@ -3179,8 +3455,17 @@
               },
               "x-go-name": "Location"
             },
+            "orlogic": {
+              "description": "this control the type of search one can perform\ntype: boolean",
+              "type": "boolean",
+              "x-go-name": "OrLogic",
+              "example": false
+            },
             "search": {
-              "$ref": "#/definitions/RawMessage"
+              "description": "this control the type of search one can perform\ntype: string\nformat: binary",
+              "type": "object",
+              "x-go-name": "Search",
+              "example": "`{\"1_call\":[{\"name\":\"limit\",\"value\":\"10\",\"type\":\"string\",\"hepid\":1}]}`"
             },
             "timezone": {
               "description": "timezone settings\ntype: object",
@@ -3202,6 +3487,17 @@
             "transaction": {
               "type": "object",
               "x-go-name": "Transaction"
+            },
+            "whitelist": {
+              "description": "ips to be removed from search",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "x-go-name": "WhiteList",
+              "example": [
+                "192.1698.10.20"
+              ]
             }
           },
           "x-go-name": "Param"
@@ -3237,19 +3533,72 @@
     },
     "SuccessResponse": {
       "type": "object",
+      "required": [
+        "count",
+        "data",
+        "message"
+      ],
       "properties": {
+        "count": {
+          "description": "count elements in data",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
         "data": {
-          "description": "count",
-          "type": "string",
+          "description": "data in JSON format\ntype: object",
+          "type": "object",
           "x-go-name": "Data"
         },
         "message": {
-          "description": "the data",
+          "description": "the message for user",
           "type": "string",
           "x-go-name": "Message"
         }
       },
-      "x-go-name": "UserCreateSuccessfulResponse",
+      "x-go-name": "SuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "TableRtpStatsV2": {
+      "type": "object",
+      "required": [
+        "sid"
+      ],
+      "properties": {
+        "create_date": {
+          "description": "Create data",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "data_header": {
+          "description": "data_header",
+          "type": "object",
+          "x-go-name": "DataHeader"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Id"
+        },
+        "protocol_header": {
+          "description": "protocol_header",
+          "type": "object",
+          "x-go-name": "ProtocolHeader"
+        },
+        "raw": {
+          "description": "raw",
+          "type": "object",
+          "x-go-name": "Raw"
+        },
+        "sid": {
+          "description": "should be a unique value representing user",
+          "type": "string",
+          "x-go-name": "SID",
+          "example": "e71771a2-1ea0-498f-8d27-391713e10664"
+        }
+      },
+      "x-go-name": "TableRawData",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserLogin": {
@@ -3317,7 +3666,8 @@
           "example": "profile"
         },
         "data": {
-          "$ref": "#/definitions/RawMessage"
+          "type": "object",
+          "x-go-name": "Data"
         },
         "guid": {
           "description": "should be a unique value representing user",

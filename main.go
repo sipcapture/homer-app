@@ -32,6 +32,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -54,7 +55,9 @@ import (
 	"github.com/sipcapture/homer-app/migration"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
+	httpresponse "github.com/sipcapture/homer-app/network/response"
 	apirouterv1 "github.com/sipcapture/homer-app/router/v1"
+	"github.com/sipcapture/homer-app/system/webmessages"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/ldap"
@@ -539,6 +542,22 @@ func configureAsHTTPServer() {
 		},
 	}))
 
+	if config.Setting.SWAGGER.Enable {
+		//e.GET("/swagger/*", echoSwagger.WrapHandler)
+		e.GET("/doc/api/json", func(c echo.Context) error {
+
+			logrus.Debug("Middle swagger ware: ", c.Request().RequestURI)
+			dataJson, err := ioutil.ReadFile(config.Setting.SWAGGER.ApiJson)
+			if err != nil {
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SwaggerFileNotExistsError)
+			}
+
+			newJson := strings.ReplaceAll(string(dataJson), "localhost:9080", config.Setting.SWAGGER.ApiHost)
+
+			return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(newJson))
+		})
+	}
+
 	/* static */
 	rootPath := viper.GetString("http_settings.root")
 	if rootPath == "" {
@@ -633,6 +652,18 @@ func configureAsHTTPServer() {
 
 	if viper.IsSet("decoder_shark.enable") {
 		config.Setting.DECODER_SHARK.Enable = viper.GetBool("decoder_shark.enable")
+	}
+
+	if viper.IsSet("swagger.enable") {
+		config.Setting.SWAGGER.Enable = viper.GetBool("swagger.enable")
+	}
+
+	if viper.IsSet("swagger.api_json") {
+		config.Setting.SWAGGER.ApiJson = viper.GetString("swagger.api_json")
+	}
+
+	if viper.IsSet("swagger.api_host") {
+		config.Setting.SWAGGER.ApiHost = viper.GetString("swagger.api_host")
 	}
 
 	// perform routing for v1 version of web apis

@@ -32,6 +32,8 @@ const (
 	UserCreationFailed          = "failed to Create User"
 	SuccessfullyCreatedUser     = "successfully created user"
 	UserRequestFormatIncorrect  = "request format is not correct"
+	UIVersionFileNotExistsError = "error version file couldn't be found"
+	SwaggerFileNotExistsError   = "swagger file couldn't be found"
 	BadPCAPData                 = "bad pcap data"
 	BadDatabaseRetrieve         = "db data retrieve error"
 )

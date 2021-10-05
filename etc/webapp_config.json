@@ -25,6 +25,7 @@
     "host": "localhost"
   },
   "influxdb_config": {
+    "enable": true,
     "help": "Settings for InfluxDB Database (optional)",
     "user": "influx_user",
     "pass": "influx_password",
@@ -34,13 +35,20 @@
     "policy": "autogen"
   },
   "prometheus_config": {
+    "enable": true,
     "help": "Settings for Prometheus Database (optional)",
     "user": "admin",
     "pass": "admin",
     "host": "http://127.0.0.1:9090",
     "api": "api/v1"
   },
+  "swagger": {
+    "enable": true,
+    "api_json": "/usr/local/hepic/etc/swagger.json",
+    "api_host": "127.0.0.1:9080"
+  },
   "loki_config": {
+    "enable": true,
     "help": "Settings for LOKI Database (optional)",
     "user": "admin",
     "pass": "admin",
@@ -49,6 +57,7 @@
     "param_query": "query_range"
   },
   "grafana_config": {
+    "enable": true,
     "help": "Settings for Grafana",
     "host": "http://127.0.0.1:3000",
     "path": "/grafana",

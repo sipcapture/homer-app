@@ -24,6 +24,12 @@ type HomerSettingServer struct {
 		ExternalHomeDashboard string `default:""`
 	}
 
+	SWAGGER struct {
+		Enable  bool   `default:"true"`
+		ApiJson string `default:"/usr/local/homer/etc/swagger.json"`
+		ApiHost string `default:"127.0.0.1:9080"`
+	}
+
 	DECODER_SHARK struct {
 		Bin        string   `default:"/usr/local/bin/tshark"`
 		Param      string   `default:""`

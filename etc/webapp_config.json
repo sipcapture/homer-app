@@ -44,7 +44,7 @@
   },
   "swagger": {
     "enable": true,
-    "api_json": "/usr/local/hepic/etc/swagger.json",
+    "api_json": "/usr/local/homer/etc/swagger.json",
     "api_host": "127.0.0.1:9080"
   },
   "loki_config": {

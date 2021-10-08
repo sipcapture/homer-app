@@ -81,9 +81,14 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		}
 	}
 
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logrus.Error("mapping error select: ", mapsFieldsData)
+	}
+
 	userGroup := auth.GetUserGroup(c)
 
-	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup)
+	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup, mapsFieldsData)
 	if err != nil {
 		logrus.Error("Error during data select: ", err.Error())
 		logrus.Error("Error data select: ", responseData)

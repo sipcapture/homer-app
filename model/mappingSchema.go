@@ -86,3 +86,8 @@ type SmartSearchFieldList struct {
 		Data []SmartSearchField `json:"data"`
 	} `json:"data"`
 }
+
+type MappingSmart struct {
+	Value string
+	Type  string
+}

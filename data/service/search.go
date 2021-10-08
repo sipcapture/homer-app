@@ -22,6 +22,8 @@ import (
 	"github.com/shomali11/util/xconditions"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/sqlparser"
+	"github.com/sipcapture/homer-app/sqlparser/query"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger/function"
@@ -116,8 +118,11 @@ const (
 	RESET  = 10
 )
 
-func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
+func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) (sql string, sLimit int) {
 	sLimit = 200
+
+	smartMap := make(map[string]model.MappingSmart)
+
 	for k, v := range elems {
 		mapData := v.(map[string]interface{})
 		if formVal, ok := mapData["value"]; ok {
@@ -127,101 +132,198 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 
 			if formName == "smartinput" {
 
-				upperCaseValue := strings.ToUpper(formValue)
-				totalLen := len(formValue)
-				index := 0
-				key := ""
-				value := ""
-				typeValue := "string"
-				operator := ""
-				endEl := " AND ("
+				/* Map fields */
+				sMapping, _ := gabs.ParseJSON(mappingJSON)
+				for _, val := range sMapping.Children() {
 
-				hdr := FIRST
+					if val.Exists("id") && val.Exists("type") {
 
-				for i := 0; i < totalLen; i++ {
+						result := model.MappingSmart{}
+						key := val.S("id").Data().(string)
 
-					switch {
-					case hdr == FIRST:
-						/* = */
-						if upperCaseValue[i] == '=' {
-							hdr = VALUE
-							operator = " = "
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							value = ""
-							index = i
-							/* formValue != */
-						} else if upperCaseValue[i] == '!' && upperCaseValue[(i+1)] == '=' {
-							hdr = VALUE
-							operator = " != "
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							value = ""
-							i++
-							index = i
-						} else if upperCaseValue[i] == 'L' && i < (totalLen-4) && upperCaseValue[i+1] == 'I' && upperCaseValue[i+3] == 'E' {
-							operator = " LIKE "
-							hdr = VALUE
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							i += 3
-							index = i
-						}
-					case hdr == VALUE:
-						/* = */
-						if formValue[i] == ' ' {
-							index = i
-						} else if upperCaseValue[i] == '"' {
-							typeValue = "string"
-							i++
-							index = i
-							hdr = END
-							/* formValue != */
-						} else {
-							typeValue = "integer"
-							index = i
-							hdr = END
-						}
-					case hdr == END:
-						if upperCaseValue[i] == '"' || upperCaseValue[i] == ' ' || i == (totalLen-1) {
-							value = formValue[index:i]
-							hdr = RESET
-							i++
-							index = i
-							if strings.Contains(key, ".") {
-								elemArray := strings.Split(key, ".")
-								if typeValue == "integer" {
-									sql = sql + endEl + fmt.Sprintf("(%s->>'%s')::int%s%d ", elemArray[0], elemArray[1], operator, heputils.CheckIntValue(value))
-								} else {
-									sql = sql + endEl + fmt.Sprintf("%s->>'%s'%s'%s' ", elemArray[0], elemArray[1], operator, value)
-								}
-							} else if formType == "integer" {
-								sql = sql + endEl + fmt.Sprintf("%s%s%d ", key, operator, heputils.CheckIntValue(value))
-							} else {
-								if value == "isEmpty" {
-									sql = sql + endEl + fmt.Sprintf("%s%s''", key, operator)
-								} else if value == "isNull" && key == "=" {
-									sql = sql + endEl + fmt.Sprintf("%s is NULL", key)
-								} else {
-									sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
-								}
-							}
-							continue
-						}
-					case hdr == RESET:
-						if i < (totalLen-2) && upperCaseValue[i] == 'O' && upperCaseValue[i+1] == 'R' {
-							endEl = " OR "
-							hdr = FIRST
-							i += 2
-							index = i
-						} else if i < (totalLen-3) && upperCaseValue[i] == 'A' && upperCaseValue[i+1] == 'N' && upperCaseValue[i+2] == 'D' {
-							endEl = " AND "
-							hdr = FIRST
-							i += 3
-							index = i
-						}
+						result.Value = val.S("id").Data().(string)
+						result.Type = val.S("type").Data().(string)
+						smartMap[key] = result
 					}
 				}
-				sql += ")"
+
+				switch x := formVal.(type) {
+				case string:
+					formValue = formVal.(string)
+				default:
+					logrus.Error("Unsupported type:", x)
+				}
+
+				//formValue = heputils.RemoveSqlInjection(formValue)
+
+				queryA, err := sqlparser.Parse(formValue)
+				if err != nil {
+					logrus.Error("BAD Query type:", err.Error())
+				}
+
+				counterParentClose := 0
+
+				for _, vCond := range queryA.Conditions {
+
+					operandField := vCond.Operand1
+					operandValue := vCond.Operand2
+					operator := query.OperatorString[vCond.Operator]
+					logicalElement := vCond.Logical
+					typeValue := "string"
+
+					logrus.Error("operandField:", operandField)
+					logrus.Error("operandValue:", operandValue)
+					logrus.Error("operator:", operator)
+					logrus.Error("logicalElement:", logicalElement)
+
+					if modSmart, ok := smartMap[operandField]; ok {
+						operandField = modSmart.Value
+						typeValue = modSmart.Type
+					}
+
+					if strings.Contains(operandField, ".") {
+						elemArray := strings.Split(operandField, ".")
+						if typeValue == "integer" {
+							sql += fmt.Sprintf("(%s->>'%s')::int%s%d ", elemArray[0], elemArray[1], operator, heputils.CheckIntValue(operandValue))
+						} else {
+							if strings.Contains(formValue, "%") {
+								operator = "LIKE"
+							}
+							sql += fmt.Sprintf("%s->>'%s' %s '%s' ", elemArray[0], elemArray[1], operator, heputils.CheckSQLValue(operandValue))
+						}
+					} else if typeValue == "integer" || typeValue == "number" {
+						sql += fmt.Sprintf("%s %s %d", operandField, operator, heputils.CheckIntValue(operandValue))
+					} else {
+						if operandValue == "isEmpty" {
+							sql += fmt.Sprintf("%s %s ''", operandField, operator)
+						} else if operandValue == "isNull" && operandField == "=" {
+							sql += fmt.Sprintf("%s is NULL", operandField)
+						} else {
+							sql += fmt.Sprintf("%s %s '%s'", operandField, operator, heputils.CheckIntValue(operandValue))
+						}
+
+						if logicalElement != "" {
+							sql = sql + " " + logicalElement + " "
+							if logicalElement == "OR" {
+								counterParentClose++
+								sql = sql + "("
+							}
+						}
+					}
+
+					//we close it
+					if counterParentClose > 0 {
+						sql = sql + strings.Repeat(")", counterParentClose-1)
+					}
+
+					// make query inside
+					if sql != "" {
+						sql = " AND " + sql
+					}
+
+					logrus.Error("NEW SQL: ", sql)
+
+					continue
+				}
+
 				continue
 			}
+
+			/*
+				if formName == "smartinput" {
+
+					upperCaseValue := strings.ToUpper(formValue)
+					totalLen := len(formValue)
+					index := 0
+					key := ""
+					value := ""
+					typeValue := "string"
+					operator := ""
+					endEl := " AND ("
+
+					hdr := FIRST
+
+					for i := 0; i < totalLen; i++ {
+
+						switch {
+						case hdr == FIRST:
+							if upperCaseValue[i] == '=' {
+								hdr = VALUE
+								operator = " = "
+								key = strings.Replace(formValue[index:i], " ", "", -1)
+								value = ""
+								index = i
+							} else if upperCaseValue[i] == '!' && upperCaseValue[(i+1)] == '=' {
+								hdr = VALUE
+								operator = " != "
+								key = strings.Replace(formValue[index:i], " ", "", -1)
+								value = ""
+								i++
+								index = i
+							} else if upperCaseValue[i] == 'L' && i < (totalLen-4) && upperCaseValue[i+1] == 'I' && upperCaseValue[i+3] == 'E' {
+								operator = " LIKE "
+								hdr = VALUE
+								key = strings.Replace(formValue[index:i], " ", "", -1)
+								i += 3
+								index = i
+							}
+						case hdr == VALUE:
+							if formValue[i] == ' ' {
+								index = i
+							} else if upperCaseValue[i] == '"' {
+								typeValue = "string"
+								i++
+								index = i
+								hdr = END
+							} else {
+								typeValue = "integer"
+								index = i
+								hdr = END
+							}
+						case hdr == END:
+							if upperCaseValue[i] == '"' || upperCaseValue[i] == ' ' || i == (totalLen-1) {
+								value = formValue[index:i]
+								hdr = RESET
+								i++
+								index = i
+								if strings.Contains(key, ".") {
+									elemArray := strings.Split(key, ".")
+									if typeValue == "integer" {
+										sql = sql + endEl + fmt.Sprintf("(%s->>'%s')::int%s%d ", elemArray[0], elemArray[1], operator, heputils.CheckIntValue(value))
+									} else {
+										sql = sql + endEl + fmt.Sprintf("%s->>'%s'%s'%s' ", elemArray[0], elemArray[1], operator, value)
+									}
+								} else if formType == "integer" {
+									sql = sql + endEl + fmt.Sprintf("%s%s%d ", key, operator, heputils.CheckIntValue(value))
+								} else {
+									if value == "isEmpty" {
+										sql = sql + endEl + fmt.Sprintf("%s%s''", key, operator)
+									} else if value == "isNull" && key == "=" {
+										sql = sql + endEl + fmt.Sprintf("%s is NULL", key)
+									} else {
+										sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
+									}
+								}
+								continue
+							}
+						case hdr == RESET:
+							if i < (totalLen-2) && upperCaseValue[i] == 'O' && upperCaseValue[i+1] == 'R' {
+								endEl = " OR "
+								hdr = FIRST
+								i += 2
+								index = i
+							} else if i < (totalLen-3) && upperCaseValue[i] == 'A' && upperCaseValue[i+1] == 'N' && upperCaseValue[i+2] == 'D' {
+								endEl = " AND "
+								hdr = FIRST
+								i += 3
+								index = i
+							}
+						}
+					}
+					sql += ")"
+					continue
+				}
+			*/
 
 			notStr := ""
 			equalStr := "="
@@ -231,9 +333,9 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 				operator = " OR "
 			}
 
-			logrus.Debug(k, ". formName: ", formName)
-			logrus.Debug(k, ". formValue: ", formValue)
-			logrus.Debug(k, ". formType: ", formType)
+			logrus.Error(k, ". formName: ", formName)
+			logrus.Error(k, ". formValue: ", formValue)
+			logrus.Error(k, ". formType: ", formType)
 
 			if strings.HasPrefix(formValue, "||") {
 				formValue = strings.TrimPrefix(formValue, "||")
@@ -309,7 +411,8 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string, userGroup string) (string, error) {
+func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string,
+	userGroup string, mapsFieldsData map[string]json.RawMessage) (string, error) {
 	table := "hep_proto_1_default"
 	searchData := []model.HepTable{}
 	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
@@ -331,7 +434,8 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
-			s, l := buildQuery(elems, searchObject.Param.OrLogic)
+			mappingJSON := mapsFieldsData[key]
+			s, l := buildQuery(elems, searchObject.Param.OrLogic, mappingJSON)
 			sql += s
 			sLimit = l
 		}

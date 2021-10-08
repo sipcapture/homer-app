@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -95,6 +96,47 @@ func CheckIntValue(val interface{}) int {
 		}
 	}
 	return int(0)
+}
+
+type CaseInsensitiveReplacer struct {
+	toReplace   *regexp.Regexp
+	replaceWith string
+}
+
+func NewCaseInsensitiveReplacer(toReplace, replaceWith string) *CaseInsensitiveReplacer {
+	return &CaseInsensitiveReplacer{
+		toReplace:   regexp.MustCompile("(?i)" + toReplace),
+		replaceWith: replaceWith,
+	}
+}
+
+func (cir *CaseInsensitiveReplacer) Replace(str string) string {
+	return cir.toReplace.ReplaceAllString(str, cir.replaceWith)
+}
+
+//import  checkFloatValue
+func RemoveSqlInjection(val string) string {
+
+	injStr := []string{"exec", "insert", "select", "delete", "update", "count", "alter", "chr", "mid", "master", "truncate", "char", "declare", ";", "-", "+", "|"}
+
+	for _, sqlBad := range injStr {
+
+		r := NewCaseInsensitiveReplacer(sqlBad, "")
+		val = r.Replace(val)
+	}
+
+	return val
+}
+
+//import  checkFloatValue
+func CheckSQLValue(val string) string {
+
+	return strings.NewReplacer(
+		`"`, `\"`,
+		`&`, "&amp;",
+	).Replace(val)
+
+	return val
 }
 
 //import YesNo

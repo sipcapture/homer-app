@@ -34,15 +34,35 @@ type TableUserSettings struct {
 	//Data map[string]interface{} `gorm:"column:data;type:json" json:"data"`
 }
 
-// swagger:model DashboardElements
+// swagger:model DashboardElement
 type DashBoardElement struct {
-	CssClass string  `json:"cssclass"`
-	Href     string  `json:"href"`
-	Id       string  `json:"id"`
-	Owner    string  `json:"owner"`
-	Name     string  `json:"name"`
-	Param    string  `json:"param"`
-	Shared   bool    `json:"shared"`
-	Type     int     `json:"type"`
-	Weight   float64 `json:"weight"`
+	// example: fa
+	CssClass string `json:"cssclass"`
+	// example: _1631547759877
+	Href string `json:"href"`
+	// example: _1631547759877
+	Id string `json:"id"`
+	// example: admin
+	Owner string `json:"owner"`
+	// example: Search
+	Name string `json:"name"`
+	// example: search
+	Param string `json:"param"`
+	// example: false
+	Shared bool `json:"shared"`
+	// example:  1
+	Type int `json:"type"`
+	// example: 10
+	Weight float64 `json:"weight"`
+}
+
+// swagger:model DashboardElementList
+type DashboardElementList struct {
+	// example: ok
+	Auth string `json:"auth"`
+	// example: ok
+	Status string             `json:"status"`
+	Data   []DashBoardElement `json:"data"`
+	// example: 1
+	Total int `json:"total"`
 }

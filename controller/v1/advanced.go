@@ -18,9 +18,9 @@ type AdvancedController struct {
 	AdvancedService *service.AdvancedService
 }
 
-// swagger:route GET /advanced advanced advancedGetAll
+// swagger:route GET /advanced Advanced ListAdvancedSettings
 //
-// Get all advanced items
+// Returns advanced setting of user
 // ---
 // produces:
 // - application/json
@@ -32,8 +32,9 @@ type AdvancedController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// responses:
-//   '200': body:AliasStruct
+//
+// Responses:
+//   201: body:GlobalSettingsStructList
 func (ac *AdvancedController) GetAll(c echo.Context) error {
 	alias, _ := ac.AdvancedService.GetAll()
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, string(alias))

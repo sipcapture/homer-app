@@ -24,25 +24,31 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 
 }
 
-// swagger:route GET /admin/profiles profile profileGetDashboardList
+// swagger:route GET /admin/profiles Admin ListProfiles
 //
-// Get mappings
+// Returns data from server
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // Security:
-// - bearer: []
+//  - JWT
+//  - ApiKeyAuth
 //
 // SecurityDefinitions:
-// bearer:
+// JWT:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
 // responses:
-//   '200': body:HepsubSchema
-//   '400': body:FailureResponse
+//   201: body:HepsubSchema
+//   400: body:FailureResponse
 func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetProfile()
@@ -70,8 +76,8 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:FailureResponse
+//   201: body:NodeList
+//   400: body:FailureResponse
 func (pc *ProfileController) GetDBNodeList(c echo.Context) error {
 
 	reply, err := pc.ProfileService.GetDBNodeList()

@@ -35,8 +35,8 @@ type HepsubController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubSchemaList
+//   400: body:FailureResponse
 func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 
 	reply, err := hsc.HepsubService.GetHepSub()
@@ -47,7 +47,7 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 
 }
 
-// swagger:operation GET /hepsub/protocol/{guid} hep hepSubGetHepSubAgainstGUID
+// swagger:route GET /hepsub/protocol/{guid} hep hepSubGetHepSubAgainstGUID
 //
 // Get hepsub by guid
 // ---
@@ -56,7 +56,7 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of item
@@ -71,8 +71,8 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubSchema
+//   400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
@@ -83,7 +83,7 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:operation GET /hepsub/protocol/{id}/{transaction} hep hepSubGetHepSubFields
+// swagger:route GET /hepsub/protocol/{id}/{transaction} hep hepSubGetHepSubFields
 //
 // Get hepsub by id and transaction
 // ---
@@ -92,13 +92,13 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// + name: id
 //   in: path
 //   example: 1
 //   description: hepid
 //   required: true
 //   type: string
-// - name: transaction
+// + name: transaction
 //   in: path
 //   example: call
 //   description: profile
@@ -113,8 +113,8 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubSchema
+//   400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 	id := url.QueryEscape(c.Param("id"))
 	transaction := url.QueryEscape(c.Param("transaction"))
@@ -126,7 +126,7 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 
 }
 
-// swagger:operation POST /hepsub/protocol hep hepSubAddHepSub
+// swagger:route POST /hepsub/protocol hep hepSubAddHepSub
 //
 // Add new Hepsub information
 // ---
@@ -135,11 +135,11 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: hepSubStruct
+// + name: HepsubSchema
 //   in: body
 //   description: hepSub parameters
 //   schema:
-//     "$ref": "#/definitions/HepsubSchema"
+//     type: HepsubSchema
 // Security:
 // - bearer: []
 //
@@ -149,8 +149,8 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubCreateSuccessResponse
+//   400: body:FailureResponse
 func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableHepsubSchema{}
@@ -173,7 +173,7 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation PUT /hepsub/protocol/{guid} hep hepSubUpdateHepSubAgainstGUID
+// swagger:route PUT /hepsub/protocol/{guid} hep hepSubUpdateHepSubAgainstGUID
 //
 // Update hepsub by guid
 // ---
@@ -182,17 +182,17 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of hepsub item
 //   required: true
 //   type: string
-// - name: hepSubStruct
+// + name: HepsubSchema
 //   in: body
 //   description: hepSub parameters
 //   schema:
-//     "$ref": "#/definitions/HepsubSchema"
+//     type: HepsubSchema
 // Security:
 // - bearer: []
 //
@@ -202,8 +202,8 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubUpdateSuccessResponse
+//   400: body:FailureResponse
 func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
@@ -229,7 +229,7 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation DELETE /hepsub/protocol/{guid} hep hepSubDeleteHepSubAgainstGUID
+// swagger:route DELETE /hepsub/protocol/{guid} hep hepSubDeleteHepSubAgainstGUID
 //
 // Delete hepsub by guid
 // ---
@@ -238,7 +238,7 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of hepsub item
@@ -253,8 +253,8 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubDeleteSuccessResponse
+//   400: body:FailureResponse
 func (hsc *HepsubController) DeleteHepSubAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 

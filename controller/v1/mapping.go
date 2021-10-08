@@ -35,8 +35,8 @@ type MappingController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingSchemaList
+//   400: body:FailureResponse
 func (mpc *MappingController) GetMapping(c echo.Context) error {
 	reply, err := mpc.MappingService.GetMapping()
 	if err != nil {
@@ -45,7 +45,7 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /mapping/protocol/{id}/{transaction} mapping mappingGetMappingFields
+// swagger:route GET /mapping/protocol/{id}/{transaction} mapping mappingGetMappingFields
 //
 // Get mapping using id and transaction
 // ---
@@ -54,14 +54,14 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: id
+// + name: id
 //   in: path
 //   example: 1
 //   description: hepid
 //   required: true
-//   type: int
+//   type: number
 // parameters:
-// - name: transaction
+// + name: transaction
 //   in: path
 //   example: call
 //   description: profile
@@ -76,8 +76,8 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingSchemaList
+//   400: body:FailureResponse
 func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
 	id := url.QueryEscape(c.Param("id"))
@@ -90,7 +90,7 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
 }
 
-// swagger:operation GET /mapping/protocol/{guid} mapping mappingGetMappingAgainstGUID
+// swagger:route GET /mapping/protocol/{guid} mapping mappingGetMappingAgainstGUID
 //
 // Get mapping using guid
 // ---
@@ -99,7 +99,7 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
@@ -114,8 +114,8 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingSchemaList
+//   400: body:FailureResponse
 func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 
 	guid := url.QueryEscape(c.Param("guid"))
@@ -126,7 +126,7 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation POST /mapping/protocol mapping mappingAddMapping
+// swagger:route POST /mapping/protocol mapping mappingAddMapping
 //
 // Add mapping
 // ---
@@ -142,9 +142,14 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
+// + name: MappingSchema
+//   in: body
+//   description: Mapping parameters
+//   schema:
+//     type: MappingSchema
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingCreateSuccessResponse
+//   400: body:FailureResponse
 func (mpc *MappingController) AddMapping(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableMappingSchema{}
@@ -167,7 +172,7 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation PUT /mapping/protocol/{guid} mapping mappingUpdateMappingAgainstGUID
+// swagger:route PUT /mapping/protocol/{guid} mapping mappingUpdateMappingAgainstGUID
 //
 // Update mapping using guid
 // ---
@@ -176,12 +181,17 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
 //   required: true
 //   type: string
+// + name: MappingSchema
+//   in: body
+//   description: Mapping parameters
+//   schema:
+//     type: MappingSchema
 // Security:
 // - bearer: []
 //
@@ -191,8 +201,8 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingUpdateSuccessResponse
+//   400: body:FailureResponse
 func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
@@ -218,7 +228,7 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation DELETE /mapping/protocol/{guid} mapping mappingDeleteMappingAgainstGUID
+// swagger:route DELETE /mapping/protocol/{guid} mapping mappingDeleteMappingAgainstGUID
 //
 // Delete mapping using guid
 // ---
@@ -227,7 +237,7 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of mapping
@@ -242,8 +252,8 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:MappingDeleteSuccessResponse
+//   400: body:FailureResponse
 func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
@@ -257,7 +267,7 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /smart/search/tag/{hepid}/{profile} mapping mappingGetSmartHepProfile
+// swagger:route GET /smart/search/tag/{hepid}/{profile} mapping mappingGetSmartHepProfile
 //
 // Get smart hep profile using hepid and profile
 // ---
@@ -266,13 +276,13 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: hepid
+// + name: hepid
 //   in: path
 //   example: 1
 //   description: hepid
 //   required: true
 //   type: string
-// - name: profile
+// + name: profile
 //   in: path
 //   example:
 //   description: profile
@@ -287,8 +297,8 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:SmartSearchFieldList
+//   400: body:FailureResponse
 func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
 	hepid := url.QueryEscape(c.Param("hepid"))

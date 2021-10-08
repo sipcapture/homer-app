@@ -38,8 +38,8 @@ type DashBoardController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:DashboardElements
-//   '400': body:FailureResponse
+//   200: body:DashboardElementList
+//   400: body:FailureResponse
 func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 	cc := c.(model.AppContext)
@@ -68,7 +68,7 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 }
 
-// swagger:operation GET /dashboard/store/{dashboardId} dashboard dashboardGetDashBoard
+// swagger:route GET /dashboard/store/{dashboardId} dashboard dashboardGetDashBoard
 //
 // Get dashboard by param
 // ---
@@ -77,10 +77,10 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: dashboard param
+// + name: dashboard ID
 //   in: path
 //   example: home
-//   description: param of dashboard
+//   description: ID of dashboard
 //   required: true
 //   type: string
 // Security:
@@ -92,8 +92,8 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:UserSettings
-//   '400': body:FailureResponse
+//   200: body:DashboardElement
+//   400: body:FailureResponse
 func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
@@ -136,7 +136,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 }
 
-// swagger:operation POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
+// swagger:route POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
 //
 // Add dashboard
 // ---
@@ -145,16 +145,16 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: dashboard param
+// + name: dashboard ID
 //   in: path
 //   example: home
-//   description: the param of dashboard
+//   description: the ID of dashboard
 //   required: true
 //   type: string
-// - name: dashboard data
+// + name: dashboard data
 //   in: body
 //   schema:
-//     type: string
+//     type: DashboardElement
 //   required: true
 //   description: json of dashboard
 // Security:
@@ -166,8 +166,8 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:UserSettings
-//   '400': body:FailureResponse
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
 func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
@@ -196,7 +196,7 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
-// swagger:operation POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
+// swagger:route PUT /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
 //
 // Add dashboard
 // ---
@@ -205,16 +205,16 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: dashboard param
+// + name: dashboard ID
 //   in: path
 //   example: home
-//   description: the param of dashboard
+//   description: the ID of dashboard
 //   required: true
 //   type: string
-// - name: dashboard data
+// + name: dashboard data
 //   in: body
 //   schema:
-//     type: string
+//     type: DashboardElement
 //   required: true
 //   description: json of dashboard
 // Security:
@@ -226,8 +226,8 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:UserSettings
-//   '400': body:FailureResponse
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
 func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
@@ -254,7 +254,7 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 }
 
-// swagger:operation DELETE /dashboard/store/{dashboardId} dashboard dashboardDeleteDashboard
+// swagger:route DELETE /dashboard/store/{dashboardId} dashboard dashboardDeleteDashboard
 //
 // Delete dashboard
 // ---
@@ -263,10 +263,10 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: dashboard param
+// + name: dashboard ID
 //   in: path
 //   example: home
-//   description: the param of dashboard
+//   description: the ID of dashboard
 //   required: true
 //   type: string
 // Security:
@@ -278,8 +278,8 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:SuccessResponse
-//   '400': body:FailureResponse
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
 func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)

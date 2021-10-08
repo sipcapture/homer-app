@@ -34,8 +34,8 @@ type UserController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:ListUsers
-//   '400': body:FailureResponse
+//   200: body:ListUsers
+//   400: body:FailureResponse
 func (uc *UserController) GetUser(c echo.Context) error {
 
 	userName, isAdmin := auth.IsRequestAdmin(c)
@@ -53,7 +53,7 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
 }
 
-// swagger:operation POST /users user userCreateUser
+// swagger:route POST /users user userCreateUser
 //
 // Create a New user
 // ---
@@ -62,11 +62,11 @@ func (uc *UserController) GetUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: userstruct
+// + name: CreateUserStruct
 //   in: body
 //   description: user structure
 //   schema:
-//     "$ref": "#/definitions/CreateUserStruct"
+//     type: CreateUserStruct
 //   required: true
 // Security:
 // - bearer: []
@@ -77,8 +77,8 @@ func (uc *UserController) GetUser(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:SuccessResponse
-//   '400': body:FailureResponse
+//   201: body:UserCreateSuccessResponse
+//   400: body:FailureResponse
 func (uc *UserController) CreateUser(c echo.Context) error {
 
 	// Stub an user to be populated from the body
@@ -103,7 +103,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }
 
-// swagger:operation PUT /users/{userGuid} user userUpdateUser
+// swagger:route PUT /users/{userGuid} user userUpdateUser
 //
 // Update an existing user
 // ---
@@ -112,13 +112,13 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: userGuid
+// + name: userGuid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: uuid of the user to update
 //   required: true
 //   type: string
-// - name: createUserStruct
+// + name: createUserStruct
 //   in: body
 //   description: user parameters
 //   schema:
@@ -133,8 +133,8 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:SuccessResponse
-//   '400': body:FailureResponse
+//   201: body:UserUpdateSuccessResponse
+//   400: body:FailureResponse
 func (uc *UserController) UpdateUser(c echo.Context) error {
 
 	// Stub an user to be populated from the body
@@ -159,7 +159,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation DELETE /users/{userGuid} user userDeleteUser
+// swagger:route DELETE /users/{userGuid} user userDeleteUser
 //
 // Delete an existing User
 // ---
@@ -168,7 +168,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: userGuid
+// + name: userGuid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: uuid of the user to update
@@ -183,8 +183,8 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:SuccessResponse
-//   '400': body:FailureResponse
+//   201: body:UserDeleteSuccessResponse
+//   400: body:FailureResponse
 func (uc *UserController) DeleteUser(c echo.Context) error {
 	u := model.TableUser{}
 
@@ -196,7 +196,7 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:operation POST /auth user auth userLoginUser
+// swagger:route POST /auth user auth userLoginUser
 //
 // Returns a JWT Token and UUID attached to user
 // ---
@@ -205,15 +205,15 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: userLoginStruct
+// + name: userLoginStruct
 //   in: body
 //   description: user login structure
 //   schema:
-//     "$ref": "#/definitions/UserLogin"
+//      type: UserLogin
 //   required: true
 // responses:
-//   '201': body:UserLoginSuccessResponse
-//   '400': body:FailureResponse
+//   201: body:UserLoginSuccessResponse
+//   400: body:FailureResponse
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {
@@ -265,7 +265,7 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 //      in: header
 //      name: Auth-Token
 //
-// Responses:
+// responses:
 //   200: body:SuccessResponse
 //   400: body:FailureResponse
 func (uc *UserController) GetAuthTypeList(c echo.Context) error {

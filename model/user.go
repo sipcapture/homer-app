@@ -50,8 +50,10 @@ type HTTPAUTHResp struct {
 // swagger:model UserLoginSuccessResponse
 type UserTokenSuccessfulResponse struct {
 	// the token
+	// example: JWT Token
 	Token string `json:"token"`
 	// the uuid
+	// example: b9f6q23a-0bde-41ce-cd36-da3dbc17ea12
 	Scope string `json:"scope"`
 	// the uuid
 	User struct {
@@ -87,10 +89,26 @@ type UserloginDetails struct {
 	Password string `json:"password" validate:"required"`
 }
 
-// swagger:model SuccessResponse
+// swagger:model UserCreateSuccessResponse
 type UserCreateSuccessfulResponse struct {
-	// count
+	// example: af72057b-2745-0a1b-b674-56586aadec57
 	Data string `json:"data"`
-	// the data
+	// example: successfully created user
+	Message string `json:"message"`
+}
+
+// swagger:model UserUpdateSuccessResponse
+type UserUpdateSuccessfulResponse struct {
+	// example: af72057b-2745-0a1b-b674-56586aadec57
+	Data string `json:"data"`
+	// example: successfully updated user
+	Message string `json:"message"`
+}
+
+// swagger:model UserDeleteSuccessResponse
+type UserDeleteSuccessfulResponse struct {
+	// example: af72057b-2745-0a1b-b674-56586aadec57
+	Data string `json:"data"`
+	// example: successfully deleted user
 	Message string `json:"message"`
 }

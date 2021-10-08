@@ -27,7 +27,7 @@ type SearchController struct {
 	AliasService   *service.AliasService
 }
 
-// swagger:operation POST /search/call/data search searchSearchData
+// swagger:route POST /search/call/data search searchSearchData
 //
 // Returns data based upon filtered json
 // ---
@@ -35,22 +35,27 @@ type SearchController struct {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchTransactionRequest
+//   in: body
+//   type: object
+//   description: SearchTransactionRequest parameters
+//   schema:
+//     type: SearchTransactionRequest
+//   required: true
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:SearchCallData
+//   400: body:FailureResponse
 func (sc *SearchController) SearchData(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -96,7 +101,7 @@ func inc(ip net.IP) {
 	}
 }
 
-// swagger:operation POST /search/call/message search searchGetMessageById
+// swagger:route POST /search/call/message search searchGetMessageById
 //
 // Returns message data based upon filtered json
 // ---
@@ -105,21 +110,25 @@ func inc(ip net.IP) {
 // produces:
 // - application/json
 // parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:SearchCallData
+//   400: body:UserLoginFailureResponse
 func (sc *SearchController) GetMessageById(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -137,7 +146,7 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation POST /search/call/decode/message search searchGetDecodeMessageById
+// swagger:route POST /search/call/decode/message search searchGetDecodeMessageById
 //
 // Returns data based upon filtered json
 // ---
@@ -145,22 +154,26 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:MessageDecoded
+//   400: body:FailureResponse
 func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -177,7 +190,7 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation POST /call/transaction search searchGetTransaction
+// swagger:route POST /call/transaction search searchGetTransaction
 //
 // Returns transaction data based upon filtered json
 // ---
@@ -185,22 +198,26 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchRequest
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:SearchTransaction
+//   400: body:FailureResponse
 func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	transactionObject := model.SearchObject{}
@@ -241,7 +258,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 }
 
-// swagger:operation POST /call/report/qos search searchGetTransactionQos
+// swagger:route POST /call/report/qos search searchGetTransactionQos
 //
 // Returns qos data based upon filtered json
 // ---
@@ -249,22 +266,27 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchRequest
+//   required: true
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:SearchTransactionQos
+//   400: body:FailureResponse
 func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -283,7 +305,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 }
 
-// swagger:operation POST /call/report/log search searchGetTransactionLog
+// swagger:route POST /call/report/log search searchGetTransactionLog
 //
 // Returns log data based upon filtered json
 // ---
@@ -291,22 +313,27 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchRequest
+//   required: true
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:SearchTransactionLogList
+//   400: body:FailureResponse
 func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -336,30 +363,35 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:operation POST /export/call/messages/pcap search searchGetMessagesAsPCap
+// swagger:route POST /export/call/messages/pcap search searchGetMessagesAsPCap
 //
 // Returns pcap data based upon filtered json
 // ---
 // consumes:
 // - application/json
 // produces:
-// - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// - application/octet-stream
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchRequest
+//   required: true
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:PCAPResponse
+//   400: body:FailureResponse
 func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -394,30 +426,35 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 }
 
-// swagger:operation POST /export/call/messages/text search searchGetMessagesAsText
+// swagger:route POST /export/call/messages/text search searchGetMessagesAsText
 //
 // Returns text data based upon filtered json
 // ---
 // consumes:
 // - application/json
 // produces:
-// - application/json
-// parameters:
-// - name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
-//     "$ref": "#/definitions/SearchCallData"
-//   required: true
+// - application/octet-stream
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
+//
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchRequest
+//   required: true
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:TextResponse
+//   400: body:FailureResponse
 func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -481,7 +518,7 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 //      in: header
 //      name: Auth-Token
 //
-// Responses:
+// responses:
 //   201: body:ListUsers
 //   400: body:FailureResponse
 func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
@@ -553,7 +590,7 @@ func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 //      in: header
 //      name: Auth-Token
 //
-// Responses:
+// responses:
 //   201: body:ListUsers
 //   400: body:FailureResponse
 func (sc *SearchController) GetDataAsPCapNow(c echo.Context) error {

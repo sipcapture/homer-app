@@ -24,3 +24,8 @@ type TableAgentLocationSession struct {
 	ExpireDate time.Time `gorm:"column:expire_date;not null" json:"expire_date"`
 	Active     int       `gorm:"column:active;type:int;default:1" json:"active"`
 }
+
+// swagger:model AgentsLocationList
+type TableAgentLocationSessionList struct {
+	Data []TableAgentLocationSession `json:"data"`
+}

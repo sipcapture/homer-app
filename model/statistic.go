@@ -31,7 +31,7 @@ type StatisticSearchObject struct {
 		Precision int `json:"precision"`
 		Search    struct {
 			Database string `json:"database"`
-		} `json:"search`
+		} `json:"search"`
 		Bfrom int  `json:"bfrom"`
 		Total bool `json:"total"`
 	} `json:"param"`

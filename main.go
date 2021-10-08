@@ -8,8 +8,6 @@
 //     Version: 1.1.2
 //     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
 //	   Copyright: QXIP B.V. 2019-2020
-//     Contact: Aqs <aqsyounas@gmail.com>
-//     Contact: Alexandr Dubovikov <alexandr.dubovikov@gmail.com>
 //
 //     Consumes:
 //     - application/json

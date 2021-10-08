@@ -30,3 +30,6 @@ type TableGlobalSettings struct {
 
 	Data json.RawMessage `gorm:"column:data;type:json" json:"data"`
 }
+
+// swagger:model GlobalSettingsStructList
+type GlobalSettingsStructList []TableGlobalSettings

@@ -20,20 +20,20 @@ type AliasController struct {
 	AliasService *service.AliasService
 }
 
-// swagger:operation POST /alias alias aliasAddAlias
+// swagger:route POST /alias alias aliasAddAlias
 //
-// Add alias
+// Adds alias to system
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: aliasstruct
+// + name: AliasStruct
 //   in: body
-//   description: alias parameters
+//   description: AliasStruct parameters
 //   schema:
-//     "$ref": "#/definitions/AliasStruct"
+//      type: AliasStruct
 //   required: true
 // Security:
 // - bearer: []
@@ -43,9 +43,10 @@ type AliasController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// responses:
-//   '200': body:UserLoginSuccessResponse
-//   '401': body:UserLoginFailureResponse
+//
+// Responses:
+//   201: body:AliasCreationSuccessResponse
+//   401: body:FailureResponse
 func (alc *AliasController) AddAlias(c echo.Context) error {
 
 	aliasObject := model.TableAlias{}
@@ -63,19 +64,19 @@ func (alc *AliasController) AddAlias(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:operation DELETE /alias/{guid} alias aliasDeleteAlias
+// swagger:route DELETE /alias/{guid} alias aliasDeleteAlias
 //
-// Delete alias
+// delete an alias based upon guid
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of the alias
+//   description: guid of the alias to delete
 //   required: true
 //   type: string
 // Security:
@@ -86,8 +87,10 @@ func (alc *AliasController) AddAlias(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// responses:
-//   '201': body:AliasStruct
+//
+// Responses:
+//   201: body:AliasDeleteSuccessResponse
+//   401: body:FailureResponse
 func (als *AliasController) DeleteAlias(c echo.Context) error {
 
 	aliasObject := model.TableAlias{}
@@ -112,26 +115,26 @@ func (als *AliasController) DeleteAlias(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply.String())
 }
 
-// swagger:operation PUT /alias/{guid} alias aliasUpdateAlias
+// swagger:route PUT /alias/{guid} alias aliasUpdateAlias
 //
-// Update alias
+// Update an existing alias based upon the lookup
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
-//   description: uuid of the alias to update
+//   description: uuid of the Alias to update
 //   required: true
 //   type: string
-// - name: aliasStruct
+// + name: AliasStruct
 //   in: body
-//   description: alias parameters
+//   description: AliasStruct parameters
 //   schema:
-//     "$ref": "#/definitions/AliasStruct"
+//      type: AliasStruct
 //   required: true
 // Security:
 // - bearer: []
@@ -141,8 +144,10 @@ func (als *AliasController) DeleteAlias(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// responses:
-//   '201': body:AliasStruct
+//
+// Responses:
+//   201: body:AliasUpdateSuccessResponse
+//   401: body:FailureResponse
 func (als *AliasController) UpdateAlias(c echo.Context) error {
 	aliasObject := model.TableAlias{}
 	if err := c.Bind(&aliasObject); err != nil {
@@ -192,7 +197,7 @@ func (als *AliasController) UpdateAlias(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:AliasStruct
+//   200: body:AliasStructList
 func (alc *AliasController) GetAllAlias(c echo.Context) error {
 
 	alias, _ := alc.AliasService.GetAll()

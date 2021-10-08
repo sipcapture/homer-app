@@ -2,8 +2,9 @@ package controllerv1
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/net/websocket"

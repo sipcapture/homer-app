@@ -13,10 +13,6 @@
   "info": {
     "description": "Homer-App User interface for WEB AI",
     "title": "Homer-App",
-    "contact": {
-      "name": "Aqs",
-      "email": "aqsyounas@gmail.com"
-    },
     "license": {
       "name": "AGPL",
       "url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
@@ -30,15 +26,10 @@
       "get": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
             "SecurityDefinitions": []
           },
           {
-            "bearer": []
+            "JWT": []
           },
           {
             "type": [
@@ -54,9 +45,27 @@
             "in": [
               "header"
             ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Returns data from server",
         "consumes": [
           "application/json"
         ],
@@ -64,10 +73,23 @@
           "application/json"
         ],
         "tags": [
-          "profile"
+          "Admin"
         ],
-        "operationId": "profileGetDashboardList",
-        "responses": {}
+        "operationId": "ListProfiles",
+        "responses": {
+          "201": {
+            "description": "HepsubSchema",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchema"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/advanced": {
@@ -100,15 +122,22 @@
             ]
           }
         ],
-        "description": "Get all advanced items",
+        "description": "Returns advanced setting of user",
         "produces": [
           "application/json"
         ],
         "tags": [
-          "advanced"
+          "Advanced"
         ],
-        "operationId": "advancedGetAll",
-        "responses": {}
+        "operationId": "ListAdvancedSettings",
+        "responses": {
+          "201": {
+            "description": "GlobalSettingsStructList",
+            "schema": {
+              "$ref": "#/definitions/GlobalSettingsStructList"
+            }
+          }
+        }
       },
       "post": {
         "security": [
@@ -243,12 +272,7 @@
       }
     },
     "/agent/search/{guid}/{type}": {
-      "post": {
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+      "get": {
         "description": "Get agent by guid and type",
         "consumes": [
           "application/json"
@@ -322,7 +346,20 @@
           "agent"
         ],
         "operationId": "agentsSubGetAgentsub",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentsLocationList",
+            "schema": {
+              "$ref": "#/definitions/AgentsLocationList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
@@ -388,7 +425,30 @@
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update agent by guid",
@@ -405,14 +465,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of agent",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentsLocation",
+            "schema": {
+              "$ref": "#/definitions/AgentsLocation"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
@@ -513,15 +589,45 @@
           "alias"
         ],
         "operationId": "aliasGetAllAlias",
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "AliasStructList",
+            "schema": {
+              "$ref": "#/definitions/AliasStructList"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
-        "description": "Add alias",
+        "description": "Adds alias to system",
         "consumes": [
           "application/json"
         ],
@@ -534,26 +640,65 @@
         "operationId": "aliasAddAlias",
         "parameters": [
           {
-            "description": "alias parameters",
-            "name": "aliasstruct",
+            "type": "object",
+            "description": "AliasStruct parameters",
+            "name": "AliasStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "AliasStruct parameters",
+              "type": "object",
               "$ref": "#/definitions/AliasStruct"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AliasCreationSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/AliasCreationSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/alias/{guid}": {
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
-        "description": "Update alias",
+        "description": "Update an existing alias based upon the lookup",
         "consumes": [
           "application/json"
         ],
@@ -567,31 +712,73 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
-            "description": "uuid of the alias to update",
+            "description": "uuid of the Alias to update",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "uuid of the Alias to update",
+              "type": "string"
+            }
           },
           {
-            "description": "alias parameters",
-            "name": "aliasStruct",
+            "type": "object",
+            "description": "AliasStruct parameters",
+            "name": "AliasStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "AliasStruct parameters",
+              "type": "object",
               "$ref": "#/definitions/AliasStruct"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AliasUpdateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/AliasUpdateSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
-        "description": "Delete alias",
+        "description": "delete an alias based upon guid",
         "consumes": [
           "application/json"
         ],
@@ -605,14 +792,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
-            "description": "guid of the alias",
+            "description": "guid of the alias to delete",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of the alias to delete",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AliasDeleteSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/AliasDeleteSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/api/v3/proxy/grafana/search/:uid": {
@@ -663,16 +866,32 @@
         "operationId": "userLoginUser",
         "parameters": [
           {
+            "type": "object",
             "description": "user login structure",
             "name": "userLoginStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "user login structure",
+              "type": "object",
               "$ref": "#/definitions/UserLogin"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserLoginSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/UserLoginSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/auth/type/list": {
@@ -747,6 +966,34 @@
     },
     "/call/report/log": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns log data based upon filtered json",
         "consumes": [
           "application/json"
@@ -766,15 +1013,58 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SearchTransactionLogList",
+            "schema": {
+              "$ref": "#/definitions/SearchTransactionLogList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/call/report/qos": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns qos data based upon filtered json",
         "consumes": [
           "application/json"
@@ -794,15 +1084,58 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SearchTransactionQos",
+            "schema": {
+              "$ref": "#/definitions/SearchTransactionQos"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/call/transaction": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns transaction data based upon filtered json",
         "consumes": [
           "application/json"
@@ -822,11 +1155,26 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SearchTransaction",
+            "schema": {
+              "$ref": "#/definitions/SearchTransaction"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/dashboard/info": {
@@ -870,14 +1218,50 @@
           "dashboard"
         ],
         "operationId": "dashboardGetDashBoardLists",
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "DashboardElementList",
+            "schema": {
+              "$ref": "#/definitions/DashboardElementList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/dashboard/store/{dashboardId}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get dashboard by param",
@@ -894,19 +1278,58 @@
         "parameters": [
           {
             "type": "string",
-            "example": "home",
-            "description": "param of dashboard",
-            "name": "dashboard param",
+            "description": "ID of dashboard",
+            "name": "dashboard ID",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "ID of dashboard",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "DashboardElement",
+            "schema": {
+              "$ref": "#/definitions/DashboardElement"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
-      "post": {
+      "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Add dashboard",
@@ -923,28 +1346,150 @@
         "parameters": [
           {
             "type": "string",
-            "example": "home",
-            "description": "the param of dashboard",
-            "name": "dashboard param",
+            "description": "the ID of dashboard",
+            "name": "dashboard ID",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "the ID of dashboard",
+              "type": "string"
+            }
           },
           {
+            "type": "object",
             "description": "json of dashboard",
             "name": "dashboard data",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "string"
+              "description": "json of dashboard",
+              "type": "object",
+              "$ref": "#/definitions/DashboardElement"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Add dashboard",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "dashboard"
+        ],
+        "operationId": "dashboardInsertDashboard",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "the ID of dashboard",
+            "name": "dashboard ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "description": "the ID of dashboard",
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "description": "json of dashboard",
+            "name": "dashboard data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "json of dashboard",
+              "type": "object",
+              "$ref": "#/definitions/DashboardElement"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete dashboard",
@@ -961,14 +1506,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "home",
-            "description": "the param of dashboard",
-            "name": "dashboard param",
+            "description": "the ID of dashboard",
+            "name": "dashboard ID",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "the ID of dashboard",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/database/node/list": {
@@ -1012,17 +1573,58 @@
           "profile"
         ],
         "operationId": "profileGetDBNodeList",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "NodeList",
+            "schema": {
+              "$ref": "#/definitions/NodeList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/export/call/messages/pcap": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns pcap data based upon filtered json",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "application/json"
+          "application/octet-stream"
         ],
         "tags": [
           "search"
@@ -1036,21 +1638,64 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "PCAPResponse",
+            "schema": {
+              "$ref": "#/definitions/PCAPResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/export/call/messages/text": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns text data based upon filtered json",
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "application/json"
+          "application/octet-stream"
         ],
         "tags": [
           "search"
@@ -1064,11 +1709,26 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "TextResponse",
+            "schema": {
+              "$ref": "#/definitions/TextResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/hepsub/protocol": {
@@ -1112,12 +1772,48 @@
           "hep"
         ],
         "operationId": "hepSubGetHepSub",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubSchemaList",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchemaList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Add new Hepsub information",
@@ -1133,22 +1829,61 @@
         "operationId": "hepSubAddHepSub",
         "parameters": [
           {
+            "type": "object",
             "description": "hepSub parameters",
-            "name": "hepSubStruct",
+            "name": "HepsubSchema",
             "in": "body",
             "schema": {
+              "description": "hepSub parameters",
+              "type": "object",
               "$ref": "#/definitions/HepsubSchema"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubCreateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/HepsubCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/hepsub/protocol/{guid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get hepsub by guid",
@@ -1165,19 +1900,58 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of item",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubSchema",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchema"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update hepsub by guid",
@@ -1194,27 +1968,69 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of hepsub item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of hepsub item",
+              "type": "string"
+            }
           },
           {
+            "type": "object",
             "description": "hepSub parameters",
-            "name": "hepSubStruct",
+            "name": "HepsubSchema",
             "in": "body",
             "schema": {
+              "description": "hepSub parameters",
+              "type": "object",
               "$ref": "#/definitions/HepsubSchema"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubUpdateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/HepsubUpdateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete hepsub by guid",
@@ -1231,21 +2047,60 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of hepsub item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of hepsub item",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubDeleteSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/HepsubDeleteSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/hepsub/protocol/{id}/{transaction}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get hepsub by id and transaction",
@@ -1262,22 +2117,41 @@
         "parameters": [
           {
             "type": "string",
-            "example": 1,
             "description": "hepid",
             "name": "id",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "hepid",
+              "type": "string"
+            }
           },
           {
             "type": "string",
-            "example": "call",
             "description": "profile",
             "name": "transaction",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "profile",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "HepsubSchema",
+            "schema": {
+              "$ref": "#/definitions/HepsubSchema"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/hepsub/search": {
@@ -1510,12 +2384,71 @@
           "mapping"
         ],
         "operationId": "mappingGetMapping",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingSchemaList",
+            "schema": {
+              "$ref": "#/definitions/MappingSchemaList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "+ name": [
+              "MappingSchema"
+            ]
+          },
+          {
+            "in": [
+              "body"
+            ]
+          },
+          {
+            "description": [
+              "Mapping"
+            ]
+          },
+          {
+            "schema": []
+          },
+          {
+            "type": [
+              "MappingSchema"
+            ]
           }
         ],
         "description": "Add mapping",
@@ -1529,14 +2462,50 @@
           "mapping"
         ],
         "operationId": "mappingAddMapping",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingCreateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/MappingCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/mapping/protocol/{guid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get mapping using guid",
@@ -1553,19 +2522,58 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of mapping",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of mapping",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingSchemaList",
+            "schema": {
+              "$ref": "#/definitions/MappingSchemaList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update mapping using guid",
@@ -1582,19 +2590,69 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of mapping",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of mapping",
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "description": "Mapping parameters",
+            "name": "MappingSchema",
+            "in": "body",
+            "schema": {
+              "description": "Mapping parameters",
+              "type": "object",
+              "$ref": "#/definitions/MappingSchema"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingUpdateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/MappingUpdateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete mapping using guid",
@@ -1611,21 +2669,60 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of mapping",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of mapping",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingDeleteSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/MappingDeleteSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/mapping/protocol/{id}/{transaction}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get mapping using id and transaction",
@@ -1641,15 +2738,42 @@
         "operationId": "mappingGetMappingFields",
         "parameters": [
           {
+            "type": "number",
+            "description": "hepid",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "description": "hepid",
+              "type": "number"
+            }
+          },
+          {
             "type": "string",
-            "example": "call",
             "description": "profile",
             "name": "transaction",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "profile",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "MappingSchemaList",
+            "schema": {
+              "$ref": "#/definitions/MappingSchemaList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/prometheus/data": {
@@ -1962,6 +3086,34 @@
     },
     "/search/call/data": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns data based upon filtered json",
         "consumes": [
           "application/json"
@@ -1976,20 +3128,63 @@
         "parameters": [
           {
             "type": "object",
-            "description": "SearchObject parameters",
-            "name": "SearchObject",
+            "description": "SearchTransactionRequest parameters",
+            "name": "SearchTransactionRequest",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchTransactionRequest parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchTransactionRequest"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SearchCallData",
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/call/decode/message": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns data based upon filtered json",
         "consumes": [
           "application/json"
@@ -2009,15 +3204,58 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "MessageDecoded",
+            "schema": {
+              "$ref": "#/definitions/MessageDecoded"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/call/message": {
       "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Returns message data based upon filtered json",
         "consumes": [
           "application/json"
@@ -2037,11 +3275,26 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/SearchCallData"
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "SearchCallData",
+            "schema": {
+              "$ref": "#/definitions/SearchCallData"
+            }
+          },
+          "400": {
+            "description": "UserLoginFailureResponse",
+            "schema": {
+              "$ref": "#/definitions/UserLoginFailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/remote/data": {
@@ -2168,7 +3421,30 @@
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get smart hep profile using hepid and profile",
@@ -2185,21 +3461,41 @@
         "parameters": [
           {
             "type": "string",
-            "example": 1,
             "description": "hepid",
             "name": "hepid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "hepid",
+              "type": "string"
+            }
           },
           {
             "type": "string",
             "description": "profile",
             "name": "profile",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "profile",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "SmartSearchFieldList",
+            "schema": {
+              "$ref": "#/definitions/SmartSearchFieldList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/statistic/_db": {
@@ -2812,12 +4108,48 @@
           "user"
         ],
         "operationId": "userGetUser",
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Create a New user",
@@ -2833,23 +4165,62 @@
         "operationId": "userCreateUser",
         "parameters": [
           {
+            "type": "object",
             "description": "user structure",
-            "name": "userstruct",
+            "name": "CreateUserStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "user structure",
+              "type": "object",
               "$ref": "#/definitions/CreateUserStruct"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserCreateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/UserCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/users/{userGuid}": {
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update an existing user",
@@ -2866,28 +4237,64 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "uuid of the user to update",
             "name": "userGuid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "uuid of the user to update",
+              "type": "string"
+            }
           },
           {
             "description": "user parameters",
             "name": "createUserStruct",
             "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CreateUserStruct"
-            }
+            "required": true
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserUpdateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/UserUpdateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete an existing User",
@@ -2904,14 +4311,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "uuid of the user to update",
             "name": "userGuid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "uuid of the user to update",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserDeleteSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/UserDeleteSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/ws": {
@@ -3002,6 +4425,52 @@
       "x-go-name": "TableAgentLocationSession",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "AgentsLocationList": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentsLocation"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-name": "TableAgentLocationSessionList",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AliasCreationSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f2d0a540-bf21-4c0d-ac73-8696ea10855a"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created alias"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AliasDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f2d0a540-bf21-4c0d-ac73-8696ea10855a"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted alias"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "AliasStruct": {
       "type": "object",
       "required": [
@@ -3055,6 +4524,36 @@
         }
       },
       "x-go-name": "TableAlias",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AliasStructList": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AliasStruct"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-name": "TableAliasList",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AliasUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f2d0a540-bf21-4c0d-ac73-8696ea10855a"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated alias"
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "AuthToken": {
@@ -3111,6 +4610,123 @@
         }
       },
       "x-go-name": "TableAuthToken",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "CallElement": {
+      "type": "object",
+      "properties": {
+        "aliasDst": {
+          "type": "string",
+          "x-go-name": "AliasDst",
+          "example": "Support"
+        },
+        "aliasSrc": {
+          "type": "string",
+          "x-go-name": "AliasSrc",
+          "example": "Client"
+        },
+        "create_date": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CreateDate",
+          "example": 1633374982350
+        },
+        "destination": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Destination",
+          "example": 1
+        },
+        "dstHost": {
+          "type": "string",
+          "x-go-name": "DstHost",
+          "example": "179.12.245.132"
+        },
+        "dstId": {
+          "type": "string",
+          "x-go-name": "DstID",
+          "example": "179.12.245.132:5060"
+        },
+        "dstIp": {
+          "type": "string",
+          "x-go-name": "DstIP",
+          "example": "179.12.245.132"
+        },
+        "dstPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "DstPort",
+          "example": 5060
+        },
+        "id": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "ID",
+          "example": 5162
+        },
+        "method": {
+          "type": "string",
+          "x-go-name": "Method",
+          "example": "INVITE"
+        },
+        "method_text": {
+          "type": "string",
+          "x-go-name": "MethodText",
+          "example": "INVITE"
+        },
+        "micro_ts": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MicroTs",
+          "example": 1633374982350
+        },
+        "msg_color": {
+          "type": "string",
+          "x-go-name": "MsgColor",
+          "example": "blue"
+        },
+        "protocol": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Protocol",
+          "example": 17
+        },
+        "ruri_user": {
+          "type": "string",
+          "x-go-name": "RuriUser",
+          "example": "INVITE sip:155@example.com;user=phone SIP/2.0\\r\\n"
+        },
+        "sid": {
+          "type": "string",
+          "x-go-name": "Sid",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "srcHost": {
+          "type": "string",
+          "x-go-name": "SrcHost",
+          "example": "18.12.245.132"
+        },
+        "srcId": {
+          "type": "string",
+          "x-go-name": "SrcID",
+          "example": "18.12.245.132:5060"
+        },
+        "srcIp": {
+          "type": "string",
+          "x-go-name": "SrcIP",
+          "example": "18.12.245.132"
+        },
+        "srcPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "SrcPort",
+          "example": 5060
+        },
+        "table": {
+          "type": "string",
+          "x-go-name": "Table"
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "CreateUserStruct": {
@@ -3172,49 +4788,87 @@
       "x-go-name": "TableUser",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
-    "DashboardElements": {
+    "DashboardElement": {
       "type": "object",
       "properties": {
         "cssclass": {
           "type": "string",
-          "x-go-name": "CssClass"
+          "x-go-name": "CssClass",
+          "example": "fa"
         },
         "href": {
           "type": "string",
-          "x-go-name": "Href"
+          "x-go-name": "Href",
+          "example": "_1631547759877"
         },
         "id": {
           "type": "string",
-          "x-go-name": "Id"
+          "x-go-name": "Id",
+          "example": "_1631547759877"
         },
         "name": {
           "type": "string",
-          "x-go-name": "Name"
+          "x-go-name": "Name",
+          "example": "Search"
         },
         "owner": {
           "type": "string",
-          "x-go-name": "Owner"
+          "x-go-name": "Owner",
+          "example": "admin"
         },
         "param": {
           "type": "string",
-          "x-go-name": "Param"
+          "x-go-name": "Param",
+          "example": "search"
         },
         "shared": {
           "type": "boolean",
-          "x-go-name": "Shared"
+          "x-go-name": "Shared",
+          "example": false
         },
         "type": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Type"
+          "x-go-name": "Type",
+          "example": 1
         },
         "weight": {
           "type": "number",
           "format": "double",
-          "x-go-name": "Weight"
+          "x-go-name": "Weight",
+          "example": 10
         }
       },
       "x-go-name": "DashBoardElement",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "DashboardElementList": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "type": "string",
+          "x-go-name": "Auth",
+          "example": "ok"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DashboardElement"
+          },
+          "x-go-name": "Data"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status",
+          "example": "ok"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Total",
+          "example": 1
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "FailureResponse": {
@@ -3239,6 +4893,11 @@
       },
       "x-go-name": "UserTokenBadResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "File": {
+      "type": "object",
+      "title": "File represents an open file descriptor.",
+      "x-go-package": "os"
     },
     "GlobalSettingsStruct": {
       "type": "object",
@@ -3279,21 +4938,63 @@
       "x-go-name": "TableGlobalSettings",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "GlobalSettingsStructList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GlobalSettingsStruct"
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "HepsubCreateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created hepsub settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "HepsubDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted hepsub settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "HepsubSchema": {
       "type": "object",
       "properties": {
         "guid": {
           "type": "string",
-          "x-go-name": "GUID"
+          "x-go-name": "GUID",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
         },
         "hep_alias": {
           "type": "string",
-          "x-go-name": "HepAlias"
+          "x-go-name": "HepAlias",
+          "example": "SIP"
         },
         "hepid": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Hepid"
+          "x-go-name": "Hepid",
+          "example": 1
         },
         "mapping": {
           "type": "object",
@@ -3301,15 +5002,51 @@
         },
         "profile": {
           "type": "string",
-          "x-go-name": "Profile"
+          "x-go-name": "Profile",
+          "example": "call"
         },
         "version": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Version"
+          "x-go-name": "Version",
+          "example": 1603221345489
         }
       },
       "x-go-name": "TableHepsubSchema",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "HepsubSchemaList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HepsubSchema"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "HepsubUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated hepsub settings"
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "LabelData": {
@@ -3351,6 +5088,38 @@
       "x-go-name": "GetUser",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "MappingCreateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created mapping settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "MappingDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted mapping settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "MappingSchema": {
       "type": "object",
       "properties": {
@@ -3364,7 +5133,8 @@
         },
         "create_table": {
           "type": "string",
-          "x-go-name": "CreateTable"
+          "x-go-name": "CreateTable",
+          "example": "CREATE TABLE test(id integer, data text);"
         },
         "fields_mapping": {
           "type": "object",
@@ -3376,35 +5146,42 @@
         },
         "guid": {
           "type": "string",
-          "x-go-name": "GUID"
+          "x-go-name": "GUID",
+          "example": "a006a250-c261-4052-b1c2-6cb85ed580c2"
         },
         "hep_alias": {
           "type": "string",
-          "x-go-name": "HepAlias"
+          "x-go-name": "HepAlias",
+          "example": "SIP"
         },
         "hepid": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Hepid"
+          "x-go-name": "Hepid",
+          "example": 1
         },
         "partid": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "PartID"
+          "x-go-name": "PartID",
+          "example": 10
         },
         "partition_step": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "PartitionStep"
+          "x-go-name": "PartitionStep",
+          "example": 10
         },
         "profile": {
           "type": "string",
-          "x-go-name": "Profile"
+          "x-go-name": "Profile",
+          "example": "call"
         },
         "retention": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Retention"
+          "x-go-name": "Retention",
+          "example": 10
         },
         "schema_mapping": {
           "type": "object",
@@ -3417,13 +5194,761 @@
         "version": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Version"
+          "x-go-name": "Version",
+          "example": 1
         }
       },
       "x-go-name": "TableMappingSchema",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "MappingSchemaList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count",
+          "example": 1
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MappingSchema"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "MappingUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated mapping settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "MessageDecoded": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "decoded": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_source": {
+                      "type": "object",
+                      "properties": {
+                        "_layers": {
+                          "type": "object",
+                          "properties": {
+                            "eth": {
+                              "type": "object",
+                              "properties": {
+                                "eth.dst": {
+                                  "type": "string",
+                                  "x-go-name": "Dst",
+                                  "example": "06:3d:20:12:10:20"
+                                },
+                                "eth.dst_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "eth.addr": {
+                                      "type": "string",
+                                      "x-go-name": "Add",
+                                      "example": "06:3d:20:12:10:20"
+                                    },
+                                    "eth.addr_resolved": {
+                                      "type": "string",
+                                      "x-go-name": "Addr_resolved",
+                                      "example": "06:3d:20:12:10:20"
+                                    },
+                                    "eth.dst_resolved": {
+                                      "type": "string",
+                                      "x-go-name": "Dst_resolved",
+                                      "example": "06:3d:20:12:10:20"
+                                    },
+                                    "eth.ig": {
+                                      "type": "string",
+                                      "x-go-name": "Ig",
+                                      "example": "0"
+                                    },
+                                    "eth.lg": {
+                                      "type": "string",
+                                      "x-go-name": "Lg",
+                                      "example": "1"
+                                    }
+                                  },
+                                  "x-go-name": "Dst_tree"
+                                },
+                                "eth.src": {
+                                  "type": "string",
+                                  "x-go-name": "Src",
+                                  "example": "02:5d:69:74:20:12"
+                                },
+                                "eth.src_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "eth.addr": {
+                                      "type": "string",
+                                      "x-go-name": "Addr",
+                                      "example": "02:5d:69:74:20:12"
+                                    },
+                                    "eth.addr_resolved": {
+                                      "type": "string",
+                                      "x-go-name": "Addr_resolved",
+                                      "example": "02:5d:69:74:20:12"
+                                    },
+                                    "eth.ig": {
+                                      "type": "string",
+                                      "x-go-name": "Ig",
+                                      "example": "0"
+                                    },
+                                    "eth.lg": {
+                                      "type": "string",
+                                      "x-go-name": "Lg",
+                                      "example": "1"
+                                    },
+                                    "src_resolved": {
+                                      "type": "string",
+                                      "x-go-name": "Src_resolved",
+                                      "example": "02:5d:69:74:20:12"
+                                    }
+                                  },
+                                  "x-go-name": "Src_tree"
+                                },
+                                "eth.type": {
+                                  "type": "string",
+                                  "x-go-name": "Type",
+                                  "example": "\"0x00000800\""
+                                }
+                              },
+                              "x-go-name": "Eth"
+                            },
+                            "frame": {
+                              "type": "object",
+                              "properties": {
+                                "frame.cap_len": {
+                                  "type": "string",
+                                  "x-go-name": "Cap_len",
+                                  "example": "1058"
+                                },
+                                "frame.encap_type": {
+                                  "type": "string",
+                                  "x-go-name": "Encap_type",
+                                  "example": "1"
+                                },
+                                "frame.ignored": {
+                                  "type": "string",
+                                  "x-go-name": "Ignored",
+                                  "example": "0"
+                                },
+                                "frame.interface_id": {
+                                  "type": "string",
+                                  "x-go-name": "Interface_id",
+                                  "example": "0"
+                                },
+                                "frame.interface_id_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "frame.interface_name": {
+                                      "type": "string",
+                                      "x-go-name": "Interface_name",
+                                      "example": "-"
+                                    }
+                                  },
+                                  "x-go-name": "Interface_id_tree"
+                                },
+                                "frame.len": {
+                                  "type": "string",
+                                  "x-go-name": "Len",
+                                  "example": "1058"
+                                },
+                                "frame.marked": {
+                                  "type": "string",
+                                  "x-go-name": "Marked",
+                                  "example": "0"
+                                },
+                                "frame.number": {
+                                  "type": "string",
+                                  "x-go-name": "Number",
+                                  "example": "1"
+                                },
+                                "frame.offset_shift": {
+                                  "type": "string",
+                                  "x-go-name": "Offset_shift",
+                                  "example": "0.000000000"
+                                },
+                                "frame.protocols": {
+                                  "type": "string",
+                                  "x-go-name": "Protocols",
+                                  "example": "eth:ethertype:ip:udp:sip:sdp"
+                                },
+                                "frame.time": {
+                                  "type": "string",
+                                  "x-go-name": "Time",
+                                  "example": "Sep 30, 2021 07:06:10.950000000 UTC"
+                                },
+                                "frame.time_delta": {
+                                  "type": "string",
+                                  "x-go-name": "Time_delta",
+                                  "example": "0.000000000"
+                                },
+                                "frame.time_delta_displayed": {
+                                  "type": "string",
+                                  "x-go-name": "Time_delta_displayed",
+                                  "example": "0.000000000"
+                                },
+                                "frame.time_epoch": {
+                                  "type": "string",
+                                  "x-go-name": "Time_epoch",
+                                  "example": "1632985570.950000000"
+                                },
+                                "frame.time_relative": {
+                                  "type": "string",
+                                  "x-go-name": "Time_relative",
+                                  "example": "0.000000000"
+                                }
+                              },
+                              "x-go-name": "Frame"
+                            },
+                            "ip": {
+                              "type": "object",
+                              "properties": {
+                                "ip.checksum": {
+                                  "type": "string",
+                                  "x-go-name": "Checksum",
+                                  "example": "0x0000ffa5"
+                                },
+                                "ip.checksum.status": {
+                                  "type": "string",
+                                  "x-go-name": "ChceksumStatus",
+                                  "example": "2"
+                                },
+                                "ip.dsfield": {
+                                  "type": "string",
+                                  "x-go-name": "Dsfield",
+                                  "example": "0x0000ffa5"
+                                },
+                                "ip.dsfield_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "ip.dsfield_tree.dscp": {
+                                      "type": "string",
+                                      "x-go-name": "Dscp",
+                                      "example": "0"
+                                    },
+                                    "ip.dsfield_tree.ecn": {
+                                      "type": "string",
+                                      "x-go-name": "Ecn",
+                                      "example": "0"
+                                    }
+                                  },
+                                  "x-go-name": "Dsfield_tree"
+                                },
+                                "ip.dst": {
+                                  "type": "string",
+                                  "x-go-name": "Dst",
+                                  "example": "127.0.0.1"
+                                },
+                                "ip.dst_host": {
+                                  "type": "string",
+                                  "x-go-name": "Dst_host",
+                                  "example": "127.0.0.1"
+                                },
+                                "ip.flags": {
+                                  "type": "string",
+                                  "x-go-name": "Flags",
+                                  "example": "0x00000000"
+                                },
+                                "ip.flags_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "ip.flags_tree.df": {
+                                      "type": "string",
+                                      "x-go-name": "Df",
+                                      "example": "0"
+                                    },
+                                    "ip.flags_tree.mf": {
+                                      "type": "string",
+                                      "x-go-name": "Mf",
+                                      "example": "0"
+                                    },
+                                    "ip.flags_tree.rb": {
+                                      "type": "string",
+                                      "x-go-name": "Rb",
+                                      "example": "0"
+                                    }
+                                  },
+                                  "x-go-name": "Flags_tree"
+                                },
+                                "ip.frag_offset": {
+                                  "type": "string",
+                                  "x-go-name": "Frag_offset",
+                                  "example": "0"
+                                },
+                                "ip.hdr_len": {
+                                  "type": "string",
+                                  "x-go-name": "Hdr_len",
+                                  "example": "20"
+                                },
+                                "ip.host": {
+                                  "type": "string",
+                                  "x-go-name": "Host",
+                                  "example": "127.0.0.1"
+                                },
+                                "ip.id": {
+                                  "type": "string",
+                                  "x-go-name": "Id",
+                                  "example": "0x00000000"
+                                },
+                                "ip.len": {
+                                  "type": "string",
+                                  "x-go-name": "Len",
+                                  "example": "1044"
+                                },
+                                "ip.proto": {
+                                  "type": "string",
+                                  "x-go-name": "Proto",
+                                  "example": "17"
+                                },
+                                "ip.src": {
+                                  "type": "string",
+                                  "x-go-name": "Src",
+                                  "example": "127.0.0.1"
+                                },
+                                "ip.src_host": {
+                                  "type": "string",
+                                  "x-go-name": "Src_host",
+                                  "example": "127.0.0.1"
+                                },
+                                "ip.ttl": {
+                                  "type": "string",
+                                  "x-go-name": "Ttl",
+                                  "example": "54"
+                                },
+                                "ip.version": {
+                                  "type": "string",
+                                  "x-go-name": "Version",
+                                  "example": "4"
+                                }
+                              },
+                              "x-go-name": "Ip"
+                            },
+                            "sip": {
+                              "type": "object",
+                              "properties": {
+                                "sip.Request-line": {
+                                  "type": "string",
+                                  "x-go-name": "Request_line",
+                                  "example": "INVITE sip:196@example.com;user=phone SIP/2.0"
+                                },
+                                "sip.Request-line_tree": {
+                                  "type": "object",
+                                  "properties": {
+                                    "sip.Method": {
+                                      "type": "string",
+                                      "x-go-name": "Method",
+                                      "example": "INVITE"
+                                    },
+                                    "sip.Request-line_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sip.r-uri.host": {
+                                          "type": "string",
+                                          "x-go-name": "Host",
+                                          "example": "example.com"
+                                        },
+                                        "sip.r-uri.user": {
+                                          "type": "string",
+                                          "x-go-name": "User",
+                                          "example": "196"
+                                        }
+                                      },
+                                      "x-go-name": "Ruri_tree"
+                                    },
+                                    "sip.r-uri": {
+                                      "type": "string",
+                                      "x-go-name": "Ruri",
+                                      "example": "sip:196@example.com;user=phone"
+                                    },
+                                    "sip.resend": {
+                                      "type": "string",
+                                      "x-go-name": "Resend",
+                                      "example": "0"
+                                    }
+                                  },
+                                  "x-go-name": "Request_line_tree"
+                                },
+                                "sip.msg_body": {
+                                  "type": "object",
+                                  "properties": {
+                                    "sdp.connection_info": {
+                                      "type": "string",
+                                      "x-go-name": "Connection_info",
+                                      "example": "\"IN IP4 192.168.10.193\""
+                                    },
+                                    "sdp.media": {
+                                      "type": "string",
+                                      "x-go-name": "Media",
+                                      "example": "audio 5004 RTP/AVP 0 8 9 18 101"
+                                    },
+                                    "sdp.media_attr": {
+                                      "type": "string",
+                                      "x-go-name": "Media_attr",
+                                      "example": "fmtp:101 0-15"
+                                    },
+                                    "sdp.media_attr_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sdp.fmtp.parameter": {
+                                          "type": "string",
+                                          "x-go-name": "Parameter",
+                                          "example": "0-15"
+                                        },
+                                        "sdp.media.format": {
+                                          "type": "string",
+                                          "x-go-name": "Format",
+                                          "example": "101"
+                                        },
+                                        "sdp.media_attribute.field": {
+                                          "type": "string",
+                                          "x-go-name": "Field",
+                                          "example": "fmtp"
+                                        }
+                                      },
+                                      "x-go-name": "Media_attr_tree"
+                                    },
+                                    "sdp.media_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sdp.media.format": {
+                                          "type": "string",
+                                          "x-go-name": "Fromat",
+                                          "example": "DynamicRTP-Type-101"
+                                        },
+                                        "sdp.media.media": {
+                                          "type": "string",
+                                          "x-go-name": "Media",
+                                          "example": "audio"
+                                        },
+                                        "sdp.media.port": {
+                                          "type": "string",
+                                          "x-go-name": "Port",
+                                          "example": "5004"
+                                        },
+                                        "sdp.media.port_string": {
+                                          "type": "string",
+                                          "x-go-name": "Port_string",
+                                          "example": "5004"
+                                        },
+                                        "sdp.media.proto": {
+                                          "type": "string",
+                                          "x-go-name": "Proto",
+                                          "example": "RTP/AVP"
+                                        }
+                                      },
+                                      "x-go-name": "Media_tree"
+                                    },
+                                    "sdp.owner": {
+                                      "type": "string",
+                                      "x-go-name": "Owner",
+                                      "example": "hepgenjs 8000 8000 IN IP4 192.168.10.193"
+                                    },
+                                    "sdp.owner_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sdp.owner.address": {
+                                          "type": "string",
+                                          "x-go-name": "Address",
+                                          "example": "192.168.10.193"
+                                        },
+                                        "sdp.owner.address_type": {
+                                          "type": "string",
+                                          "x-go-name": "Address_type",
+                                          "example": "IP4"
+                                        },
+                                        "sdp.owner.network_type": {
+                                          "type": "string",
+                                          "x-go-name": "Network_type",
+                                          "example": "IN"
+                                        },
+                                        "sdp.owner.sessionid": {
+                                          "type": "string",
+                                          "x-go-name": "SessionID",
+                                          "example": "8000"
+                                        },
+                                        "sdp.owner.username": {
+                                          "type": "string",
+                                          "x-go-name": "Username",
+                                          "example": "hepgenjs"
+                                        },
+                                        "sdp.owner.version": {
+                                          "type": "string",
+                                          "x-go-name": "Version",
+                                          "example": "8000"
+                                        }
+                                      },
+                                      "x-go-name": "Owner_tree"
+                                    },
+                                    "sdp.session_name": {
+                                      "type": "string",
+                                      "x-go-name": "Session_name",
+                                      "example": "\"SIP Call\""
+                                    },
+                                    "sdp.time": {
+                                      "type": "string",
+                                      "x-go-name": "Time",
+                                      "example": "\"0 0\""
+                                    },
+                                    "sdp.time_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sdp.time.start": {
+                                          "type": "string",
+                                          "x-go-name": "Start",
+                                          "example": "0"
+                                        },
+                                        "sdp.time.stop": {
+                                          "type": "string",
+                                          "x-go-name": "Stop",
+                                          "example": "0"
+                                        }
+                                      },
+                                      "x-go-name": "Time_tree"
+                                    },
+                                    "sdp.version": {
+                                      "type": "string",
+                                      "x-go-name": "Version",
+                                      "example": "0"
+                                    },
+                                    "sip.connection_info_tree": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sdp.connection_info.address": {
+                                          "type": "string",
+                                          "x-go-name": "Address",
+                                          "example": "192.168.10.193"
+                                        },
+                                        "sdp.connection_info.address_type": {
+                                          "type": "string",
+                                          "x-go-name": "Address_type",
+                                          "example": "IP4"
+                                        },
+                                        "sdp.connection_info.network_type": {
+                                          "type": "string",
+                                          "x-go-name": "Network_type",
+                                          "example": "IN"
+                                        }
+                                      },
+                                      "x-go-name": "Connection_info_tree"
+                                    }
+                                  },
+                                  "x-go-name": "Msg_body"
+                                },
+                                "sip.msg_hdr": {
+                                  "type": "string",
+                                  "x-go-name": "Msg_hdr",
+                                  "example": "\"Via: SIP/2.0/UDP 192.168.10.193:5064;branch=z9hG4bK923381359;rport\\r\\nFrom: \u003csip:hepgenjs@example.com;user=phone\u003e;tag=415746302\\r\\nTo: \u003csip:196@example.com;user=phone\u003e\\r\\nCall-ID: a6xh18@127.0.0.1\\r\\nCSeq: 440 INVITE\\r\\nContact: \u003csip:hepgenjs@192.168.10.193:5064;user=phone\u003e\\r\\nMax-Forwards: 70\\r\\nUser-Agent: HEPGEN.JS@example.com\\r\\nPrivacy: none\\r\\nP-Preferred-Identity: \u003csip:hepgenjs@example.com;user=phone\u003e\\r\\nSupported: replaces, path, timer, eventlist\\r\\nAllow: INVITE, ACK, OPTIONS, CANCEL, BYE, SUBSCRIBE, NOTIFY, INFO, REFER, UPDATE, MESSAGE\\r\\nContent-Type: application/sdp\\r\\nAccept: application/sdp, application/dtmf-relay\\r\\nContent-Length:   313\\r\\n\\r\\nv=0\\r\\no=hepgenjs 8000 8000 IN IP4 192.168.10.193\\r\\ns=SIP Call\\r\\nc=IN IP4 192.168.10.193\\r\\nt=0 0\\r\\nm=audio 5004 RTP/AVP 0 8 9 18 101\\r\\na=sendrecv\\r\\na=rtpmap:0 PCMU/8000\\r\\na=ptime:20\\r\\na=rtpmap:8 PCMA/8000\\r\\na=rtpmap:9 G722/8000\\r\\na=rtpmap:18 G729/8000\\r\\na=fmtp:18 annexb=no\\r\\na=rtpmap:101 telephone-event/8000\\r\\na=fmtp:101 0-15\\r\\n\\r\\n\\r\\n\""
+                                },
+                                "sip.msg_hdr_tree": {
+                                  "type": "object",
+                                  "x-go-name": "RMsg_hdr_tree"
+                                }
+                              },
+                              "x-go-name": "Sip"
+                            },
+                            "udp": {
+                              "type": "object",
+                              "properties": {
+                                "udp.checksum": {
+                                  "type": "string",
+                                  "x-go-name": "Checksum",
+                                  "example": "0x0000ffa5"
+                                },
+                                "udp.checksum.status": {
+                                  "type": "string",
+                                  "x-go-name": "ChceksumStatus",
+                                  "example": "2"
+                                },
+                                "udp.dstport": {
+                                  "type": "string",
+                                  "x-go-name": "Dstport",
+                                  "example": "5060"
+                                },
+                                "udp.length": {
+                                  "type": "string",
+                                  "x-go-name": "Length",
+                                  "example": "1024"
+                                },
+                                "udp.port": {
+                                  "type": "string",
+                                  "x-go-name": "Port",
+                                  "example": "5060"
+                                },
+                                "udp.srcport": {
+                                  "type": "string",
+                                  "x-go-name": "Srcport",
+                                  "example": "5060"
+                                },
+                                "udp.stream": {
+                                  "type": "string",
+                                  "x-go-name": "Stream",
+                                  "example": "0"
+                                }
+                              },
+                              "x-go-name": "Udp"
+                            }
+                          },
+                          "x-go-name": "Layers"
+                        }
+                      },
+                      "x-go-name": "Source"
+                    },
+                    "_type": {
+                      "type": "string",
+                      "x-go-name": "Type",
+                      "example": "pcap_file"
+                    }
+                  }
+                },
+                "x-go-name": "Decoded"
+              }
+            }
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "arhive": {
+          "type": "boolean",
+          "x-go-name": "Arhive",
+          "example": false
+        },
+        "db_archive": {
+          "type": "string",
+          "x-go-name": "Db_archive",
+          "example": "hepic_archive"
+        },
+        "db_name": {
+          "type": "string",
+          "x-go-name": "Db_name",
+          "example": "hepic_data"
+        },
+        "host": {
+          "type": "string",
+          "x-go-name": "Host",
+          "example": "148.251.238.121"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name",
+          "example": "DE7 Node"
+        },
+        "node": {
+          "type": "string",
+          "x-go-name": "Node",
+          "example": "\"\""
+        },
+        "online": {
+          "type": "boolean",
+          "x-go-name": "Online",
+          "example": true
+        },
+        "primary": {
+          "type": "boolean",
+          "x-go-name": "Primary",
+          "example": false
+        },
+        "table_prefix": {
+          "type": "string",
+          "x-go-name": "Table_prefix"
+        },
+        "value": {
+          "type": "string",
+          "x-go-name": "Value",
+          "example": "de7node"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "NodeList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count",
+          "example": 1
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Node"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "PCAPResponse": {
+      "type": "object",
+      "properties": {
+        "File": {
+          "$ref": "#/definitions/File"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "SearchCallData": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CallElement"
+          },
+          "x-go-name": "Data"
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Keys",
+          "example": [
+            "callid",
+            "srcIp",
+            "srcPort"
+          ]
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Total",
+          "example": 45
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchObject": {
       "type": "object",
       "required": [
         "param"
@@ -3446,11 +5971,12 @@
               "description": "location",
               "type": "object",
               "properties": {
-                "Node": {
+                "node": {
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }
+                  },
+                  "x-go-name": "Node"
                 }
               },
               "x-go-name": "Location"
@@ -3528,7 +6054,630 @@
           "x-go-name": "Timestamp"
         }
       },
-      "x-go-name": "SearchObject",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransaction": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-go-name": "Alias",
+              "example": "{127.0.0.1: localhost, 100.20.15.1: party1}"
+            },
+            "calldata": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CallElement"
+              },
+              "x-go-name": "Calldata"
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Keys",
+          "example": [
+            "callid",
+            "srcIp",
+            "srcPort"
+          ]
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionLog": {
+      "type": "object",
+      "properties": {
+        "captureId": {
+          "type": "string",
+          "x-go-name": "CaptureID",
+          "example": "\"2001\""
+        },
+        "capturePass": {
+          "type": "string",
+          "x-go-name": "CapturePass",
+          "example": "myHep"
+        },
+        "correlation_id": {
+          "type": "string",
+          "x-go-name": "Correlation_id",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "create_date": {
+          "type": "string",
+          "x-go-name": "Create_date",
+          "example": "021-10-04T19:16:22.699Z"
+        },
+        "dbnode": {
+          "type": "string",
+          "x-go-name": "Dbnode",
+          "example": "localnode"
+        },
+        "dstIp": {
+          "type": "string",
+          "x-go-name": "DstIP",
+          "example": "127.0.0.1"
+        },
+        "dstPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "DstPort",
+          "example": 5060
+        },
+        "id": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "ID",
+          "example": 1030
+        },
+        "node": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Node",
+          "example": [
+            "2001",
+            "localnode"
+          ]
+        },
+        "payloadType": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PayloadType",
+          "example": 100
+        },
+        "profile": {
+          "type": "string",
+          "x-go-name": "Profile"
+        },
+        "proto": {
+          "type": "string",
+          "x-go-name": "Proto",
+          "example": "log"
+        },
+        "protocol": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Protocol",
+          "example": 17
+        },
+        "protocolFamily": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ProtocolFamily",
+          "example": 2
+        },
+        "raw": {
+          "type": "string",
+          "x-go-name": "Raw"
+        },
+        "sid": {
+          "type": "string",
+          "x-go-name": "Sid",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "srcIp": {
+          "type": "string",
+          "x-go-name": "SrcIP",
+          "example": "127.0.0.1"
+        },
+        "srcPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "SrcPort",
+          "example": 5080
+        },
+        "timeSeconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeSeconds",
+          "example": 1633374982
+        },
+        "timeUseconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeUseconds",
+          "example": 699000
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionLogList": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SearchTransactionLog"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionQos": {
+      "type": "object",
+      "properties": {
+        "rtcp": {
+          "$ref": "#/definitions/SearchTransactionRtpList"
+        },
+        "rtp": {
+          "$ref": "#/definitions/SearchTransactionRtpList"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionRequest": {
+      "type": "object",
+      "required": [
+        "param"
+      ],
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "protocol_id": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "x-go-name": "Name",
+                  "example": "SIP"
+                },
+                "value": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "Value",
+                  "example": 1
+                }
+              },
+              "x-go-name": "Protocol_id"
+            },
+            "protocol_profile": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "x-go-name": "Name",
+                  "example": "call"
+                },
+                "value": {
+                  "type": "string",
+                  "x-go-name": "Value",
+                  "example": "call"
+                }
+              },
+              "x-go-name": "Protocol_profile"
+            }
+          },
+          "x-go-name": "Config"
+        },
+        "param": {
+          "type": "object",
+          "required": [
+            "limit"
+          ],
+          "properties": {
+            "limit": {
+              "description": "this controls the number of records to display",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit",
+              "example": 200
+            },
+            "location": {
+              "description": "location",
+              "type": "object",
+              "properties": {
+                "node": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "x-go-name": "Node"
+                }
+              },
+              "x-go-name": "Location"
+            },
+            "orlogic": {
+              "description": "this control the type of search one can perform\ntype: boolean",
+              "type": "boolean",
+              "x-go-name": "OrLogic",
+              "example": false
+            },
+            "search": {
+              "description": "this control the type of search one can perform\ntype: string\nformat: binary",
+              "type": "object",
+              "x-go-name": "Search",
+              "example": "`{\"1_call\":[{\"name\":\"limit\",\"value\":\"10\",\"type\":\"string\",\"hepid\":1}]}`"
+            },
+            "timezone": {
+              "description": "timezone settings\ntype: object",
+              "type": "object",
+              "default": null,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "x-go-name": "Name"
+                },
+                "value": {
+                  "type": "integer",
+                  "format": "int64",
+                  "x-go-name": "Value"
+                }
+              },
+              "x-go-name": "Timezone"
+            },
+            "transaction": {
+              "type": "object",
+              "x-go-name": "Transaction"
+            },
+            "whitelist": {
+              "description": "ips to be removed from search",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "x-go-name": "WhiteList",
+              "example": [
+                "192.1698.10.20"
+              ]
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "description": "this control the time range for used for search",
+          "type": "object",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "description": "current timestamp in miliseconds",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From",
+              "example": 1581793200000
+            },
+            "to": {
+              "description": "current timestamp in miliseconds",
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To",
+              "example": 1581879599000
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionRtcp": {
+      "type": "object",
+      "properties": {
+        "captureId": {
+          "type": "string",
+          "x-go-name": "CaptureID",
+          "example": "\"2001\""
+        },
+        "capturePass": {
+          "type": "string",
+          "x-go-name": "CapturePass",
+          "example": "myHep"
+        },
+        "correlation_id": {
+          "type": "string",
+          "x-go-name": "Correlation_id",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "create_date": {
+          "type": "string",
+          "x-go-name": "Create_date",
+          "example": "021-10-04T19:16:22.699Z"
+        },
+        "dbnode": {
+          "type": "string",
+          "x-go-name": "Dbnode",
+          "example": "localnode"
+        },
+        "dstIp": {
+          "type": "string",
+          "x-go-name": "DstIP",
+          "example": "127.0.0.1"
+        },
+        "dstPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "DstPort",
+          "example": 5060
+        },
+        "id": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "ID",
+          "example": 1030
+        },
+        "node": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Node",
+          "example": [
+            "2001",
+            "localnode"
+          ]
+        },
+        "payloadType": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PayloadType",
+          "example": 100
+        },
+        "profile": {
+          "type": "string",
+          "x-go-name": "Profile"
+        },
+        "proto": {
+          "type": "string",
+          "x-go-name": "Proto",
+          "example": "log"
+        },
+        "protocol": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Protocol",
+          "example": 17
+        },
+        "protocolFamily": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ProtocolFamily",
+          "example": 2
+        },
+        "raw": {
+          "type": "string",
+          "x-go-name": "Raw"
+        },
+        "sid": {
+          "type": "string",
+          "x-go-name": "Sid",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "srcIp": {
+          "type": "string",
+          "x-go-name": "SrcIP",
+          "example": "127.0.0.1"
+        },
+        "srcPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "SrcPort",
+          "example": 5080
+        },
+        "timeSeconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeSeconds",
+          "example": 1633374982
+        },
+        "timeUseconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeUseconds",
+          "example": 699000
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionRtp": {
+      "type": "object",
+      "properties": {
+        "captureId": {
+          "type": "string",
+          "x-go-name": "CaptureID",
+          "example": "2001"
+        },
+        "capturePass": {
+          "type": "string",
+          "x-go-name": "CapturePass",
+          "example": "myHep"
+        },
+        "correlation_id": {
+          "type": "string",
+          "x-go-name": "Correlation_id",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "create_date": {
+          "type": "string",
+          "x-go-name": "Create_date",
+          "example": "021-10-04T19:16:22.699Z"
+        },
+        "dbnode": {
+          "type": "string",
+          "x-go-name": "Dbnode",
+          "example": "localnode"
+        },
+        "dstIp": {
+          "type": "string",
+          "x-go-name": "DstIP",
+          "example": "127.0.0.1"
+        },
+        "dstPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "DstPort",
+          "example": 5060
+        },
+        "id": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "ID",
+          "example": 1030
+        },
+        "node": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Node",
+          "example": [
+            "2001",
+            "localnode"
+          ]
+        },
+        "payloadType": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PayloadType",
+          "example": 100
+        },
+        "profile": {
+          "type": "string",
+          "x-go-name": "Profile"
+        },
+        "proto": {
+          "type": "string",
+          "x-go-name": "Proto",
+          "example": "log"
+        },
+        "protocol": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Protocol",
+          "example": 17
+        },
+        "protocolFamily": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ProtocolFamily",
+          "example": 2
+        },
+        "raw": {
+          "type": "string",
+          "x-go-name": "Raw"
+        },
+        "sid": {
+          "type": "string",
+          "x-go-name": "Sid",
+          "example": "wvn6zg@127.0.0.1"
+        },
+        "srcIp": {
+          "type": "string",
+          "x-go-name": "SrcIP",
+          "example": "127.0.0.1"
+        },
+        "srcPort": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "SrcPort",
+          "example": 5080
+        },
+        "timeSeconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeSeconds",
+          "example": 1633374982
+        },
+        "timeUseconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "TimeUseconds",
+          "example": 699000
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SearchTransactionRtpList": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SearchTransactionRtp"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-name": "SearchTransactionRtcpList",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SmartSearchField": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category",
+          "example": "sip"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name",
+          "example": "callid"
+        },
+        "value": {
+          "type": "string",
+          "x-go-name": "Value",
+          "example": "sip.callid"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "SmartSearchFieldList": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SmartSearchField"
+              },
+              "x-go-name": "Data"
+            }
+          },
+          "x-go-name": "Data"
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "SuccessResponse": {
@@ -3601,6 +6750,49 @@
       "x-go-name": "TableRawData",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "TextResponse": {
+      "type": "object",
+      "properties": {
+        "File": {
+          "$ref": "#/definitions/File"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserCreateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created user"
+        }
+      },
+      "x-go-name": "UserCreateSuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted user"
+        }
+      },
+      "x-go-name": "UserDeleteSuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "UserLogin": {
       "type": "object",
       "required": [
@@ -3628,12 +6820,14 @@
         "scope": {
           "description": "the uuid",
           "type": "string",
-          "x-go-name": "Scope"
+          "x-go-name": "Scope",
+          "example": "b9f6q23a-0bde-41ce-cd36-da3dbc17ea12"
         },
         "token": {
           "description": "the token",
           "type": "string",
-          "x-go-name": "Token"
+          "x-go-name": "Token",
+          "example": "JWT Token"
         },
         "user": {
           "description": "the uuid",
@@ -3698,6 +6892,29 @@
       },
       "x-go-name": "TableUserSettings",
       "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated user"
+        }
+      },
+      "x-go-name": "UserUpdateSuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "file": {
+      "description": "The extra level of indirection ensures that no clients of os\ncan overwrite this data, which could cause the finalizer\nto close the wrong file descriptor.",
+      "type": "object",
+      "title": "file is the real representation of *File.",
+      "x-go-package": "os"
     }
   },
   "securityDefinitions": {

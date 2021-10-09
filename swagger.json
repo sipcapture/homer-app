@@ -6632,7 +6632,7 @@
         "data": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/SearchTransactionRtp"
+            "$ref": "#/definitions/SearchTransactionRtcp"
           },
           "x-go-name": "Data"
         }

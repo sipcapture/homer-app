@@ -58,11 +58,14 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 			dashboardHome = jsonschema.DashboardHome
 		}
 
-		dbc.DashBoardService.InsertDashboardHome(username, dashboardHome)
+		dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
+		dbc.DashBoardService.InsertDashboardByName(username, "smartsearch", jsonschema.DashboardSmartSearch)
+
 		reply, err = dbc.DashBoardService.GetDashBoardsLists(username)
 		if err != nil {
 			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
 		}
+
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
@@ -118,7 +121,12 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 				dashboardHome = jsonschema.DashboardHome
 			}
 
-			_, err := dbc.DashBoardService.InsertDashboardHome(username, dashboardHome)
+			_, err := dbc.DashBoardService.InsertDashboardByName(username, "homer", dashboardHome)
+			if err != nil {
+				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
+			}
+
+			dbc.DashBoardService.InsertDashboardByName(username, "smartsearch", jsonschema.DashboardSmartSearch)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}

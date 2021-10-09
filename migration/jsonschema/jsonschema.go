@@ -171,7 +171,140 @@ var DashboardHome = json.RawMessage(`{
     ]
 }
 `)
-var RegisterDashboard = json.RawMessage(`{"alias":"registration","config":{"columns":5,"gridType":"scrollVertical","ignoreMinSize":"Ignore","maxrows":3,"pushing":true},"id":"registration","name":"REGISTRATION","param":"registration-dashboard","selectedItem":"","shared":false,"type":1,"weight":10,"widgets":[{"cols":1,"config":{"col":1,"cols":2,"config":{"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"registration","value":"registration"},"searchbutton":true,"title":"Registration Search"},"countFieldColumns":1,"description":"Display Search Form component","fields":[{"field_name":"data_header.method","hepid":1,"name":"1:registration:data_header.method","selection":"SIP Method","type":"string","value":""},{"field_name":"targetResultsContainer","hepid":1,"name":"1:registration:targetResultsContainer","selection":"Results Container","type":"string","value":""},{"field_name":"data_header.protocol","hepid":1,"name":"1:registration:data_header.protocol","selection":"SIP Protocol","type":"string","value":""}],"group":"Search","id":"display-results537","name":"protosearch","refresh":false,"row":0,"rows":2,"sizeX":2,"sizeY":2,"title":"Registration Search","uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","x":0,"y":1},"id":"display-results537","name":"display-results","output":{},"rows":2,"strongIndex":"ProtosearchWidgetComponent","title":"Proto Search","x":0,"y":0},{"cols":4,"id":"result356","name":"result","output":{},"rows":2,"strongIndex":"ResultWidgetComponent","title":"Display Results","x":1,"y":0}]}`)
+
+var DashboardSmartSearch = json.RawMessage(`{
+  "alias": "smartsearch",
+  "config": {
+    "columns": 8,
+    "grafanaProxy": false,
+    "grafanaTimestamp": false,
+    "gridType": "fit",
+    "ignoreMinSize": "warning",
+    "maxrows": 18,
+    "pushing": true
+  },
+  "dashboardId": "smartsearch",
+  "id": "smartsearch",
+  "isLocked": false,
+  "name": "Smart search",
+  "param": "smart search",
+  "selectedItem": "",
+  "shared": false,
+  "type": 1,
+  "weight": 10,
+  "widgets": [
+    {
+      "cols": 8,
+      "config": {
+        "col": 1,
+        "cols": 2,
+        "config": {
+          "protocol_id": {
+            "name": "SIP",
+            "value": 1
+          },
+          "protocol_profile": {
+            "name": "call",
+            "value": "call"
+          },
+          "searchbutton": false,
+          "title": "Smart input Search"
+        },
+        "countFieldColumns": 4,
+        "description": "Display Smart input Search Form component",
+        "fields": [
+          {
+            "field_name": "proto_selector",
+            "form_default": null,
+            "hepid": 1,
+            "name": "60:call_h20:proto_selector",
+            "selection": "Protocol",
+            "shown": true,
+            "type": "string",
+            "value": ""
+          },
+          {
+            "field_name": "smartinput",
+            "form_api": "/smart/search/tag/:hepid/:hepprofile",
+            "form_type": "smart-input",
+            "full_api_link": "/smart/search/tag/1/call",
+            "hepid": 1,
+            "name": "60:call_h20:smartinput",
+            "selection": "Smart Input",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "field_name": "limit",
+            "form_default": null,
+            "hepid": 1,
+            "name": "60:call_h20:limit",
+            "selection": "Query Limit",
+            "shown": false,
+            "type": "string",
+            "value": ""
+          },
+          {
+            "field_name": "targetResultsContainer",
+            "form_default": null,
+            "hepid": 1,
+            "name": "1:call:targetResultsContainer",
+            "selection": "Results Container",
+            "shown": false,
+            "type": "string",
+            "value": ""
+          }
+        ],
+        "group": "Search",
+        "id": "smart-input-1_e5d82cdc-7d04-465a-b661-a084033d576a",
+        "name": "smart-input",
+        "refresh": false,
+        "row": 0,
+        "rows": 2,
+        "sizeX": 2,
+        "sizeY": 2,
+        "title": "Smart input Search",
+        "uuid": "ed426bd0-ff21-40f7-8852-58700abc3762",
+        "x": 0,
+        "y": 1
+      },
+      "id": "smart-input-1_e5d82cdc-7d04-465a-b661-a084033d576a",
+      "isWarning": true,
+      "layerIndex": 2,
+      "minHeight": 300,
+      "minWidth": 300,
+      "name": "smart-input",
+      "output": {},
+      "rows": 2,
+      "strongIndex": "SmartInputWidgetComponent",
+      "tabGroup": "tabIndex-243367",
+      "title": "Smart input Search",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "activeTab": true,
+      "cols": 8,
+      "config": null,
+      "id": "RESULT-1_8284f4b3-cc50-4aab-975c-63a946716851",
+      "isWarning": false,
+      "layerIndex": 2,
+      "minHeight": 400,
+      "minWidth": 650,
+      "name": "RESULT",
+      "output": {},
+      "rows": 16,
+      "strongIndex": "ResultWidgetComponent",
+      "tabGroup": "tabIndex-309576",
+      "title": "RESULT-1",
+      "x": 0,
+      "y": 2
+    }
+  ]
+}
+`)
+
+var DashboardRegister = json.RawMessage(`{"alias":"registration","config":{"columns":5,"gridType":"scrollVertical","ignoreMinSize":"Ignore","maxrows":3,"pushing":true},"id":"registration","name":"REGISTRATION","param":"registration-dashboard","selectedItem":"","shared":false,"type":1,"weight":10,"widgets":[{"cols":1,"config":{"col":1,"cols":2,"config":{"protocol_id":{"name":"SIP","value":1},"protocol_profile":{"name":"registration","value":"registration"},"searchbutton":true,"title":"Registration Search"},"countFieldColumns":1,"description":"Display Search Form component","fields":[{"field_name":"data_header.method","hepid":1,"name":"1:registration:data_header.method","selection":"SIP Method","type":"string","value":""},{"field_name":"targetResultsContainer","hepid":1,"name":"1:registration:targetResultsContainer","selection":"Results Container","type":"string","value":""},{"field_name":"data_header.protocol","hepid":1,"name":"1:registration:data_header.protocol","selection":"SIP Protocol","type":"string","value":""}],"group":"Search","id":"display-results537","name":"protosearch","refresh":false,"row":0,"rows":2,"sizeX":2,"sizeY":2,"title":"Registration Search","uuid":"ed426bd0-ff21-40f7-8852-58700abc3762","x":0,"y":1},"id":"display-results537","name":"display-results","output":{},"rows":2,"strongIndex":"ProtosearchWidgetComponent","title":"Proto Search","x":0,"y":0},{"cols":4,"id":"result356","name":"result","output":{},"rows":2,"strongIndex":"ResultWidgetComponent","title":"Display Results","x":1,"y":0}]}`)
 
 var CorrelationMappingdefault = json.RawMessage(`{
   "lookup_id": 0,
@@ -407,7 +540,7 @@ var FieldsMapping1call = json.RawMessage(`[
 	{
 	  "id": "data_header.cseq",
 	  "name": "SIP Cseq",
-	  "type": "integer",
+	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 19,
@@ -666,7 +799,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	{
 	  "id": "data_header.cseq",
 	  "name": "SIP Cseq",
-	  "type": "integer",
+	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 19,

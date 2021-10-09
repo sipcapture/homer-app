@@ -166,12 +166,12 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 }
 
 // this method gets all users from database
-func (us *DashBoardService) InsertDashboardHome(username string, data json.RawMessage) (string, error) {
+func (us *DashBoardService) InsertDashboardByName(username string, dashboardName string, data json.RawMessage) (string, error) {
 
 	newDashboard := model.TableUserSettings{}
 	u2 := uuid.NewV4()
 	newDashboard.GUID = u2.String()
-	newDashboard.Param = "home"
+	newDashboard.Param = dashboardName
 	newDashboard.PartId = 10
 	newDashboard.UserName = username
 	newDashboard.Category = "dashboard"

@@ -396,7 +396,16 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Param:      "registration",
 			PartId:     10,
 			Category:   "dashboard",
-			Data:       jsonschema.RegisterDashboard,
+			Data:       jsonschema.DashboardRegister,
+			CreateDate: time.Now(),
+		},
+		model.TableUserSettings{
+			GUID:       uuid.NewV4().String(),
+			UserName:   "admin",
+			Param:      "smartsearch",
+			PartId:     10,
+			Category:   "dashboard",
+			Data:       jsonschema.DashboardSmartSearch,
 			CreateDate: time.Now(),
 		},
 		model.TableUserSettings{
@@ -406,6 +415,15 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			PartId:     10,
 			Category:   "dashboard",
 			Data:       jsonschema.DashboardHome,
+			CreateDate: time.Now(),
+		},
+		model.TableUserSettings{
+			GUID:       uuid.NewV4().String(),
+			UserName:   "support",
+			Param:      "smartsearch",
+			PartId:     10,
+			Category:   "dashboard",
+			Data:       jsonschema.DashboardSmartSearch,
 			CreateDate: time.Now(),
 		},
 	}

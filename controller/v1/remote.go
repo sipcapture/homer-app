@@ -30,10 +30,15 @@ type RemoteController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: server
+//   in: query
+//   description: url
+//   required: true
+//   type: string
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:RemoteLabels
+//   400: body:FailureResponse
 func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 
 	if !pc.RemoteService.Active {
@@ -64,10 +69,20 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: server
+//   in: query
+//   description: url
+//   required: true
+//   type: string
+// + name: label
+//   in: query
+//   description: label
+//   required: true
+//   type: string
 // responses:
-//   '200': body:ListValues
-//   '400': body:UserLoginFailureResponse
+//   200: body:RemoteValues
+//   400: body:FailureResponse
 func (pc *RemoteController) RemoteValues(c echo.Context) error {
 
 	if !pc.RemoteService.Active {
@@ -99,10 +114,15 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: Request
+//   in: body
+//   description: Request
+//   required: true
+//   type: RemoteRequest
 // responses:
-//   '200': body:ListValues
-//   '400': body:UserLoginFailureResponse
+//   200: body:RemoteResponseData
+//   400: body:FailureResponse
 func (pc *RemoteController) RemoteData(c echo.Context) error {
 
 	if !pc.RemoteService.Active {

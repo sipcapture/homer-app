@@ -28,10 +28,10 @@ type GrafanaController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+//
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:GrafanaUrl
+//   400: body:FailureResponse
 func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 
 	responseData, err := pc.GrafanaService.GrafanaURL()
@@ -56,10 +56,9 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:GrafanaOrg
+//   400: body:UserLoginFailureResponse
 func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
@@ -89,10 +88,9 @@ func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:GrafanaFolders
+//   400: body:FailureResponse
 func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
@@ -108,16 +106,16 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation GET /proxy/grafana/dashboards/uid/{uid} proxy grafanaGrafanaGetDashboardAgainstUUID
+// swagger:route GET /proxy/grafana/dashboards/uid/{uid} proxy grafanaGrafanaGetDashboardAgainstUUID
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
 // parameters:
-// - name: uid
+// + name: uid
 //   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   example: 9Aklz9aGz
 //   description: uid
 //   required: true
 //   type: string
@@ -130,8 +128,8 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:GrafanaResponseValue
+//   400: body:FailureResponse
 func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) error {
 
 	uuidDashboard := c.Param("uid")
@@ -149,7 +147,7 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /api/v3/proxy/grafana/search/:uid search
+// swagger:route GET /proxy/grafana/search/{uid} proxy GrafanaGetFoldersAgainstUUID
 //
 // Returns data based upon filtered json
 // ---
@@ -157,16 +155,21 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 // - application/json
 // Security:
 // - bearer
-//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: uid
+//   in: path
+//   example: 9Aklz9aGz
+//   description: uid
+//   required: true
+//   type: string
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:ListUsers
+//   400: body:FailureResponse
 func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error {
 
 	uuidDashboard := c.Param("uid")

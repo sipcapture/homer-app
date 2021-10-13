@@ -16,7 +16,7 @@ type PrometheusController struct {
 	PrometheusService *service.PrometheusService
 }
 
-// swagger:route GET /prometheus/data proxy prometheusPrometheusData
+// swagger :route POST /prometheus/data proxy prometheusPrometheusData
 //
 // Returns data based upon filtered json
 // ---
@@ -30,7 +30,13 @@ type PrometheusController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: PrometheusObject
+//   in: body
+//   description: PrometheusObject parameters
+//   schema:
+//      type: PrometheusObject
+//   required: true
 // responses:
 //   '200': body:ListUsers
 //   '400': body:UserLoginFailureResponse
@@ -55,12 +61,19 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /prometheus/value proxy prometheusPrometheusValue
+// swagger:route POST /prometheus/value proxy prometheusPrometheusValue
 //
 // Returns data based upon filtered json
 // ---
 // produces:
 // - application/json
+//
+// parameters:
+// + name: PrometheusObject
+//   in: body
+//   description: PrometheusObject parameters
+//   schema:
+//     type: PrometheusObject
 // Security:
 // - bearer: []
 //
@@ -69,10 +82,9 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:ListUsers
+//   400: body:FailureResponse
 func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
@@ -108,10 +120,11 @@ func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListLabels
-//   '400': body:UserLoginFailureResponse
+//
+//   200: body:ListLabels
+// 		  example: ["go_goroutines","go_info","go_threads"]
+//   400: body:FailureResponse
 func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
@@ -126,7 +139,7 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /prometheus/label proxy prometheusPrometheusLabelData
+// swagger:route GET /prometheus/label/{labelName} proxy prometheusPrometheusLabelData
 //
 // Returns data based upon filtered json
 // ---
@@ -134,16 +147,21 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 // - application/json
 // Security:
 // - bearer: []
-//
 // SecurityDefinitions:
 // bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: labelName
+//   in: path
+//   example: 1
+//   description: Label name
+//   required: true
+//   type: string
 // responses:
-//   '200': body:ListLabels
-//   '400': body:UserLoginFailureResponse
+//   200: body:Label
+//   400: body:FailureResponse
 func (pc *PrometheusController) PrometheusLabelData(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {

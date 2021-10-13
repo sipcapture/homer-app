@@ -29,3 +29,27 @@ type TableAgentLocationSession struct {
 type TableAgentLocationSessionList struct {
 	Data []TableAgentLocationSession `json:"data"`
 }
+
+// swagger:model AgentLocationUpdateSuccessResponse
+type AgentLocationUpdateSuccessResponse struct {
+	// example: 4b855914-ca3d-4562-8563-f2b660fe2636
+	Data string `json:"data"`
+	// example: successfully updated AgentLocation settings
+	Message string `json:"message"`
+}
+
+// swagger:model AgentLocationCreateSuccessResponse
+type AgentLocationCreateSuccessResponse struct {
+	// example: 4b855914-ca3d-4562-8563-f2b660fe2636
+	Data string `json:"data"`
+	// example: successfully created AgentLocation settings
+	Message string `json:"message"`
+}
+
+// swagger:model AgentLocationDeleteSuccessResponse
+type AgentLocationDeleteSuccessResponse struct {
+	// example: 4b855914-ca3d-4562-8563-f2b660fe2636
+	Data string `json:"data"`
+	// example: successfully deleted AgentLocation settings
+	Message string `json:"message"`
+}

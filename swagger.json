@@ -26,10 +26,15 @@
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
             "SecurityDefinitions": []
           },
           {
-            "JWT": []
+            "bearer": []
           },
           {
             "type": [
@@ -44,24 +49,6 @@
           {
             "in": [
               "header"
-            ]
-          },
-          {
-            "ApiKeyAuth": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          },
-          {
-            "name": [
-              "Auth-Token"
             ]
           }
         ],
@@ -136,6 +123,12 @@
             "schema": {
               "$ref": "#/definitions/GlobalSettingsStructList"
             }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
           }
         }
       },
@@ -176,17 +169,53 @@
           "application/json"
         ],
         "tags": [
-          "advanced"
+          "Advanced"
         ],
         "operationId": "advancedAddAdvanced",
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "GlobalSettingsCreateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/GlobalSettingsCreateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/advanced/{guid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get advanced item by guid",
@@ -197,25 +226,64 @@
           "application/json"
         ],
         "tags": [
-          "advanced"
+          "Advanced"
         ],
         "operationId": "advancedGetAdvancedAgainstGUID",
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of item",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "GlobalSettingsStruct",
+            "schema": {
+              "$ref": "#/definitions/GlobalSettingsStruct"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update advanced item by guid",
@@ -226,25 +294,64 @@
           "application/json"
         ],
         "tags": [
-          "advanced"
+          "Advanced"
         ],
         "operationId": "advancedUpdateAdvancedAgainstGUID",
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of item",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "GlobalSettingsUpdateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/GlobalSettingsUpdateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete advanced item by guid",
@@ -255,20 +362,36 @@
           "application/json"
         ],
         "tags": [
-          "advanced"
+          "Advanced"
         ],
         "operationId": "advancedDeleteAdvancedAgainstGUID",
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of item",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of item",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "GlobalSettingsDeleteSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/GlobalSettingsDeleteSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/agent/search/{guid}/{type}": {
@@ -816,38 +939,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v3/proxy/grafana/search/:uid": {
-      "get": {
-        "security": [
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "search"
       }
     },
     "/auth": {
@@ -2426,29 +2517,6 @@
             "in": [
               "header"
             ]
-          },
-          {
-            "+ name": [
-              "MappingSchema"
-            ]
-          },
-          {
-            "in": [
-              "body"
-            ]
-          },
-          {
-            "description": [
-              "Mapping"
-            ]
-          },
-          {
-            "schema": []
-          },
-          {
-            "type": [
-              "MappingSchema"
-            ]
           }
         ],
         "description": "Add mapping",
@@ -2462,6 +2530,19 @@
           "mapping"
         ],
         "operationId": "mappingAddMapping",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "Mapping parameters",
+            "name": "MappingSchema",
+            "in": "body",
+            "schema": {
+              "description": "Mapping parameters",
+              "type": "object",
+              "$ref": "#/definitions/MappingSchema"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "MappingCreateSuccessResponse",
@@ -2776,7 +2857,7 @@
         }
       }
     },
-    "/prometheus/data": {
+    "/prometheus/label/{labelName}": {
       "get": {
         "security": [
           {
@@ -2813,47 +2894,34 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "prometheusPrometheusData"
-      }
-    },
-    "/prometheus/label": {
-      "get": {
-        "security": [
+        "operationId": "prometheusPrometheusLabelData",
+        "parameters": [
           {
-            "bearer": [
-              "[]"
-            ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
+            "type": "string",
+            "description": "Label name",
+            "name": "labelName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "description": "Label name",
+              "type": "string"
+            }
           }
         ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "proxy"
-        ],
-        "operationId": "prometheusPrometheusLabelData"
+        "responses": {
+          "200": {
+            "description": "Label",
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/prometheus/labels": {
@@ -2893,10 +2961,91 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "prometheusPrometheusLabels"
+        "operationId": "prometheusPrometheusLabels",
+        "responses": {
+          "200": {
+            "description": "ListLabels",
+            "schema": {
+              "$ref": "#/definitions/ListLabels"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/prometheus/value": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "prometheusPrometheusValue",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "PrometheusObject parameters",
+            "name": "PrometheusObject",
+            "in": "body",
+            "schema": {
+              "description": "PrometheusObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/PrometheusObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/proxy/grafana/dashboards/uid/{uid}": {
       "get": {
         "security": [
           {
@@ -2933,35 +3082,34 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "prometheusPrometheusValue"
-      }
-    },
-    "/proxy/grafana/dashboards/uid/{uid}": {
-      "get": {
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "description": "Returns data based upon filtered json",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "proxy"
-        ],
         "operationId": "grafanaGrafanaGetDashboardAgainstUUID",
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "uid",
             "name": "uid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "uid",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "GrafanaResponseValue",
+            "schema": {
+              "$ref": "#/definitions/GrafanaResponseValue"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/proxy/grafana/folders": {
@@ -3001,7 +3149,21 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "grafanaGrafanaFolders"
+        "operationId": "grafanaGrafanaFolders",
+        "responses": {
+          "200": {
+            "description": "GrafanaFolders",
+            "schema": {
+              "$ref": "#/definitions/GrafanaFolders"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/proxy/grafana/org": {
@@ -3041,7 +3203,83 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "grafanaGrafanaORG"
+        "operationId": "grafanaGrafanaORG",
+        "responses": {
+          "200": {
+            "description": "GrafanaOrg",
+            "schema": {
+              "$ref": "#/definitions/GrafanaOrg"
+            }
+          },
+          "400": {
+            "description": "UserLoginFailureResponse",
+            "schema": {
+              "$ref": "#/definitions/UserLoginFailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/proxy/grafana/search/{uid}": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns data based upon filtered json",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "operationId": "GrafanaGetFoldersAgainstUUID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "uid",
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "description": "uid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/proxy/grafana/url": {
@@ -3081,7 +3319,21 @@
         "tags": [
           "proxy"
         ],
-        "operationId": "grafanaGrafanaURL"
+        "operationId": "grafanaGrafanaURL",
+        "responses": {
+          "200": {
+            "description": "GrafanaUrl",
+            "schema": {
+              "$ref": "#/definitions/GrafanaUrl"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/call/data": {
@@ -3334,7 +3586,35 @@
         "tags": [
           "remote"
         ],
-        "operationId": "remoteRemoteData"
+        "operationId": "remoteRemoteData",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "Request",
+            "name": "Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "Request",
+              "type": "object",
+              "$ref": "#/definitions/RemoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RemoteResponseData",
+            "schema": {
+              "$ref": "#/definitions/RemoteResponseData"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/remote/label": {
@@ -3374,7 +3654,34 @@
         "tags": [
           "remote"
         ],
-        "operationId": "remoteRemoteLabel"
+        "operationId": "remoteRemoteLabel",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "url",
+            "name": "server",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "description": "url",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RemoteLabels",
+            "schema": {
+              "$ref": "#/definitions/RemoteLabels"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/search/remote/values": {
@@ -3414,7 +3721,45 @@
         "tags": [
           "remote"
         ],
-        "operationId": "remoteRemoteValues"
+        "operationId": "remoteRemoteValues",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "url",
+            "name": "server",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "description": "url",
+              "type": "string"
+            }
+          },
+          {
+            "type": "string",
+            "description": "label",
+            "name": "label",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "description": "label",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RemoteValues",
+            "schema": {
+              "$ref": "#/definitions/RemoteValues"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/smart/search/tag/{hepid}/{profile}": {
@@ -3535,14 +3880,51 @@
         "tags": [
           "statistic"
         ],
-        "operationId": "statisticGetStatisticDBList"
+        "operationId": "statisticGetStatisticDBList",
+        "responses": {
+          "200": {
+            "description": "StatisticDb",
+            "schema": {
+              "$ref": "#/definitions/StatisticDb"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/statistic/_measurements/{dbid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Returns data based upon filtered json",
@@ -3562,9 +3944,33 @@
             "description": "database id",
             "name": "dbid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "database id",
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "description": "StatisticSearchObject",
+            "name": "StatisticSearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "StatisticSearchObject",
+              "type": "object",
+              "$ref": "#/definitions/StatisticSearchObject"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "StatisticObject",
+            "schema": {
+              "$ref": "#/definitions/StatisticObject"
+            }
+          }
+        }
       }
     },
     "/statistic/_metrics": {
@@ -3604,7 +4010,35 @@
         "tags": [
           "statistic"
         ],
-        "operationId": "statisticGetStatisticMetricsList"
+        "operationId": "statisticGetStatisticMetricsList",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "StatisticSearchObject",
+            "name": "StatisticSearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "StatisticSearchObject",
+              "type": "object",
+              "$ref": "#/definitions/StatisticSearchObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "StatisticDb",
+            "schema": {
+              "$ref": "#/definitions/StatisticDb"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/statistic/_retentions": {
@@ -3644,7 +4078,35 @@
         "tags": [
           "statistic"
         ],
-        "operationId": "statisticGetStatisticRetentionsList"
+        "operationId": "statisticGetStatisticRetentionsList",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "StatisticSearchObject",
+            "name": "StatisticSearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "StatisticSearchObject",
+              "type": "object",
+              "$ref": "#/definitions/StatisticSearchObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "StatisticRetentions",
+            "schema": {
+              "$ref": "#/definitions/StatisticRetentions"
+            }
+          },
+          "400": {
+            "description": "UserLoginFailureResponse",
+            "schema": {
+              "$ref": "#/definitions/UserLoginFailureResponse"
+            }
+          }
+        }
       }
     },
     "/statistic/_tags": {
@@ -3684,7 +4146,35 @@
         "tags": [
           "statistic"
         ],
-        "operationId": "statisticGetStatisticTagsList"
+        "operationId": "statisticGetStatisticTagsList",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "StatisticSearchObject",
+            "name": "StatisticSearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "StatisticSearchObject",
+              "type": "object",
+              "$ref": "#/definitions/StatisticSearchObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "StatisticDb",
+            "schema": {
+              "$ref": "#/definitions/StatisticDb"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/statistic/data": {
@@ -3724,7 +4214,35 @@
         "tags": [
           "statistic"
         ],
-        "operationId": "statisticStatisticData"
+        "operationId": "statisticStatisticData",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "StatisticSearchObject",
+            "name": "StatisticSearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "StatisticSearchObject",
+              "type": "object",
+              "$ref": "#/definitions/StatisticSearchObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "StatisticDb",
+            "schema": {
+              "$ref": "#/definitions/StatisticDb"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/token/auth": {
@@ -3768,12 +4286,48 @@
           "token"
         ],
         "operationId": "authTokenGetAuthtoken",
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "AuthTokenList",
+            "schema": {
+              "$ref": "#/definitions/AuthTokenList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Add token",
@@ -3789,23 +4343,62 @@
         "operationId": "authTokenAddAuthToken",
         "parameters": [
           {
+            "type": "object",
             "description": "authToken parameters",
             "name": "authTokenStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "authToken parameters",
+              "type": "object",
               "$ref": "#/definitions/AuthToken"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AuthTokenCreateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/AuthTokenCreateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/token/auth/{guid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get token by guid",
@@ -3822,19 +4415,58 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of token",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of token",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "AuthToken",
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update token by guid",
@@ -3851,28 +4483,70 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of token",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of token",
+              "type": "string"
+            }
           },
           {
+            "type": "object",
             "description": "authToken parameters",
             "name": "authTokenStruct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "authToken parameters",
+              "type": "object",
               "$ref": "#/definitions/AuthToken"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AuthTokenUpdateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/AuthTokenUpdateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete token by guid",
@@ -3889,14 +4563,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of token",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of token",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AuthTokenDeleteSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/AuthTokenDeleteSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/user/settings": {
@@ -3937,12 +4627,48 @@
           "settings"
         ],
         "operationId": "settingsGetAll",
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "UserSettingList",
+            "schema": {
+              "$ref": "#/definitions/UserSettingList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Adds user settings",
@@ -3958,23 +4684,62 @@
         "operationId": "settingsAddUserSettings",
         "parameters": [
           {
-            "description": "TableUserSettings struct",
-            "name": "userSettingsStruct",
+            "type": "object",
+            "description": "UserSetting struct",
+            "name": "UserSetting",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserSettings"
+              "description": "UserSetting struct",
+              "type": "object",
+              "$ref": "#/definitions/UserSetting"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserSettingCreateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/UserSettingCreateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/user/settings/{category}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Returns the list of settings",
@@ -3991,21 +4756,60 @@
         "parameters": [
           {
             "type": "string",
-            "example": "dashboard",
             "description": "user settings category",
             "name": "category",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "user settings category",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "UserSettingList",
+            "schema": {
+              "$ref": "#/definitions/UserSettingList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/user/settings/{guid}": {
       "put": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Update user settings",
@@ -4022,28 +4826,70 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of user settings",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of user settings",
+              "type": "string"
+            }
           },
           {
-            "description": "TableUserSettings",
-            "name": "tableUserSettingsStruct",
+            "type": "object",
+            "description": "UserSetting",
+            "name": "UserSetting",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserSettings"
+              "description": "UserSetting",
+              "type": "object",
+              "$ref": "#/definitions/UserSetting"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserSettingUpdateSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/UserSettingUpdateSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete user settings",
@@ -4060,14 +4906,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "11111111-1111-1111-1111-111111111111",
             "description": "guid of user settings",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of user settings",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "UserSettingDeleteSuccessfulResponse",
+            "schema": {
+              "$ref": "#/definitions/UserSettingDeleteSuccessfulResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/users": {
@@ -4336,31 +5198,6 @@
           }
         }
       }
-    },
-    "/ws": {
-      "get": {
-        "description": "Returns data based upon filtered json",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "operationId": "WebSocket",
-        "parameters": [
-          {
-            "type": "object",
-            "description": "SearchObject parameters",
-            "name": "SearchObject",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/SearchCallData"
-            }
-          }
-        ],
-        "responses": {}
-      }
     }
   },
   "definitions": {
@@ -4559,57 +5396,189 @@
     "AuthToken": {
       "type": "object",
       "properties": {
-        "active": {
-          "type": "boolean",
-          "x-go-name": "Active"
-        },
-        "create_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "CreateDate"
-        },
-        "creator_guid": {
-          "type": "string",
-          "x-go-name": "UserGUID"
-        },
-        "expire_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "ExpireDate"
-        },
-        "guid": {
-          "type": "string",
-          "x-go-name": "GUID"
-        },
-        "ip_address": {
-          "type": "string",
-          "x-go-name": "IPAddress"
-        },
-        "lastusage_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "LastUsageDate"
-        },
-        "limit_calls": {
+        "count": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "LimitCalls"
+          "x-go-name": "Count"
         },
-        "name": {
-          "type": "string",
-          "x-go-name": "Name"
-        },
-        "usage_calls": {
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "UsageCalls"
-        },
-        "user_object": {
-          "type": "object",
-          "x-go-name": "UserObject"
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean",
+                "x-go-name": "Active",
+                "example": true
+              },
+              "create_date": {
+                "type": "string",
+                "x-go-name": "CreateDate",
+                "example": "2021-10-01T17:36:21.80063Z"
+              },
+              "creator_guid": {
+                "type": "string",
+                "x-go-name": "CreatorGUID",
+                "example": "ced47b64-ae93-417b-9e1b-8dd1b1410807"
+              },
+              "expire_date": {
+                "type": "string",
+                "x-go-name": "ExpireDate",
+                "example": "2021-10-09T17:36:21.80063Z"
+              },
+              "guid": {
+                "type": "string",
+                "x-go-name": "GUID",
+                "example": "9e4afbd5-7453-415d-b2d4-181057afbfe5\""
+              },
+              "ip_address": {
+                "type": "string",
+                "x-go-name": "IPAddress"
+              },
+              "lastusage_date": {
+                "type": "string",
+                "x-go-name": "LastusageDate",
+                "example": "2021-10-08T17:36:21.80063Z"
+              },
+              "limit_calls": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "LimitCalls",
+                "example": 1000
+              },
+              "name": {
+                "type": "string",
+                "x-go-name": "Name",
+                "example": "JGoolsby-Api"
+              },
+              "usage_calls": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "UsageCalls",
+                "example": 1
+              },
+              "user_object": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "x-go-name": "Email",
+                    "example": "JGoolsby@example.com"
+                  },
+                  "firstname": {
+                    "type": "string",
+                    "x-go-name": "Firstname",
+                    "example": "James"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "ID",
+                    "example": 1000
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "x-go-name": "Lastname",
+                    "example": "Goolsby"
+                  },
+                  "partid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Partid",
+                    "example": 10
+                  },
+                  "usergroup": {
+                    "type": "string",
+                    "x-go-name": "Usergroup",
+                    "example": "admin"
+                  },
+                  "username": {
+                    "type": "string",
+                    "x-go-name": "Username",
+                    "example": "JGoolsby"
+                  }
+                },
+                "x-go-name": "UserObject"
+              }
+            }
+          },
+          "x-go-name": "Data"
         }
       },
       "x-go-name": "TableAuthToken",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthTokenCreateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "x-go-name": "Token",
+              "example": "xeCbhpWTrjvJTsTvhTdDXHyXnKTFNecRndhXTiXvDCtdmpeFyvWGxsufJzwyyEXrxuqdAZlTaVmbufdG"
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created auth token"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthTokenDeleteSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f4e2953e-ab42-40df-a7de-9ceb7faca396"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted authtoken"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthTokenList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count",
+          "example": 2
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AuthToken"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthTokenUpdateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f4e2953e-ab42-40df-a7de-9ceb7faca396"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated authtoken"
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "CallElement": {
@@ -4899,6 +5868,38 @@
       "title": "File represents an open file descriptor.",
       "x-go-package": "os"
     },
+    "GlobalSettingsCreateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created GlobalSetting"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GlobalSettingsDeleteSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted GlobalSetting"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "GlobalSettingsStruct": {
       "type": "object",
       "required": [
@@ -4918,7 +5919,7 @@
           "x-go-name": "Data"
         },
         "guid": {
-          "description": "should be a unique value representing user",
+          "description": "should be a unique value representing GlobalSettings",
           "type": "string",
           "x-go-name": "GUID",
           "example": "e71771a2-1ea0-498f-8d27-391713e10664"
@@ -4939,9 +5940,891 @@
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "GlobalSettingsStructList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GlobalSettingsStruct"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GlobalSettingsUpdateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "af72057b-2745-0a1b-b674-56586aadec57"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated GlobalSetting"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaFolders": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/GlobalSettingsStruct"
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "example": 79
+          },
+          "isStarred": {
+            "type": "boolean",
+            "x-go-name": "IsStarred",
+            "example": false
+          },
+          "slug": {
+            "type": "string",
+            "x-go-name": "Slug"
+          },
+          "sortMeta": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "SortMeta",
+            "example": 0
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "x-go-name": "Tags"
+          },
+          "title": {
+            "type": "string",
+            "x-go-name": "Title",
+            "example": "Alerts"
+          },
+          "type": {
+            "type": "string",
+            "x-go-name": "Type",
+            "example": "dash-folder"
+          },
+          "uid": {
+            "type": "string",
+            "x-go-name": "UID",
+            "example": "_tTJl1sMk"
+          },
+          "uri": {
+            "type": "string",
+            "x-go-name": "URI",
+            "example": "db/alerts"
+          },
+          "url": {
+            "type": "string",
+            "x-go-name": "URL",
+            "example": "/grafana/dashboards/f/_tTJl1sMk/alerts"
+          }
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaObject": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit"
+            },
+            "search": {
+              "type": "string",
+              "x-go-name": "Search"
+            },
+            "server": {
+              "type": "string",
+              "x-go-name": "Server"
+            },
+            "timezone": {
+              "type": "object",
+              "x-go-name": "Timezone"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From"
+            },
+            "to": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To"
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaOrg": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "object",
+          "properties": {
+            "address1": {
+              "type": "string",
+              "x-go-name": "Address1",
+              "example": "148 East Saxton Lane"
+            },
+            "address2": {
+              "type": "string",
+              "x-go-name": "Address2",
+              "example": "apt 6"
+            },
+            "city": {
+              "type": "string",
+              "x-go-name": "City",
+              "example": "New Hyde Park"
+            },
+            "country": {
+              "type": "string",
+              "x-go-name": "Country",
+              "example": "USA"
+            },
+            "state": {
+              "type": "string",
+              "x-go-name": "State",
+              "example": "NY"
+            },
+            "zipCode": {
+              "type": "string",
+              "x-go-name": "ZipCode",
+              "example": "11040"
+            }
+          },
+          "x-go-name": "Address"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name",
+          "example": "Expo Superstore"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaResponseValue": {
+      "type": "object",
+      "properties": {
+        "dashboard": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "builtIn": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "BuiltIn"
+                      },
+                      "datasource": {
+                        "type": "string",
+                        "x-go-name": "Datasource"
+                      },
+                      "enable": {
+                        "type": "boolean",
+                        "x-go-name": "Enable"
+                      },
+                      "hide": {
+                        "type": "boolean",
+                        "x-go-name": "Hide"
+                      },
+                      "iconColor": {
+                        "type": "string",
+                        "x-go-name": "IconColor"
+                      },
+                      "name": {
+                        "type": "string",
+                        "x-go-name": "Name"
+                      },
+                      "type": {
+                        "type": "string",
+                        "x-go-name": "Type"
+                      }
+                    }
+                  },
+                  "x-go-name": "List"
+                }
+              },
+              "x-go-name": "Annotations"
+            },
+            "editable": {
+              "type": "boolean",
+              "x-go-name": "Editable"
+            },
+            "gnetId": {
+              "type": "object",
+              "x-go-name": "GnetID"
+            },
+            "graphTooltip": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "GraphTooltip"
+            },
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "ID"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "x-go-name": "Links"
+            },
+            "panels": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aliasColors": {
+                    "type": "object",
+                    "x-go-name": "AliasColors"
+                  },
+                  "bars": {
+                    "type": "boolean",
+                    "x-go-name": "Bars"
+                  },
+                  "dashLength": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "DashLength"
+                  },
+                  "dashes": {
+                    "type": "boolean",
+                    "x-go-name": "Dashes"
+                  },
+                  "datasource": {
+                    "type": "string",
+                    "x-go-name": "Datasource"
+                  },
+                  "fieldConfig": {
+                    "type": "object",
+                    "properties": {
+                      "defaults": {
+                        "type": "object",
+                        "properties": {
+                          "custom": {
+                            "type": "object",
+                            "x-go-name": "Custom"
+                          }
+                        },
+                        "x-go-name": "Defaults"
+                      },
+                      "overrides": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "x-go-name": "Overrides"
+                      }
+                    },
+                    "x-go-name": "FieldConfig"
+                  },
+                  "fill": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Fill"
+                  },
+                  "fillGradient": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "FillGradient"
+                  },
+                  "gridPos": {
+                    "type": "object",
+                    "properties": {
+                      "h": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "H"
+                      },
+                      "w": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "W"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "X"
+                      },
+                      "y": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "Y"
+                      }
+                    },
+                    "x-go-name": "GridPos"
+                  },
+                  "hiddenSeries": {
+                    "type": "boolean",
+                    "x-go-name": "HiddenSeries"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "ID"
+                  },
+                  "legend": {
+                    "type": "object",
+                    "properties": {
+                      "avg": {
+                        "type": "boolean",
+                        "x-go-name": "Avg"
+                      },
+                      "current": {
+                        "type": "boolean",
+                        "x-go-name": "Current"
+                      },
+                      "max": {
+                        "type": "boolean",
+                        "x-go-name": "Max"
+                      },
+                      "min": {
+                        "type": "boolean",
+                        "x-go-name": "Min"
+                      },
+                      "show": {
+                        "type": "boolean",
+                        "x-go-name": "Show"
+                      },
+                      "total": {
+                        "type": "boolean",
+                        "x-go-name": "Total"
+                      },
+                      "values": {
+                        "type": "boolean",
+                        "x-go-name": "Values"
+                      }
+                    },
+                    "x-go-name": "Legend"
+                  },
+                  "lines": {
+                    "type": "boolean",
+                    "x-go-name": "Lines"
+                  },
+                  "linewidth": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Linewidth"
+                  },
+                  "nullPointMode": {
+                    "type": "string",
+                    "x-go-name": "NullPointMode"
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "alertThreshold": {
+                        "type": "boolean",
+                        "x-go-name": "AlertThreshold"
+                      }
+                    },
+                    "x-go-name": "Options"
+                  },
+                  "percentage": {
+                    "type": "boolean",
+                    "x-go-name": "Percentage"
+                  },
+                  "pluginVersion": {
+                    "type": "string",
+                    "x-go-name": "PluginVersion"
+                  },
+                  "pointradius": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Pointradius"
+                  },
+                  "points": {
+                    "type": "boolean",
+                    "x-go-name": "Points"
+                  },
+                  "renderer": {
+                    "type": "string",
+                    "x-go-name": "Renderer"
+                  },
+                  "seriesOverrides": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "x-go-name": "SeriesOverrides"
+                  },
+                  "spaceLength": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "SpaceLength"
+                  },
+                  "stack": {
+                    "type": "boolean",
+                    "x-go-name": "Stack"
+                  },
+                  "steppedLine": {
+                    "type": "boolean",
+                    "x-go-name": "SteppedLine"
+                  },
+                  "targets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "dateTimeType": {
+                          "type": "string",
+                          "x-go-name": "DateTimeType"
+                        },
+                        "extrapolate": {
+                          "type": "boolean",
+                          "x-go-name": "Extrapolate"
+                        },
+                        "format": {
+                          "type": "string",
+                          "x-go-name": "Format"
+                        },
+                        "formattedQuery": {
+                          "type": "string",
+                          "x-go-name": "FormattedQuery"
+                        },
+                        "intervalFactor": {
+                          "type": "integer",
+                          "format": "int64",
+                          "x-go-name": "IntervalFactor"
+                        },
+                        "query": {
+                          "type": "string",
+                          "x-go-name": "Query"
+                        },
+                        "rawQuery": {
+                          "type": "string",
+                          "x-go-name": "RawQuery"
+                        },
+                        "refId": {
+                          "type": "string",
+                          "x-go-name": "RefID"
+                        },
+                        "round": {
+                          "type": "string",
+                          "x-go-name": "Round"
+                        },
+                        "skip_comments": {
+                          "type": "boolean",
+                          "x-go-name": "SkipComments"
+                        }
+                      }
+                    },
+                    "x-go-name": "Targets"
+                  },
+                  "thresholds": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "x-go-name": "Thresholds"
+                  },
+                  "timeFrom": {
+                    "type": "object",
+                    "x-go-name": "TimeFrom"
+                  },
+                  "timeRegions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "x-go-name": "TimeRegions"
+                  },
+                  "timeShift": {
+                    "type": "object",
+                    "x-go-name": "TimeShift"
+                  },
+                  "title": {
+                    "type": "string",
+                    "x-go-name": "Title"
+                  },
+                  "tooltip": {
+                    "type": "object",
+                    "properties": {
+                      "shared": {
+                        "type": "boolean",
+                        "x-go-name": "Shared"
+                      },
+                      "sort": {
+                        "type": "integer",
+                        "format": "int64",
+                        "x-go-name": "Sort"
+                      },
+                      "value_type": {
+                        "type": "string",
+                        "x-go-name": "ValueType"
+                      }
+                    },
+                    "x-go-name": "Tooltip"
+                  },
+                  "type": {
+                    "type": "string",
+                    "x-go-name": "Type"
+                  },
+                  "xaxis": {
+                    "type": "object",
+                    "properties": {
+                      "buckets": {
+                        "type": "object",
+                        "x-go-name": "Buckets"
+                      },
+                      "mode": {
+                        "type": "string",
+                        "x-go-name": "Mode"
+                      },
+                      "name": {
+                        "type": "object",
+                        "x-go-name": "Name"
+                      },
+                      "show": {
+                        "type": "boolean",
+                        "x-go-name": "Show"
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "x-go-name": "Values"
+                      }
+                    },
+                    "x-go-name": "Xaxis"
+                  },
+                  "yaxes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "format": {
+                          "type": "string",
+                          "x-go-name": "Format"
+                        },
+                        "label": {
+                          "type": "object",
+                          "x-go-name": "Label"
+                        },
+                        "logBase": {
+                          "type": "integer",
+                          "format": "int64",
+                          "x-go-name": "LogBase"
+                        },
+                        "max": {
+                          "type": "object",
+                          "x-go-name": "Max"
+                        },
+                        "min": {
+                          "type": "object",
+                          "x-go-name": "Min"
+                        },
+                        "show": {
+                          "type": "boolean",
+                          "x-go-name": "Show"
+                        }
+                      }
+                    },
+                    "x-go-name": "Yaxes"
+                  },
+                  "yaxis": {
+                    "type": "object",
+                    "properties": {
+                      "align": {
+                        "type": "boolean",
+                        "x-go-name": "Align"
+                      },
+                      "alignLevel": {
+                        "type": "object",
+                        "x-go-name": "AlignLevel"
+                      }
+                    },
+                    "x-go-name": "Yaxis"
+                  }
+                }
+              },
+              "x-go-name": "Panels"
+            },
+            "refresh": {
+              "type": "boolean",
+              "x-go-name": "Refresh"
+            },
+            "schemaVersion": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "SchemaVersion"
+            },
+            "style": {
+              "type": "string",
+              "x-go-name": "Style"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "x-go-name": "Tags"
+            },
+            "templating": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "x-go-name": "List"
+                }
+              },
+              "x-go-name": "Templating"
+            },
+            "time": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "x-go-name": "From"
+                },
+                "to": {
+                  "type": "string",
+                  "x-go-name": "To"
+                }
+              },
+              "x-go-name": "Time"
+            },
+            "timepicker": {
+              "type": "object",
+              "x-go-name": "Timepicker"
+            },
+            "timezone": {
+              "type": "string",
+              "x-go-name": "Timezone"
+            },
+            "title": {
+              "type": "string",
+              "x-go-name": "Title"
+            },
+            "uid": {
+              "type": "string",
+              "x-go-name": "UID"
+            },
+            "version": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Version"
+            }
+          },
+          "x-go-name": "Dashboard"
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "canAdmin": {
+              "type": "boolean",
+              "x-go-name": "CanAdmin"
+            },
+            "canEdit": {
+              "type": "boolean",
+              "x-go-name": "CanEdit"
+            },
+            "canSave": {
+              "type": "boolean",
+              "x-go-name": "CanSave"
+            },
+            "canStar": {
+              "type": "boolean",
+              "x-go-name": "CanStar"
+            },
+            "created": {
+              "type": "string",
+              "x-go-name": "Created"
+            },
+            "createdBy": {
+              "type": "string",
+              "x-go-name": "CreatedBy"
+            },
+            "expires": {
+              "type": "string",
+              "x-go-name": "Expires"
+            },
+            "folderId": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "FolderID"
+            },
+            "folderTitle": {
+              "type": "string",
+              "x-go-name": "FolderTitle"
+            },
+            "folderUid": {
+              "type": "string",
+              "x-go-name": "FolderUID"
+            },
+            "folderUrl": {
+              "type": "string",
+              "x-go-name": "FolderURL"
+            },
+            "hasAcl": {
+              "type": "boolean",
+              "x-go-name": "HasACL"
+            },
+            "isFolder": {
+              "type": "boolean",
+              "x-go-name": "IsFolder"
+            },
+            "provisioned": {
+              "type": "boolean",
+              "x-go-name": "Provisioned"
+            },
+            "provisionedExternalId": {
+              "type": "string",
+              "x-go-name": "ProvisionedExternalID"
+            },
+            "slug": {
+              "type": "string",
+              "x-go-name": "Slug"
+            },
+            "type": {
+              "type": "string",
+              "x-go-name": "Type"
+            },
+            "updated": {
+              "type": "string",
+              "x-go-name": "Updated"
+            },
+            "updatedBy": {
+              "type": "string",
+              "x-go-name": "UpdatedBy"
+            },
+            "url": {
+              "type": "string",
+              "x-go-name": "URL"
+            },
+            "version": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Version"
+            }
+          },
+          "x-go-name": "Meta"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaSearch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "folderId": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "FolderID"
+          },
+          "folderTitle": {
+            "type": "string",
+            "x-go-name": "FolderTitle"
+          },
+          "folderUid": {
+            "type": "string",
+            "x-go-name": "FolderUID"
+          },
+          "folderUrl": {
+            "type": "string",
+            "x-go-name": "FolderURL"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID"
+          },
+          "isStarred": {
+            "type": "boolean",
+            "x-go-name": "IsStarred"
+          },
+          "slug": {
+            "type": "string",
+            "x-go-name": "Slug"
+          },
+          "sortMeta": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "SortMeta"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "x-go-name": "Tags"
+          },
+          "title": {
+            "type": "string",
+            "x-go-name": "Title"
+          },
+          "type": {
+            "type": "string",
+            "x-go-name": "Type"
+          },
+          "uid": {
+            "type": "string",
+            "x-go-name": "UID"
+          },
+          "uri": {
+            "type": "string",
+            "x-go-name": "URI"
+          },
+          "url": {
+            "type": "string",
+            "x-go-name": "URL"
+          }
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "GrafanaUrl": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "localhost:3000"
+        }
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
@@ -5049,23 +6932,58 @@
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "Label": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "__name__": {
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "go_routines"
+          },
+          "instance": {
+            "type": "string",
+            "x-go-name": "Instance",
+            "example": "localhost:9090"
+          },
+          "job": {
+            "type": "string",
+            "x-go-name": "Job",
+            "example": "prometheus"
+          },
+          "version": {
+            "type": "string",
+            "x-go-name": "Version"
+          }
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "LabelData": {
       "type": "object",
       "properties": {
-        "entries": {
+        "result": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/LabelData"
           },
-          "x-go-name": "Entries"
+          "x-go-name": "Streams"
         },
-        "labels": {
-          "type": "object",
-          "x-go-name": "Labels"
+        "resultType": {
+          "type": "string",
+          "x-go-name": "ResultType"
         }
       },
-      "x-go-name": "streamsResult",
+      "x-go-name": "StreamRemoteData",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
+    },
+    "ListLabels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "ListUsers": {
       "type": "object",
@@ -5917,6 +7835,221 @@
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "PrometheusObject": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit",
+              "example": 500
+            },
+            "metrics": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "x-go-name": "Metrics",
+              "example": [
+                "go_goroutines"
+              ]
+            },
+            "precision": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Precision",
+              "example": 3600
+            },
+            "total": {
+              "description": "false",
+              "type": "boolean",
+              "x-go-name": "Total"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From"
+            },
+            "to": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To"
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "PrometheusResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "metric": {
+                    "type": "object",
+                    "properties": {
+                      "__name__": {
+                        "type": "string",
+                        "x-go-name": "Name",
+                        "example": "go_routines"
+                      },
+                      "instance": {
+                        "type": "string",
+                        "x-go-name": "Instance",
+                        "example": "localhost:9090"
+                      },
+                      "job": {
+                        "type": "string",
+                        "x-go-name": "Job",
+                        "example": "prometheus"
+                      }
+                    },
+                    "x-go-name": "Metric"
+                  },
+                  "values": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "x-go-name": "Values"
+                  }
+                }
+              },
+              "x-go-name": "Result"
+            },
+            "resultType": {
+              "type": "string",
+              "x-go-name": "ResultType",
+              "example": "matrix"
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "success": {
+          "type": "string",
+          "x-go-name": "Success"
+        }
+      },
+      "x-go-name": "PrometheusResponseValue",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "RemoteLabels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "RemoteRequest": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit",
+              "example": 100
+            },
+            "search": {
+              "type": "string",
+              "x-go-name": "Search",
+              "example": "{type=\"call\"}"
+            },
+            "server": {
+              "type": "string",
+              "x-go-name": "Server",
+              "example": "http://localhost:3100"
+            },
+            "timezone": {
+              "type": "object",
+              "x-go-name": "Timezone"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From"
+            },
+            "to": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To"
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-name": "RemoteObject",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "RemoteResponseData": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "custom_1": {
+                "type": "string",
+                "x-go-name": "Custom1"
+              },
+              "custom_2": {
+                "type": "string",
+                "x-go-name": "Custom2",
+                "example": "{\"duration\":\"0\",\"from_user\":\"1201\",\"ruri_user\":\"102110112384797001\",status\":\"8\",\"type\":\"call\"}"
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "ID",
+                "example": 1
+              },
+              "micro_ts": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "MicroTs",
+                "example": 1634081796154
+              }
+            }
+          }
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "RemoteValues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "SearchCallData": {
       "type": "object",
       "properties": {
@@ -6680,6 +8813,302 @@
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "StatisticDb": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "Results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Messages": {
+                    "type": "object"
+                  },
+                  "Series": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "x-go-name": "Columns",
+                          "example": [
+                            "name"
+                          ]
+                        },
+                        "name": {
+                          "type": "string",
+                          "x-go-name": "Name",
+                          "example": "databases"
+                        },
+                        "values": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "x-go-name": "Values",
+                          "example": [
+                            [
+                              "telegraf"
+                            ],
+                            [
+                              "_internal"
+                            ],
+                            [
+                              "homer"
+                            ]
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status",
+          "example": "ok"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Total",
+          "example": 1
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "StatisticObject": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "object",
+          "properties": {
+            "bfrom": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Bfrom"
+            },
+            "limit": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit"
+            },
+            "precision": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Precision"
+            },
+            "query": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "database": {
+                    "type": "string",
+                    "x-go-name": "Database"
+                  },
+                  "main": {
+                    "type": "string",
+                    "x-go-name": "Main"
+                  },
+                  "rawquery": {
+                    "type": "string",
+                    "x-go-name": "Rawquery"
+                  },
+                  "retention": {
+                    "type": "string",
+                    "x-go-name": "Retention"
+                  },
+                  "tag": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "x-go-name": "Tag"
+                  },
+                  "type": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "x-go-name": "Type"
+                  }
+                }
+              },
+              "x-go-name": "Query"
+            },
+            "total": {
+              "type": "boolean",
+              "x-go-name": "Total"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From"
+            },
+            "to": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To"
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "StatisticRetentions": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "Results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Messages": {
+                    "type": "object"
+                  },
+                  "Series": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "x-go-name": "Columns",
+                          "example": [
+                            "name",
+                            "duration",
+                            "shardGroupDuration",
+                            "replicaN",
+                            "default"
+                          ]
+                        },
+                        "values": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "x-go-name": "Values",
+                          "example": [
+                            [
+                              "autogen",
+                              "0s",
+                              "168h0m0s",
+                              1,
+                              true
+                            ]
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status",
+          "example": "ok"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Total",
+          "example": 1
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "StatisticSearchObject": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "object",
+          "properties": {
+            "bfrom": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Bfrom"
+            },
+            "limit": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Limit"
+            },
+            "precision": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "Precision"
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "database": {
+                  "type": "string",
+                  "x-go-name": "Database"
+                }
+              },
+              "x-go-name": "Search"
+            },
+            "total": {
+              "type": "boolean",
+              "x-go-name": "Total"
+            }
+          },
+          "x-go-name": "Param"
+        },
+        "timestamp": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "From"
+            },
+            "to": {
+              "type": "integer",
+              "format": "int64",
+              "x-go-name": "To"
+            }
+          },
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "SuccessResponse": {
       "type": "object",
       "required": [
@@ -6842,6 +9271,114 @@
         }
       },
       "x-go-name": "UserTokenSuccessfulResponse",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSetting": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category",
+          "example": "dashboard"
+        },
+        "data": {
+          "$ref": "#/definitions/DashboardElement"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID",
+          "example": "1868f318-5f16-4c40-ab1e-bfa4f417ff61"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID",
+          "example": 59
+        },
+        "param": {
+          "type": "string",
+          "x-go-name": "Param",
+          "example": "_1633964934444"
+        },
+        "partid": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Partid",
+          "example": 10
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username",
+          "example": "admin"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSettingCreateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f4e2953e-ab42-40df-a7de-9ceb7faca396"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created userObject"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSettingDeleteSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f4e2953e-ab42-40df-a7de-9ceb7faca396"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted userObject"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSettingList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count",
+          "example": 7
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserSetting"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "UserSettingUpdateSuccessfulResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "f4e2953e-ab42-40df-a7de-9ceb7faca396"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated userObject\""
+        }
+      },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "UserSettings": {

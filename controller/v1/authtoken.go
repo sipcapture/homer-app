@@ -38,8 +38,8 @@ type AuthtokenController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   200: body:AuthTokenList
+//   400: body:FailureResponse
 func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 	reply, err := ass.AuthtokenService.GetAuthtoken()
@@ -50,7 +50,7 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 }
 
-// swagger:operation GET /token/auth/{guid} token authTokenGetAuthtokenAgainstGUID
+// swagger:route GET /token/auth/{guid} token authTokenGetAuthtokenAgainstGUID
 //
 // Get token by guid
 // ---
@@ -59,7 +59,7 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of token
@@ -74,8 +74,8 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   200: body:AuthToken
+//   400: body:FailureResponse
 func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ass.AuthtokenService.GetAuthtokenAgainstGUID(guid)
@@ -86,7 +86,7 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 
 }
 
-// swagger:operation POST /token/auth token authTokenAddAuthToken
+// swagger:route POST /token/auth token authTokenAddAuthToken
 //
 // Add token
 // ---
@@ -95,11 +95,11 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: authTokenStruct
+// + name: authTokenStruct
 //   in: body
 //   description: authToken parameters
 //   schema:
-//     "$ref": "#/definitions/AuthToken"
+//     type: AuthToken
 //   required: true
 // Security:
 // - bearer: []
@@ -110,8 +110,8 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:AuthTokenCreateSuccessfulResponse
+//   400: body:FailureResponse
 func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableAuthToken{}
@@ -145,7 +145,7 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation PUT /token/auth/{guid} token authTokenUpdateAuthtokenAgainstGUID
+// swagger:route PUT /token/auth/{guid} token authTokenUpdateAuthtokenAgainstGUID
 //
 // Update token by guid
 // ---
@@ -154,17 +154,17 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   example: f4e2953e-ab42-40df-a7de-9ceb7faca396
 //   description: guid of token
 //   required: true
 //   type: string
-// - name: authTokenStruct
+// + name: authTokenStruct
 //   in: body
 //   description: authToken parameters
 //   schema:
-//     "$ref": "#/definitions/AuthToken"
+//     type: AuthToken
 //   required: true
 // Security:
 // - bearer: []
@@ -175,8 +175,8 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:AuthTokenUpdateSuccessfulResponse
+//   400: body:FailureResponse
 func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ass.AuthtokenService.GetAuthtokenAgainstGUID(guid)
@@ -203,7 +203,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation DELETE /token/auth/{guid} token authTokenDeleteAuthtokenAgainstGUID
+// swagger:route DELETE /token/auth/{guid} token authTokenDeleteAuthtokenAgainstGUID
 //
 // Delete token by guid
 // ---
@@ -212,9 +212,9 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
+//   example: f4e2953e-ab42-40df-a7de-9ceb7faca396
 //   description: guid of token
 //   required: true
 //   type: string
@@ -227,8 +227,8 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:AuthTokenDeleteSuccessfulResponse
+//   400: body:FailureResponse
 func (ass *AuthtokenController) DeleteAuthtokenAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 

@@ -35,8 +35,8 @@ type UserSettingsController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:UserSettingList
+//   400: body:FailureResponse
 func (usc *UserSettingsController) GetAll(c echo.Context) error {
 
 	userName, isAdmin := auth.IsRequestAdmin(c)
@@ -47,7 +47,7 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /user/settings/{category} settings settingsGetCategory
+// swagger:route GET /user/settings/{category} settings settingsGetCategory
 //
 // Returns the list of settings
 // ---
@@ -56,7 +56,7 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: category
+// + name: category
 //   in: path
 //   description: user settings category
 //   example: dashboard
@@ -71,8 +71,8 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:UserSettingList
+//   400: body:FailureResponse
 func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 
 	userCategory := c.Param("category")
@@ -81,7 +81,7 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation POST /user/settings settings settingsAddUserSettings
+// swagger:route POST /user/settings settings settingsAddUserSettings
 //
 // Adds user settings
 // ---
@@ -90,11 +90,11 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: userSettingsStruct
+// + name: UserSetting
 //   in: body
-//   description: TableUserSettings struct
+//   description: UserSetting struct
 //   schema:
-//     "$ref": "#/definitions/UserSettings"
+//     type: UserSetting
 //   required: true
 // Security:
 // - bearer: []
@@ -105,8 +105,8 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserLoginSuccessResponse
-//   '400': body:UserLoginFailureResponse
+//   201: body:UserSettingCreateSuccessfulResponse
+//   400: body:FailureResponse
 func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
@@ -123,7 +123,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, row)
 }
 
-// swagger:operation DELETE /user/settings/{guid} settings settingsDeleteUserSettings
+// swagger:route DELETE /user/settings/{guid} settings settingsDeleteUserSettings
 //
 // Delete user settings
 // ---
@@ -132,7 +132,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of user settings
@@ -147,7 +147,8 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '200': body:SuccessResponse
+//   201: body:UserSettingDeleteSuccessfulResponse
+// 	 400: body:FailureResponse
 func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
@@ -175,7 +176,7 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply.String())
 }
 
-// swagger:operation PUT /user/settings/{guid} settings settingsUpdateUserSettings
+// swagger:route PUT /user/settings/{guid} settings settingsUpdateUserSettings
 //
 // Update user settings
 // ---
@@ -184,17 +185,17 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of user settings
 //   required: true
 //   type: string
-// - name: tableUserSettingsStruct
+// + name: UserSetting
 //   in: body
-//   description: TableUserSettings
+//   description: UserSetting
 //   schema:
-//     "$ref": "#/definitions/UserSettings"
+//     type: UserSetting
 //   required: true
 // Security:
 // - bearer: []
@@ -205,7 +206,8 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:SuccessResponse
+//   201: body:UserSettingUpdateSuccessfulResponse
+// 	 400: body:FailureResponse
 func (usc *UserSettingsController) UpdateUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}

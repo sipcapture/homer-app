@@ -33,18 +33,13 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 // produces:
 // - application/json
 // Security:
-//  - JWT
-//  - ApiKeyAuth
+// - bearer: []
 //
 // SecurityDefinitions:
-// JWT:
+// bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
 //
 // responses:
 //   201: body:HepsubSchema

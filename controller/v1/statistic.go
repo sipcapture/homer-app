@@ -30,10 +30,15 @@ type StatisticController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: StatisticSearchObject
+//   in: body
+//   type: StatisticSearchObject
+//   description: StatisticSearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:StatisticDb
+//   400: body:FailureResponse
 func (sc *StatisticController) StatisticData(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
@@ -68,10 +73,9 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:StatisticDb
+//   400: body:FailureResponse
 func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
@@ -100,10 +104,15 @@ func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: StatisticSearchObject
+//   in: body
+//   type: StatisticSearchObject
+//   description: StatisticSearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:StatisticRetentions
+//   400: body:UserLoginFailureResponse
 func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
@@ -125,7 +134,7 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:operation GET /statistic/_measurements/{dbid} statistic statisticGetStatisticMeasurementsList
+// swagger:route GET /statistic/_measurements/{dbid} statistic statisticGetStatisticMeasurementsList
 //
 // Returns data based upon filtered json
 // ---
@@ -134,10 +143,15 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 // produces:
 // - application/json
 // parameters:
-// - name: dbid
+// + name: dbid
 //   in: path
 //   type: string
 //   description: database id
+//   required: true
+// + name: StatisticSearchObject
+//   in: body
+//   type: StatisticSearchObject
+//   description: StatisticSearchObject
 //   required: true
 // Security:
 // - bearer: []
@@ -147,9 +161,8 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
 // responses:
-//   '200': body:ListUsers
+//   200: body:StatisticObject
 //   '400': body:UserLoginFailureResponse
 func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) error {
 
@@ -181,10 +194,15 @@ func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) erro
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: StatisticSearchObject
+//   in: body
+//   type: StatisticSearchObject
+//   description: StatisticSearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:StatisticDb
+//   400: body:FailureResponse
 func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
@@ -220,10 +238,15 @@ func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-
+// parameters:
+// + name: StatisticSearchObject
+//   in: body
+//   type: StatisticSearchObject
+//   description: StatisticSearchObject
+//   required: true
 // responses:
-//   '200': body:ListUsers
-//   '400': body:UserLoginFailureResponse
+//   200: body:StatisticDb
+//   400: body:FailureResponse
 func (sc *StatisticController) GetStatisticTagsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {

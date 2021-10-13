@@ -15,7 +15,7 @@ type WebSocketController struct {
 	Addr *string
 }
 
-// swagger:operation GET /ws WebSocket
+//  GET /ws WebSocket
 //
 // Returns data based upon filtered json
 // ---

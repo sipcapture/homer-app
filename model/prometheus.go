@@ -4,12 +4,17 @@ import (
 	"encoding/json"
 )
 
+// swagger:model PrometheusObject
 type PrometheusObject struct {
 	Param struct {
-		Limit     int      `json:"limit"`
-		Precision int      `json:"precision"`
-		Metrics   []string `json:"metrics"`
-		Total     bool     `json:"total"`
+		// example:500
+		Limit int `json:"limit"`
+		// example: 3600
+		Precision int `json:"precision"`
+		// example: ["go_goroutines"]
+		Metrics []string `json:"metrics"`
+		// false
+		Total bool `json:"total"`
 	} `json:"param"`
 	Timestamp struct {
 		From int64 `json:"from"`
@@ -37,4 +42,38 @@ type PrometheusPoint struct {
 	Transaction string  `json:"transaction"`
 	Countername string  `json:"countername"`
 	Value       float64 `json:"value"`
+}
+
+// swagger:model ListLabels
+type ListLabels []string
+
+// swagger:model Label
+type Label []struct {
+	// example: localhost:9090
+	Instance string `json:"instance"`
+	// example: prometheus
+	Job     string `json:"job"`
+	Version string `json:"version"`
+	// example: go_routines
+	Name string `json:"__name__"`
+}
+
+// swagger:model PrometheusResponse
+type PrometheusResponseValue struct {
+	Success string `json:"success"`
+	Data    struct {
+		// example: matrix
+		ResultType string `json:"resultType"`
+		Result     []struct {
+			Metric struct {
+				// example: go_routines
+				Name string `json:"__name__"`
+				// example: localhost:9090
+				Instance string `json:"instance"`
+				// example: prometheus
+				Job string `json:"job"`
+			} `json:"metric"`
+			Values [][]interface{} `json:"values"`
+		} `json:"result"`
+	} `json:"data"`
 }

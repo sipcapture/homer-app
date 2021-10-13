@@ -142,6 +142,7 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
+// parameters:
 // + name: MappingSchema
 //   in: body
 //   description: Mapping parameters

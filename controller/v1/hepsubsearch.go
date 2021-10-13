@@ -32,8 +32,8 @@ type HepsubsearchController struct {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:HepsubCreateSuccessResponse
+//   400: body:FailureResponse
 func (hss *HepsubsearchController) DoHepsubsearch(c echo.Context) error {
 	// Stub an user to be populated from the body
 	searchObject := model.SearchObject{}

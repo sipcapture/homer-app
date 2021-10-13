@@ -24,6 +24,7 @@ type AdvancedController struct {
 // ---
 // produces:
 // - application/json
+//
 // Security:
 // - bearer: []
 //
@@ -32,15 +33,15 @@ type AdvancedController struct {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-//
-// Responses:
+// responses:
 //   201: body:GlobalSettingsStructList
+//   400: body:FailureResponse
 func (ac *AdvancedController) GetAll(c echo.Context) error {
 	alias, _ := ac.AdvancedService.GetAll()
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, string(alias))
 }
 
-// swagger:route POST /advanced advanced advancedAddAdvanced
+// swagger:route POST /advanced Advanced advancedAddAdvanced
 //
 // Add advanced item
 // ---
@@ -57,8 +58,8 @@ func (ac *AdvancedController) GetAll(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:GlobalSettingsCreateSuccessfulResponse
+//   400: body:FailureResponse
 func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableGlobalSettings{}
@@ -80,7 +81,7 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, []byte(reply))
 }
 
-// swagger:operation PUT /advanced/{guid} advanced advancedUpdateAdvancedAgainstGUID
+// swagger:route PUT /advanced/{guid} Advanced advancedUpdateAdvancedAgainstGUID
 //
 // Update advanced item by guid
 // ---
@@ -89,7 +90,7 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of item
@@ -104,8 +105,8 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:GlobalSettingsUpdateSuccessfulResponse
+//   400: body:FailureResponse
 func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
@@ -131,7 +132,7 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation DELETE /advanced/{guid} advanced advancedDeleteAdvancedAgainstGUID
+// swagger:route DELETE /advanced/{guid} Advanced advancedDeleteAdvancedAgainstGUID
 //
 // Delete advanced item by guid
 // ---
@@ -140,7 +141,7 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of item
@@ -155,8 +156,8 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:GlobalSettingsDeleteSuccessfulResponse
+//   400: body:FailureResponse
 func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 	guid := url.QueryEscape(c.Param("guid"))
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
@@ -170,7 +171,7 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /advanced/{guid} advanced advancedGetAdvancedAgainstGUID
+// swagger:route GET /advanced/{guid} Advanced advancedGetAdvancedAgainstGUID
 //
 // Get advanced item by guid
 // ---
@@ -179,7 +180,7 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: 11111111-1111-1111-1111-111111111111
 //   description: guid of item
@@ -194,8 +195,8 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   '201': body:UserCreateSuccessfulResponse
-//   '400': body:UserCreateSuccessfulResponse
+//   201: body:GlobalSettingsStruct
+//   400: body:FailureResponse
 func (ac *AdvancedController) GetAdvancedAgainstGUID(c echo.Context) error {
 
 	guid := url.QueryEscape(c.Param("guid"))

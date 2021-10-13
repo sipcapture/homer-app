@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sirupsen/logrus"
 )
 
 type UserSettingsService struct {
@@ -37,6 +39,38 @@ func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]by
 		Find(&mappingSchema)
 
 	return mappingSchema.CorrelationMapping, nil
+}
+
+// get all mapping from database
+func (ss *UserSettingsService) GetAllMapping() (map[string]json.RawMessage, error) {
+
+	var mappingObject []*model.TableMappingSchema
+	mapsFieldsData := make(map[string]json.RawMessage)
+
+	if err := ss.Session.Debug().Table("mapping_schema").Where("partid = ?", 10).
+		Find(&mappingObject).Error; err != nil {
+
+		logrus.Error("Error during mapping retrieve ", err.Error())
+		return mapsFieldsData, err
+	}
+
+	if len(mappingObject) == 0 {
+		logrus.Error("Error:  mapping is null")
+		return mapsFieldsData, fmt.Errorf("data was not found")
+	}
+
+	for _, row := range mappingObject {
+		key := fmt.Sprintf("%d_%s", row.Hepid, row.Profile)
+
+		sFieldsMapping, err := gabs.ParseJSON(row.FieldsMapping)
+		if err != nil {
+			logrus.Error("errors during parse json mapping: ", err.Error(), ", key:", key)
+		}
+
+		mapsFieldsData[key] = sFieldsMapping.Bytes()
+	}
+
+	return mapsFieldsData, nil
 }
 
 // get Category by param

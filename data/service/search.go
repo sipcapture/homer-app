@@ -22,6 +22,8 @@ import (
 	"github.com/shomali11/util/xconditions"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/sqlparser"
+	"github.com/sipcapture/homer-app/sqlparser/query"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger/function"
@@ -116,8 +118,11 @@ const (
 	RESET  = 10
 )
 
-func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
+func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) (sql string, sLimit int, dataValueArray []interface{}) {
 	sLimit = 200
+
+	smartMap := make(map[string]model.MappingSmart)
+
 	for k, v := range elems {
 		mapData := v.(map[string]interface{})
 		if formVal, ok := mapData["value"]; ok {
@@ -127,99 +132,98 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 
 			if formName == "smartinput" {
 
-				upperCaseValue := strings.ToUpper(formValue)
-				totalLen := len(formValue)
-				index := 0
-				key := ""
-				value := ""
-				typeValue := "string"
-				operator := ""
-				endEl := " AND ("
+				/* Map fields */
+				sMapping, _ := gabs.ParseJSON(mappingJSON)
+				for _, val := range sMapping.Children() {
 
-				hdr := FIRST
+					if val.Exists("id") && val.Exists("type") {
 
-				for i := 0; i < totalLen; i++ {
+						result := model.MappingSmart{}
+						key := val.S("id").Data().(string)
 
-					switch {
-					case hdr == FIRST:
-						/* = */
-						if upperCaseValue[i] == '=' {
-							hdr = VALUE
-							operator = " = "
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							value = ""
-							index = i
-							/* formValue != */
-						} else if upperCaseValue[i] == '!' && upperCaseValue[(i+1)] == '=' {
-							hdr = VALUE
-							operator = " != "
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							value = ""
-							i++
-							index = i
-						} else if upperCaseValue[i] == 'L' && i < (totalLen-4) && upperCaseValue[i+1] == 'I' && upperCaseValue[i+3] == 'E' {
-							operator = " LIKE "
-							hdr = VALUE
-							key = strings.Replace(formValue[index:i], " ", "", -1)
-							i += 3
-							index = i
-						}
-					case hdr == VALUE:
-						/* = */
-						if formValue[i] == ' ' {
-							index = i
-						} else if upperCaseValue[i] == '"' {
-							typeValue = "string"
-							i++
-							index = i
-							hdr = END
-							/* formValue != */
+						result.Value = val.S("id").Data().(string)
+						result.Type = val.S("type").Data().(string)
+						smartMap[key] = result
+					}
+				}
+
+				switch x := formVal.(type) {
+				case string:
+					formValue = formVal.(string)
+				default:
+					logrus.Error("Unsupported type:", x)
+				}
+
+				queryA, err := sqlparser.Parse(formValue)
+				if err != nil {
+					logrus.Error("BAD Query type:", err.Error())
+				}
+
+				counterParentClose := 0
+
+				for _, vCond := range queryA.Conditions {
+
+					operandField := vCond.Operand1
+					operandValue := vCond.Operand2
+					operator := query.OperatorString[vCond.Operator]
+					logicalElement := vCond.Logical
+					typeValue := "string"
+
+					if modSmart, ok := smartMap[operandField]; ok {
+						operandField = modSmart.Value
+						typeValue = modSmart.Type
+					}
+
+					if strings.Contains(operandField, ".") {
+						elemArray := strings.Split(operandField, ".")
+						if typeValue == "integer" {
+							sql += fmt.Sprintf("(%s->>'%s')::int %s ? ", elemArray[0], elemArray[1], operator)
+							dataValueArray = append(dataValueArray, heputils.CheckIntValue(operandValue))
+
 						} else {
-							typeValue = "integer"
-							index = i
-							hdr = END
-						}
-					case hdr == END:
-						if upperCaseValue[i] == '"' || upperCaseValue[i] == ' ' || i == (totalLen-1) {
-							value = formValue[index:i]
-							hdr = RESET
-							i++
-							index = i
-							if strings.Contains(key, ".") {
-								elemArray := strings.Split(key, ".")
-								if typeValue == "integer" {
-									sql = sql + endEl + fmt.Sprintf("(%s->>'%s')::int%s%d ", elemArray[0], elemArray[1], operator, heputils.CheckIntValue(value))
-								} else {
-									sql = sql + endEl + fmt.Sprintf("%s->>'%s'%s'%s' ", elemArray[0], elemArray[1], operator, value)
-								}
-							} else if formType == "integer" {
-								sql = sql + endEl + fmt.Sprintf("%s%s%d ", key, operator, heputils.CheckIntValue(value))
-							} else {
-								if value == "isEmpty" {
-									sql = sql + endEl + fmt.Sprintf("%s%s''", key, operator)
-								} else if value == "isNull" && key == "=" {
-									sql = sql + endEl + fmt.Sprintf("%s is NULL", key)
-								} else {
-									sql = sql + endEl + fmt.Sprintf("%s%s'%s'", key, operator, value)
-								}
+							if strings.Contains(operandValue, "%") {
+								operator = "LIKE"
 							}
-							continue
+							sql += fmt.Sprintf("%s->>'%s' %s ? ", elemArray[0], elemArray[1], operator)
+							dataValueArray = append(dataValueArray, operandValue)
+
 						}
-					case hdr == RESET:
-						if i < (totalLen-2) && upperCaseValue[i] == 'O' && upperCaseValue[i+1] == 'R' {
-							endEl = " OR "
-							hdr = FIRST
-							i += 2
-							index = i
-						} else if i < (totalLen-3) && upperCaseValue[i] == 'A' && upperCaseValue[i+1] == 'N' && upperCaseValue[i+2] == 'D' {
-							endEl = " AND "
-							hdr = FIRST
-							i += 3
-							index = i
+					} else if typeValue == "integer" || typeValue == "number" {
+						sql += fmt.Sprintf("%s %s ?", operandField, operator)
+						dataValueArray = append(dataValueArray, heputils.CheckIntValue(operandValue))
+
+					} else {
+						if operandValue == "isEmpty" {
+							sql += fmt.Sprintf("%s %s ''", operandField, operator)
+						} else if operandValue == "isNull" && operandField == "=" {
+							sql += fmt.Sprintf("%s is NULL", operandField)
+						} else {
+							sql += fmt.Sprintf("%s %s ?", operandField, operator)
+							dataValueArray = append(dataValueArray, operandValue)
+						}
+					}
+
+					if logicalElement != "" {
+						sql = sql + " " + logicalElement + " "
+						if logicalElement == "OR" {
+							counterParentClose++
+							sql = sql + "("
 						}
 					}
 				}
-				sql += ")"
+
+				//we close it
+				if counterParentClose > 0 {
+					sql = sql + strings.Repeat(")", counterParentClose)
+				}
+
+				// make query inside
+				if sql != "" {
+					sql = " AND " + sql
+				}
+
+				logrus.Error("NEW SQL: ", sql)
+
 				continue
 			}
 
@@ -230,10 +234,6 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 			if orLogic {
 				operator = " OR "
 			}
-
-			logrus.Debug(k, ". formName: ", formName)
-			logrus.Debug(k, ". formValue: ", formValue)
-			logrus.Debug(k, ". formType: ", formType)
 
 			if strings.HasPrefix(formValue, "||") {
 				formValue = strings.TrimPrefix(formValue, "||")
@@ -265,16 +265,23 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 			if strings.Contains(formName, ".") {
 				elemArray := strings.Split(formName, ".")
 				if formType == "integer" {
-					sql = sql + operator + fmt.Sprintf("(%s->>'%s')::int%s%d", elemArray[0], elemArray[1], equalStr, heputils.CheckIntValue(formValue))
+					sql = sql + operator + fmt.Sprintf("(%s->>'%s')::int %s ?", elemArray[0], elemArray[1], equalStr)
+					dataValueArray = append(dataValueArray, heputils.CheckIntValue(formValue))
+
 					continue
 				}
 				if strings.Contains(formValue, "%") && strings.Contains(formValue, ";") {
-					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{%s}')", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue))
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE ANY ('{?}')", elemArray[0], elemArray[1], notStr)
+					dataValueArray = append(dataValueArray, heputils.Sanitize(formValue))
 					sql = strings.Replace(sql, ";", ",", -1)
 				} else if strings.Contains(formValue, "%") {
-					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE '%s'", elemArray[0], elemArray[1], notStr, heputils.Sanitize(formValue))
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sLIKE ?", elemArray[0], elemArray[1], notStr)
+					dataValueArray = append(dataValueArray, heputils.Sanitize(formValue))
 				} else if strings.Contains(formValue, ",") || len(valueArray) > 1 {
-					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sIN ('%s')", elemArray[0], elemArray[1], notStr, strings.Join(valueArray[:], "','"))
+					sql = sql + operator + fmt.Sprintf("%s->>'%s' %sIN (?%s)", elemArray[0], elemArray[1], notStr, strings.Repeat(",?", len(valueArray)-1))
+					for _, vaString := range valueArray {
+						dataValueArray = append(dataValueArray, vaString)
+					}
 				} else {
 
 					if len(valueArray) == 1 {
@@ -283,33 +290,47 @@ func buildQuery(elems []interface{}, orLogic bool) (sql string, sLimit int) {
 						} else if valueArray[0] == "isNull" && equalStr == "=" {
 							sql = sql + operator + fmt.Sprintf("%s->>'%s' is NULL", elemArray[0], elemArray[1])
 						} else {
-							sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+							sql = sql + operator + fmt.Sprintf("%s->>'%s'%s ?%s", elemArray[0], elemArray[1], equalStr, strings.Repeat(",?", len(valueArray)-1))
+							for _, vaString := range valueArray {
+								dataValueArray = append(dataValueArray, vaString)
+							}
 						}
 					} else {
-						sql = sql + operator + fmt.Sprintf("%s->>'%s'%s'%s'", elemArray[0], elemArray[1], equalStr, strings.Join(valueArray[:], "','"))
+						sql = sql + operator + fmt.Sprintf("%s->>'%s'%s ?%s", elemArray[0], elemArray[1], equalStr, strings.Repeat(",?", len(valueArray)-1))
+						for _, vaString := range valueArray {
+							dataValueArray = append(dataValueArray, vaString)
+						}
 					}
 				}
 				continue
 			}
 
 			if formType == "integer" {
-				sql = sql + operator + fmt.Sprintf("%s%s%d", formName, equalStr, heputils.CheckIntValue(formValue))
+				sql = sql + operator + fmt.Sprintf("%s%s ?", formName, equalStr)
+				dataValueArray = append(dataValueArray, heputils.CheckIntValue(formValue))
+
 				continue
 			}
 
 			if strings.Contains(formValue, "%") {
-				sql = sql + operator + formName + notStr + " LIKE '" + heputils.Sanitize(formValue) + "'"
+				sql = sql + operator + formName + notStr + " LIKE ?"
+				dataValueArray = append(dataValueArray, heputils.Sanitize(formValue))
+
 			} else {
-				sql = sql + operator + fmt.Sprintf("%s %sIN ('%s')", formName, notStr, strings.Join(valueArray[:], "','"))
+				sql = sql + operator + fmt.Sprintf("%s %sIN (?%s)", formName, notStr, strings.Repeat(",?", len(valueArray)-1))
+				for _, vaString := range valueArray {
+					dataValueArray = append(dataValueArray, vaString)
+				}
 			}
 		}
 	}
-	return sql, sLimit
+	return sql, sLimit, dataValueArray
 }
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string, userGroup string) (string, error) {
+func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string,
+	userGroup string, mapsFieldsData map[string]json.RawMessage) (string, error) {
 	table := "hep_proto_1_default"
 	searchData := []model.HepTable{}
 	searchFromTime := time.Unix(searchObject.Timestamp.From/int64(time.Microsecond), 0)
@@ -317,6 +338,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? AND ?"
+	dataArrayValues := []interface{}{}
 
 	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
 	logrus.Debug("USERGROUP ", userGroup)
@@ -326,12 +348,16 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	}
 
 	var sLimit int
+	dataArrayValues = append(dataArrayValues, searchFromTime)
+	dataArrayValues = append(dataArrayValues, searchToTime)
 
 	for key, _ := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
-			s, l := buildQuery(elems, searchObject.Param.OrLogic)
+			mappingJSON := mapsFieldsData[key]
+			s, l, dArray := buildQuery(elems, searchObject.Param.OrLogic, mappingJSON)
+			dataArrayValues = append(dataArrayValues, dArray...)
 			sql += s
 			sLimit = l
 		}
@@ -348,7 +374,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		ss.Session[session].Debug().
 			Table(table).
-			Where(sql, searchFromTime, searchToTime).
+			Where(sql, dataArrayValues...).
 			Limit(sLimit).
 			Find(&searchTmp)
 

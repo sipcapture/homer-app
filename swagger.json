@@ -7179,20 +7179,19 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "__name__": {
-          "type": "string",
-          "x-go-name": "Name"
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LabelData"
+          },
+          "x-go-name": "Streams"
         },
-        "instance": {
+        "resultType": {
           "type": "string",
-          "x-go-name": "Instance"
-        },
-        "job": {
-          "type": "string",
-          "x-go-name": "Job"
+          "x-go-name": "ResultType"
         }
       },
-      "x-go-name": "ValuesArray",
+      "x-go-name": "StreamRemoteData",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListLabels": {

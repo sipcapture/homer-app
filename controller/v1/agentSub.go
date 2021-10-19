@@ -164,12 +164,12 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Auth-Token header not present or has empty value")
 	}
 
-	reply, err := ass.AgentsubService.GetAuthKeyByHeaderToken(authToken)
+	_, err = ass.AgentsubService.GetAuthKeyByHeaderToken(authToken)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	reply, err = ass.AgentsubService.DeleteAgentsubAgainstGUID(agentSub.GUID)
+	_, err = ass.AgentsubService.DeleteAgentsubAgainstGUID(agentSub.GUID)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
@@ -178,7 +178,7 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	agentSub.ExpireDate = time.Now().Add(time.Duration(agentSub.TTL) * time.Second)
 	agentSub.Active = 1
 
-	reply, err = ass.AgentsubService.AddAgentsub(agentSub)
+	reply, err := ass.AgentsubService.AddAgentsub(agentSub)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}

@@ -106,6 +106,13 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 // ---
 // produces:
 // - application/json
+// parameters:
+// + name: RemoteObject
+//   in: body
+//   description: RemoteObject parameters
+//   schema:
+//      type: RemoteObject
+//   required: true
 // Security:
 // - bearer: []
 //

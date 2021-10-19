@@ -93,7 +93,7 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of agent
@@ -144,7 +144,7 @@ func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 //      name: Authorization
 //      in: header
 // responses:
-//   201: body:AgentLocationUpdateSuccessResponse
+//   201: body:AgentLocationCreateSuccessResponse
 //   400: body:FailureResponse
 func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	// Stub an user to be populated from the body
@@ -286,7 +286,7 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
-// swagger:operation GET /agent/search/{guid}/{type} agent agentsSubGetAgentSearchByTypeAndGUID
+// swagger:route GET /agent/search/{guid}/{type} agent agentsSubGetAgentSearchByTypeAndGUID
 //
 // Get agent by guid and type
 // ---
@@ -295,28 +295,27 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// - name: guid
+// + name: guid
 //   in: path
 //   example: eacdae5b-4203-40a2-b388-969312ffcffe
 //   description: guid of agent
 //   required: true
 //   type: string
-// - name: type
+// + name: type
 //   in: path
 //   example: home
 //   description: type of agent
 //   required: true
 //   type: string
 //
+// Security:
+// - bearer: []
+//
 // SecurityDefinitions:
-// JWT:
+// bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
 //
 // responses:
 //   201: body:AgentsLocationList

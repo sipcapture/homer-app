@@ -396,6 +396,34 @@
     },
     "/agent/search/{guid}/{type}": {
       "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
         "description": "Get agent by guid and type",
         "consumes": [
           "application/json"
@@ -410,22 +438,41 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of agent",
+              "type": "string"
+            }
           },
           {
             "type": "string",
-            "example": "home",
             "description": "type of agent",
             "name": "type",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "type of agent",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentsLocationList",
+            "schema": {
+              "$ref": "#/definitions/AgentsLocationList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/agent/subscribe": {
@@ -487,7 +534,30 @@
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Add agent",
@@ -503,23 +573,62 @@
         "operationId": "agentsSubAddAgentsubWithKey",
         "parameters": [
           {
+            "type": "object",
             "description": "agent parameters",
             "name": "AgentsLocation Struct",
             "in": "body",
             "required": true,
             "schema": {
+              "description": "agent parameters",
+              "type": "object",
               "$ref": "#/definitions/AgentsLocation"
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentLocationCreateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/AgentLocationCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/agent/subscribe/{guid}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get agent by guid",
@@ -536,14 +645,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of agent",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentsLocationList",
+            "schema": {
+              "$ref": "#/definitions/AgentsLocationList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "put": {
         "security": [
@@ -596,13 +721,25 @@
               "description": "guid of agent",
               "type": "string"
             }
+          },
+          {
+            "type": "object",
+            "description": "agent parameters",
+            "name": "AgentsLocation Struct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "agent parameters",
+              "type": "object",
+              "$ref": "#/definitions/AgentsLocation"
+            }
           }
         ],
         "responses": {
           "201": {
-            "description": "AgentsLocation",
+            "description": "AgentLocationUpdateSuccessResponse",
             "schema": {
-              "$ref": "#/definitions/AgentsLocation"
+              "$ref": "#/definitions/AgentLocationUpdateSuccessResponse"
             }
           },
           "400": {
@@ -616,7 +753,30 @@
       "delete": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Delete agent by guid",
@@ -633,21 +793,60 @@
         "parameters": [
           {
             "type": "string",
-            "example": "eacdae5b-4203-40a2-b388-969312ffcffe",
             "description": "guid of agent",
             "name": "guid",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "guid of agent",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "AgentLocationDeleteSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/AgentLocationDeleteSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/agent/type/{type}": {
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
             "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
           }
         ],
         "description": "Get agent by type",
@@ -664,14 +863,30 @@
         "parameters": [
           {
             "type": "string",
-            "example": "home",
             "description": "type of agent",
             "name": "type",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "description": "type of agent",
+              "type": "string"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "AgentsLocationList",
+            "schema": {
+              "$ref": "#/definitions/AgentsLocationList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       }
     },
     "/alias": {
@@ -3590,6 +3805,18 @@
         "parameters": [
           {
             "type": "object",
+            "description": "RemoteObject parameters",
+            "name": "RemoteObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "RemoteObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/RemoteObject"
+            }
+          },
+          {
+            "type": "object",
             "description": "Request",
             "name": "Request",
             "in": "body",
@@ -5201,6 +5428,54 @@
     }
   },
   "definitions": {
+    "AgentLocationCreateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully created AgentLocation settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AgentLocationDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully deleted AgentLocation settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AgentLocationUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "x-go-name": "Data",
+          "example": "4b855914-ca3d-4562-8563-f2b660fe2636"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message",
+          "example": "successfully updated AgentLocation settings"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "AgentsLocation": {
       "type": "object",
       "properties": {
@@ -5396,113 +5671,54 @@
     "AuthToken": {
       "type": "object",
       "properties": {
-        "count": {
+        "active": {
+          "type": "boolean",
+          "x-go-name": "Active"
+        },
+        "create_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "creator_guid": {
+          "type": "string",
+          "x-go-name": "UserGUID"
+        },
+        "expire_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpireDate"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID"
+        },
+        "ip_address": {
+          "type": "string",
+          "x-go-name": "IPAddress"
+        },
+        "lastusage_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "LastUsageDate"
+        },
+        "limit_calls": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "Count"
+          "x-go-name": "LimitCalls"
         },
-        "data": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "active": {
-                "type": "boolean",
-                "x-go-name": "Active",
-                "example": true
-              },
-              "create_date": {
-                "type": "string",
-                "x-go-name": "CreateDate",
-                "example": "2021-10-01T17:36:21.80063Z"
-              },
-              "creator_guid": {
-                "type": "string",
-                "x-go-name": "CreatorGUID",
-                "example": "ced47b64-ae93-417b-9e1b-8dd1b1410807"
-              },
-              "expire_date": {
-                "type": "string",
-                "x-go-name": "ExpireDate",
-                "example": "2021-10-09T17:36:21.80063Z"
-              },
-              "guid": {
-                "type": "string",
-                "x-go-name": "GUID",
-                "example": "9e4afbd5-7453-415d-b2d4-181057afbfe5\""
-              },
-              "ip_address": {
-                "type": "string",
-                "x-go-name": "IPAddress"
-              },
-              "lastusage_date": {
-                "type": "string",
-                "x-go-name": "LastusageDate",
-                "example": "2021-10-08T17:36:21.80063Z"
-              },
-              "limit_calls": {
-                "type": "integer",
-                "format": "int64",
-                "x-go-name": "LimitCalls",
-                "example": 1000
-              },
-              "name": {
-                "type": "string",
-                "x-go-name": "Name",
-                "example": "JGoolsby-Api"
-              },
-              "usage_calls": {
-                "type": "integer",
-                "format": "int64",
-                "x-go-name": "UsageCalls",
-                "example": 1
-              },
-              "user_object": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "x-go-name": "Email",
-                    "example": "JGoolsby@example.com"
-                  },
-                  "firstname": {
-                    "type": "string",
-                    "x-go-name": "Firstname",
-                    "example": "James"
-                  },
-                  "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "x-go-name": "ID",
-                    "example": 1000
-                  },
-                  "lastname": {
-                    "type": "string",
-                    "x-go-name": "Lastname",
-                    "example": "Goolsby"
-                  },
-                  "partid": {
-                    "type": "integer",
-                    "format": "int64",
-                    "x-go-name": "Partid",
-                    "example": 10
-                  },
-                  "usergroup": {
-                    "type": "string",
-                    "x-go-name": "Usergroup",
-                    "example": "admin"
-                  },
-                  "username": {
-                    "type": "string",
-                    "x-go-name": "Username",
-                    "example": "JGoolsby"
-                  }
-                },
-                "x-go-name": "UserObject"
-              }
-            }
-          },
-          "x-go-name": "Data"
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "usage_calls": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UsageCalls"
+        },
+        "user_object": {
+          "type": "object",
+          "x-go-name": "UserObject"
         }
       },
       "x-go-name": "TableAuthToken",
@@ -6963,19 +7179,20 @@
     "LabelData": {
       "type": "object",
       "properties": {
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LabelData"
-          },
-          "x-go-name": "Streams"
-        },
-        "resultType": {
+        "__name__": {
           "type": "string",
-          "x-go-name": "ResultType"
+          "x-go-name": "Name"
+        },
+        "instance": {
+          "type": "string",
+          "x-go-name": "Instance"
+        },
+        "job": {
+          "type": "string",
+          "x-go-name": "Job"
         }
       },
-      "x-go-name": "StreamRemoteData",
+      "x-go-name": "ValuesArray",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
     "ListLabels": {

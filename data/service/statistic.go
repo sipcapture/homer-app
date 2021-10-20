@@ -7,7 +7,7 @@ import (
 	"github.com/Jeffail/gabs"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -58,14 +58,14 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 	myPrefix := ""
 
 	for index, query := range statisticObject.Param.Query {
-		logrus.Debugln("inside of the array", index)
-		logrus.Debugln(query.Main)
+		logger.Debug("inside of the array", index)
+		logger.Debug(query.Main)
 
 		counterArray := []string{}
 		for _, el := range query.Type {
 			meanEl := fmt.Sprintf("mean(\"%s%s\") AS %s", myPrefix, el, el)
 			counterArray = append(counterArray, meanEl)
-			logrus.Debugln(counterArray)
+			logger.Debug(counterArray)
 		}
 
 		infQuery = fmt.Sprintf("SELECT %s FROM %s.%s.\"%s\" WHERE time > %d AND %d > time %s GROUP BY time(%s) FILL(null) ORDER BY time DESC LIMIT %d;",
@@ -74,7 +74,7 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 			(statisticObject.Timestamp.To * 1000000),
 			tagName, indexRange, statisticObject.Param.Limit)
 
-		logrus.Debugln(infQuery)
+		logger.Debug(infQuery)
 	}
 
 	q := client.NewQuery(infQuery, "", "")
@@ -104,7 +104,7 @@ func (ss *StatisticService) StatisticDataBaseList() (string, error) {
 
 	infQuery := fmt.Sprintf("SHOW DATABASES")
 
-	logrus.Debugln(infQuery)
+	logger.Debug(infQuery)
 
 	q := client.NewQuery(infQuery, "", "")
 	reply := gabs.New()
@@ -137,7 +137,7 @@ func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.Stati
 
 	infQuery := fmt.Sprintf("SHOW RETENTION POLICIES ON %s", statisticObject.Param.Search.Database)
 
-	logrus.Debugln(infQuery)
+	logger.Debug(infQuery)
 
 	q := client.NewQuery(infQuery, statisticObject.Param.Search.Database, "")
 	reply := gabs.New()
@@ -170,7 +170,7 @@ func (ss *StatisticService) StatisticMeasurementsList(dbId string) (string, erro
 
 	infQuery := fmt.Sprintf("SHOW MEASUREMENTS ON %s", dbId)
 
-	logrus.Debugln(infQuery)
+	logger.Debug(infQuery)
 
 	q := client.NewQuery(infQuery, dbId, "")
 	reply := gabs.New()
@@ -208,7 +208,7 @@ func (ss *StatisticService) StatisticMetricsList(statisticObject *model.Statisti
 	} else {
 		infQuery = fmt.Sprintf("SHOW FIELD KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
 	}
-	logrus.Debugln(infQuery)
+	logger.Debug(infQuery)
 
 	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
 	reply := gabs.New()
@@ -247,7 +247,7 @@ func (ss *StatisticService) StatisticTagsList(statisticObject *model.StatisticOb
 		infQuery = fmt.Sprintf("SHOW TAG KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
 	}
 
-	logrus.Debugln(infQuery)
+	logger.Debug(infQuery)
 
 	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
 	reply := gabs.New()

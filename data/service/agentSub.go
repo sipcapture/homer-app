@@ -15,7 +15,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type AgentsubService struct {
@@ -162,7 +162,7 @@ func (hs *AgentsubService) DeleteAgentsubAgainstGUID(guid string) (string, error
 	if err := hs.Session.Debug().Table("agent_location_session").
 		Where("guid = ? OR expire_date < NOW()", guid).
 		Delete(&AgentsubObject).Error; err != nil {
-		logrus.Println(err.Error())
+		logger.Debug(err.Error())
 		return "", err
 	}
 	response := fmt.Sprintf("{\"message\":\"successfully deleted agent record\",\"data\":\"%s\"}", guid)
@@ -200,13 +200,13 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		for _, sdata := range sData.ChildrenMap() {
 			lookupField = sdata.String()
 		}
-		logrus.Debug("Download: ", lookupField)
+		logger.Debug("Download: ", lookupField)
 
 	} else {
 		for key := range sData.ChildrenMap() {
 
 			elemArray := strings.Split(key, "_")
-			logrus.Debug(elemArray)
+			logger.Debug(elemArray)
 
 			if len(elemArray) != 2 {
 				return nil, fmt.Errorf("Agent HEPSUB: key is wrong: %d", len(elemArray))
@@ -222,7 +222,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		}
 
 		if len(hepsubObject) == 0 {
-			logrus.Debug("Agent HEPSUB couldn't find agent mapping")
+			logger.Debug("Agent HEPSUB couldn't find agent mapping")
 			return nil, fmt.Errorf("Agent HEPSUB couldn't find agent mapping")
 		}
 
@@ -273,7 +273,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	req, err := http.NewRequest("POST", serverURL, bytes.NewBuffer([]byte(lookupField)))
 
 	if err != nil {
-		logrus.Error("Couldn't make a request to agent. Query:", serverURL)
+		logger.Error("Couldn't make a request to agent. Query:", serverURL)
 		return nil, err
 	}
 
@@ -284,14 +284,14 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		logrus.Error("Agent HEPSUB: Couldn't make http query:", serverURL)
+		logger.Error("Agent HEPSUB: Couldn't make http query:", serverURL)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	buf, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logrus.Error("Agent HEPSUB: Couldn't read the data from IO-Buffer")
+		logger.Error("Agent HEPSUB: Couldn't read the data from IO-Buffer")
 		return nil, err
 	}
 
@@ -300,7 +300,7 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 		export := exportwriter.NewWriter(buffer)
 		_, err := export.Buffer.Write(buf)
 		if err != nil {
-			logrus.Errorln("write error to the download buffer", err)
+			logger.Error("write error to the download buffer", err)
 		}
 		return export.Buffer.Bytes(), nil
 

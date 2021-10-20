@@ -3,8 +3,9 @@ package config
 var Setting HomerSettingServer
 
 type HomerSettingServer struct {
-	IsolateQuery string `default:""`
-	IsolateGroup string `default:""`
+	IsolateQuery        string `default:""`
+	IsolateGroup        string `default:""`
+	UseCaptureIDInAlias bool   `default:"false"`
 
 	GRAFANA_SETTINGS struct {
 		URL      string `default:"http://grafana/"`
@@ -22,6 +23,20 @@ type HomerSettingServer struct {
 
 	DASHBOARD_SETTINGS struct {
 		ExternalHomeDashboard string `default:""`
+	}
+
+	LOG_SETTINGS struct {
+		Enable        bool   `default:"true"`
+		MaxAgeDays    uint32 `default:"7"`
+		RotationHours uint32 `default:"24"`
+		Path          string `default:"/usr/local/homer/log"`
+		Level         string `default:"error"`
+		Name          string `default:"homer-app.log"`
+		Stdout        bool   `default:"false"`
+		Json          bool   `default:"true"`
+		SysLogLevel   string `default:"LOG_INFO"`
+		SysLog        bool   `default:"false"`
+		SyslogUri     string `default:""`
 	}
 
 	SWAGGER struct {

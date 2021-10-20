@@ -7,7 +7,7 @@ import (
 	"sort"
 
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type HepsubService struct {
@@ -91,7 +91,7 @@ func (hs *HepsubService) DeleteHepSubAgainstGUID(guid string) (string, error) {
 	if err := hs.Session.Debug().Table("hepsub_mapping_schema").
 		Where("guid = ?", guid).
 		Delete(&hepsubObject).Error; err != nil {
-		logrus.Println(err.Error())
+		logger.Debug(err.Error())
 		return "", err
 	}
 	response := fmt.Sprintf("{\"message\":\"successfully deleted hepsub settings\",\"data\":\"%s\"}", guid)

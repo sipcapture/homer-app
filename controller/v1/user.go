@@ -11,7 +11,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type UserController struct {
@@ -84,12 +84,12 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableUser{}
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// create a new user in database
@@ -143,12 +143,12 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	userName, isAdmin := auth.IsRequestAdmin(c)
 
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// update user info in database
@@ -217,12 +217,12 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	token, userData, err := uc.UserService.LoginUser(u.Username, u.Password)

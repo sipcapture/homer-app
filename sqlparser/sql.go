@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/sipcapture/homer-app/sqlparser/query"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // Parse takes a string representing a SQL query and parses it into a query.Query struct. It may fail.
@@ -227,9 +227,9 @@ func (p *parser) logError() {
 	if p.err == nil {
 		return
 	}
-	logrus.Error("SQL PARSER: ", p.sql)
-	logrus.Error("SQL PARSER: ", (strings.Repeat(" ", p.i) + "^"))
-	logrus.Error("SQL PARSER: ", p.err)
+	logger.Error("SQL PARSER: ", p.sql)
+	logger.Error("SQL PARSER: ", (strings.Repeat(" ", p.i) + "^"))
+	logger.Error("SQL PARSER: ", p.err)
 }
 
 func isIdentifier(s string) bool {

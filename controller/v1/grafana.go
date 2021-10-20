@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/data/service"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type GrafanaController struct {
@@ -36,7 +36,7 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 
 	responseData, err := pc.GrafanaService.GrafanaURL()
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
@@ -63,13 +63,13 @@ func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
 	if err != nil {
-		logrus.Error("Grafana service is not configured")
+		logger.Error("Grafana service is not configured")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
 	}
 
 	responseData, err := pc.GrafanaService.GrafanaORG()
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -95,13 +95,13 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
 	if err != nil {
-		logrus.Error("Grafana service is not configured")
+		logger.Error("Grafana service is not configured")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
 	}
 
 	responseData, err := pc.GrafanaService.GrafanaFolders()
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -136,13 +136,13 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 
 	err := pc.GrafanaService.SetGrafanaObject()
 	if err != nil {
-		logrus.Error("Grafana service is not configured")
+		logger.Error("Grafana service is not configured")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
 	}
 
 	responseData, err := pc.GrafanaService.GrafanaGetDashboardByUUUID(uuidDashboard)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -176,13 +176,13 @@ func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error 
 
 	err := pc.GrafanaService.SetGrafanaObject()
 	if err != nil {
-		logrus.Error("Grafana service is not configured")
+		logger.Error("Grafana service is not configured")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
 	}
 
 	responseData, err := pc.GrafanaService.GrafanaGetFoldersdByUUUID(uuidDashboard)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 	"gopkg.in/ldap.v3"
 )
 
@@ -131,7 +131,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 	err := lc.Connect()
 
 	if err != nil {
-		logrus.Error("Couldn't connect to LDAP: ", err)
+		logger.Error("Couldn't connect to LDAP: ", err)
 		return false, false, nil, err
 	}
 
@@ -143,7 +143,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		if lc.BindDN != "" && lc.BindPassword != "" {
 			err := lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 			if err != nil {
-				logrus.Error("Couldn't auth user and force to reconnect: ", err)
+				logger.Error("Couldn't auth user and force to reconnect: ", err)
 				lc.Close()
 				/* second try */
 				return false, false, nil, err
@@ -163,20 +163,20 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 
 		sr, err := lc.Conn.Search(searchRequest)
 		if err != nil {
-			logrus.Error("Couldn't execute search request: ", err)
-			logrus.Debug("LDAP search failed with base ", lc.Base, " and user filter ", userFilter)
+			logger.Error("Couldn't execute search request: ", err)
+			logger.Debug("LDAP search failed with base ", lc.Base, " and user filter ", userFilter)
 			return false, false, nil, err
 		}
 
 		if len(sr.Entries) < 1 {
 			err := errors.New("user does not exist")
-			logrus.Error("Could not find user: ", err)
+			logger.Error("Could not find user: ", err)
 			return false, false, nil, err
 		}
 
 		if len(sr.Entries) > 1 {
 			err := errors.New("too many entries returned")
-			logrus.Error("Could not find user: ", err)
+			logger.Error("Could not find user: ", err)
 			return false, false, nil, err
 		}
 
@@ -196,7 +196,7 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 			}
 		} else {
 			err := errors.New("no username/password provided")
-			logrus.Error("Could not auth user: ", err)
+			logger.Error("Could not auth user: ", err)
 			return false, false, user, err
 		}
 
@@ -204,28 +204,28 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, bool, map[s
 		if lc.BindDN != "" && lc.BindPassword != "" {
 			err = lc.Conn.Bind(lc.BindDN, lc.BindPassword)
 			if err != nil {
-				logrus.Error("Couldn't rebind with provided BindDN and BindPassword: ", err)
+				logger.Error("Couldn't rebind with provided BindDN and BindPassword: ", err)
 				return true, isAdmin, user, err
 			}
 		}
 	} else {
 
-		logrus.Debug("Sending anonymous request...")
+		logger.Debug("Sending anonymous request...")
 
 		if lc.UserDN != "" && username != "" && password != "" {
 			userDN := fmt.Sprintf(lc.UserDN, username)
 			err = lc.Conn.Bind(userDN, password)
 			if err != nil {
-				logrus.Error("error ldap request...", err)
+				logger.Error("error ldap request...", err)
 				return false, false, user, err
 			}
 		} else {
-			logrus.Error("No username/password provided...", err)
+			logger.Error("No username/password provided...", err)
 			return false, false, user, errors.New("no username/password provided")
 		}
 	}
 
-	logrus.Debug("Sending response request...", user)
+	logger.Debug("Sending response request...", user)
 	return true, isAdmin, user, nil
 }
 
@@ -234,16 +234,16 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 
 	parsedUsername := username
 
-	logrus.Debug("Group search by: ", parsedUsername)
+	logger.Debug("Group search by: ", parsedUsername)
 
 	if lc.ShortDNForGroup {
 		dn, err := ldap.ParseDN(username)
 		if err == nil && len(dn.RDNs) > 0 {
 			for _, rdn := range dn.RDNs {
 				for _, rdnTypeAndValue := range rdn.Attributes {
-					logrus.Debug(fmt.Sprintf("Attribute: [%s] -> [%s]", rdnTypeAndValue.Type, rdnTypeAndValue.Value))
+					logger.Debug(fmt.Sprintf("Attribute: [%s] -> [%s]", rdnTypeAndValue.Type, rdnTypeAndValue.Value))
 					if strings.EqualFold(rdnTypeAndValue.Type, "CN") {
-						logrus.Debug("Found user: ", rdnTypeAndValue.Value)
+						logger.Debug("Found user: ", rdnTypeAndValue.Value)
 						parsedUsername = rdnTypeAndValue.Value
 					}
 				}
@@ -251,7 +251,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 		}
 	}
 
-	logrus.Debug("New user: ", parsedUsername)
+	logger.Debug("New user: ", parsedUsername)
 
 	err := lc.Connect()
 	defer lc.Close()
@@ -260,7 +260,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 		return nil, err
 	}
 
-	logrus.Debug("Searching ldap group for user: ", parsedUsername)
+	logger.Debug("Searching ldap group for user: ", parsedUsername)
 
 	searchRequest := ldap.NewSearchRequest(
 		lc.Base,
@@ -271,7 +271,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 	)
 	sr, err := lc.Conn.Search(searchRequest)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("couldn't find user group: [%s], ", parsedUsername), err)
+		logger.Error(fmt.Sprintf("couldn't find user group: [%s], ", parsedUsername), err)
 		return nil, err
 	}
 
@@ -287,15 +287,15 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 					if err == nil && len(dn.RDNs) > 0 {
 						for _, rdn := range dn.RDNs {
 							for _, rdnTypeAndValue := range rdn.Attributes {
-								logrus.Debug(fmt.Sprintf("Attribute Group: [%s] -> [%s]", rdnTypeAndValue.Type, rdnTypeAndValue.Value))
+								logger.Debug(fmt.Sprintf("Attribute Group: [%s] -> [%s]", rdnTypeAndValue.Type, rdnTypeAndValue.Value))
 								if strings.EqualFold(rdnTypeAndValue.Type, "CN") {
-									logrus.Debug("Found group: ", rdnTypeAndValue.Value)
+									logger.Debug("Found group: ", rdnTypeAndValue.Value)
 									if rdnTypeAndValue.Value == lc.AdminGroup {
-										logrus.Debug("Short: User is a member of the admin group ", lc.AdminGroup)
+										logger.Debug("Short: User is a member of the admin group ", lc.AdminGroup)
 										groups = append(groups, rdnTypeAndValue.Value)
 										return groups, nil
 									} else if rdnTypeAndValue.Value == lc.UserGroup {
-										logrus.Debug("Short: User is a member of the user group ", lc.UserGroup)
+										logger.Debug("Short: User is a member of the user group ", lc.UserGroup)
 										notFound = true
 									} else if lc.NestedGroup {
 										groups = append(groups, rdnTypeAndValue.Value)
@@ -308,11 +308,11 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 			} else {
 				for _, val := range values {
 					if val == lc.AdminGroup {
-						logrus.Debug("Full: User is a member of the admin group ", lc.AdminGroup)
+						logger.Debug("Full: User is a member of the admin group ", lc.AdminGroup)
 						groups = append(groups, val)
 						return groups, nil
 					} else if val == lc.UserGroup {
-						logrus.Debug("Full: User is a member of the user group ", lc.UserGroup)
+						logger.Debug("Full: User is a member of the user group ", lc.UserGroup)
 						groups = append(groups, val)
 						notFound = true
 					} else if lc.NestedGroup {
@@ -325,7 +325,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 
 	if !notFound && lc.NestedGroup && len(groups) > 0 {
 
-		logrus.Debug("Checking now nested group...")
+		logger.Debug("Checking now nested group...")
 
 		groupSearch := lc.UserGroup
 
@@ -334,7 +334,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 		}
 
 		if groupSearch == "" {
-			logrus.Debug("Nested group - empty groupSearch")
+			logger.Debug("Nested group - empty groupSearch")
 			return groups, nil
 		}
 
@@ -342,18 +342,18 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 
 			sr, err := lc.Conn.Compare(groupSearch, "member", group)
 			if err != nil {
-				logrus.Error("NestedGroup couldn't find group: [" + group + "] Error: [" + err.Error() + "]")
+				logger.Error("NestedGroup couldn't find group: [" + group + "] Error: [" + err.Error() + "]")
 				return nil, err
 			}
 			if sr {
 				groups = append(groups, groupSearch)
-				logrus.Debug("Found group nested group: ", groupSearch)
+				logger.Debug("Found group nested group: ", groupSearch)
 				break
 			}
 		}
 	}
 
-	logrus.Debug("Found ldap groups: ", groups)
+	logger.Debug("Found ldap groups: ", groups)
 
 	return groups, nil
 }

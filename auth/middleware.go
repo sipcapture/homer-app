@@ -4,7 +4,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
@@ -12,8 +12,8 @@ func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
 
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(*JwtUserClaim)
-		logrus.Println("Claims")
-		logrus.Print(claims)
+		logger.Debug("Claims")
+		logger.Debug(claims)
 
 		appContext := model.AppContext{
 			Context:      c,

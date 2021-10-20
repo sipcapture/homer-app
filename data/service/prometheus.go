@@ -10,7 +10,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -89,7 +89,7 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 		req, err := http.NewRequest("GET", promQuery, nil)
 
 		if err != nil {
-			logrus.Error("Couldn't make NewRequest query:", promQuery)
+			logger.Error("Couldn't make NewRequest query:", promQuery)
 			return "", err
 		}
 
@@ -98,7 +98,7 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 
 		data, err := ps.HttpClient.Do(req)
 		if err != nil {
-			logrus.Error("Couldn't make http query:", promQuery)
+			logger.Error("Couldn't make http query:", promQuery)
 			return "", err
 		}
 
@@ -113,7 +113,7 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 
 		json.Unmarshal(buf, &tmpPromValData)
 		if err != nil {
-			logrus.Error("couldn't decode json body")
+			logger.Error("couldn't decode json body")
 			return "", err
 		}
 		prometheusValuesData = append(prometheusValuesData, tmpPromValData)
@@ -123,7 +123,7 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 
 	responseArray, err := json.Marshal(prometheusValuesData)
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 	return string(responseArray), nil
@@ -140,7 +140,7 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 	req, err := http.NewRequest("GET", promQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", promQuery)
+		logger.Error("Couldn't make NewRequest query:", promQuery)
 		return "", err
 	}
 
@@ -149,7 +149,7 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", promQuery)
+		logger.Error("Couldn't make http query:", promQuery)
 		return "", err
 	}
 
@@ -157,7 +157,7 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
@@ -166,15 +166,15 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 	json.Unmarshal(buf, &prometheusLebels)
 
 	if err != nil {
-		logrus.Error("couldn't decode json body")
+		logger.Error("couldn't decode json body")
 		return "", err
 	}
 
-	logrus.Debug("Response", prometheusLebels.Data)
+	logger.Debug("Response", prometheusLebels.Data)
 	responseArray, _ := json.Marshal(prometheusLebels.Data)
 
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 
@@ -190,7 +190,7 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 	req, err := http.NewRequest("GET", promQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", promQuery)
+		logger.Error("Couldn't make NewRequest query:", promQuery)
 		return "", err
 	}
 
@@ -199,7 +199,7 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", promQuery)
+		logger.Error("Couldn't make http query:", promQuery)
 		return "", err
 	}
 
@@ -207,25 +207,25 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
-	logrus.Debug("Response1", string(buf))
+	logger.Debug("Response1", string(buf))
 
 	var prometheusLebelData PrometheusLabelData
 	json.Unmarshal(buf, &prometheusLebelData)
 
 	if err != nil {
-		logrus.Error("couldn't decode json body")
+		logger.Error("couldn't decode json body")
 		return "", err
 	}
 
-	logrus.Debug("Response", prometheusLebelData.Data)
+	logger.Debug("Response", prometheusLebelData.Data)
 	responseArray, _ := json.Marshal(prometheusLebelData.Data)
 
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 

@@ -10,7 +10,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type MappingController struct {
@@ -160,7 +160,7 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
@@ -218,7 +218,7 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	u.GUID = guid
@@ -307,7 +307,7 @@ func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
 	reply, err := mpc.MappingService.GetSmartSuggestionAginstProfile(hepid, profile)
 	if err != nil {
-		logrus.Error("Error during map generator: ", err.Error())
+		logger.Error("Error during map generator: ", err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SmartHepProfileFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))

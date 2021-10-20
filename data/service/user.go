@@ -14,7 +14,7 @@ import (
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
@@ -184,27 +184,27 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		//fmt.Println("LDAP returned groups: ", groups)
 
 		if err != nil {
-			logrus.Error("Couldn't get any group for user ", username, ": ", err)
+			logger.Error("Couldn't get any group for user ", username, ": ", err)
 			if !us.LdapClient.UserMode && !us.LdapClient.AdminMode {
 				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
 			}
 		} else {
-			logrus.Debug("Found groups for user ", username, ": ", groups)
+			logger.Debug("Found groups for user ", username, ": ", groups)
 			// ElementExists returns true if the given slice is empty, so we explicitly check that here
 			// to prevent users with no groups from becoming admins
 			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
-				logrus.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
+				logger.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
 			} else if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.UserGroup) {
-				logrus.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
+				logger.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
 				userData.IsAdmin = false
 			} else {
 				if !userData.IsAdmin && us.LdapClient.UserMode {
-					logrus.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
+					logger.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
 					userData.UserGroup = "user"
 				}
 				if userData.IsAdmin {
-					logrus.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
+					logger.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
 					userData.UserGroup = "admin"
 				}
 				if !userData.IsAdmin && !us.LdapClient.UserMode {

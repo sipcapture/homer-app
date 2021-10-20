@@ -12,7 +12,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type UserSettingsService struct {
@@ -50,12 +50,12 @@ func (ss *UserSettingsService) GetAllMapping() (map[string]json.RawMessage, erro
 	if err := ss.Session.Debug().Table("mapping_schema").Where("partid = ?", 10).
 		Find(&mappingObject).Error; err != nil {
 
-		logrus.Error("Error during mapping retrieve ", err.Error())
+		logger.Error("Error during mapping retrieve ", err.Error())
 		return mapsFieldsData, err
 	}
 
 	if len(mappingObject) == 0 {
-		logrus.Error("Error:  mapping is null")
+		logger.Error("Error:  mapping is null")
 		return mapsFieldsData, fmt.Errorf("data was not found")
 	}
 
@@ -64,7 +64,7 @@ func (ss *UserSettingsService) GetAllMapping() (map[string]json.RawMessage, erro
 
 		sFieldsMapping, err := gabs.ParseJSON(row.FieldsMapping)
 		if err != nil {
-			logrus.Error("errors during parse json mapping: ", err.Error(), ", key:", key)
+			logger.Error("errors during parse json mapping: ", err.Error(), ", key:", key)
 		}
 
 		mapsFieldsData[key] = sFieldsMapping.Bytes()

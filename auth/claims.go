@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // jwt token claims which contains info regarding user
@@ -35,16 +35,9 @@ func Token(user model.TableUser) (string, error) {
 		},
 	}
 
-	logrus.Println("Current time : ")
-	logrus.Print(tNow)
-
-	logrus.Println("Local time : ")
-	logrus.Print(tUTC)
-
-	logrus.Println("Expire Local time : ")
-	logrus.Print(newTUTC)
-
-	logrus.Println("Claims")
+	logger.Debug("Current time : ", tNow)
+	logger.Debug("Local time : ", tUTC)
+	logger.Debug("Expire Local time : ", newTUTC)
 
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

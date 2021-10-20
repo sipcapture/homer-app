@@ -8,7 +8,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type AuthtokenService struct {
@@ -86,7 +86,7 @@ func (hs *AuthtokenService) DeleteAuthtokenAgainstGUID(guid string) (string, err
 	if err := hs.Session.Debug().Table("auth_token").
 		Where("guid = ?", guid).
 		Delete(&AuthtokenObject).Error; err != nil {
-		logrus.Println(err.Error())
+		logger.Debug(err.Error())
 		return "", err
 	}
 	response := fmt.Sprintf("{\"message\":\"successfully deleted authtoken\",\"data\":\"%s\"}", guid)

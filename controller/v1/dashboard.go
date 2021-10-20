@@ -13,7 +13,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type DashBoardController struct {
@@ -104,7 +104,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 	dashboardID := c.Param("dashboardId")
 
-	logrus.Println("*** Database Session created *** ")
+	logger.Debug("*** Database Session created *** ")
 
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardID)
 	if err != nil {
@@ -182,17 +182,17 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 	username := cc.UserName
 	dashboardId := url.QueryEscape(c.Param("dashboardId"))
 
-	logrus.Println("*** Database Session created *** ")
+	logger.Debug("*** Database Session created *** ")
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
 	data, err := json.Marshal(jsonData)
 	if err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
@@ -244,13 +244,13 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
 	data, err := json.Marshal(jsonData)
 	if err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 

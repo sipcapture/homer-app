@@ -285,7 +285,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 	replyOauth := gabs.New()
 	replyOauth.Set("OAuth2", "name")
-	replyOauth.Set("oauth", "type")
+	replyOauth.Set("oauth2", "type")
 	replyOauth.Set(3, "position")
 
 	if config.Setting.OAUTH2_SETTINGS.Enable {
@@ -296,7 +296,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 	replyFinal.Set(replyInternal.Data(), "internal")
 	replyFinal.Set(replyLdap.Data(), "ldap")
-	replyFinal.Set(replyOauth.Data(), "oauth")
+	replyFinal.Set(replyOauth.Data(), "oauth2")
 
 	userGlobalSettings = model.TableGlobalSettings{
 		Id:         1,

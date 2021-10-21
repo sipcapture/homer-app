@@ -1,17 +1,21 @@
 package controllerv1
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
+	"golang.org/x/oauth2"
 )
 
 type UserController struct {
@@ -277,5 +281,90 @@ func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 	}
 
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, reply)
+
+}
+
+// swagger:route GET /oauth/redirect Users SuccessResponse
+//
+// Make redirect to the External Server URI
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// responses:
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
+
+	u := config.Setting.OAuth2Config.AuthCodeURL("xyz",
+		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
+		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+
+	return c.Redirect(http.StatusFound, u)
+}
+
+// swagger:route GET /oauth/auth Users SuccessResponse
+//
+// Make redirect to the External Server URI
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// responses:
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) AuthSericeRequest(c echo.Context) error {
+
+	state := c.QueryParam("state")
+	if state != "xyz" {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "State invalid")
+	}
+
+	code := c.QueryParam("code")
+	if code == "" {
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, "Code not found")
+	}
+
+	token, err := config.Setting.OAuth2Config.Exchange(context.Background(), code,
+		oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+	}
+
+	config.Setting.GlobalToken = token
+
+	dataJson, _ := json.Marshal(token)
+
+	return c.JSONBlob(http.StatusOK, dataJson)
 
 }

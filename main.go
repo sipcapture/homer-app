@@ -39,6 +39,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 
 	_ "github.com/influxdata/influxdb1-client" // this is important because of the bug in go mod
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -350,6 +351,32 @@ func configureServiceObjects() {
 		config.Setting.UseCaptureIDInAlias = viper.GetBool("api_settings.add_captid_to_resolve")
 	}
 
+	/* oauth2 */
+	if viper.IsSet("oauth2.enable") {
+		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
+	}
+	if viper.IsSet("oauth2.client_id") {
+		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.client_id")
+	}
+	if viper.IsSet("oauth2.client_secret") {
+		config.Setting.OAUTH2_SETTINGS.ClientSecret = viper.GetString("oauth2.client_secret")
+	}
+	if viper.IsSet("oauth2.project_id") {
+		config.Setting.OAUTH2_SETTINGS.ProjectID = viper.GetString("oauth2.project_id")
+	}
+	if viper.IsSet("oauth2.auth_uri") {
+		config.Setting.OAUTH2_SETTINGS.AuthUri = viper.GetString("oauth2.auth_uri")
+	}
+	if viper.IsSet("oauth2.token_uri") {
+		config.Setting.OAUTH2_SETTINGS.TokenUri = viper.GetString("oauth2.token_uri")
+	}
+	if viper.IsSet("oauth2.auth_provider_x509_cert_url") {
+		config.Setting.OAUTH2_SETTINGS.AuthProviderCert = viper.GetString("oauth2.auth_provider_x509_cert_url")
+	}
+	if viper.IsSet("oauth2.redirect_uri") {
+		config.Setting.OAUTH2_SETTINGS.RedirectUri = viper.GetString("oauth2.redirect_uri")
+	}
+
 	/*********** DASHBOARD *******************/
 	if viper.IsSet("dashboard_settings.dashboard_home") {
 		config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard = viper.GetString("dashboard_settings.dashboard_home")
@@ -357,14 +384,30 @@ func configureServiceObjects() {
 
 	/***********************************/
 
-	authType = viper.GetString("auth_settings.type")
+	if viper.IsSet("auth_settings.type") {
+		config.Setting.DefaultAuth = viper.GetString("auth_settings.type")
+	}
+
 	/* check the auth type */
-	if authType == "" {
-		authType = "internal"
+	if config.Setting.DefaultAuth == "" {
+		config.Setting.DefaultAuth = "internal"
+	}
+
+	if config.Setting.OAUTH2_SETTINGS.Enable {
+		config.Setting.OAuth2Config = oauth2.Config{
+			ClientID:     config.Setting.OAUTH2_SETTINGS.ClientID,
+			ClientSecret: config.Setting.OAUTH2_SETTINGS.ClientSecret,
+			Scopes:       []string{"all"},
+			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  config.Setting.OAUTH2_SETTINGS.AuthUri,
+				TokenURL: config.Setting.OAUTH2_SETTINGS.TokenUri,
+			},
+		}
 	}
 
 	/* Check LDAP here */
-	switch authType {
+	switch config.Setting.DefaultAuth {
 	case "ldap":
 
 		defaults.SetDefaults(&ldapClient) //<-- This set the defaults values

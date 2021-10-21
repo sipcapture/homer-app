@@ -1,6 +1,8 @@
 package heputils
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"hash/fnv"
 	"log"
@@ -330,4 +332,10 @@ func Hash32(s string) uint32 {
 	h := fnv.New32a()
 	h.Write([]byte(s))
 	return h.Sum32()
+}
+
+// make a genCodeChallengeS256
+func GenCodeChallengeS256(s string) string {
+	s256 := sha256.Sum256([]byte(s))
+	return base64.URLEncoding.EncodeToString(s256[:])
 }

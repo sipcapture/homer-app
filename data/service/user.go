@@ -10,8 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
-	"github.com/sipcapture/homer-app/migration/jsonschema"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/logger"
@@ -258,13 +259,52 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 	var userGlobalSettings = model.TableGlobalSettings{}
 
+	replyFinal := gabs.New()
+
+	replyInternal := gabs.New()
+	replyInternal.Set("Internal", "name")
+	replyInternal.Set("internal", "type")
+	replyInternal.Set(1, "position")
+
+	if config.Setting.DefaultAuth == "internal" {
+		replyInternal.Set(true, "enable")
+	} else {
+		replyInternal.Set(false, "enable")
+	}
+
+	replyLdap := gabs.New()
+	replyLdap.Set("LDAP", "name")
+	replyLdap.Set("ldap", "type")
+	replyLdap.Set(2, "position")
+
+	if config.Setting.DefaultAuth == "ldap" {
+		replyLdap.Set(true, "enable")
+	} else {
+		replyLdap.Set(false, "enable")
+	}
+
+	replyOauth := gabs.New()
+	replyOauth.Set("OAuth2", "name")
+	replyOauth.Set("oauth", "type")
+	replyOauth.Set(3, "position")
+
+	if config.Setting.OAUTH2_SETTINGS.Enable {
+		replyOauth.Set(true, "enable")
+	} else {
+		replyOauth.Set(false, "enable")
+	}
+
+	replyFinal.Set(replyInternal.Data(), "internal")
+	replyFinal.Set(replyLdap.Data(), "ldap")
+	replyFinal.Set(replyOauth.Data(), "oauth")
+
 	userGlobalSettings = model.TableGlobalSettings{
 		Id:         1,
 		GUID:       uuid.NewV4().String(),
 		PartId:     10,
 		Category:   "system",
 		Param:      "authtypes",
-		Data:       json.RawMessage(jsonschema.AuthTypesConfig),
+		Data:       replyFinal.Data().([]byte),
 		CreateDate: time.Now(),
 	}
 

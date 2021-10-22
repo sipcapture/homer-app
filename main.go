@@ -403,7 +403,7 @@ func configureServiceObjects() {
 			ClientID:     config.Setting.OAUTH2_SETTINGS.ClientID,
 			ClientSecret: config.Setting.OAUTH2_SETTINGS.ClientSecret,
 			Scopes:       []string{"all"},
-			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri,
+			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName,
 			Endpoint: oauth2.Endpoint{
 				AuthURL:  config.Setting.OAUTH2_SETTINGS.AuthUri,
 				TokenURL: config.Setting.OAUTH2_SETTINGS.TokenUri,

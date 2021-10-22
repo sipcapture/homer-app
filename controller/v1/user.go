@@ -349,6 +349,10 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 //   400: body:FailureResponse
 func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
+	providerName := c.Param("provider")
+
+	logger.Debug("Doing AuthSericeRequest for provider", providerName)
+
 	state := c.QueryParam("state")
 	if state != "xyz" {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "State invalid")

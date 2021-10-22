@@ -372,7 +372,8 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	config.Setting.GlobalToken = token
 
 	dataJson, _ := json.Marshal(token)
+	logger.Debug("Doing AuthSericeRequest for provider", dataJson)
 
-	return c.JSONBlob(http.StatusOK, dataJson)
+	return c.Redirect(http.StatusFound, "/?token="+token.AccessToken)
 
 }

@@ -31,15 +31,17 @@ type HomerSettingServer struct {
 	}
 
 	OAUTH2_SETTINGS struct {
-		Enable           bool   `default:"false"`
-		ClientID         string `default:"1234565"`
-		ClientSecret     string `default:"FAKE"`
-		ProjectID        string `default:"Homer Oauth2"`
-		AuthUri          string `default:"https://accounts.google.com/o/oauth2/auth"`
-		TokenUri         string `default:"https://oauth2.googleapis.com/token"`
-		AuthProviderCert string `default:"https://www.googleapis.com/oauth2/v1/certs"`
-		RedirectUri      string `default:"http://localhost:80/api/v3/oauth2/auth"`
-		UserToken        string `default:"checkRandom"`
+		Enable               bool   `default:"false"`
+		ClientID             string `default:"1234565"`
+		ClientSecret         string `default:"FAKE"`
+		ProjectID            string `default:"Homer Oauth2"`
+		AuthUri              string `default:"https://accounts.google.com/o/oauth2/auth"`
+		TokenUri             string `default:"https://oauth2.googleapis.com/token"`
+		AuthProviderCert     string `default:"https://www.googleapis.com/oauth2/v1/certs"`
+		RedirectUri          string `default:"http://localhost:80/api/v3/oauth2/auth"`
+		UserToken            string `default:"checkRandom"`
+		ServiceProviderName  string `default:"google"`
+		ServiceProviderImage string `default:""`
 	}
 
 	LOG_SETTINGS struct {

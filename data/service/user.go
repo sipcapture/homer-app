@@ -283,8 +283,13 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 		replyLdap.Set(false, "enable")
 	}
 
+	replyOauthArray := gabs.New()
 	replyOauth := gabs.New()
-	replyOauth.Set("OAuth2", "name")
+	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ProjectID, "name")
+	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
+	replyOauth.Set("/api/v3/ouath2/redirect/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
+	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
+
 	replyOauth.Set("oauth2", "type")
 	replyOauth.Set(3, "position")
 
@@ -294,9 +299,11 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 		replyOauth.Set(false, "enable")
 	}
 
+	replyOauthArray.ArrayAppend(replyOauth.Data())
+
 	replyFinal.Set(replyInternal.Data(), "internal")
 	replyFinal.Set(replyLdap.Data(), "ldap")
-	replyFinal.Set(replyOauth.Data(), "oauth2")
+	replyFinal.Set(replyOauthArray.Data(), "oauth2")
 
 	userGlobalSettings = model.TableGlobalSettings{
 		Id:         1,

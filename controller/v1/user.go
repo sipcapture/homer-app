@@ -311,6 +311,10 @@ func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 //   400: body:FailureResponse
 func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
+	providerName := c.Param("provider")
+
+	logger.Debug("Doing URL for provider", providerName)
+
 	u := config.Setting.OAuth2Config.AuthCodeURL("xyz",
 		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"))

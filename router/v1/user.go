@@ -41,7 +41,7 @@ func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClien
 	acc.GET("/auth/type/list", urc.GetAuthTypeList)
 
 	//Oauth2 Request
-	acc.GET("/oauth2/redirect", urc.RedirecToSericeAuth)
+	acc.GET("/oauth2/redirect/:provider", urc.RedirecToSericeAuth)
 
 	//Oauth2 Request
 	acc.GET("/oauth2/auth", urc.RedirecToSericeAuth)

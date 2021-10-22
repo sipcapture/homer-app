@@ -146,7 +146,7 @@
     "auth_provider_x509_cert_url":  "https://www.googleapis.com/oauth2/v1/certs",
     "redirect_uri": "http://localhost:80/api/v3/oauth2/auth",
     "provider_name": "google",
-    "provider_url": ""
+    "provider_image": ""
   },
   "decoder_shark": {
     "_comment": "Here you can do packet decoding using tshark application. Please define uid, gid if you run the app under root",

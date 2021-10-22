@@ -311,7 +311,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 		PartId:     10,
 		Category:   "system",
 		Param:      "authtypes",
-		Data:       replyFinal.Data().([]byte),
+		Data:       json.RawMessage(replyFinal.String()),
 		CreateDate: time.Now(),
 	}
 

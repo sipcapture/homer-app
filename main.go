@@ -385,6 +385,9 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.service_redirect") {
 		config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect = viper.GetString("oauth2.service_redirect")
 	}
+	if viper.IsSet("oauth2.scope") {
+		config.Setting.OAUTH2_SETTINGS.Scope = viper.GetStringSlice("oauth2.scope")
+	}
 
 	/*********** DASHBOARD *******************/
 	if viper.IsSet("dashboard_settings.dashboard_home") {
@@ -405,7 +408,7 @@ func configureServiceObjects() {
 		config.Setting.OAuth2Config = oauth2.Config{
 			ClientID:     config.Setting.OAUTH2_SETTINGS.ClientID,
 			ClientSecret: config.Setting.OAUTH2_SETTINGS.ClientSecret,
-			Scopes:       []string{"all"},
+			Scopes:       config.Setting.OAUTH2_SETTINGS.Scope,
 			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName,
 			Endpoint: oauth2.Endpoint{
 				AuthURL:  config.Setting.OAUTH2_SETTINGS.AuthUri,

@@ -336,6 +336,15 @@ func Hash32(s string) uint32 {
 
 // make a genCodeChallengeS256
 func GenCodeChallengeS256(s string) string {
+
+	/*
+		hash := hmac.New(sha256.New, []byte(s))
+		hex.EncodeToString(hash.Sum(nil))
+		return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	*/
+
+	/* we have to remove the = because RFC is not allowed */
+	//TrimRight - remove all ==
 	s256 := sha256.Sum256([]byte(s))
-	return base64.URLEncoding.EncodeToString(s256[:])
+	return strings.TrimSuffix(base64.URLEncoding.EncodeToString(s256[:]), "=")
 }

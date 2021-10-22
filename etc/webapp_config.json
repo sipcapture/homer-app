@@ -147,6 +147,7 @@
     "redirect_uri": "http://localhost:80/api/v3/oauth2/auth",
     "service_redirect": "/api/v3/oauth2/redirect",
     "provider_name": "google",
+    "scope": ["email", "openid", "profile"],
     "provider_image": ""
   },
   "decoder_shark": {

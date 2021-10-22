@@ -42,6 +42,7 @@ type HomerSettingServer struct {
 		UserToken            string `default:"checkRandom"`
 		ServiceProviderName  string `default:"google"`
 		ServiceProviderImage string `default:""`
+		UrlToServiceRedirect string `default:"/api/v3/oauth2/redirect"`
 	}
 
 	LOG_SETTINGS struct {

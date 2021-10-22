@@ -286,7 +286,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 	replyOauth := gabs.New()
 	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ProjectID, "name")
 	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
-	replyOauth.Set("/api/v3/ouath2/redirect/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
+	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect+"/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
 	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
 	replyOauth.Set("oauth2", "type")
 	replyOauth.Set(3, "position")

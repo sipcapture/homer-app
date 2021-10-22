@@ -382,6 +382,9 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.provider_image") {
 		config.Setting.OAUTH2_SETTINGS.ServiceProviderImage = viper.GetString("oauth2.provider_image")
 	}
+	if viper.IsSet("oauth2.service_redirect") {
+		config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect = viper.GetString("oauth2.service_redirect")
+	}
 
 	/*********** DASHBOARD *******************/
 	if viper.IsSet("dashboard_settings.dashboard_home") {

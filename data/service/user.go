@@ -303,21 +303,18 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 		replyLdap.Set(false, "enable")
 	}
 
-	replyOauth := gabs.New()
-	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ProjectID, "name")
-	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
-	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect+"/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
-	replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
-	replyOauth.Set("oauth2", "type")
-	replyOauth.Set(3, "position")
-
 	if config.Setting.OAUTH2_SETTINGS.Enable {
+		replyOauth := gabs.New()
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ProjectID, "name")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect+"/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
+		replyOauth.Set("oauth2", "type")
+		replyOauth.Set(3, "position")
 		replyOauth.Set(true, "enable")
-	} else {
-		replyOauth.Set(false, "enable")
+		replyFinal.ArrayAppend(replyOauth.Data(), "oauth2")
 	}
 
-	replyFinal.ArrayAppend(replyOauth.Data(), "oauth2")
 	replyFinal.Set(replyInternal.Data(), "internal")
 	replyFinal.Set(replyLdap.Data(), "ldap")
 
@@ -341,14 +338,32 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 // this method is used to login the user
 // it doesn't check internally whether all the validation are applied or not
-func (us *UserService) LoginUserUsingOauthToken(OneTimeToken string) (string, model.TableUser, error) {
+func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToken) (string, model.TableUser, error) {
+
+	userJsonData, _ := gabs.ParseJSON(oAuth2Object.DataJson)
+
 	userData := model.TableUser{}
-	username := "testoauth2"
-	userData.UserName = username
-	userData.Id = int(hashString(username))
-	hash := md5.Sum([]byte(username))
+
+	if userJsonData.Exists("email") {
+		userData.Email = userJsonData.S("email").Data().(string)
+		userData.UserName = userData.Email
+		userData.Id = int(hashString(userData.UserName))
+	}
+
+	if userJsonData.Exists("family_name") {
+		userData.LastName = userJsonData.S("family_name").Data().(string)
+	}
+
+	if userJsonData.Exists("given_name") {
+		userData.FirstName = userJsonData.S("given_name").Data().(string)
+	}
+
+	if userJsonData.Exists("id") {
+		userData.Id = int(userJsonData.S("id").Data().(float64))
+	}
+
+	hash := md5.Sum([]byte(userData.UserName))
 	userData.GUID = hex.EncodeToString(hash[:])
-	userData.FirstName = "Oauth2"
 	userData.ExternalAuth = true
 	userData.UserGroup = "user"
 	userData.IsAdmin = false

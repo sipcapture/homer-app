@@ -1,7 +1,10 @@
 package model
 
 import (
+	"encoding/json"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 func (TableUser) TableName() string {
@@ -118,4 +121,14 @@ type OAuth2TokenExchange struct {
 	// example: token
 	// required: true
 	OneTimeToken string `json:"token" validate:"required"`
+}
+
+// swagger:model OAuth2MapToken
+type OAuth2MapToken struct {
+	AccessToken string          `json:"access_token"`
+	DataJson    json.RawMessage `json:"datajson"`
+	CreateDate  time.Time       `json:"create_date"`
+	ExpireDate  time.Time       `json:"expire_date"`
+	Oauth2Token *oauth2.Token   `json:"-"`
+	ProfileJson string          `json:"profile_json"`
 }

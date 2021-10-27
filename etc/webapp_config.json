@@ -147,6 +147,7 @@
     "auth_provider_x509_cert_url":  "https://www.googleapis.com/oauth2/v1/certs",
     "redirect_uri": "http://localhost:80/api/v3/oauth2/auth",
     "service_redirect": "/api/v3/oauth2/redirect",
+    "profile_url": "https://www.googleapis.com/oauth2/v1/userinfo",
     "provider_name": "google",
     "scope": ["email", "openid", "profile"],
     "provider_image": ""

@@ -351,6 +351,9 @@ func configureServiceObjects() {
 		config.Setting.UseCaptureIDInAlias = viper.GetBool("api_settings.add_captid_to_resolve")
 	}
 
+	/* init map */
+	config.OAuth2TokenMap = make(map[string]model.OAuth2MapToken)
+
 	/* oauth2 */
 	if viper.IsSet("oauth2.enable") {
 		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
@@ -387,6 +390,15 @@ func configureServiceObjects() {
 	}
 	if viper.IsSet("oauth2.scope") {
 		config.Setting.OAUTH2_SETTINGS.Scope = viper.GetStringSlice("oauth2.scope")
+	}
+	if viper.IsSet("oauth2.state_value") {
+		config.Setting.OAUTH2_SETTINGS.StateValue = viper.GetString("oauth2.state_value")
+	}
+	if viper.IsSet("oauth2.expire_sso") {
+		config.Setting.OAUTH2_SETTINGS.ExpireSSOToken = viper.GetUint32("oauth2.expire_sso")
+	}
+	if viper.IsSet("oauth2.profile_url") {
+		config.Setting.OAUTH2_SETTINGS.ProfileURL = viper.GetString("oauth2.profile_url")
 	}
 
 	/*********** DASHBOARD *******************/

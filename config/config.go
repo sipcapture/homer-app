@@ -1,8 +1,13 @@
 package config
 
-import "golang.org/x/oauth2"
+import (
+	"github.com/sipcapture/homer-app/model"
+	"golang.org/x/oauth2"
+)
 
 var Setting HomerSettingServer
+
+var OAuth2TokenMap map[string]model.OAuth2MapToken
 
 type HomerSettingServer struct {
 	IsolateQuery        string `default:""`
@@ -40,11 +45,14 @@ type HomerSettingServer struct {
 		TokenUri             string   `default:"https://oauth2.googleapis.com/token"`
 		AuthProviderCert     string   `default:"https://www.googleapis.com/oauth2/v1/certs"`
 		RedirectUri          string   `default:"http://localhost:80/api/v3/oauth2/auth"`
+		ProfileURL           string   `default:"https://www.googleapis.com/oauth2/v1/userinfo"`
 		UserToken            string   `default:"checkRandom"`
 		ServiceProviderName  string   `default:"google"`
 		ServiceProviderImage string   `default:""`
+		StateValue           string   `default:"jkwh027yasj"`
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
 		Scope                []string `default:"[email,openid,profile]"`
+		ExpireSSOToken       uint32   `default:"5"`
 	}
 
 	LOG_SETTINGS struct {

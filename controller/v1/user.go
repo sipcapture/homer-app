@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
@@ -346,11 +348,15 @@ func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 //   400: body:FailureResponse
 func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [1]")
+	}
+
 	providerName := c.Param("provider")
 
 	logger.Debug("Doing URL for provider", providerName)
 
-	u := config.Setting.OAuth2Config.AuthCodeURL("xyz",
+	u := config.Setting.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
 		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
 
@@ -384,12 +390,16 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 //   400: body:FailureResponse
 func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [2]")
+	}
+
 	providerName := c.Param("provider")
 
 	logger.Debug("Doing AuthSericeRequest for provider: ", providerName)
 
 	state := c.QueryParam("state")
-	if state != "xyz" {
+	if state != config.Setting.OAUTH2_SETTINGS.StateValue {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "State invalid")
 	}
 
@@ -398,19 +408,50 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, "Code not found")
 	}
 
+	oAuth2Object := model.OAuth2MapToken{}
+
 	token, err := config.Setting.OAuth2Config.Exchange(context.Background(), code,
 		oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 	}
 
-	config.Setting.GlobalToken = token
+	//scope := c.QueryParam("scope")
+	tokenSource := config.Setting.OAuth2Config.TokenSource(context.Background(), token)
+
+	client := oauth2.NewClient(context.Background(), tokenSource)
+	resp, _ := client.Get(config.Setting.OAUTH2_SETTINGS.ProfileURL)
+	if err == nil {
+		defer resp.Body.Close()
+		if resp.StatusCode == http.StatusOK {
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				logger.Error("couldn't read the body for email: ", err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+			} else {
+				oAuth2Object.ProfileJson = string(bodyBytes)
+			}
+		} else {
+			logger.Debug("couldn't get profile: ", err.Error())
+			return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+		}
+	} else {
+		logger.Debug("couldn't get data: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+	}
+
+	ssoToken := heputils.GenerateToken()
+	oAuth2Object.Oauth2Token = token
+	oAuth2Object.CreateDate = time.Now()
+	oAuth2Object.ExpireDate = time.Now().Add(time.Duration(config.Setting.OAUTH2_SETTINGS.ExpireSSOToken) * time.Minute)
+
+	config.OAuth2TokenMap[ssoToken] = oAuth2Object
 
 	dataJson, _ := json.Marshal(token)
 	logger.Debug("Doing AuthSericeRequest for token", string(dataJson))
 
 	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
-	return c.Redirect(http.StatusFound, "/?token="+token.AccessToken)
+	return c.Redirect(http.StatusFound, "/?token="+ssoToken)
 
 }
 
@@ -433,6 +474,11 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 //   201: body:UserLoginSuccessResponse
 //   400: body:FailureResponse
 func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
+
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [3]")
+	}
+
 	u := model.OAuth2TokenExchange{}
 	if err := c.Bind(&u); err != nil {
 		logger.Error(err.Error())
@@ -444,7 +490,18 @@ func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	token, userData, err := uc.UserService.LoginUserUsingOauthToken(u.OneTimeToken)
+	var oAuth2Object model.OAuth2MapToken
+
+	if oAuth2Object, ok := config.OAuth2TokenMap[u.OneTimeToken]; ok {
+
+		if oAuth2Object.ExpireDate.Before(time.Now()) {
+			return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key has been expired")
+		}
+	} else {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key not found or has been expired")
+	}
+
+	token, userData, err := uc.UserService.LoginUserUsingOauthToken(oAuth2Object)
 	if err != nil {
 		loginObject := model.UserTokenBadResponse{}
 		loginObject.StatusCode = http.StatusUnauthorized

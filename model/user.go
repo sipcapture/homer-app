@@ -15,7 +15,7 @@ type TableUser struct {
 	UserName string `gorm:"column:username;type:varchar(100);unique_index:idx_username;not null" json:"username" validate:"required"`
 	// example: 10
 	// required: true
-	PartId int `gorm:"column:partid;type:int;default:10;not null" json:"partid" validate:"required"`
+	PartId int `gorm:"column:partid;type:int;default:10;not null" json:"partid"`
 	// required: true
 	Email string `gorm:"column:email;type:varchar(250);not null" json:"email" validate:"required,email"`
 	// required: true
@@ -24,7 +24,7 @@ type TableUser struct {
 
 	FirstName string `gorm:"column:firstname;type:varchar(50);not null" json:"firstname" validate:"required"`
 	// required: true
-	LastName string `gorm:"column:lastname;type:varchar(50);not null" json:"lastname" validate:"required"`
+	LastName string `gorm:"column:lastname;type:varchar(50);not null" json:"lastname"`
 	// required: true
 	// example: NOC
 	Department string `gorm:"column:department;type:varchar(50);not null" json:"department" validate:"required"`

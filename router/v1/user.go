@@ -49,5 +49,5 @@ func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClien
 	acc.GET("/oauth2/auth/:provider", urc.AuthSericeRequest)
 
 	//Oauth2 Token Ex-Change
-	acc.GET("/oauth2/token", urc.Oauth2TokenExchange)
+	acc.POST("/oauth2/token", urc.Oauth2TokenExchange)
 }

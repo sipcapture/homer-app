@@ -103,7 +103,8 @@
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",
-    "token_expire": 1200
+    "token_expire": 1200,
+    "user_groups": ["admin", "user", "support"]
   },
   "ldap_config": {
     "base": "dc=example,dc=com",

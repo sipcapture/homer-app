@@ -112,3 +112,10 @@ type UserDeleteSuccessfulResponse struct {
 	// example: successfully deleted user
 	Message string `json:"message"`
 }
+
+// swagger:model OAuth2TokenExchange
+type OAuth2TokenExchange struct {
+	// example: token
+	// required: true
+	OneTimeToken string `json:"token" validate:"required"`
+}

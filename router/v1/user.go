@@ -19,6 +19,8 @@ func RouteUserDetailsApis(acc *echo.Group, session *gorm.DB) {
 	}
 	// get all user
 	acc.GET("/users", urc.GetUser)
+	//
+	acc.GET("/users/groups", urc.GetGroups)
 	// create new user
 	acc.POST("/users", urc.CreateUser, auth.IsAdmin)
 	// update user
@@ -45,4 +47,7 @@ func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClien
 
 	//Oauth2 Request
 	acc.GET("/oauth2/auth/:provider", urc.AuthSericeRequest)
+
+	//Oauth2 Token Ex-Change
+	acc.GET("/oauth2/token", urc.Oauth2TokenExchange)
 }

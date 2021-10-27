@@ -46,6 +46,16 @@ func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUse
 	return user, len(user), nil
 }
 
+/* get all */
+func (us *UserService) GetGroups() (string, error) {
+
+	count := len(config.Setting.UserGroups)
+	reply := gabs.New()
+	reply.Set(count, "count")
+	reply.Set(config.Setting.UserGroups, "data")
+	return reply.String(), nil
+}
+
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (us *UserService) CreateNewUser(user *model.TableUser) error {
@@ -327,4 +337,22 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 	oj.Message = "all good"
 
 	return json.Marshal(oj)
+}
+
+// this method is used to login the user
+// it doesn't check internally whether all the validation are applied or not
+func (us *UserService) LoginUserUsingOauthToken(OneTimeToken string) (string, model.TableUser, error) {
+	userData := model.TableUser{}
+	username := "testoauth2"
+	userData.UserName = username
+	userData.Id = int(hashString(username))
+	hash := md5.Sum([]byte(username))
+	userData.GUID = hex.EncodeToString(hash[:])
+	userData.FirstName = "Oauth2"
+	userData.ExternalAuth = true
+	userData.UserGroup = "user"
+	userData.IsAdmin = false
+
+	token, err := auth.Token(userData)
+	return token, userData, err
 }

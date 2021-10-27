@@ -57,6 +57,41 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
 }
 
+// swagger:route GET /users/groups Users groups
+//
+// Returns the list of groups
+// ---
+//     Consumes:
+//     - application/json
+//
+// 	   Produces:
+// 	   - application/json
+//
+//	   Security:
+//	   - JWT
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (uc *UserController) GetGroups(c echo.Context) error {
+
+	reply, err := uc.UserService.GetGroups()
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}
+
 // swagger:route POST /users user userCreateUser
 //
 // Create a New user
@@ -377,4 +412,52 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
 	return c.Redirect(http.StatusFound, "/?token="+token.AccessToken)
 
+}
+
+// swagger:route POST /oauth2/token user auth userLoginUser
+//
+// Returns a JWT Token and UUID attached to user
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// + name: userLoginStruct
+//   in: body
+//   description: user login structure
+//   schema:
+//      type: UserLogin
+//   required: true
+// responses:
+//   201: body:UserLoginSuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
+	u := model.OAuth2TokenExchange{}
+	if err := c.Bind(&u); err != nil {
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+	// validate input request body
+	if err := c.Validate(u); err != nil {
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
+	token, userData, err := uc.UserService.LoginUserUsingOauthToken(u.OneTimeToken)
+	if err != nil {
+		loginObject := model.UserTokenBadResponse{}
+		loginObject.StatusCode = http.StatusUnauthorized
+		loginObject.Message = webmessages.IncorrectPassword
+		loginObject.Error = webmessages.Unauthorized
+		response, _ := json.Marshal(loginObject)
+		return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
+	}
+
+	loginObject := model.UserTokenSuccessfulResponse{}
+	loginObject.Token = token
+	loginObject.Scope = userData.GUID
+	loginObject.User.Admin = userData.IsAdmin
+	response, _ := json.Marshal(loginObject)
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }

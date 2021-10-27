@@ -56,6 +56,11 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 		return errors.New("empty password")
 	}
 
+	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
+		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
+	}
+
 	// lets generate hash from password
 	password := []byte(user.Password)
 
@@ -90,7 +95,12 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 	}
 
 	if us.Session.Where(sqlWhere).Find(&oldRecord).RecordNotFound() {
-		return errors.New(fmt.Sprintf("the user with id '%s' was not found", user.GUID))
+		return fmt.Errorf("the user with id '%s' was not found", user.GUID)
+	}
+
+	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
+		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
 	}
 
 	if user.Password != "" {
@@ -105,8 +115,8 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 		user.Hash = oldRecord.Hash
 	}
 	if !isAdmin {
-		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{Email: user.Email, FirstName: user.FirstName, LastName: user.LastName,
-			Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
+		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{Email: user.Email, FirstName: user.FirstName,
+			LastName: user.LastName, Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
 		if err != nil {
 			return err
 		}

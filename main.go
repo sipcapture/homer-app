@@ -399,6 +399,11 @@ func configureServiceObjects() {
 		config.Setting.DefaultAuth = viper.GetString("auth_settings.type")
 	}
 
+	/* auth settings */
+	if viper.IsSet("auth_settings.user_groups") {
+		config.Setting.UserGroups = viper.GetStringSlice("auth_settings.user_groups")
+	}
+
 	/* check the auth type */
 	if config.Setting.DefaultAuth == "" {
 		config.Setting.DefaultAuth = "internal"

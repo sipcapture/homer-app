@@ -11,6 +11,7 @@ type HomerSettingServer struct {
 	DefaultAuth         string `default:"internal"`
 	OAuth2Config        oauth2.Config
 	GlobalToken         *oauth2.Token
+	UserGroups          []string `default:"[admin,user,support]"`
 
 	GRAFANA_SETTINGS struct {
 		URL      string `default:"http://grafana/"`

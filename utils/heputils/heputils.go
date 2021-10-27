@@ -307,6 +307,25 @@ func ElementExists(arr []string, elem string) bool {
 	return false
 }
 
+/* check if the element exists */
+func ElementRealExists(arr []string, elem string) bool {
+
+	if len(arr) == 0 {
+		return false
+	}
+
+	if len(arr) == 1 && arr[0] == "" {
+		return false
+	}
+
+	for index := range arr {
+		if arr[index] == elem {
+			return true
+		}
+	}
+	return false
+}
+
 func GenerateToken() string {
 
 	rand.Seed(time.Now().UnixNano())

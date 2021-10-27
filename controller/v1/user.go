@@ -351,7 +351,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	providerName := c.Param("provider")
 
-	logger.Debug("Doing AuthSericeRequest for provider", providerName)
+	logger.Debug("Doing AuthSericeRequest for provider: ", providerName)
 
 	state := c.QueryParam("state")
 	if state != "xyz" {
@@ -372,8 +372,9 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	config.Setting.GlobalToken = token
 
 	dataJson, _ := json.Marshal(token)
-	logger.Debug("Doing AuthSericeRequest for provider", dataJson)
+	logger.Debug("Doing AuthSericeRequest for token", string(dataJson))
 
+	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
 	return c.Redirect(http.StatusFound, "/?token="+token.AccessToken)
 
 }

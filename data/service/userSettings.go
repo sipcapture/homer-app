@@ -11,6 +11,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
+	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
@@ -103,9 +104,11 @@ func (ss *UserSettingsService) GetAll(UserName string, isAdmin bool) (string, er
 		Find(&userSettings).Error; err != nil {
 		return "", errors.New("no users settings found")
 	}
+
 	data, _ := json.Marshal(userSettings)
 	rows, _ := gabs.ParseJSON(data)
 	// sort the array
+
 	vals := rows.Data().([]interface{})
 	sort.Slice(vals, func(i, j int) bool {
 		return gabs.Wrap(vals[i]).S("username").Data().(string) < gabs.Wrap(vals[j]).S("username").Data().(string)
@@ -223,4 +226,23 @@ func (ss *UserSettingsService) Update(userObject *model.TableUserSettings, UserN
 		return err
 	}
 	return nil
+}
+
+/* get all */
+func (ss *UserSettingsService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserClaim) (string, error) {
+
+	userProfile := model.UserProfile{}
+
+	userProfile.UserName = userTokenProfile.UserName
+	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
+	userProfile.DisplayName = userTokenProfile.DisplayName
+	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	data, _ := json.Marshal(userProfile)
+	reply := gabs.New()
+	reply.Set(1, "count")
+	reply.Set(data, "data")
+	return reply.String(), nil
 }

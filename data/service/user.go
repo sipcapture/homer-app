@@ -371,3 +371,19 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 	token, err := auth.Token(userData)
 	return token, userData, err
 }
+
+// this method gets all users from database
+func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (model.TableUser, error) {
+
+	userProfile := model.TableUser{}
+
+	userProfile.Id = 0
+	userProfile.UserName = userTokenProfile.UserName
+	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
+	userProfile.LastName = userTokenProfile.DisplayName
+	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	return userProfile, nil
+}

@@ -300,3 +300,60 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
 }
+
+// swagger:route GET /dashboard/info Dashboard ListDashboard
+//
+// Get Dashbroad list
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:DashboardElements
+//   400: body:FailureResponse
+func (dbc *DashBoardController) ResetUserDashboard(c echo.Context) error {
+
+	cc := c.(model.AppContext)
+	username := cc.UserName
+	_, err := dbc.DashBoardService.DeleteAllDashboards(username)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteDashboardFailed)
+	}
+
+	var dashboardHome []byte
+
+	if config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard != "" {
+		dashboardHome, err = ioutil.ReadFile(config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard) // just pass the file name
+		if err != nil {
+			dashboardHome = jsonschema.DashboardHome
+		}
+	} else {
+		dashboardHome = jsonschema.DashboardHome
+	}
+
+	dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
+	dbc.DashBoardService.InsertDashboardByName(username, "smartsearch", jsonschema.DashboardSmartSearch)
+
+	reply, err := dbc.DashBoardService.GetDashBoardsLists(username)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
+	}
+
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}

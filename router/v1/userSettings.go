@@ -17,7 +17,7 @@ func RouteUserSettingsApis(acc *echo.Group, session *gorm.DB) {
 	// get user settings
 	acc.GET("/user/settings", urc.GetAll)
 	acc.GET("/user/settings/:category", urc.GetCategory)
-
+	acc.GET("/user/profile", urc.GetCurrentUserProfile)
 	acc.POST("/user/settings", urc.AddUserSettings)
 	acc.DELETE("/user/settings/:category", urc.DeleteUserSettings)
 	acc.PUT("/user/settings/:category", urc.UpdateUserSettings)

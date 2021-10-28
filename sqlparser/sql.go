@@ -199,7 +199,7 @@ func (p *parser) peekQuotedStringWithLength() (string, int) {
 
 func (p *parser) peekIdentifierWithLength() (string, int) {
 	for i := p.i; i < len(p.sql); i++ {
-		if matched, _ := regexp.MatchString(`[a-zA-Z0-9%_*.]`, string(p.sql[i])); !matched {
+		if matched, _ := regexp.MatchString(`[a-zA-Z0-9%\+\-_*.]`, string(p.sql[i])); !matched {
 			return p.sql[p.i:i], len(p.sql[p.i:i])
 		}
 	}

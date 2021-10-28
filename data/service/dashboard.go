@@ -232,3 +232,17 @@ func (us *DashBoardService) DeleteDashboard(username, dashboardId string) (strin
 	reply.Set("ok", "auth")
 	return reply.String(), nil
 }
+
+// this method gets all users from database
+func (us *DashBoardService) DeleteAllDashboards(username string) (string, error) {
+
+	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard' and partid = ? ", username, 10).Delete(&model.TableUserSettings{}).Error; err != nil {
+		return "", err
+	}
+
+	reply := gabs.New()
+	reply.Set(3, "total")
+	reply.Set("ok", "status")
+	reply.Set("ok", "auth")
+	return reply.String(), nil
+}

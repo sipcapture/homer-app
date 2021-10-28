@@ -41,8 +41,10 @@ type TableUser struct {
 	// should be a unique value representing user
 	// example: e71771a2-1ea0-498f-8d27-391713e10664
 	// required: true
-	GUID      string    `gorm:"column:guid;type:varchar(50);not null" json:"guid" validate:"required"`
-	CreatedAt time.Time `gorm:"column:created_at;default:current_timestamp;not null" json:"-"`
+	GUID            string    `gorm:"column:guid;type:varchar(50);not null" json:"guid" validate:"required"`
+	CreatedAt       time.Time `gorm:"column:created_at;default:current_timestamp;not null" json:"-"`
+	ExternalProfile string    `gorm:"-" json:"-"`
+	Avatar          string    `gorm:"-" json:"-"`
 }
 
 type HTTPAUTHResp struct {
@@ -80,6 +82,14 @@ type GetUser struct {
 	Count int `json:"count"`
 	// the data
 	Data []*TableUser `json:"data"`
+}
+
+// swagger:model ListExternalUsers
+type GetExternalUser struct {
+	// count
+	Count int `json:"count"`
+	// the data
+	Data []TableUser `json:"data"`
 }
 
 // swagger:model UserLogin

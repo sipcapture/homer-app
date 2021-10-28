@@ -31,6 +31,10 @@ type TableUserSettings struct {
 	Param string `gorm:"column:param;type:varchar(100);not null" json:"param" validate:"required"`
 
 	Data json.RawMessage `gorm:"column:data;type:json" json:"data"`
+
+	// external
+	IsExternal bool `gorm:"-" json:"external"`
+
 	//Data map[string]interface{} `gorm:"column:data;type:json" json:"data"`
 }
 

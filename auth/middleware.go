@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"fmt"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/model"
@@ -63,4 +65,18 @@ func GetUserGroup(c echo.Context) string {
 	} else {
 		return "guest"
 	}
+}
+
+/* get user group */
+func GetUserProfile(c echo.Context) (*JwtUserClaim, error) {
+
+	if c.Get("user") != nil {
+		user := c.Get("user").(*jwt.Token)
+		if user != nil {
+			claims := user.Claims.(*JwtUserClaim)
+			return claims, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no user in token")
 }

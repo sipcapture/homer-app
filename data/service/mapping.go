@@ -3,10 +3,12 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type MappingService struct {
@@ -96,7 +98,7 @@ func (mps *MappingService) DeleteMappingAgainstGUID(guid string) (string, error)
 }
 
 // this method gets all the mapping from database
-func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile string) (string, error) {
+func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile string, queryString string) (string, error) {
 
 	var mappingObject model.TableMappingSchema
 	if err := mps.Session.Debug().Table("mapping_schema").
@@ -106,6 +108,28 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 	}
 	if mappingObject.MappingSettings == nil {
 		return "", fmt.Errorf("data was not found")
+	}
+
+	preParsed := ""
+
+	q, err := url.ParseQuery(queryString)
+	if err == nil {
+		queryData := q.Get("query")
+		if queryData != "" {
+			jsQuery, err := gabs.ParseJSON([]byte(queryData))
+			if err == nil {
+				if jsQuery.Exists("data") {
+					dataReq := jsQuery.Search("data").Data().(string)
+					if dataReq != "" {
+						words := strings.Fields(dataReq)
+						logger.Debug("WORDS: ", words)
+						if len(words) > 0 {
+							preParsed = words[len(words)-1]
+						}
+					}
+				}
+			}
+		}
 	}
 
 	sData, _ := gabs.ParseJSON(mappingObject.FieldsMapping)
@@ -140,6 +164,11 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 		} else {
 			dataElement.Set(idField, "value")
 			dataElement.Set(idField, "name")
+		}
+
+		// if not our, skip it
+		if preParsed != "" && !strings.Contains(valueField, preParsed) {
+			continue
 		}
 
 		dataObject.ArrayAppend(dataElement.Data(), "data")

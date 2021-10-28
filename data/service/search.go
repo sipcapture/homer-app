@@ -198,6 +198,9 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 						} else if operandValue == "isNull" && operandField == "=" {
 							sql += fmt.Sprintf("%s is NULL", operandField)
 						} else {
+							if strings.Contains(operandValue, "%") {
+								operator = "LIKE"
+							}
 							sql += fmt.Sprintf("%s %s ?", operandField, operator)
 							dataValueArray = append(dataValueArray, operandValue)
 						}

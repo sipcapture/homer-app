@@ -1041,109 +1041,69 @@ var FieldsMapping100default = json.RawMessage(`[
       "sid_type": true
   },
   {
-      "id": "correlation_id",
+      "id": "protocol_header.correlation_id",
       "name": "Correlation ID",
-      "type": "string",
-      "index": "none",
-      "form_type": "input",
-      "position": 2,
-      "skip": false,
-      "hide": true,
-      "sid_type": true
-  },
-  {
-      "id": "srcIp",
-      "name": "Source IP",
       "type": "string",
       "index": "none",
       "form_type": "input",
       "position": 3,
       "skip": false,
-      "hide": false
+      "hide": true,
+      "sid_type": true
   },
   {
-      "id": "srcPort",
-      "name": "Src Port",
-      "type": "integer",
-      "index": "none",
-      "form_type": "input",
-      "position": 4,
-      "skip": false,
-      "hide": false
-  },
-  {
-      "id": "dstIp",
-      "name": "Destination IP",
+      "id": "protocol_header.srcIp",
+      "name": "Source IP",
       "type": "string",
-      "index": "none",
-      "form_type": "input",
-      "position": 5,
-      "skip": false,
-      "hide": false
-  },
-  {
-      "id": "dstPort",
-      "name": "Dst Port",
-      "type": "integer",
-      "index": "none",
-      "form_type": "input",
-      "position": 6,
-      "skip": false,
-      "hide": false
-  },
-  {
-      "id": "timeSeconds",
-      "name": "Timeseconds",
-      "type": "integer",
-      "index": "none",
-      "form_type": "input",
-      "position": 7,
-      "skip": false,
-      "hide": true
-  },
-  {
-      "id": "timeUseconds",
-      "name": "Usecond time",
-      "type": "integer",
       "index": "none",
       "form_type": "input",
       "position": 8,
       "skip": false,
-      "hide": true
+      "hide": false
   },
   {
-      "id": "payloadType",
-      "name": "Payload type",
+      "id": "protocol_header.srcPort",
+      "name": "Src Port",
       "type": "integer",
       "index": "none",
       "form_type": "input",
       "position": 9,
       "skip": false,
-      "hide": true
+      "hide": false
   },
-  {
-      "id": "captureId",
-      "name": "Capture ID",
-      "type": "integer",
+{
+      "id": "protocol_header.dstIp",
+      "name": "Destination IP",
+      "type": "string",
       "index": "none",
       "form_type": "input",
       "position": 10,
       "skip": false,
-      "hide": true
+      "hide": false
   },
   {
-      "id": "capturePass",
-      "name": "Capture Pass",
-      "type": "string",
+      "id": "protocol_header.dstPort",
+      "name": "Dst Port",
+      "type": "integer",
+      "index": "none",
+      "form_type": "input",
+      "position": 11,
+      "skip": false,
+      "hide": false
+  },
+   {
+      "id": "protocol_header.timeSeconds",
+      "name": "Timeseconds",
+      "type": "integer",
       "index": "none",
       "form_type": "input",
       "position": 12,
-      "skip": true,
+      "skip": false,
       "hide": true
   },
   {
-      "id": "protocolFamily",
-      "name": "Proto Family",
+      "id": "protocol_header.timeUseconds",
+      "name": "Usecond time",
       "type": "integer",
       "index": "none",
       "form_type": "input",
@@ -1151,13 +1111,63 @@ var FieldsMapping100default = json.RawMessage(`[
       "skip": false,
       "hide": true
   },
-  {
-      "id": "protocol",
-      "name": "Protocol Type",
+   {
+      "id": "protocol_header.payloadType",
+      "name": "Payload type",
       "type": "integer",
       "index": "none",
       "form_type": "input",
       "position": 14,
+      "skip": false,
+      "hide": true
+  },
+  {
+      "id": "protocol_header.protocolFamily",
+      "name": "Proto Family",
+      "type": "integer",
+      "index": "none",
+      "form_type": "input",
+      "position": 15,
+      "skip": false,
+      "hide": true
+  },
+  {
+      "id": "protocol_header.protocol",
+      "name": "Protocol Type",
+      "type": "integer",
+      "index": "none",
+      "form_type": "input",
+      "position": 16,
+      "skip": false,
+      "hide": true
+  },
+  {
+      "id": "protocol_header.captureId",
+      "name": "Capture ID",
+      "type": "integer",
+      "index": "none",
+      "form_type": "input",
+      "position": 17,
+      "skip": false,
+      "hide": true
+  },
+  {
+      "id": "protocol_header.capturePass",
+      "name": "Capture Pass",
+      "type": "string",
+      "index": "none",
+      "form_type": "input",
+      "position": 18,
+      "skip": true,
+      "hide": true
+  },
+  {
+      "id": "data_header.protocol",
+      "name": "SIP Protocol",
+      "type": "string",
+      "index": "none",
+      "form_type": "input",
+      "position": 21,
       "skip": false,
       "hide": true
   },
@@ -1167,9 +1177,9 @@ var FieldsMapping100default = json.RawMessage(`[
       "type": "string",
       "index": "none",
       "form_type": "input",
-      "position": 15,
-      "skip": true,
-      "hide": true
+      "position": 16,
+      "skip": false,
+      "hide": false
   }
 ]`)
 

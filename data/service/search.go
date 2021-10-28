@@ -401,12 +401,35 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		dataElement := gabs.New()
 		for k, v := range value.ChildrenMap() {
 			switch k {
-			case "data_header", "protocol_header":
+			case "data_header":
+				if v.Exists("node") {
+					v.DeleteP("node")
+				}
+				/*
+					for a, r := range v.ChildrenMap() {
+						if a == "node" {
+							continue
+						}
+						newData := gabs.New()
+						newData.Set(r.Data().(interface{}), a)
+						dataElement.Merge(newData)
+					}*/
+
+				dataElement.Merge(v)
+
+			case "protocol_header":
 				dataElement.Merge(v)
 			case "id", "sid", "node", "dbnode":
 				newData := gabs.New()
 				newData.Set(v.Data().(interface{}), k)
 				dataElement.Merge(newData)
+
+			case "raw":
+				if table == "hep_proto_100_default" {
+					newData := gabs.New()
+					newData.Set(v.Data().(interface{}), k)
+					dataElement.Merge(newData)
+				}
 			}
 		}
 

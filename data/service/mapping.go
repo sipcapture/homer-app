@@ -107,6 +107,8 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 		return "", err
 	}
 	if mappingObject.MappingSettings == nil {
+
+		logger.Error("data was not found for : ", hepid, profile)
 		return "", fmt.Errorf("data was not found")
 	}
 
@@ -134,6 +136,8 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 
 	sData, _ := gabs.ParseJSON(mappingObject.FieldsMapping)
 	dataObject := gabs.New()
+
+	//logger.Debug("Mapping data : ", mappingObject.FieldsMapping)
 
 	for _, v := range sData.Children() {
 

@@ -60,6 +60,43 @@ func (uc *UserController) GetUser(c echo.Context) error {
 
 }
 
+// swagger:route GET /users/{userGuid} user userGetUser
+//
+// Returns the list of Users
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   200: body:ListUsers
+//   400: body:FailureResponse
+func (uc *UserController) GetUserByGUID(c echo.Context) error {
+
+	// Stub an user to be populated from the body
+	GUID := c.Param("userGuid")
+	userName, _ := auth.IsRequestAdmin(c)
+
+	user, count, err := uc.UserService.GetUserByUUID(GUID, userName)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+	}
+
+	data := model.GetUser{}
+	data.Count = count
+	data.Data = user
+	uj, _ := json.Marshal(data)
+	//response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, uj)
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
+
+}
+
 // swagger:route GET /users/groups Users groups
 //
 // Returns the list of groups

@@ -47,6 +47,21 @@ func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUse
 	return user, len(user), nil
 }
 
+// this method gets all users from database
+func (us *UserService) GetUserByUUID(GUID, UserName string) ([]*model.TableUser, int, error) {
+
+	var user []*model.TableUser
+	var sqlWhere = make(map[string]interface{})
+
+	sqlWhere = map[string]interface{}{"username": UserName, "guid": GUID}
+
+	if err := us.Session.Debug().Table("users").Where(sqlWhere).Find(&user).Error; err != nil {
+		return user, 0, err
+	}
+
+	return user, len(user), nil
+}
+
 /* get all */
 func (us *UserService) GetGroups() (string, error) {
 

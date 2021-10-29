@@ -394,9 +394,10 @@ func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (mo
 	userProfile.UserName = userTokenProfile.UserName
 	userProfile.UserGroup = userTokenProfile.UserGroup
 	userProfile.Email = userTokenProfile.ExternalProfile
-	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
 	userProfile.LastName = userTokenProfile.DisplayName
 	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.IsAdmin = userTokenProfile.UserAdmin
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
 	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
 
 	return userProfile, nil
@@ -411,6 +412,8 @@ func (us *UserService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserCla
 	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
 	userProfile.DisplayName = userTokenProfile.DisplayName
 	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.UserAdmin = userTokenProfile.UserAdmin
+
 	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
 
 	if !userTokenProfile.ExternalAuth {

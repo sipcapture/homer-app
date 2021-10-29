@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hash/fnv"
+	"strconv"
 	"strings"
 	"time"
 
@@ -340,7 +341,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 // it doesn't check internally whether all the validation are applied or not
 func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToken) (string, model.TableUser, error) {
 
-	userJsonData, _ := gabs.ParseJSON(oAuth2Object.DataJson)
+	userJsonData, _ := gabs.ParseJSON(oAuth2Object.ProfileJson)
 
 	userData := model.TableUser{}
 
@@ -358,8 +359,20 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 		userData.FirstName = userJsonData.S("given_name").Data().(string)
 	}
 
+	if userJsonData.Exists("picture") {
+		userData.Avatar = userJsonData.S("picture").Data().(string)
+	}
+
 	if userJsonData.Exists("id") {
-		userData.Id = int(userJsonData.S("id").Data().(float64))
+
+		s := (userJsonData.S("id").Data().(string))
+		i, err := strconv.Atoi(s)
+		if err == nil {
+			userData.Id = i
+		} else {
+			logger.Error("bad ID size: ", s, i)
+
+		}
 	}
 
 	hash := md5.Sum([]byte(userData.UserName))

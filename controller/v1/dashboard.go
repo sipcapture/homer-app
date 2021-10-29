@@ -121,7 +121,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 				dashboardHome = jsonschema.DashboardHome
 			}
 
-			_, err := dbc.DashBoardService.InsertDashboardByName(username, "homer", dashboardHome)
+			_, err := dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}

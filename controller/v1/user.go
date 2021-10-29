@@ -416,7 +416,6 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	}
 
 	providerName := c.Param("provider")
-
 	logger.Debug("Doing AuthSericeRequest for provider: ", providerName)
 
 	state := c.QueryParam("state")
@@ -450,7 +449,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 				logger.Error("couldn't read the body for email: ", err.Error())
 				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 			} else {
-				oAuth2Object.ProfileJson = string(bodyBytes)
+				oAuth2Object.ProfileJson = bodyBytes
 			}
 		} else {
 			logger.Debug("couldn't get profile: ", err.Error())
@@ -467,9 +466,6 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	oAuth2Object.ExpireDate = time.Now().Add(time.Duration(config.Setting.OAUTH2_SETTINGS.ExpireSSOToken) * time.Minute)
 
 	config.OAuth2TokenMap[ssoToken] = oAuth2Object
-
-	dataJson, _ := json.Marshal(token)
-	logger.Debug("Doing AuthSericeRequest for token", string(dataJson))
 
 	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
 	return c.Redirect(http.StatusFound, "/?token="+ssoToken)
@@ -505,37 +501,37 @@ func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
 		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
+
 	// validate input request body
 	if err := c.Validate(u); err != nil {
 		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	var oAuth2Object model.OAuth2MapToken
-
 	if oAuth2Object, ok := config.OAuth2TokenMap[u.OneTimeToken]; ok {
 
 		if oAuth2Object.ExpireDate.Before(time.Now()) {
 			return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key has been expired")
 		}
+
+		token, userData, err := uc.UserService.LoginUserUsingOauthToken(oAuth2Object)
+		if err != nil {
+			loginObject := model.UserTokenBadResponse{}
+			loginObject.StatusCode = http.StatusUnauthorized
+			loginObject.Message = webmessages.IncorrectPassword
+			loginObject.Error = webmessages.Unauthorized
+			response, _ := json.Marshal(loginObject)
+			return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
+		}
+
+		loginObject := model.UserTokenSuccessfulResponse{}
+		loginObject.Token = token
+		loginObject.Scope = userData.GUID
+		loginObject.User.Admin = userData.IsAdmin
+		response, _ := json.Marshal(loginObject)
+		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 	} else {
 		return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key not found or has been expired")
 	}
 
-	token, userData, err := uc.UserService.LoginUserUsingOauthToken(oAuth2Object)
-	if err != nil {
-		loginObject := model.UserTokenBadResponse{}
-		loginObject.StatusCode = http.StatusUnauthorized
-		loginObject.Message = webmessages.IncorrectPassword
-		loginObject.Error = webmessages.Unauthorized
-		response, _ := json.Marshal(loginObject)
-		return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
-	}
-
-	loginObject := model.UserTokenSuccessfulResponse{}
-	loginObject.Token = token
-	loginObject.Scope = userData.GUID
-	loginObject.User.Admin = userData.IsAdmin
-	response, _ := json.Marshal(loginObject)
-	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }

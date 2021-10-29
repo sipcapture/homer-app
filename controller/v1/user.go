@@ -50,34 +50,14 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
 	}
-	if count == 0 {
-		userProfile, err := auth.GetUserProfile(c)
-		if err != nil {
-			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserProfileFailed)
-		}
 
-		userExternal, err := uc.UserService.GetUserFromToken(userProfile)
-		if err != nil {
-			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
-		}
+	data := model.GetUser{}
+	data.Count = count
+	data.Data = user
+	uj, _ := json.Marshal(data)
+	//response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, uj)
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
 
-		data := model.GetExternalUser{}
-		data.Count = 1
-		data.Data = make([]model.TableUser, 1)
-		data.Data[0] = userExternal
-		uj, _ := json.Marshal(data)
-
-		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
-
-	} else {
-
-		data := model.GetUser{}
-		data.Count = count
-		data.Data = user
-		uj, _ := json.Marshal(data)
-		//response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, uj)
-		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
-	}
 }
 
 // swagger:route GET /users/groups Users groups

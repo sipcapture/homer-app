@@ -59,6 +59,7 @@ type UserSettingUpdateSuccessfulResponse struct {
 // swagger:model UserProfile
 type UserProfile struct {
 	// example: dashboard
+	GUID            string `json:"guid"`
 	UserName        string `json:"username"`
 	DisplayName     string `json:"displayname"`
 	Avatar          string `json:"avatar"`

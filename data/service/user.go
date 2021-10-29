@@ -406,13 +406,19 @@ func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (mo
 func (us *UserService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserClaim) (string, error) {
 
 	userProfile := model.UserProfile{}
-
 	userProfile.UserName = userTokenProfile.UserName
 	userProfile.UserGroup = userTokenProfile.UserGroup
 	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
 	userProfile.DisplayName = userTokenProfile.DisplayName
 	userProfile.Avatar = userTokenProfile.Avatar
 	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	if !userTokenProfile.ExternalAuth {
+		user, count, err := us.GetUser(userTokenProfile.UserName, false)
+		if err == nil && count > 0 {
+			userProfile.GUID = user[0].GUID
+		}
+	}
 
 	data, _ := json.Marshal(userProfile)
 	rows, _ := gabs.ParseJSON(data)

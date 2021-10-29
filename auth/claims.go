@@ -34,7 +34,7 @@ func Token(user model.TableUser) (string, error) {
 		user.UserGroup,
 		user.ExternalAuth,
 		user.ExternalProfile,
-		user.LastName + " " + user.LastName,
+		user.FirstName + " " + user.LastName,
 		user.Avatar,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),

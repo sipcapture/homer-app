@@ -393,10 +393,33 @@ func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (mo
 	userProfile.Id = 0
 	userProfile.UserName = userTokenProfile.UserName
 	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.Email = userTokenProfile.ExternalProfile
 	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
 	userProfile.LastName = userTokenProfile.DisplayName
 	userProfile.Avatar = userTokenProfile.Avatar
 	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
 
 	return userProfile, nil
+}
+
+/* get all */
+func (us *UserService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserClaim) (string, error) {
+
+	userProfile := model.UserProfile{}
+
+	userProfile.UserName = userTokenProfile.UserName
+	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
+	userProfile.DisplayName = userTokenProfile.DisplayName
+	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	data, _ := json.Marshal(userProfile)
+	rows, _ := gabs.ParseJSON(data)
+	count, _ := rows.ArrayCount()
+
+	reply := gabs.New()
+	reply.Set(count, "count")
+	reply.Set(rows.Data(), "data")
+	return reply.String(), nil
 }

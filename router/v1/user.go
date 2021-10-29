@@ -27,6 +27,10 @@ func RouteUserDetailsApis(acc *echo.Group, session *gorm.DB) {
 	acc.PUT("/users/:userGuid", urc.UpdateUser)
 	// delete user
 	acc.DELETE("/users/:userGuid", urc.DeleteUser, auth.IsAdmin)
+
+	//return current user
+	acc.GET("/users/profile", urc.GetCurrentUserProfile)
+
 }
 
 func RouteUserApis(acc *echo.Group, session *gorm.DB, ldapClient *ldap.LDAPClient, httpAuth *httpauth.Client) {

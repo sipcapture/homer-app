@@ -535,3 +535,34 @@ func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
 	}
 
 }
+
+// swagger:route GET /user/profile settings settingsGetAll
+//
+// Returns the list of settings
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   200: body:UserSettingList
+//   400: body:FailureResponse
+func (uc *UserController) GetCurrentUserProfile(c echo.Context) error {
+
+	userProfile, err := auth.GetUserProfile(c)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserProfileFailed)
+	}
+
+	reply, err := uc.UserService.GetUserProfileFromToken(userProfile)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}

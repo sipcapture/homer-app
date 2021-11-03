@@ -21,7 +21,7 @@ type DashBoardController struct {
 	DashBoardService *service.DashBoardService
 }
 
-// swagger:route GET /dashboard/info dashboard dashboardGetDashBoardLists
+// swagger:route GET /dashboard/info Dashboard dashboardGetDashBoardLists
 //
 // Get all dashboards
 // ---
@@ -71,7 +71,7 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 }
 
-// swagger:route GET /dashboard/store/{dashboardId} dashboard dashboardGetDashBoard
+// swagger:route GET /dashboard/store/{dashboardId} Dashboard dashboardGetDashBoard
 //
 // Get dashboard by dashboard ID
 // ---
@@ -144,7 +144,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 }
 
-// swagger:route POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
+// swagger:route POST /dashboard/store/{dashboardId} Dashboard dashboardInsertDashboard
 //
 // Add new dashboard
 // ---
@@ -204,7 +204,7 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
-// swagger:route PUT /dashboard/store/{dashboardId} dashboard UpdateDashboard
+// swagger:route PUT /dashboard/store/{dashboardId} Dashboard UpdateDashboard
 //
 // Update dashboard
 // ---
@@ -262,7 +262,7 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 }
 
-// swagger:route DELETE /dashboard/store/{dashboardId} dashboard dashboardDeleteDashboard
+// swagger:route DELETE /dashboard/store/{dashboardId} Dashboard dashboardDeleteDashboard
 //
 // Delete dashboard
 // ---
@@ -301,9 +301,9 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 
 }
 
-// swagger:route GET /dashboard/info Dashboard ListDashboard
+// swagger:route GET /dashboard/reset Dashboard ListDashboard
 //
-// Get Dashbroad list
+// Reset user Dashboards to default
 // ---
 // consumes:
 // - application/json
@@ -324,7 +324,7 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 //      name: Auth-Token
 //
 // Responses:
-//   201: body:DashboardElements
+//   201: body:DashboardElementList
 //   400: body:FailureResponse
 func (dbc *DashBoardController) ResetUserDashboard(c echo.Context) error {
 

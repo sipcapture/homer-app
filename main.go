@@ -33,6 +33,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
@@ -129,6 +130,7 @@ type CommandLineFlags struct {
 	LogName                   *string    `json:"log_name_webapp"`
 	APIPrefix                 *string    `json:"api_prefix"`
 	WatchConfig               *bool      `json:"watch_config"`
+	PrintOutConfig            *bool      `json:"print_out_config"`
 }
 
 //params for  Services
@@ -192,6 +194,7 @@ func initFlags() {
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 	appFlags.APIPrefix = flag.String("webapp-api-prefix", "", "API prefix.")
 	appFlags.WatchConfig = flag.Bool("watch-config", false, "Watch the configuration for changes")
+	appFlags.PrintOutConfig = flag.Bool("print-out-config", false, "print out the current config and exit")
 
 	flag.Parse()
 }
@@ -256,6 +259,11 @@ func main() {
 
 	// update version
 	updateVersionApplication(servicesObject.configDBSession)
+
+	if *appFlags.PrintOutConfig {
+		printOutConfigToConsole()
+		os.Exit(0)
+	}
 
 	// configure to serve WebServices
 	configureAsHTTPServer()
@@ -1691,5 +1699,18 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 		}
 
 		time.Sleep(time.Duration(60) * time.Second)
+	}
+}
+
+func printOutConfigToConsole() {
+
+	heputils.Colorize(heputils.ColorRed, "\r\nCurrent variables:\r\n")
+
+	s := reflect.ValueOf(&config.Setting).Elem()
+	typeOfT := s.Type()
+
+	for i := 0; i < s.NumField(); i++ {
+		f := s.Field(i)
+		fmt.Printf("%d: %s %s = %v\n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
 	}
 }

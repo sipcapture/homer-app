@@ -175,4 +175,4 @@ type AuthTypeList struct {
 		} `json:"oauth2"`
 	} `json:"data"`
 	Message string `json:"message"`
-
+}

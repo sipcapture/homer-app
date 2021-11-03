@@ -13,7 +13,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type DashBoardController struct {
@@ -104,7 +104,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 	dashboardID := c.Param("dashboardId")
 
-	logrus.Println("*** Database Session created *** ")
+	logger.Debug("*** Database Session created *** ")
 
 	reply, err := dbc.DashBoardService.GetDashBoard(username, dashboardID)
 	if err != nil {
@@ -121,7 +121,7 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 				dashboardHome = jsonschema.DashboardHome
 			}
 
-			_, err := dbc.DashBoardService.InsertDashboardByName(username, "homer", dashboardHome)
+			_, err := dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}
@@ -182,17 +182,17 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 	username := cc.UserName
 	dashboardId := url.QueryEscape(c.Param("dashboardId"))
 
-	logrus.Println("*** Database Session created *** ")
+	logger.Debug("*** Database Session created *** ")
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
 	data, err := json.Marshal(jsonData)
 	if err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
@@ -244,13 +244,13 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
 	data, err := json.Marshal(jsonData)
 	if err != nil {
-		logrus.Println(err)
+		logger.Debug(err)
 		return err
 	}
 
@@ -297,6 +297,63 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteDashboardFailed)
 	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+
+}
+
+// swagger:route GET /dashboard/info Dashboard ListDashboard
+//
+// Get Dashbroad list
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:DashboardElements
+//   400: body:FailureResponse
+func (dbc *DashBoardController) ResetUserDashboard(c echo.Context) error {
+
+	cc := c.(model.AppContext)
+	username := cc.UserName
+	_, err := dbc.DashBoardService.DeleteAllDashboards(username)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteDashboardFailed)
+	}
+
+	var dashboardHome []byte
+
+	if config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard != "" {
+		dashboardHome, err = ioutil.ReadFile(config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard) // just pass the file name
+		if err != nil {
+			dashboardHome = jsonschema.DashboardHome
+		}
+	} else {
+		dashboardHome = jsonschema.DashboardHome
+	}
+
+	dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
+	dbc.DashBoardService.InsertDashboardByName(username, "smartsearch", jsonschema.DashboardSmartSearch)
+
+	reply, err := dbc.DashBoardService.GetDashBoardsLists(username)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetDashboardListFailed)
+	}
+
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 
 }

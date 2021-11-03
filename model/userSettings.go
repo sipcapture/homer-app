@@ -55,3 +55,16 @@ type UserSettingUpdateSuccessfulResponse struct {
 	// example: successfully updated userObject"
 	Message string `json:"message"`
 }
+
+// swagger:model UserProfile
+type UserProfile struct {
+	// example: dashboard
+	GUID            string `json:"guid"`
+	UserName        string `json:"username"`
+	DisplayName     string `json:"displayname"`
+	Avatar          string `json:"avatar"`
+	UserGroup       string `json:"group"`
+	UserAdmin       bool   `json:"admin"`
+	ExternalAuth    bool   `json:"external_auth"`
+	ExternalProfile string `json:"external_profile"`
+}

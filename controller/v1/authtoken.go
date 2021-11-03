@@ -13,7 +13,7 @@ import (
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
 	"github.com/sipcapture/homer-app/utils/heputils"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type AuthtokenController struct {
@@ -121,7 +121,7 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
@@ -191,7 +191,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	u.GUID = guid

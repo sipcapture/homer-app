@@ -12,7 +12,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type UserSettingsController struct {
@@ -111,7 +111,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 
 	userObject := model.TableUserSettings{}
 	if err := c.Bind(&userObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -213,12 +213,12 @@ func (usc *UserSettingsController) UpdateUserSettings(c echo.Context) error {
 	userObject := model.TableUserSettings{}
 
 	if err := c.Bind(&userObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(userObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	userObject.GUID = c.Param("category")

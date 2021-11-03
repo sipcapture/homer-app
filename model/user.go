@@ -1,7 +1,10 @@
 package model
 
 import (
+	"encoding/json"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 func (TableUser) TableName() string {
@@ -15,7 +18,7 @@ type TableUser struct {
 	UserName string `gorm:"column:username;type:varchar(100);unique_index:idx_username;not null" json:"username" validate:"required"`
 	// example: 10
 	// required: true
-	PartId int `gorm:"column:partid;type:int;default:10;not null" json:"partid" validate:"required"`
+	PartId int `gorm:"column:partid;type:int;default:10;not null" json:"partid"`
 	// required: true
 	Email string `gorm:"column:email;type:varchar(250);not null" json:"email" validate:"required,email"`
 	// required: true
@@ -24,7 +27,7 @@ type TableUser struct {
 
 	FirstName string `gorm:"column:firstname;type:varchar(50);not null" json:"firstname" validate:"required"`
 	// required: true
-	LastName string `gorm:"column:lastname;type:varchar(50);not null" json:"lastname" validate:"required"`
+	LastName string `gorm:"column:lastname;type:varchar(50);not null" json:"lastname"`
 	// required: true
 	// example: NOC
 	Department string `gorm:"column:department;type:varchar(50);not null" json:"department" validate:"required"`
@@ -38,8 +41,10 @@ type TableUser struct {
 	// should be a unique value representing user
 	// example: e71771a2-1ea0-498f-8d27-391713e10664
 	// required: true
-	GUID      string    `gorm:"column:guid;type:varchar(50);not null" json:"guid" validate:"required"`
-	CreatedAt time.Time `gorm:"column:created_at;default:current_timestamp;not null" json:"-"`
+	GUID            string    `gorm:"column:guid;type:varchar(50);not null" json:"guid" validate:"required"`
+	CreatedAt       time.Time `gorm:"column:created_at;default:current_timestamp;not null" json:"-"`
+	ExternalProfile string    `gorm:"-" json:"-"`
+	Avatar          string    `gorm:"-" json:"-"`
 }
 
 type HTTPAUTHResp struct {
@@ -79,6 +84,14 @@ type GetUser struct {
 	Data []*TableUser `json:"data"`
 }
 
+// swagger:model ListExternalUsers
+type GetExternalUser struct {
+	// count
+	Count int `json:"count"`
+	// the data
+	Data []TableUser `json:"data"`
+}
+
 // swagger:model UserLogin
 type UserloginDetails struct {
 	// example: admin
@@ -113,6 +126,23 @@ type UserDeleteSuccessfulResponse struct {
 	Message string `json:"message"`
 }
 
+// swagger:model OAuth2TokenExchange
+type OAuth2TokenExchange struct {
+	// example: token
+	// required: true
+	OneTimeToken string `json:"token" validate:"required"`
+}
+
+// swagger:model OAuth2MapToken
+type OAuth2MapToken struct {
+	AccessToken string          `json:"access_token"`
+	DataJson    json.RawMessage `json:"datajson"`
+	CreateDate  time.Time       `json:"create_date"`
+	ExpireDate  time.Time       `json:"expire_date"`
+	Oauth2Token *oauth2.Token   `json:"-"`
+	ProfileJson json.RawMessage `json:"profile_json"`
+}
+
 //swagger:model AuthTypeList
 type AuthTypeList struct {
 	Count int `json:"count"`
@@ -145,4 +175,4 @@ type AuthTypeList struct {
 		} `json:"oauth2"`
 	} `json:"data"`
 	Message string `json:"message"`
-}
+

@@ -7,7 +7,7 @@ import (
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type HepsubsearchController struct {
@@ -51,7 +51,7 @@ func (hss *HepsubsearchController) DoHepsubsearch(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 

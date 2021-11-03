@@ -1,6 +1,8 @@
 package heputils
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"hash/fnv"
 	"log"
@@ -305,6 +307,25 @@ func ElementExists(arr []string, elem string) bool {
 	return false
 }
 
+/* check if the element exists */
+func ElementRealExists(arr []string, elem string) bool {
+
+	if len(arr) == 0 {
+		return false
+	}
+
+	if len(arr) == 1 && arr[0] == "" {
+		return false
+	}
+
+	for index := range arr {
+		if arr[index] == elem {
+			return true
+		}
+	}
+	return false
+}
+
 func GenerateToken() string {
 
 	rand.Seed(time.Now().UnixNano())
@@ -330,4 +351,19 @@ func Hash32(s string) uint32 {
 	h := fnv.New32a()
 	h.Write([]byte(s))
 	return h.Sum32()
+}
+
+// make a genCodeChallengeS256
+func GenCodeChallengeS256(s string) string {
+
+	/*
+		hash := hmac.New(sha256.New, []byte(s))
+		hex.EncodeToString(hash.Sum(nil))
+		return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	*/
+
+	/* we have to remove the = because RFC is not allowed */
+	//TrimRight - remove all ==
+	s256 := sha256.Sum256([]byte(s))
+	return strings.TrimSuffix(base64.URLEncoding.EncodeToString(s256[:]), "=")
 }

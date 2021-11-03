@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/labstack/echo/v4"
+	"github.com/sipcapture/homer-app/utils/logger"
 	"golang.org/x/net/websocket"
 )
 
@@ -56,12 +55,12 @@ func (wb *WebSocketController) RelayHepData(c echo.Context) error {
 			var msg []byte
 			err = websocket.Message.Receive(ws, &msg)
 			if err != nil {
-				logrus.Error(fmt.Sprintf("got error while reading data on websocket", err))
+				logger.Error(fmt.Sprintf("got error while reading data on websocket", err))
 				break
 			}
 			_, err = conn.Write(msg)
 			if err != nil {
-				logrus.Error(fmt.Sprintf("got error while writing data on hep socket", err))
+				logger.Error(fmt.Sprintf("got error while writing data on hep socket", err))
 				break
 			}
 		}

@@ -5,15 +5,18 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // jwt token claims which contains info regarding user
 type JwtUserClaim struct {
-	UserName     string `json:"username"`
-	UserAdmin    bool   `json:"useradmin"`
-	UserGroup    string `json:"usergroup"`
-	ExternalAuth bool   `json:"externalauth"`
+	UserName        string `json:"username"`
+	UserAdmin       bool   `json:"useradmin"`
+	UserGroup       string `json:"usergroup"`
+	ExternalAuth    bool   `json:"externalauth"`
+	ExternalProfile string `json:"externaltype"`
+	DisplayName     string `json:"displayname"`
+	Avatar          string `json:"avatar"`
 	jwt.StandardClaims
 }
 
@@ -30,21 +33,17 @@ func Token(user model.TableUser) (string, error) {
 		user.IsAdmin,
 		user.UserGroup,
 		user.ExternalAuth,
+		user.ExternalProfile,
+		user.FirstName + " " + user.LastName,
+		user.Avatar,
 		jwt.StandardClaims{
 			ExpiresAt: newTUTC.Unix(),
 		},
 	}
 
-	logrus.Println("Current time : ")
-	logrus.Print(tNow)
-
-	logrus.Println("Local time : ")
-	logrus.Print(tUTC)
-
-	logrus.Println("Expire Local time : ")
-	logrus.Print(newTUTC)
-
-	logrus.Println("Claims")
+	logger.Debug("Current time : ", tNow)
+	logger.Debug("Local time : ", tUTC)
+	logger.Debug("Expire Local time : ", newTUTC)
 
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

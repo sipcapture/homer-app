@@ -7,14 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"hash/fnv"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/Jeffail/gabs/v2"
 	uuid "github.com/satori/go.uuid"
-	"github.com/sipcapture/homer-app/migration/jsonschema"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/model"
@@ -45,6 +47,31 @@ func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUse
 	return user, len(user), nil
 }
 
+// this method gets all users from database
+func (us *UserService) GetUserByUUID(GUID, UserName string) ([]*model.TableUser, int, error) {
+
+	var user []*model.TableUser
+	var sqlWhere = make(map[string]interface{})
+
+	sqlWhere = map[string]interface{}{"username": UserName, "guid": GUID}
+
+	if err := us.Session.Debug().Table("users").Where(sqlWhere).Find(&user).Error; err != nil {
+		return user, 0, err
+	}
+
+	return user, len(user), nil
+}
+
+/* get all */
+func (us *UserService) GetGroups() (string, error) {
+
+	count := len(config.Setting.UserGroups)
+	reply := gabs.New()
+	reply.Set(count, "count")
+	reply.Set(config.Setting.UserGroups, "data")
+	return reply.String(), nil
+}
+
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (us *UserService) CreateNewUser(user *model.TableUser) error {
@@ -53,6 +80,11 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 
 	if user.Password == "" {
 		return errors.New("empty password")
+	}
+
+	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
+		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
 	}
 
 	// lets generate hash from password
@@ -89,7 +121,12 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 	}
 
 	if us.Session.Where(sqlWhere).Find(&oldRecord).RecordNotFound() {
-		return errors.New(fmt.Sprintf("the user with id '%s' was not found", user.GUID))
+		return fmt.Errorf("the user with id '%s' was not found", user.GUID)
+	}
+
+	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
+		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
 	}
 
 	if user.Password != "" {
@@ -104,8 +141,8 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 		user.Hash = oldRecord.Hash
 	}
 	if !isAdmin {
-		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{Email: user.Email, FirstName: user.FirstName, LastName: user.LastName,
-			Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
+		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{Email: user.Email, FirstName: user.FirstName,
+			LastName: user.LastName, Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
 		if err != nil {
 			return err
 		}
@@ -184,27 +221,27 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		//fmt.Println("LDAP returned groups: ", groups)
 
 		if err != nil {
-			logrus.Error("Couldn't get any group for user ", username, ": ", err)
+			logger.Error("Couldn't get any group for user ", username, ": ", err)
 			if !us.LdapClient.UserMode && !us.LdapClient.AdminMode {
 				return "", userData, errors.New("couldn't fetch any LDAP group and membership is required for login")
 			}
 		} else {
-			logrus.Debug("Found groups for user ", username, ": ", groups)
+			logger.Debug("Found groups for user ", username, ": ", groups)
 			// ElementExists returns true if the given slice is empty, so we explicitly check that here
 			// to prevent users with no groups from becoming admins
 			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
-				logrus.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
+				logger.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
 			} else if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.UserGroup) {
-				logrus.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
+				logger.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
 				userData.IsAdmin = false
 			} else {
 				if !userData.IsAdmin && us.LdapClient.UserMode {
-					logrus.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
+					logger.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")
 					userData.UserGroup = "user"
 				}
 				if userData.IsAdmin {
-					logrus.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
+					logger.Debug("User ", username, " didn't match any group but still logged in as ADMIN because AdminMode is set to true.")
 					userData.UserGroup = "admin"
 				}
 				if !userData.IsAdmin && !us.LdapClient.UserMode {
@@ -258,13 +295,52 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 	var userGlobalSettings = model.TableGlobalSettings{}
 
+	replyFinal := gabs.New()
+
+	replyInternal := gabs.New()
+	replyInternal.Set("Internal", "name")
+	replyInternal.Set("internal", "type")
+	replyInternal.Set(1, "position")
+
+	if config.Setting.DefaultAuth == "internal" {
+		replyInternal.Set(true, "enable")
+	} else {
+		replyInternal.Set(false, "enable")
+	}
+
+	replyLdap := gabs.New()
+	replyLdap.Set("LDAP", "name")
+	replyLdap.Set("ldap", "type")
+	replyLdap.Set(2, "position")
+
+	if config.Setting.DefaultAuth == "ldap" {
+		replyLdap.Set(true, "enable")
+	} else {
+		replyLdap.Set(false, "enable")
+	}
+
+	if config.Setting.OAUTH2_SETTINGS.Enable {
+		replyOauth := gabs.New()
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ProjectID, "name")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect+"/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
+		replyOauth.Set("oauth2", "type")
+		replyOauth.Set(3, "position")
+		replyOauth.Set(true, "enable")
+		replyFinal.ArrayAppend(replyOauth.Data(), "oauth2")
+	}
+
+	replyFinal.Set(replyInternal.Data(), "internal")
+	replyFinal.Set(replyLdap.Data(), "ldap")
+
 	userGlobalSettings = model.TableGlobalSettings{
 		Id:         1,
 		GUID:       uuid.NewV4().String(),
 		PartId:     10,
 		Category:   "system",
 		Param:      "authtypes",
-		Data:       json.RawMessage(jsonschema.AuthTypesConfig),
+		Data:       json.RawMessage(replyFinal.String()),
 		CreateDate: time.Now(),
 	}
 
@@ -274,4 +350,100 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 	oj.Message = "all good"
 
 	return json.Marshal(oj)
+}
+
+// this method is used to login the user
+// it doesn't check internally whether all the validation are applied or not
+func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToken) (string, model.TableUser, error) {
+
+	userJsonData, _ := gabs.ParseJSON(oAuth2Object.ProfileJson)
+
+	userData := model.TableUser{}
+
+	if userJsonData.Exists("email") {
+		userData.Email = userJsonData.S("email").Data().(string)
+		userData.UserName = userData.Email
+		userData.Id = int(hashString(userData.UserName))
+	}
+
+	if userJsonData.Exists("family_name") {
+		userData.LastName = userJsonData.S("family_name").Data().(string)
+	}
+
+	if userJsonData.Exists("given_name") {
+		userData.FirstName = userJsonData.S("given_name").Data().(string)
+	}
+
+	if userJsonData.Exists("picture") {
+		userData.Avatar = userJsonData.S("picture").Data().(string)
+	}
+
+	if userJsonData.Exists("id") {
+
+		s := (userJsonData.S("id").Data().(string))
+		i, err := strconv.Atoi(s)
+		if err == nil {
+			userData.Id = i
+		} else {
+			logger.Error("bad ID size: ", s, i)
+
+		}
+	}
+
+	hash := md5.Sum([]byte(userData.UserName))
+	userData.GUID = hex.EncodeToString(hash[:])
+	userData.ExternalAuth = true
+	userData.UserGroup = "user"
+	userData.IsAdmin = false
+
+	token, err := auth.Token(userData)
+	return token, userData, err
+}
+
+// this method gets all users from database
+func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (model.TableUser, error) {
+
+	userProfile := model.TableUser{}
+
+	userProfile.Id = 0
+	userProfile.UserName = userTokenProfile.UserName
+	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.Email = userTokenProfile.ExternalProfile
+	userProfile.LastName = userTokenProfile.DisplayName
+	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.IsAdmin = userTokenProfile.UserAdmin
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
+	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	return userProfile, nil
+}
+
+/* get all */
+func (us *UserService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserClaim) (string, error) {
+
+	userProfile := model.UserProfile{}
+	userProfile.UserName = userTokenProfile.UserName
+	userProfile.UserGroup = userTokenProfile.UserGroup
+	userProfile.ExternalAuth = userTokenProfile.ExternalAuth
+	userProfile.DisplayName = userTokenProfile.DisplayName
+	userProfile.Avatar = userTokenProfile.Avatar
+	userProfile.UserAdmin = userTokenProfile.UserAdmin
+
+	userProfile.ExternalProfile = userTokenProfile.ExternalProfile
+
+	if !userTokenProfile.ExternalAuth {
+		user, count, err := us.GetUser(userTokenProfile.UserName, false)
+		if err == nil && count > 0 {
+			userProfile.GUID = user[0].GUID
+		}
+	}
+
+	data, _ := json.Marshal(userProfile)
+	rows, _ := gabs.ParseJSON(data)
+	count, _ := rows.ArrayCount()
+
+	reply := gabs.New()
+	reply.Set(count, "count")
+	reply.Set(rows.Data(), "data")
+	return reply.String(), nil
 }

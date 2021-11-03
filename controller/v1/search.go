@@ -13,11 +13,12 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type SearchController struct {
@@ -61,7 +62,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	searchObject := model.SearchObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -70,28 +71,32 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 	for _, row := range aliasRowData {
 		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
 		Port := strconv.Itoa(*row.Port)
+		CaptureID := row.CaptureID
 		ip, ipnet, err := net.ParseCIDR(cidr)
 		if err != nil {
-			logrus.Println("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-			logrus.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logger.Debug("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logger.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
 		} else {
 			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
 				aliasData[ip.String()+":"+Port] = row.Alias
+				if config.Setting.UseCaptureIDInAlias {
+					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
+				}
 			}
 		}
 	}
 
 	mapsFieldsData, err := sc.SettingService.GetAllMapping()
 	if err != nil {
-		logrus.Error("mapping error select: ", mapsFieldsData)
+		logger.Error("mapping error select: ", mapsFieldsData)
 	}
 
 	userGroup := auth.GetUserGroup(c)
 
 	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup, mapsFieldsData)
 	if err != nil {
-		logrus.Error("Error during data select: ", err.Error())
-		logrus.Error("Error data select: ", responseData)
+		logger.Error("Error during data select: ", err.Error())
+		logger.Error("Error data select: ", responseData)
 		return httpresponse.CreateBadResponse(&c, http.StatusServiceUnavailable, webmessages.BadDatabaseRetrieve)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
@@ -139,13 +144,13 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 	searchObject := model.SearchObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.SearchService.GetMessageByID(&searchObject)
 	if err != nil {
-		logrus.Println("error during get message by id: ", err.Error())
+		logger.Debug("error during get message by id: ", err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
@@ -184,13 +189,13 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 	searchObject := model.SearchObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.SearchService.GetDecodedMessageByID(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -227,7 +232,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -239,14 +244,18 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 	for _, row := range aliasRowData {
 		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
 		Port := strconv.Itoa(*row.Port)
-		ip, ipnet, err := net.ParseCIDR(cidr)
+		CaptureID := row.CaptureID
+		ipAddr, ipNet, err := net.ParseCIDR(cidr)
 
 		if err != nil {
-			logrus.Println("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-			logrus.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logger.Debug("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+			logger.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
 		} else {
-			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+			for ip := ipAddr.Mask(ipNet.Mask); ipNet.Contains(ip); inc(ip) {
 				aliasData[ip.String()+":"+Port] = row.Alias
+				if config.Setting.UseCaptureIDInAlias {
+					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
+				}
 			}
 		}
 	}
@@ -296,7 +305,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -343,7 +352,7 @@ func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	transactionData, _ := json.Marshal(searchObject)
@@ -357,7 +366,7 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	transactionData, _ := json.Marshal(searchObject)
@@ -401,19 +410,13 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
-	aliasRowData, _ := sc.AliasService.GetAllActive()
-
 	aliasData := make(map[string]string)
-	for _, row := range aliasRowData {
-		Port := strconv.Itoa(*row.Port)
-		aliasData[row.IP+":"+Port] = row.Alias
-	}
 
 	searchTable := "hep_proto_1_default'"
 	userGroup := auth.GetUserGroup(c)
@@ -423,7 +426,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 	}
 
 	c.Response().Flush()
@@ -464,7 +467,7 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -482,7 +485,7 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
 	if err := c.String(http.StatusOK, reply); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 	}
 
 	c.Response().Flush()
@@ -525,13 +528,13 @@ func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 
 	file, err := c.FormFile("fileKey")
 	if err != nil {
-		logrus.Error("GetDataAsPCap fileKey was not found: ", err.Error())
+		logger.Error("GetDataAsPCap fileKey was not found: ", err.Error())
 		return err
 	}
 
 	src, err := file.Open()
 	if err != nil {
-		logrus.Error("GetDataAsPCap couldn't open it: ", err.Error())
+		logger.Error("GetDataAsPCap couldn't open it: ", err.Error())
 		return err
 	}
 	defer src.Close()
@@ -540,13 +543,13 @@ func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 
 	// Copy
 	if _, err = io.Copy(buf, src); err != nil {
-		logrus.Error("GetDataAsPCap couldn't copy it: ", err.Error())
+		logger.Error("GetDataAsPCap couldn't copy it: ", err.Error())
 		return err
 	}
 
 	goodCounter, badCounter, err := sc.SearchService.ImportPcapData(buf, false)
 	if err != nil {
-		logrus.Error("Bad decoding: ", err)
+		logger.Error("Bad decoding: ", err)
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.BadPCAPData)
 	} else {
 		reply := gabs.New()
@@ -592,13 +595,13 @@ func (sc *SearchController) GetDataAsPCapNow(c echo.Context) error {
 
 	file, err := c.FormFile("fileKey")
 	if err != nil {
-		logrus.Error("GetDataAsPCap fileKey was not found: ", err.Error())
+		logger.Error("GetDataAsPCap fileKey was not found: ", err.Error())
 		return err
 	}
 
 	src, err := file.Open()
 	if err != nil {
-		logrus.Error("GetDataAsPCap couldn't open it: ", err.Error())
+		logger.Error("GetDataAsPCap couldn't open it: ", err.Error())
 		return err
 	}
 	defer src.Close()
@@ -607,13 +610,13 @@ func (sc *SearchController) GetDataAsPCapNow(c echo.Context) error {
 
 	// Copy
 	if _, err = io.Copy(buf, src); err != nil {
-		logrus.Error("GetDataAsPCap couldn't copy it: ", err.Error())
+		logger.Error("GetDataAsPCap couldn't copy it: ", err.Error())
 		return err
 	}
 
 	goodCounter, badCounter, err := sc.SearchService.ImportPcapData(buf, true)
 	if err != nil {
-		logrus.Error("Bad decoding: ", err)
+		logger.Error("Bad decoding: ", err)
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.BadPCAPData)
 	} else {
 		reply := gabs.New()

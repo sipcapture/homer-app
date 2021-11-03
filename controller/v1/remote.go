@@ -8,7 +8,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type RemoteController struct {
@@ -42,7 +42,7 @@ type RemoteController struct {
 func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 
 	if !pc.RemoteService.Active {
-		logrus.Error("Loki service is not enabled")
+		logger.Error("Loki service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
 	}
 
@@ -50,7 +50,7 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 
 	responseData, err := pc.RemoteService.RemoteLabels(serverName)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -86,7 +86,7 @@ func (pc *RemoteController) RemoteLabel(c echo.Context) error {
 func (pc *RemoteController) RemoteValues(c echo.Context) error {
 
 	if !pc.RemoteService.Active {
-		logrus.Error("Loki service is not enabled")
+		logger.Error("Loki service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
 	}
 
@@ -95,7 +95,7 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 
 	responseData, err := pc.RemoteService.RemoteValues(serverName, label)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -127,20 +127,20 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 func (pc *RemoteController) RemoteData(c echo.Context) error {
 
 	if !pc.RemoteService.Active {
-		logrus.Error("Loki service is not enabled")
+		logger.Error("Loki service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Loki service is not enabled")
 	}
 
 	remoteObject := model.RemoteObject{}
 
 	if err := c.Bind(&remoteObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := pc.RemoteService.RemoteData(&remoteObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -37,13 +37,13 @@ func GetDataRootDBSession(user *string, password *string, dbname *string, host *
 	db, err := gorm.Open("postgres", connectString)
 
 	if err != nil {
-		logrus.Error(err)
+		logger.Error(err)
 		return nil, err
 	}
 
-	logrus.Println("----------------------------------- ")
-	logrus.Println("*** Database Data Root Session created *** ")
-	logrus.Println("----------------------------------- ")
+	logger.Debug("----------------------------------- ")
+	logger.Debug("*** Database Data Root Session created *** ")
+	logger.Debug("----------------------------------- ")
 	return db, nil
 }
 
@@ -119,7 +119,7 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, dataHomeDBSession *gorm.DB, use
 			sql = fmt.Sprintf("GRANT ALL ON TABLE %s.%s TO %s;", Schemaname, Tablename, *user)
 			dataHomeDBSession.Debug().Exec(sql)
 		} else {
-			logrus.Error(fmt.Sprintf("Some error during pg_catalog.pg_tables query: %s]: \n", err))
+			logger.Error(fmt.Sprintf("Some error during pg_catalog.pg_tables query: %s]: \n", err))
 		}
 	}
 
@@ -211,9 +211,9 @@ func CreateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, typ
 		&model.TableApplications{},
 		&model.TableAuthToken{})
 	if db != nil && db.Error != nil {
-		logrus.Error(fmt.Sprintf("Automigrate failed: with error %s", db.Error))
+		logger.Error(fmt.Sprintf("Automigrate failed: with error %s", db.Error))
 	} else {
-		logrus.Debug("Automigrate was success")
+		logger.Debug("Automigrate was success")
 	}
 
 	if showUpgrade {
@@ -506,42 +506,6 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		model.TableMappingSchema{
 			GUID:               uuid.NewV4().String(),
 			Profile:            "default",
-			Hepid:              34,
-			HepAlias:           "RTP-FULL-REPORT",
-			PartID:             10,
-			Version:            1,
-			Retention:          10,
-			PartitionStep:      10,
-			CreateIndex:        jsonschema.EmptyJson,
-			CreateTable:        "CREATE TABLE test(id integer, data text);",
-			FieldsMapping:      jsonschema.FieldsMapping34default,
-			CorrelationMapping: jsonschema.CorrelationMapping34default,
-			MappingSettings:    jsonschema.EmptyJson,
-			SchemaMapping:      jsonschema.EmptyJson,
-			SchemaSettings:     jsonschema.EmptyJson,
-			CreateDate:         time.Now(),
-		},
-		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
-			Profile:            "default",
-			Hepid:              1000,
-			HepAlias:           "JANUS",
-			PartID:             10,
-			Version:            1,
-			Retention:          10,
-			PartitionStep:      10,
-			CreateIndex:        jsonschema.EmptyJson,
-			CreateTable:        "CREATE TABLE test(id integer, data text);",
-			FieldsMapping:      jsonschema.FieldsMapping1000default,
-			CorrelationMapping: jsonschema.CorrelationMapping1000default,
-			MappingSettings:    jsonschema.EmptyJson,
-			SchemaMapping:      jsonschema.EmptyJson,
-			SchemaSettings:     jsonschema.EmptyJson,
-			CreateDate:         time.Now(),
-		},
-		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
-			Profile:            "default",
 			Hepid:              2000,
 			HepAlias:           "LOKI",
 			PartID:             10,
@@ -582,9 +546,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range usersData {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", tableName, db.Error, el.UserName))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", tableName, db.Error, el.UserName))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
 				}
 			}
 			tableVersions = append(tableVersions, model.TableVersions{
@@ -611,9 +575,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range globalSettingData {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Param: [%s]", tableName, db.Error, el.Param))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Param: [%s]", tableName, db.Error, el.Param))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Param: [%s] ", tableName, el.Param))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. Param: [%s] ", tableName, el.Param))
 				}
 			}
 
@@ -641,9 +605,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range authTokens {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Token: [%s]", tableName, db.Error, el.Token))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Token: [%s]", tableName, db.Error, el.Token))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Token: [%s]", tableName, el.Token))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. Token: [%s]", tableName, el.Token))
 				}
 			}
 
@@ -668,9 +632,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range agentLocationSession {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Host:[%s]", tableName, db.Error, el.Host))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Host:[%s]", tableName, db.Error, el.Host))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Host:[%s]", tableName, el.Host))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. Host:[%s]", tableName, el.Host))
 				}
 			}
 			tableVersions = append(tableVersions, model.TableVersions{
@@ -695,9 +659,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range hepsubSchema {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Hepid:[%d] Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Hepid:[%d] Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Hepid:[%d] Profile:[%s]", tableName, el.Hepid, el.Profile))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. Hepid:[%d] Profile:[%s]", tableName, el.Hepid, el.Profile))
 				}
 			}
 
@@ -724,9 +688,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range dashboardUsers {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Category: [%s], Param: [%s]", tableName, db.Error, el.Category, el.Param))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Category: [%s], Param: [%s]", tableName, db.Error, el.Category, el.Param))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Category: [%s], Param: [%s]", tableName, el.Category, el.Param))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. Category: [%s], Param: [%s]", tableName, el.Category, el.Param))
 				}
 			}
 
@@ -753,9 +717,9 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			for _, el := range mappingSchema {
 				db := configDBSession.Save(&el)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. HEPID:[%d], Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. HEPID:[%d], Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success. HEPID:[%d], Profile:[%s]", tableName, el.Hepid, el.Profile))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success. HEPID:[%d], Profile:[%s]", tableName, el.Hepid, el.Profile))
 				}
 			}
 
@@ -782,16 +746,16 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			sql := fmt.Sprintf("DELETE FROM versions WHERE table_name = '%s'", el.NameTable)
 			db := configDBSession.Exec(sql)
 			if db != nil && db.Error != nil {
-				logrus.Error(fmt.Sprintf("Exec delete failed for table [%s]: with error %s", tableName, db.Error))
+				logger.Error(fmt.Sprintf("Exec delete failed for table [%s]: with error %s", tableName, db.Error))
 			} else {
-				logrus.Debug("Delete all records for table [" + tableName + "] was success")
+				logger.Debug("Delete all records for table [" + tableName + "] was success")
 			}
 
 			db = configDBSession.Save(&el)
 			if db != nil && db.Error != nil {
-				logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Table:[%s], Version:[%d]", tableName, db.Error, el.NameTable, el.VersionTable))
+				logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. Table:[%s], Version:[%d]", tableName, db.Error, el.NameTable, el.VersionTable))
 			} else {
-				logrus.Debug(fmt.Sprintf("Save for table [%s] was success. Table:[%s], Version:[%d]", tableName, el.NameTable, el.VersionTable))
+				logger.Debug(fmt.Sprintf("Save for table [%s] was success. Table:[%s], Version:[%d]", tableName, el.NameTable, el.VersionTable))
 			}
 		}
 	}
@@ -805,7 +769,7 @@ func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName st
 
 	user := model.TableUser{}
 	if err := configDBSession.Debug().Table("users").Where("username = ? ", userName).Find(&user).Error; err != nil {
-		logrus.Error("Coudn't find user [", userName, "]: with error:", err)
+		logger.Error("Coudn't find user [", userName, "]: with error:", err)
 		return err
 	}
 
@@ -817,14 +781,14 @@ func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName st
 	password := []byte(userPassword)
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", "users", configDBSession.Error, userName))
+		logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", "users", configDBSession.Error, userName))
 		return err
 	}
 	user.Hash = string(hashedPassword)
 
 	err = configDBSession.Debug().Table("users").Model(&model.TableUser{}).Where("username =  ?", userName).Update(&user).Error
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Coudn't update user [%s]: with error %s.", userName, configDBSession.Error))
+		logger.Error(fmt.Sprintf("Coudn't update user [%s]: with error %s.", userName, configDBSession.Error))
 		return err
 	}
 

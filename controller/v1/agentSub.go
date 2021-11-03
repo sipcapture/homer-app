@@ -12,7 +12,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type AgentsubController struct {
@@ -155,7 +155,7 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(agentSub); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
@@ -164,12 +164,12 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Auth-Token header not present or has empty value")
 	}
 
-	reply, err := ass.AgentsubService.GetAuthKeyByHeaderToken(authToken)
+	_, err = ass.AgentsubService.GetAuthKeyByHeaderToken(authToken)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	reply, err = ass.AgentsubService.DeleteAgentsubAgainstGUID(agentSub.GUID)
+	_, err = ass.AgentsubService.DeleteAgentsubAgainstGUID(agentSub.GUID)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
@@ -178,7 +178,7 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	agentSub.ExpireDate = time.Now().Add(time.Duration(agentSub.TTL) * time.Second)
 	agentSub.Active = 1
 
-	reply, err = ass.AgentsubService.AddAgentsub(agentSub)
+	reply, err := ass.AgentsubService.AddAgentsub(agentSub)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
@@ -231,7 +231,7 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	u.GUID = guid
@@ -326,7 +326,7 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 
 	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
@@ -344,7 +344,7 @@ func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error
 	if typeRequest == "download" {
 		c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s-%s.pcap", guid, time.Now().Format(time.RFC3339)))
 		if err := c.Blob(http.StatusOK, "application/octet-stream", reply); err != nil {
-			logrus.Error(err.Error())
+			logger.Error(err.Error())
 		}
 		c.Response().Flush()
 		return nil

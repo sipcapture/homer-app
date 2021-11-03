@@ -7,7 +7,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -78,7 +78,7 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 	req, err := http.NewRequest("GET", grafanaQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", grafanaQuery)
+		logger.Error("Couldn't make NewRequest query:", grafanaQuery)
 		return "", err
 	}
 
@@ -91,7 +91,7 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", grafanaQuery)
+		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
 	}
 
@@ -99,13 +99,13 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
 	sData, err := gabs.ParseJSON(buf)
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 	return sData.String(), nil
@@ -120,7 +120,7 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 	req, err := http.NewRequest("GET", grafanaQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", grafanaQuery)
+		logger.Error("Couldn't make NewRequest query:", grafanaQuery)
 		return "", err
 	}
 
@@ -133,7 +133,7 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", grafanaQuery)
+		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
 	}
 
@@ -141,13 +141,13 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
 	sData, err := gabs.ParseJSON(buf)
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 	return sData.String(), nil
@@ -162,7 +162,7 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 	req, err := http.NewRequest("GET", grafanaQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", grafanaQuery)
+		logger.Error("Couldn't make NewRequest query:", grafanaQuery)
 		return "", err
 	}
 
@@ -175,7 +175,7 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", grafanaQuery)
+		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
 	}
 
@@ -183,13 +183,13 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
 	sData, err := gabs.ParseJSON(buf)
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 	return sData.String(), nil
@@ -204,7 +204,7 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 	req, err := http.NewRequest("GET", grafanaQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", grafanaQuery)
+		logger.Error("Couldn't make NewRequest query:", grafanaQuery)
 		return "", err
 	}
 
@@ -217,7 +217,7 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", grafanaQuery)
+		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
 	}
 
@@ -225,13 +225,13 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
 	sData, err := gabs.ParseJSON(buf)
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 	return sData.String(), nil

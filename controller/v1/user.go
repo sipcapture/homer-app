@@ -1,17 +1,23 @@
 package controllerv1
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/logger"
+	"golang.org/x/oauth2"
 )
 
 type UserController struct {
@@ -51,6 +57,79 @@ func (uc *UserController) GetUser(c echo.Context) error {
 	uj, _ := json.Marshal(data)
 	//response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, uj)
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
+
+}
+
+// swagger:route GET /users/{userGuid} user userGetUser
+//
+// Returns the list of Users
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   200: body:ListUsers
+//   400: body:FailureResponse
+func (uc *UserController) GetUserByGUID(c echo.Context) error {
+
+	// Stub an user to be populated from the body
+	GUID := c.Param("userGuid")
+	userName, _ := auth.IsRequestAdmin(c)
+
+	user, count, err := uc.UserService.GetUserByUUID(GUID, userName)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFailed)
+	}
+
+	data := model.GetUser{}
+	data.Count = count
+	data.Data = user
+	uj, _ := json.Marshal(data)
+	//response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, uj)
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, uj)
+
+}
+
+// swagger:route GET /users/groups Users groups
+//
+// Returns the list of groups
+// ---
+//     Consumes:
+//     - application/json
+//
+// 	   Produces:
+// 	   - application/json
+//
+//	   Security:
+//	   - JWT
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (uc *UserController) GetGroups(c echo.Context) error {
+
+	reply, err := uc.UserService.GetGroups()
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
 
 // swagger:route POST /users user userCreateUser
@@ -84,12 +163,12 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableUser{}
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// create a new user in database
@@ -143,12 +222,12 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	userName, isAdmin := auth.IsRequestAdmin(c)
 
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	// update user info in database
@@ -217,12 +296,12 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	// validate input request body
 	if err := c.Validate(u); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	token, userData, err := uc.UserService.LoginUser(u.Username, u.Password)
@@ -273,4 +352,229 @@ func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, reply)
 
+}
+
+// swagger:route GET /oauth/redirect Users SuccessResponse
+//
+// Make redirect to the External Server URI
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// responses:
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
+
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [1]")
+	}
+
+	providerName := c.Param("provider")
+
+	logger.Debug("Doing URL for provider", providerName)
+
+	u := config.Setting.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
+		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
+		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+
+	return c.Redirect(http.StatusFound, u)
+}
+
+// swagger:route GET /oauth/auth Users SuccessResponse
+//
+// Make redirect to the External Server URI
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//  Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// responses:
+//   200: body:SuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) AuthSericeRequest(c echo.Context) error {
+
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [2]")
+	}
+
+	providerName := c.Param("provider")
+	logger.Debug("Doing AuthSericeRequest for provider: ", providerName)
+
+	state := c.QueryParam("state")
+	if state != config.Setting.OAUTH2_SETTINGS.StateValue {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "State invalid")
+	}
+
+	code := c.QueryParam("code")
+	if code == "" {
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, "Code not found")
+	}
+
+	oAuth2Object := model.OAuth2MapToken{}
+
+	token, err := config.Setting.OAuth2Config.Exchange(context.Background(), code,
+		oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+	}
+
+	//scope := c.QueryParam("scope")
+	tokenSource := config.Setting.OAuth2Config.TokenSource(context.Background(), token)
+
+	client := oauth2.NewClient(context.Background(), tokenSource)
+	resp, _ := client.Get(config.Setting.OAUTH2_SETTINGS.ProfileURL)
+	if err == nil {
+		defer resp.Body.Close()
+		if resp.StatusCode == http.StatusOK {
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				logger.Error("couldn't read the body for email: ", err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+			} else {
+				oAuth2Object.ProfileJson = bodyBytes
+			}
+		} else {
+			logger.Debug("couldn't get profile: ", err.Error())
+			return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+		}
+	} else {
+		logger.Debug("couldn't get data: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+	}
+
+	ssoToken := heputils.GenerateToken()
+	oAuth2Object.Oauth2Token = token
+	oAuth2Object.CreateDate = time.Now()
+	oAuth2Object.ExpireDate = time.Now().Add(time.Duration(config.Setting.OAUTH2_SETTINGS.ExpireSSOToken) * time.Minute)
+
+	config.OAuth2TokenMap[ssoToken] = oAuth2Object
+
+	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
+	return c.Redirect(http.StatusFound, "/?token="+ssoToken)
+
+}
+
+// swagger:route POST /oauth2/token user auth userLoginUser
+//
+// Returns a JWT Token and UUID attached to user
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// + name: userLoginStruct
+//   in: body
+//   description: user login structure
+//   schema:
+//      type: UserLogin
+//   required: true
+// responses:
+//   201: body:UserLoginSuccessResponse
+//   400: body:FailureResponse
+func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
+
+	if !config.Setting.OAUTH2_SETTINGS.Enable {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotImplemented, "oauth2 is not enabled [3]")
+	}
+
+	u := model.OAuth2TokenExchange{}
+	if err := c.Bind(&u); err != nil {
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	// validate input request body
+	if err := c.Validate(u); err != nil {
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+
+	if oAuth2Object, ok := config.OAuth2TokenMap[u.OneTimeToken]; ok {
+
+		if oAuth2Object.ExpireDate.Before(time.Now()) {
+			return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key has been expired")
+		}
+
+		token, userData, err := uc.UserService.LoginUserUsingOauthToken(oAuth2Object)
+		if err != nil {
+			loginObject := model.UserTokenBadResponse{}
+			loginObject.StatusCode = http.StatusUnauthorized
+			loginObject.Message = webmessages.IncorrectPassword
+			loginObject.Error = webmessages.Unauthorized
+			response, _ := json.Marshal(loginObject)
+			return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
+		}
+
+		loginObject := model.UserTokenSuccessfulResponse{}
+		loginObject.Token = token
+		loginObject.Scope = userData.GUID
+		loginObject.User.Admin = userData.IsAdmin
+		response, _ := json.Marshal(loginObject)
+		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
+	} else {
+		return httpresponse.CreateBadResponse(&c, http.StatusNotFound, "key not found or has been expired")
+	}
+
+}
+
+// swagger:route GET /user/profile settings settingsGetAll
+//
+// Returns the list of settings
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   200: body:UserSettingList
+//   400: body:FailureResponse
+func (uc *UserController) GetCurrentUserProfile(c echo.Context) error {
+
+	userProfile, err := auth.GetUserProfile(c)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserProfileFailed)
+	}
+
+	reply, err := uc.UserService.GetUserProfileFromToken(userProfile)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserSettingsFailed)
+	}
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }

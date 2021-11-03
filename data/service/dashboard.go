@@ -10,7 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type DashBoardService struct {
@@ -28,7 +28,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	}
 
 	if len(userSettings) == 0 || count == 0 {
-		logrus.Error("no home dashboard ..")
+		logger.Error("no home dashboard ..")
 		return "", fmt.Errorf("no home dashboard here")
 	}
 
@@ -38,7 +38,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	}
 
 	if len(userSettings) == 0 {
-		logrus.Error("no dashboard at all....")
+		logger.Error("no dashboard at all....")
 		return "", fmt.Errorf("no dashboard here")
 	}
 
@@ -86,7 +86,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 
 			dashboardList = append(dashboardList, dashboardElement)
 		} else {
-			logrus.Error("Dashboard has null in the name....")
+			logger.Error("Dashboard has null in the name....")
 		}
 	}
 
@@ -226,6 +226,20 @@ func (us *DashBoardService) DeleteDashboard(username, dashboardId string) (strin
 		Delete(&model.TableUserSettings{}).Error; err != nil {
 		return "", err
 	}
+	reply := gabs.New()
+	reply.Set(3, "total")
+	reply.Set("ok", "status")
+	reply.Set("ok", "auth")
+	return reply.String(), nil
+}
+
+// this method gets all users from database
+func (us *DashBoardService) DeleteAllDashboards(username string) (string, error) {
+
+	if err := us.Session.Debug().Table("user_settings").Where("username = ? AND category = 'dashboard' and partid = ? ", username, 10).Delete(&model.TableUserSettings{}).Error; err != nil {
+		return "", err
+	}
+
 	reply := gabs.New()
 	reply.Set(3, "total")
 	reply.Set("ok", "status")

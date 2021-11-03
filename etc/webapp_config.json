@@ -77,6 +77,9 @@
         "global": false
     }
   },
+  "api_settings": {
+    "add_captid_to_resolve": false
+  },
   "https_settings": {
     "help": "SSL settings for homer-app",
     "enable": false,
@@ -100,7 +103,8 @@
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",
-    "token_expire": 1200
+    "token_expire": 1200,
+    "user_groups": ["admin", "user", "support"]
   },
   "ldap_config": {
     "base": "dc=example,dc=com",
@@ -132,6 +136,21 @@
   "http_auth": {
     "url": "http://localhost:1323",
     "skipverify": true
+  },
+  "oauth2": {
+    "enable": false,
+    "client_id": "1234565",
+    "client_secret": "FAKE",
+    "project_id": "Homer OAuth",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url":  "https://www.googleapis.com/oauth2/v1/certs",
+    "redirect_uri": "http://localhost:80/api/v3/oauth2/auth",
+    "service_redirect": "/api/v3/oauth2/redirect",
+    "profile_url": "https://www.googleapis.com/oauth2/v1/userinfo",
+    "provider_name": "google",
+    "scope": ["email", "openid", "profile"],
+    "provider_image": ""
   },
   "decoder_shark": {
     "_comment": "Here you can do packet decoding using tshark application. Please define uid, gid if you run the app under root",

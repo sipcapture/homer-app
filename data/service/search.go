@@ -26,9 +26,9 @@ import (
 	"github.com/sipcapture/homer-app/sqlparser/query"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/logger"
 	"github.com/sipcapture/homer-app/utils/logger/function"
 	"github.com/sipcapture/homer-app/utils/sipparser"
-	"github.com/sirupsen/logrus"
 )
 
 //search Service
@@ -53,36 +53,36 @@ func executeJSInputFunction(jsString string, callIds []interface{}) []interface{
 	//jsString := "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
 	// "input_function_js": "var returnData=[]; for (var i = 0; i < data.length; i++) { returnData.push(data[i]+'_b2b-1'); }; returnData;"
 
-	logrus.Debug("Inside JS script: Callids: ", callIds)
-	logrus.Debug("Script: ", jsString)
+	logger.Debug("Inside JS script: Callids: ", callIds)
+	logger.Debug("Script: ", jsString)
 
 	vm.Set("scriptPrintf", ScriptPrintf)
 	vm.Set("data", callIds)
 
 	v, err := vm.RunString(jsString)
 	if err != nil {
-		logrus.Errorln("Javascript Script error:", err)
+		logger.Error("Javascript Script error:", err)
 		return nil
 	}
 
 	data := v.Export().([]interface{})
 
-	logrus.Debug("Inside JS output data: ", data)
+	logger.Debug("Inside JS output data: ", data)
 
 	return data
 }
 
 func ScriptPrintf(val interface{}) {
 
-	logrus.Debug("script:", val)
+	logger.Debug("script:", val)
 }
 
 func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.HepTable {
 
 	vm := goja.New()
 
-	//logrus.Debug("Inside JS script: Callids: ", dataRow)
-	logrus.Debug("Script: ", jsString)
+	//logger.Debug("Inside JS script: Callids: ", dataRow)
+	logger.Debug("Script: ", jsString)
 	vm.Set("scriptPrintf", ScriptPrintf)
 	marshalData, _ := json.Marshal(dataRow)
 	sData, _ := gabs.ParseJSON(marshalData)
@@ -90,7 +90,7 @@ func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.
 
 	v, err := vm.RunString(jsString)
 	if err != nil {
-		logrus.Errorln("Javascript Script error:", err)
+		logger.Error("Javascript Script error:", err)
 		return nil
 	}
 
@@ -102,7 +102,7 @@ func executeJSOutputFunction(jsString string, dataRow []model.HepTable) []model.
 
 	err = json.Unmarshal(marshalData, &returnData)
 	if err != nil {
-		logrus.Errorln("Couldnt unmarshal:", err)
+		logger.Error("Couldnt unmarshal:", err)
 		return nil
 	}
 
@@ -151,12 +151,12 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 				case string:
 					formValue = formVal.(string)
 				default:
-					logrus.Error("Unsupported type:", x)
+					logger.Error("Unsupported type:", x)
 				}
 
 				queryA, err := sqlparser.Parse(formValue)
 				if err != nil {
-					logrus.Error("BAD Query type:", err.Error())
+					logger.Error("BAD Query type:", err.Error())
 				}
 
 				counterParentClose := 0
@@ -198,6 +198,9 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 						} else if operandValue == "isNull" && operandField == "=" {
 							sql += fmt.Sprintf("%s is NULL", operandField)
 						} else {
+							if strings.Contains(operandValue, "%") {
+								operator = "LIKE"
+							}
 							sql += fmt.Sprintf("%s %s ?", operandField, operator)
 							dataValueArray = append(dataValueArray, operandValue)
 						}
@@ -222,7 +225,7 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 					sql = " AND " + sql
 				}
 
-				logrus.Error("NEW SQL: ", sql)
+				logger.Error("NEW SQL: ", sql)
 
 				continue
 			}
@@ -340,8 +343,8 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	sql := "create_date between ? AND ?"
 	dataArrayValues := []interface{}{}
 
-	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
-	logrus.Debug("USERGROUP ", userGroup)
+	logger.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logger.Debug("USERGROUP ", userGroup)
 
 	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
 		sql = sql + " AND " + config.Setting.IsolateQuery
@@ -401,12 +404,35 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		dataElement := gabs.New()
 		for k, v := range value.ChildrenMap() {
 			switch k {
-			case "data_header", "protocol_header":
+			case "data_header":
+				if v.Exists("node") {
+					v.DeleteP("node")
+				}
+				/*
+					for a, r := range v.ChildrenMap() {
+						if a == "node" {
+							continue
+						}
+						newData := gabs.New()
+						newData.Set(r.Data().(interface{}), a)
+						dataElement.Merge(newData)
+					}*/
+
+				dataElement.Merge(v)
+
+			case "protocol_header":
 				dataElement.Merge(v)
 			case "id", "sid", "node", "dbnode":
 				newData := gabs.New()
 				newData.Set(v.Data().(interface{}), k)
 				dataElement.Merge(newData)
+
+			case "raw":
+				if table == "hep_proto_100_default" {
+					newData := gabs.New()
+					newData.Set(v.Data().(interface{}), k)
+					dataElement.Merge(newData)
+				}
 			}
 		}
 
@@ -441,23 +467,50 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		}
 
-		if _, ok := aliasData[srcIPPort]; ok {
-			alias.Set(aliasData[srcIPPort], srcIPPort)
-		} else if _, ok := aliasData[srcIPPortZero]; ok {
-			alias.Set(aliasData[srcIPPortZero], srcIPPort)
+		//add capture ID
+		if config.Setting.UseCaptureIDInAlias && dataElement.Exists("captureId") {
+
+			captureID := dataElement.S("captureId").Data().(string)
+
+			if value, ok := aliasData[srcIPPort+":"+captureID]; ok {
+				alias.Set(value, srcIPPort)
+			} else if value, ok := aliasData[srcIPPortZero+":"+captureID]; ok {
+				alias.Set(value, srcIPPort)
+			}
+
+			if value, ok := aliasData[dstIPPort+":"+captureID]; ok {
+				alias.Set(value, dstIPPort)
+			} else if value, ok := aliasData[dstIPPortZero+":"+captureID]; ok {
+				alias.Set(value, dstIPPort)
+			}
 		}
 
-		if _, ok := aliasData[dstIPPort]; ok {
-			alias.Set(aliasData[dstIPPort], dstIPPort)
-		} else if _, ok := aliasData[dstIPPortZero]; ok {
-			alias.Set(aliasData[dstIPPortZero], dstIPPort)
+		if !alias.Exists(srcIPPort) {
+
+			if value, ok := aliasData[srcIPPort]; ok {
+				alias.Set(value, srcIPPort)
+			} else if value, ok := aliasData[srcIPPortZero]; ok {
+				alias.Set(value, srcIPPort)
+			}
 		}
+
+		if !alias.Exists(dstIPPort) {
+
+			if value, ok := aliasData[dstIPPort]; ok {
+				alias.Set(value, dstIPPort)
+			} else if value, ok := aliasData[dstIPPortZero]; ok {
+				alias.Set(value, dstIPPort)
+			}
+		}
+
 		if !alias.Exists(srcIPPort) {
 			alias.Set(srcIPPort, srcIPPort)
 		}
+
 		if !alias.Exists(dstIPPort) {
 			alias.Set(dstIPPort, dstIPPort)
 		}
+
 		dataElement.Set(alias.Search(srcIPPort).Data(), "aliasSrc")
 		dataElement.Set(alias.Search(dstIPPort).Data(), "aliasDst")
 		dataElement.Set(table, "table")
@@ -466,7 +519,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 
 		dataElement.Set(createDate/1000, "create_date")
 		if err := dataReply.ArrayAppend(dataElement.Data()); err != nil {
-			logrus.Errorln("Bad assigned array")
+			logger.Error("Bad assigned array")
 		}
 
 		//back compatible
@@ -743,8 +796,8 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (interface{}, error) {
 
 	if ss.Decoder.Active {
-		logrus.Debug("Trying to debug using external decoder")
-		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
+		logger.Debug("Trying to debug using external decoder")
+		logger.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", ss.Decoder.Binary, ss.Decoder.Param, ss.Decoder.Protocols))
 		//cmd := exec.Command(ss.Decoder.Binary, ss.Decoder.Param)
 		var buffer bytes.Buffer
 		export := exportwriter.NewWriter(buffer)
@@ -752,12 +805,12 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 
 		// pcap export
 		if err := export.WritePcapHeader(65536, 1); err != nil {
-			logrus.Errorln("write error to the pcap header", err)
+			logger.Error("write error to the pcap header", err)
 			return nil, err
 		}
 
 		if err := export.WriteDataPcapBuffer(dataRecord); err != nil {
-			logrus.Errorln("write error to the pcap buffer", err)
+			logger.Error("write error to the pcap buffer", err)
 			return nil, err
 		}
 
@@ -767,9 +820,9 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 		uid, gid := os.Getuid(), os.Getgid()
 
 		if uid == 0 || gid == 0 {
-			logrus.Info("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, ss.Decoder.UID, ss.Decoder.GID)
+			logger.Info("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, ss.Decoder.UID, ss.Decoder.GID)
 			if ss.Decoder.UID != 0 && ss.Decoder.GID != 0 {
-				logrus.Info("Changing to: UID: [%d], GID: [%d]", uid, gid)
+				logger.Info("Changing to: UID: [%d], GID: [%d]", uid, gid)
 				cmd.SysProcAttr = &syscall.SysProcAttr{
 					Credential: &syscall.Credential{
 						Uid: ss.Decoder.UID, Gid: ss.Decoder.GID,
@@ -777,14 +830,14 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 					},
 				}
 			} else {
-				logrus.Error("You run external decoder under root! Please set UID/GID in the config")
+				logger.Error("You run external decoder under root! Please set UID/GID in the config")
 				rootExecute = true
 			}
 		}
 
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
-			logrus.Error("Bad cmd stdin", err)
+			logger.Error("Bad cmd stdin", err)
 			return nil, err
 		}
 		go func() {
@@ -795,7 +848,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			logrus.Error("Bad combined output: ", err)
+			logger.Error("Bad combined output: ", err)
 			return nil, err
 		}
 
@@ -818,7 +871,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 
 		sData, err := gabs.ParseJSON(out[skipElement:])
 		if err != nil {
-			logrus.Error("bad json", err)
+			logger.Error("bad json", err)
 			return nil, err
 		}
 
@@ -837,9 +890,6 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
 		table = "hep_proto_" + key
-		//for _, v := range value.Search("callid").Data().([]interface{}) {
-		//	dataWhere = append(dataWhere, v)
-		//}
 		dataWhere = append(dataWhere, value.Search("callid").Data().([]interface{})...)
 	}
 
@@ -909,19 +959,19 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			to = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
 		}
 		if lookupID == 0 {
-			logrus.Error("We need to implement remote call here")
+			logger.Error("We need to implement remote call here")
 		} else {
 			if sourceField == "data_header.callid" {
 
-				logrus.Debug(lookupProfile)
-				logrus.Debug(lookupField)
+				logger.Debug(lookupProfile)
+				logger.Debug(lookupField)
 			}
 
 			if corrs.Exists("input_function_js") {
 				inputFunction := corrs.Search("input_function_js").Data().(string)
-				logrus.Debug("Input function: ", inputFunction)
+				logger.Debug("Input function: ", inputFunction)
 				newDataArray := executeJSInputFunction(inputFunction, newWhereData)
-				logrus.Debug("sid array before JS:", newWhereData)
+				logger.Debug("sid array before JS:", newWhereData)
 				if newDataArray != nil {
 					newWhereData = append(newWhereData, newDataArray...)
 				}
@@ -929,16 +979,16 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 
 			if corrs.Exists("input_script") {
 				inputScript := corrs.Search("input_script").Data().(string)
-				logrus.Debug("Input function: ", inputScript)
+				logger.Debug("Input function: ", inputScript)
 				dataScript, err := settingService.GetScriptByParam("scripts", inputScript)
 				if err == nil {
 					scriptNew, _ := strconv.Unquote(dataScript)
-					logrus.Debug("OUR script:", scriptNew)
+					logger.Debug("OUR script:", scriptNew)
 					newDataArray := executeJSInputFunction(scriptNew, newWhereData)
-					logrus.Debug("sid array before JS:", newWhereData)
+					logger.Debug("sid array before JS:", newWhereData)
 					if newDataArray != nil {
 						newWhereData = append(newWhereData, newDataArray...)
-						logrus.Debug("sid array after JS:", newWhereData)
+						logger.Debug("sid array after JS:", newWhereData)
 					}
 				}
 			}
@@ -983,20 +1033,20 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			*/
 
 			dataRow = append(dataRow, newDataRow...)
-			logrus.Debug("Correlation data len:", len(dataRow))
+			logger.Debug("Correlation data len:", len(dataRow))
 
 			if corrs.Exists("output_script") {
 				outputScript := corrs.Search("output_script").Data().(string)
-				logrus.Debug("Output function: ", outputScript)
+				logger.Debug("Output function: ", outputScript)
 				dataScript, err := settingService.GetScriptByParam("scripts", outputScript)
 				if err == nil {
 					scriptNew, _ := strconv.Unquote(dataScript)
-					logrus.Debug("OUR script:", scriptNew)
+					logger.Debug("OUR script:", scriptNew)
 					newDataRaw := executeJSOutputFunction(scriptNew, dataRow)
-					//logrus.Debug("sid array before JS:", newDataRaw)
+					//logger.Debug("sid array before JS:", newDataRaw)
 					if newDataRaw != nil {
 						dataRow = newDataRaw
-						//logrus.Debug("sid array after JS:", dataRow)
+						//logger.Debug("sid array after JS:", dataRow)
 					}
 				}
 			}
@@ -1026,7 +1076,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		if typeReport == 1 {
 			err := export.WritePcapHeader(65536, 1)
 			if err != nil {
-				logrus.Errorln("write error to the pcap header", err)
+				logger.Error("write error to the pcap header", err)
 			}
 		}
 		for _, h := range jsonParsed.Children() {
@@ -1034,12 +1084,12 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			if typeReport == 2 {
 				err := export.WriteDataToBuffer(h)
 				if err != nil {
-					logrus.Errorln("write error to the buffer", err)
+					logger.Error("write error to the buffer", err)
 				}
 			} else if typeReport == 1 {
 				err := export.WriteDataPcapBuffer(h)
 				if err != nil {
-					logrus.Errorln("write error to the pcap buffer", err)
+					logger.Error("write error to the pcap buffer", err)
 				}
 			}
 		}
@@ -1064,7 +1114,7 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 
 	if config.Setting.TRANSACTION_SETTINGS.GlobalDeduplicate {
 
-		logrus.Debug("Transaction size after first filter:", len(list))
+		logger.Debug("Transaction size after first filter:", len(list))
 		keys2 := make(map[string]string)
 		list2 := []model.HepTable{}
 		for _, entry := range list {
@@ -1076,7 +1126,7 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 				list2 = append(list2, entry)
 			}
 		}
-		logrus.Debug("Transaction size after second filter:", len(list2))
+		logger.Debug("Transaction size after second filter:", len(list2))
 		return list2
 	} else {
 		return list
@@ -1097,8 +1147,8 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		query += "AND " + fieldKey + " in (?)"
 	}
 
-	logrus.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
-	logrus.Debug("USERGROUP ", userGroup)
+	logger.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logger.Debug("USERGROUP ", userGroup)
 
 	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
 		query = query + " AND " + config.Setting.IsolateQuery
@@ -1119,10 +1169,10 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 			Table(table).
 			Where(query, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339), dataWhere).
 			Find(&searchTmp).Error; err != nil {
-			logrus.Errorln("GetTransactionData: We have got error: ", err)
+			logger.Error("GetTransactionData: We have got error: ", err)
 		}
 
-		logrus.Debug("GetTransactionData: Len: ", len(searchTmp))
+		logger.Debug("GetTransactionData: Len: ", len(searchTmp))
 
 		if len(searchTmp) > 0 {
 
@@ -1307,17 +1357,42 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		srcIPPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
 		dstIPPortZero := callElement.DstIP + ":" + strconv.Itoa(0)
 
-		if value, ok := aliasData[srcIPPort]; ok {
-			alias.Set(value, srcIPPort)
-		} else if value, ok := aliasData[srcIPPortZero]; ok {
-			alias.Set(value, srcIPPort)
+		//add capture ID
+		if config.Setting.UseCaptureIDInAlias && dataElement.Exists("captureId") {
+
+			captureID := dataElement.S("captureId").Data().(string)
+
+			if value, ok := aliasData[srcIPPort+":"+captureID]; ok {
+				alias.Set(value, srcIPPort)
+			} else if value, ok := aliasData[srcIPPortZero+":"+captureID]; ok {
+				alias.Set(value, srcIPPort)
+			}
+
+			if value, ok := aliasData[dstIPPort+":"+captureID]; ok {
+				alias.Set(value, dstIPPort)
+			} else if value, ok := aliasData[dstIPPortZero+":"+captureID]; ok {
+				alias.Set(value, dstIPPort)
+			}
 		}
 
-		if value, ok := aliasData[dstIPPort]; ok {
-			alias.Set(value, dstIPPort)
-		} else if value, ok := aliasData[dstIPPortZero]; ok {
-			alias.Set(value, dstIPPort)
+		if !alias.Exists(srcIPPort) {
+
+			if value, ok := aliasData[srcIPPort]; ok {
+				alias.Set(value, srcIPPort)
+			} else if value, ok := aliasData[srcIPPortZero]; ok {
+				alias.Set(value, srcIPPort)
+			}
 		}
+
+		if !alias.Exists(dstIPPort) {
+
+			if value, ok := aliasData[dstIPPort]; ok {
+				alias.Set(value, dstIPPort)
+			} else if value, ok := aliasData[dstIPPortZero]; ok {
+				alias.Set(value, dstIPPort)
+			}
+		}
+
 		if !alias.Exists(srcIPPort) {
 			alias.Set(srcIPPort, srcIPPort)
 		}
@@ -1325,6 +1400,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		if !alias.Exists(dstIPPort) {
 			alias.Set(dstIPPort, dstIPPort)
 		}
+
 		callElement.AliasSrc = alias.Search(srcIPPort).Data().(string)
 		callElement.AliasDst = alias.Search(dstIPPort).Data().(string)
 
@@ -1403,7 +1479,7 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 				Table(table).
 				Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
 				Find(&searchTmp).Error; err != nil {
-				logrus.Errorln("GetTransactionQos: We have got error: ", err)
+				logger.Error("GetTransactionQos: We have got error: ", err)
 				return "", err
 
 			}
@@ -1484,7 +1560,7 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 			Table(table).
 			Where(query, dataWhere, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)).
 			Find(&searchTmp).Error; err != nil {
-			logrus.Errorln("GetTransactionLog: We have got error: ", err)
+			logger.Error("GetTransactionLog: We have got error: ", err)
 			return "", err
 
 		}
@@ -1532,18 +1608,18 @@ func (ss *SearchService) GetTransactionLog(table string, data []byte, nodes []st
 func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, error) {
 
 	if config.Setting.DECODER_SHARK.Enable {
-		logrus.Debug("Decoded KEY")
-		logrus.Debug("Trying to debug using external decoder")
-		logrus.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", config.Setting.DECODER_SHARK.Bin, config.Setting.DECODER_SHARK.Param, config.Setting.DECODER_SHARK.Protocols))
+		logger.Debug("Decoded KEY")
+		logger.Debug("Trying to debug using external decoder")
+		logger.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", config.Setting.DECODER_SHARK.Bin, config.Setting.DECODER_SHARK.Param, config.Setting.DECODER_SHARK.Protocols))
 		rootExecute := false
 		cmd := exec.Command(config.Setting.DECODER_SHARK.Bin, "-Q", "-T", "json", "-o", "rtp.heuristic_rtp:TRUE", "-l", "-i", "-", config.Setting.DECODER_SHARK.Param)
 		/*check if we root under root - changing to an user */
 		uid, gid := os.Getuid(), os.Getgid()
 
 		if uid == 0 || gid == 0 {
-			logrus.Info(fmt.Sprintf("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
+			logger.Info(fmt.Sprintf("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
 			if config.Setting.DECODER_SHARK.UID != 0 && config.Setting.DECODER_SHARK.GID != 0 {
-				logrus.Info(fmt.Sprintf("Changing to: UID: [%d], GID: [%d]", uid, gid))
+				logger.Info(fmt.Sprintf("Changing to: UID: [%d], GID: [%d]", uid, gid))
 				cmd.SysProcAttr = &syscall.SysProcAttr{
 					Credential: &syscall.Credential{
 						Uid: config.Setting.DECODER_SHARK.UID, Gid: config.Setting.DECODER_SHARK.GID,
@@ -1551,14 +1627,14 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 					},
 				}
 			} else {
-				logrus.Error("You run external decoder under root! Please set UID/GID in the config")
+				logger.Error("You run external decoder under root! Please set UID/GID in the config")
 				rootExecute = true
 			}
 		}
 
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
-			logrus.Error("Bad cmd stdin", err)
+			logger.Error("Bad cmd stdin", err)
 			return 0, 0, err
 		}
 		go func() {
@@ -1568,7 +1644,7 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			logrus.Error("Bad combined output: ", err)
+			logger.Error("Bad combined output: ", err)
 			return 0, 0, err
 		}
 
@@ -1718,9 +1794,9 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 
 				db := session.Save(&tmpData)
 				if db != nil && db.Error != nil {
-					logrus.Error(fmt.Sprintf("Save failed for table [%s]: with error %s.", tmpData.TableName(), db.Error.Error()))
+					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s.", tmpData.TableName(), db.Error.Error()))
 				} else {
-					logrus.Debug(fmt.Sprintf("Save for table [%s] was success.", tmpData.TableName()))
+					logger.Debug(fmt.Sprintf("Save for table [%s] was success.", tmpData.TableName()))
 				}
 
 				goodCounter++
@@ -1728,11 +1804,11 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 		}
 
 		if err != nil {
-			logrus.Error(fmt.Sprintf("Error commmit transaction Error: %s", err.Error()))
+			logger.Error(fmt.Sprintf("Error commmit transaction Error: %s", err.Error()))
 			return goodCounter, badCounter, err
 		}
 
-		//logrus.Debug("DDD:", sData)
+		//logger.Debug("DDD:", sData)
 		return goodCounter, badCounter, err
 	}
 

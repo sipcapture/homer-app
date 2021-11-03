@@ -8,7 +8,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type StatisticController struct {
@@ -42,19 +42,19 @@ type StatisticController struct {
 func (sc *StatisticController) StatisticData(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
 	searchObject := model.StatisticObject{}
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.StatisticService.StatisticData(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -79,13 +79,13 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
 	responseData, err := sc.StatisticService.StatisticDataBaseList()
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -116,20 +116,20 @@ func (sc *StatisticController) GetStatisticDBList(c echo.Context) error {
 func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
 	searchObject := model.StatisticSearchObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.StatisticService.StatisticRetentionsList(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -167,7 +167,7 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
@@ -175,7 +175,7 @@ func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) erro
 
 	responseData, err := sc.StatisticService.StatisticMeasurementsList(dbID)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -206,20 +206,20 @@ func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) erro
 func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
 	searchObject := model.StatisticObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.StatisticService.StatisticMetricsList(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -250,20 +250,20 @@ func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 func (sc *StatisticController) GetStatisticTagsList(c echo.Context) error {
 
 	if !sc.StatisticService.Active {
-		logrus.Error("Influxdb service is not enabled")
+		logger.Error("Influxdb service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Influxdb service is not enabled")
 	}
 
 	searchObject := model.StatisticObject{}
 
 	if err := c.Bind(&searchObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := sc.StatisticService.StatisticTagsList(&searchObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

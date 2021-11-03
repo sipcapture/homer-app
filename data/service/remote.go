@@ -11,7 +11,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/sipcapture/homer-app/model"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 // StatisticService : here you tell us what Salutation is
@@ -88,7 +88,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	searchToTime := remoteObject.Timestamp.To
 	searchString := remoteObject.Param.Search
 	if searchString == "" {
-		logrus.Error("search string is empty")
+		logger.Error("search string is empty")
 		return "", errors.New("empty string search")
 	}
 
@@ -103,7 +103,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	// Let's start with a base url
 	baseURL, err := url.Parse(lokiQuery)
 	if err != nil {
-		logrus.Error("Malformed URL: ", err.Error())
+		logger.Error("Malformed URL: ", err.Error())
 		return "", err
 	}
 
@@ -112,7 +112,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	req, err := http.NewRequest("GET", baseURL.String(), nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", baseURL.String())
+		logger.Error("Couldn't make NewRequest query:", baseURL.String())
 		return "", err
 	}
 
@@ -121,7 +121,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", baseURL.String())
+		logger.Error("Couldn't make http query:", baseURL.String())
 		return "", err
 	}
 
@@ -129,7 +129,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
@@ -137,12 +137,12 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 	json.Unmarshal(buf, &remoteValuesData)
 
 	if err != nil {
-		logrus.Error("couldn't decode json body")
+		logger.Error("couldn't decode json body")
 		return "", err
 	}
 
 	if remoteValuesData.Data == nil || remoteValuesData.Data.Streams == nil {
-		logrus.Error("no data found")
+		logger.Error("no data found")
 		return "", errors.New("no data found")
 	}
 
@@ -184,7 +184,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 	req, err := http.NewRequest("GET", lokiQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", lokiQuery)
+		logger.Error("Couldn't make NewRequest query:", lokiQuery)
 		return "", err
 	}
 
@@ -193,7 +193,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", lokiQuery)
+		logger.Error("Couldn't make http query:", lokiQuery)
 		return "", err
 	}
 
@@ -201,7 +201,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
@@ -209,15 +209,15 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 
 	err = json.Unmarshal(buf, &RemoteLebels)
 	if err != nil {
-		logrus.Error("couldn't decode json body")
+		logger.Error("couldn't decode json body")
 		return "", err
 	}
 
-	logrus.Debug("Response", RemoteLebels.Values)
+	logger.Debug("Response", RemoteLebels.Values)
 	responseArray, _ := json.Marshal(RemoteLebels.Values)
 
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 
@@ -237,7 +237,7 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 	req, err := http.NewRequest("GET", lokiQuery, nil)
 
 	if err != nil {
-		logrus.Error("Couldn't make NewRequest query:", lokiQuery)
+		logger.Error("Couldn't make NewRequest query:", lokiQuery)
 		return "", err
 	}
 
@@ -246,7 +246,7 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
-		logrus.Error("Couldn't make http query:", lokiQuery)
+		logger.Error("Couldn't make http query:", lokiQuery)
 		return "", err
 	}
 
@@ -254,7 +254,7 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 
 	buf, _ := ioutil.ReadAll(data.Body)
 	if err != nil {
-		logrus.Error("Couldn't read the data from IO-Buffer")
+		logger.Error("Couldn't read the data from IO-Buffer")
 		return "", err
 	}
 
@@ -263,15 +263,15 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 	json.Unmarshal(buf, &RemoteLebels)
 
 	if err != nil {
-		logrus.Error("couldn't decode json body")
+		logger.Error("couldn't decode json body")
 		return "", err
 	}
 
-	logrus.Debug("Response", RemoteLebels.Values)
+	logger.Debug("Response", RemoteLebels.Values)
 	responseArray, _ := json.Marshal(RemoteLebels.Values)
 
 	if err != nil {
-		logrus.Error("couldn't encode json body")
+		logger.Error("couldn't encode json body")
 		return "", err
 	}
 

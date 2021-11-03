@@ -8,7 +8,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
-	"github.com/sirupsen/logrus"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type PrometheusController struct {
@@ -43,20 +43,20 @@ type PrometheusController struct {
 func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
-		logrus.Error("Prometheus service is not enabled")
+		logger.Error("Prometheus service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
 	}
 
 	prometheusObject := model.PrometheusObject{}
 
 	if err := c.Bind(&prometheusObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := pc.PrometheusService.PrometheusData(&prometheusObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -88,20 +88,20 @@ func (pc *PrometheusController) PrometheusData(c echo.Context) error {
 func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
-		logrus.Error("Prometheus service is not enabled")
+		logger.Error("Prometheus service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
 	}
 
 	prometheusObject := model.PrometheusObject{}
 
 	if err := c.Bind(&prometheusObject); err != nil {
-		logrus.Error(err.Error())
+		logger.Error(err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
 	responseData, err := pc.PrometheusService.PrometheusValue(&prometheusObject)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -128,13 +128,13 @@ func (pc *PrometheusController) PrometheusValue(c echo.Context) error {
 func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
-		logrus.Error("Prometheus service is not enabled")
+		logger.Error("Prometheus service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
 	}
 
 	responseData, err := pc.PrometheusService.PrometheusLabels()
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -165,17 +165,17 @@ func (pc *PrometheusController) PrometheusLabels(c echo.Context) error {
 func (pc *PrometheusController) PrometheusLabelData(c echo.Context) error {
 
 	if !pc.PrometheusService.Active {
-		logrus.Error("Prometheus service is not enabled")
+		logger.Error("Prometheus service is not enabled")
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Prometheus service is not enabled")
 	}
 
 	label := c.Param("userlabel")
 
-	logrus.Println("LABEL", label)
+	logger.Debug("LABEL", label)
 
 	responseData, err := pc.PrometheusService.PrometheusLabelData(label)
 	if err != nil {
-		logrus.Println(responseData)
+		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

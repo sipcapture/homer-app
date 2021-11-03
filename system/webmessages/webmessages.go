@@ -10,6 +10,7 @@ const (
 const (
 	UserRequestFailed           = "failed to get Users"
 	UserSettingsFailed          = "failed to get user settings"
+	UserProfileFailed           = "failed to get user profile"
 	MappingHepSubFailed         = "failed to get hepsub mapping schema"
 	InsertDashboardFailed       = "failed to create a new dashboard"
 	GetDashboardFailed          = "failed to get dashboards"

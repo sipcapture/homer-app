@@ -37,6 +37,8 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 
 	_ "github.com/influxdata/influxdb1-client" // this is important because of the bug in go mod
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -59,7 +61,6 @@ import (
 	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/ldap"
 	"github.com/sipcapture/homer-app/utils/logger"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -240,7 +241,7 @@ func main() {
 	}
 
 	if *appFlags.UpdateUIUser != "" && *appFlags.UpdateUIPassword != "" {
-		logrus.Println(fmt.Sprintf("Updating password for user: [%s]\n", *appFlags.UpdateUIUser))
+		logger.Info(fmt.Sprintf("Updating password for user: [%s]\n", *appFlags.UpdateUIUser))
 		migration.UpdateHomerUser(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpdateUIUser, *appFlags.UpdateUIPassword)
 
 		os.Exit(0)
@@ -262,24 +263,46 @@ func main() {
 }
 
 func configureLogging() {
-	logPath := viper.GetString("system_settings.logpath")
-	logName := viper.GetString("system_settings.logname")
-	logLevel := viper.GetString("system_settings.loglevel")
-	logStdout := viper.GetBool("system_settings.logstdout")
+
+	/* OLD LOG */
+	if viper.IsSet("system_settings.logpath") {
+		config.Setting.LOG_SETTINGS.Path = viper.GetString("system_settings.logpath")
+	}
+	if viper.IsSet("system_settings.logname") {
+		config.Setting.LOG_SETTINGS.Name = viper.GetString("system_settings.logname")
+	}
+	if viper.IsSet("system_settings.loglevel") {
+		config.Setting.LOG_SETTINGS.Level = viper.GetString("system_settings.loglevel")
+	}
+	if viper.IsSet("system_settings.logstdout") {
+		config.Setting.LOG_SETTINGS.Stdout = viper.GetBool("system_settings.logstdout")
+	}
+	if viper.IsSet("system_settings.logjson") {
+		config.Setting.LOG_SETTINGS.Json = viper.GetBool("system_settings.logjson")
+	}
+	if viper.IsSet("system_settings.syslog") {
+		config.Setting.LOG_SETTINGS.SysLog = viper.GetBool("system_settings.syslog")
+	}
+	if viper.IsSet("system_settings.syslog_level") {
+		config.Setting.LOG_SETTINGS.SysLogLevel = viper.GetString("system_settings.syslog_level")
+	}
+	if viper.IsSet("system_settings.syslog_uri") {
+		config.Setting.LOG_SETTINGS.SyslogUri = viper.GetString("system_settings.syslog_uri")
+	}
 
 	if *appFlags.LogPathWebApp != "" {
-		logPath = *appFlags.LogPathWebApp
-	} else if logPath == "" {
-		logPath = "log"
+		config.Setting.LOG_SETTINGS.Path = *appFlags.LogPathWebApp
+	} else if config.Setting.LOG_SETTINGS.Path == "" {
+		config.Setting.LOG_SETTINGS.Path = "log"
 	}
 
 	if *appFlags.LogName != "" {
-		logName = *appFlags.LogName
-	} else if logPath == "" {
-		logName = "webapp.log"
+		config.Setting.LOG_SETTINGS.Name = *appFlags.LogName
+	} else if config.Setting.LOG_SETTINGS.Name == "" {
+		config.Setting.LOG_SETTINGS.Name = "webapp.log"
 	}
 	// initialize logger
-	logger.InitLogger(logPath, logName, logLevel, logStdout)
+	logger.InitLogger()
 }
 
 func configureServiceObjects() {
@@ -322,21 +345,96 @@ func configureServiceObjects() {
 		}
 	}
 
+	/* CaptID alias */
+	if viper.IsSet("api_settings.add_captid_to_resolve") {
+		config.Setting.UseCaptureIDInAlias = viper.GetBool("api_settings.add_captid_to_resolve")
+	}
+
+	/* init map */
+	config.OAuth2TokenMap = make(map[string]model.OAuth2MapToken)
+
+	/* oauth2 */
+	if viper.IsSet("oauth2.enable") {
+		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
+	}
+	if viper.IsSet("oauth2.client_id") {
+		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.client_id")
+	}
+	if viper.IsSet("oauth2.client_secret") {
+		config.Setting.OAUTH2_SETTINGS.ClientSecret = viper.GetString("oauth2.client_secret")
+	}
+	if viper.IsSet("oauth2.project_id") {
+		config.Setting.OAUTH2_SETTINGS.ProjectID = viper.GetString("oauth2.project_id")
+	}
+	if viper.IsSet("oauth2.auth_uri") {
+		config.Setting.OAUTH2_SETTINGS.AuthUri = viper.GetString("oauth2.auth_uri")
+	}
+	if viper.IsSet("oauth2.token_uri") {
+		config.Setting.OAUTH2_SETTINGS.TokenUri = viper.GetString("oauth2.token_uri")
+	}
+	if viper.IsSet("oauth2.auth_provider_x509_cert_url") {
+		config.Setting.OAUTH2_SETTINGS.AuthProviderCert = viper.GetString("oauth2.auth_provider_x509_cert_url")
+	}
+	if viper.IsSet("oauth2.redirect_uri") {
+		config.Setting.OAUTH2_SETTINGS.RedirectUri = viper.GetString("oauth2.redirect_uri")
+	}
+	if viper.IsSet("oauth2.provider_name") {
+		config.Setting.OAUTH2_SETTINGS.ServiceProviderName = viper.GetString("oauth2.provider_name")
+	}
+	if viper.IsSet("oauth2.provider_image") {
+		config.Setting.OAUTH2_SETTINGS.ServiceProviderImage = viper.GetString("oauth2.provider_image")
+	}
+	if viper.IsSet("oauth2.service_redirect") {
+		config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect = viper.GetString("oauth2.service_redirect")
+	}
+	if viper.IsSet("oauth2.scope") {
+		config.Setting.OAUTH2_SETTINGS.Scope = viper.GetStringSlice("oauth2.scope")
+	}
+	if viper.IsSet("oauth2.state_value") {
+		config.Setting.OAUTH2_SETTINGS.StateValue = viper.GetString("oauth2.state_value")
+	}
+	if viper.IsSet("oauth2.expire_sso") {
+		config.Setting.OAUTH2_SETTINGS.ExpireSSOToken = viper.GetUint32("oauth2.expire_sso")
+	}
+	if viper.IsSet("oauth2.profile_url") {
+		config.Setting.OAUTH2_SETTINGS.ProfileURL = viper.GetString("oauth2.profile_url")
+	}
+
 	/*********** DASHBOARD *******************/
 	if viper.IsSet("dashboard_settings.dashboard_home") {
 		config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard = viper.GetString("dashboard_settings.dashboard_home")
 	}
 
 	/***********************************/
+	if viper.IsSet("auth_settings.type") {
+		config.Setting.DefaultAuth = viper.GetString("auth_settings.type")
+	}
 
-	authType = viper.GetString("auth_settings.type")
+	/* auth settings */
+	if viper.IsSet("auth_settings.user_groups") {
+		config.Setting.UserGroups = viper.GetStringSlice("auth_settings.user_groups")
+	}
+
 	/* check the auth type */
-	if authType == "" {
-		authType = "internal"
+	if config.Setting.DefaultAuth == "" {
+		config.Setting.DefaultAuth = "internal"
+	}
+
+	if config.Setting.OAUTH2_SETTINGS.Enable {
+		config.Setting.OAuth2Config = oauth2.Config{
+			ClientID:     config.Setting.OAUTH2_SETTINGS.ClientID,
+			ClientSecret: config.Setting.OAUTH2_SETTINGS.ClientSecret,
+			Scopes:       config.Setting.OAUTH2_SETTINGS.Scope,
+			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  config.Setting.OAUTH2_SETTINGS.AuthUri,
+				TokenURL: config.Setting.OAUTH2_SETTINGS.TokenUri,
+			},
+		}
 	}
 
 	/* Check LDAP here */
-	switch authType {
+	switch config.Setting.DefaultAuth {
 	case "ldap":
 
 		defaults.SetDefaults(&ldapClient) //<-- This set the defaults values
@@ -543,7 +641,7 @@ func configureAsHTTPServer() {
 		//e.GET("/swagger/*", echoSwagger.WrapHandler)
 		e.GET("/doc/api/json", func(c echo.Context) error {
 
-			logrus.Debug("Middle swagger ware: ", c.Request().RequestURI)
+			logger.Debug("Middle swagger ware: ", c.Request().RequestURI)
 			dataJson, err := ioutil.ReadFile(config.Setting.SWAGGER.ApiJson)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SwaggerFileNotExistsError)
@@ -733,7 +831,7 @@ func performV1APIRouting(e *echo.Echo) {
 	res.Use(middleware.JWTWithConfig(config))
 	res.Use(auth.MiddlewareRes)
 
-	logrus.Debug(auth.JwtUserClaim{})
+	logger.Debug(auth.JwtUserClaim{})
 
 	/*************** admin access ONLY ***************/
 	// route mapping apis
@@ -820,7 +918,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				sslMode = "require"
 			}
 
-			logrus.Println(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s]\n", host, user, name, node, port, sslMode))
+			logger.Info(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s]\n", host, user, name, node, port, sslMode))
 
 			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
 
@@ -831,7 +929,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			dbA, err := gorm.Open("postgres", connectString)
 
 			if err != nil {
-				logrus.Error(fmt.Sprintf("couldn't make connection to [Host: %s, Node: %s, Port: %d]: \n", host, node, port), err)
+				logger.Error(fmt.Sprintf("couldn't make connection to [Host: %s, Node: %s, Port: %d]: \n", host, node, port), err)
 				continue
 			} else {
 				dbA.DB().SetMaxIdleConns(5)
@@ -853,14 +951,14 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 						for {
 							time.Sleep(60 * time.Second)
 							if e := db.DB().Ping(); e != nil {
-								logrus.Error(fmt.Sprintf("couldn't make ping to [Connect: %s]  Error: [%v]", dbConfig, e))
+								logger.Error(fmt.Sprintf("couldn't make ping to [Connect: %s]  Error: [%v]", dbConfig, e))
 							L:
 								for i := 0; i < len(intervals); i++ {
 									e2 := RetryHandler(3, func() (bool, error) {
 										var e error
 										db, e = gorm.Open("postgres", dbConfig)
 										if e != nil {
-											logrus.Error(fmt.Sprintf("couldn't make connect to [Connect: %s]  Error: [%v]", dbConfig, e))
+											logger.Error(fmt.Sprintf("couldn't make connect to [Connect: %s]  Error: [%v]", dbConfig, e))
 											return false, e
 										}
 										return true, nil
@@ -884,9 +982,9 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 
 			}
 
-			logrus.Println("----------------------------------- ")
-			logrus.Println("*** Database Data Session created *** ")
-			logrus.Println("----------------------------------- ")
+			logger.Info("----------------------------------- ")
+			logger.Info("*** Database Data Session created *** ")
+			logger.Info("----------------------------------- ")
 		}
 	} else {
 		//single node
@@ -902,7 +1000,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			keepAlive = viper.GetBool("database_data.keepalive")
 		}
 
-		logrus.Println(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
+		logger.Info(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
 
 		sslMode := "disable"
 		if viper.IsSet("database_data.sslmode") {
@@ -928,7 +1026,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 		dbMap["localnode"] = db
 
 		if err != nil {
-			logrus.Error(err)
+			logger.Error(err)
 			panic("failed to connect database")
 		}
 
@@ -938,9 +1036,9 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			go makePingKeepAlive(db, host, "data", "localnode")
 		}
 
-		logrus.Println("----------------------------------- ")
-		logrus.Println("*** Database Data Session created *** ")
-		logrus.Println("----------------------------------- ")
+		logger.Info("----------------------------------- ")
+		logger.Info("*** Database Data Session created *** ")
+		logger.Info("----------------------------------- ")
 	}
 
 	return dbMap, dbNodeMap
@@ -973,12 +1071,12 @@ func getConfigDBSession() *gorm.DB {
 		connectString += fmt.Sprintf(" port=%d", port)
 	}
 
-	logrus.Println(fmt.Sprintf("Connecting to the config: [%s, %s, %s, %d]\n", host, user, name, port))
+	logger.Info(fmt.Sprintf("Connecting to the config: [%s, %s, %s, %d]\n", host, user, name, port))
 
 	db, err := gorm.Open("postgres", connectString)
 
 	if err != nil {
-		logrus.Error(err)
+		logger.Error(err)
 		panic("failed to connect database")
 	}
 
@@ -987,9 +1085,9 @@ func getConfigDBSession() *gorm.DB {
 	db.DB().SetConnMaxLifetime(5 * time.Minute)
 	db.SetLogger(&logger.GormLogger{})
 
-	logrus.Println("----------------------------------- ")
-	logrus.Println("*** Database Config Session created *** ")
-	logrus.Println("----------------------------------- ")
+	logger.Info("----------------------------------- ")
+	logger.Info("*** Database Config Session created *** ")
+	logger.Info("----------------------------------- ")
 
 	if keepAlive {
 		go makePingKeepAlive(db, host, "config", "localnode")
@@ -1029,7 +1127,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 		err := viper.WriteConfig()
 		if err != nil {
 			fmt.Println("No configuration file loaded: ", err)
-			logrus.Errorln("No configuration file loaded - using defaults")
+			logger.Error("No configuration file loaded - using defaults")
 			return false
 		}
 	}
@@ -1038,7 +1136,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 		"gorm:insert_option",
 		fmt.Sprintf("ON CONFLICT (name,host) DO UPDATE SET version = EXCLUDED.version, guid = EXCLUDED.guid"),
 	).Table("applications").Create(&recordApp).Error; err != nil {
-		logrus.Error("Error by updating application table", err)
+		logger.Error("Error by updating application table", err)
 		return false
 	}
 
@@ -1053,13 +1151,13 @@ func getInfluxDBSession() service.ServiceInfluxDB {
 	host := viper.GetString("influxdb_config.host")
 
 	if host == "" {
-		logrus.Println("InfluxDB functions disabled")
+		logger.Info("InfluxDB functions disabled")
 		return service.ServiceInfluxDB{Active: false}
 	}
 
 	urlInflux, err := url.Parse(host)
 	if err != nil {
-		logrus.Error(err)
+		logger.Error(err)
 		panic("failed to parse influx host")
 	}
 
@@ -1071,7 +1169,7 @@ func getInfluxDBSession() service.ServiceInfluxDB {
 
 	influxClient, err := client.NewHTTPClient(conf)
 	if err != nil {
-		logrus.Error(err)
+		logger.Error(err)
 		panic("failed to connect influx database")
 	}
 
@@ -1080,9 +1178,9 @@ func getInfluxDBSession() service.ServiceInfluxDB {
 		Active:       true,
 	}
 
-	logrus.Println("----------------------------------- ")
-	logrus.Println("*** Influx Database Session created *** ")
-	logrus.Println("----------------------------------- ")
+	logger.Info("----------------------------------- ")
+	logger.Info("*** Influx Database Session created *** ")
+	logger.Info("----------------------------------- ")
 	return serviceInfluxDB
 }
 
@@ -1095,7 +1193,7 @@ func getPrometheusDBSession() service.ServicePrometheus {
 	api := viper.GetString("prometheus_config.api")
 
 	if host == "" {
-		logrus.Println("Prometheus functions disabled")
+		logger.Info("Prometheus functions disabled")
 		return service.ServicePrometheus{Active: false}
 	}
 
@@ -1112,9 +1210,9 @@ func getPrometheusDBSession() service.ServicePrometheus {
 		Active:     true,
 	}
 
-	logrus.Println("------------------------------------ ")
-	logrus.Println("**** Prometheus Session created **** ")
-	logrus.Println("------------------------------------ ")
+	logger.Info("------------------------------------ ")
+	logger.Info("**** Prometheus Session created **** ")
+	logger.Info("------------------------------------ ")
 	return servicePrometheus
 }
 
@@ -1132,7 +1230,7 @@ func getRemoteDBSession() service.ServiceLoki {
 	paramQuery := viper.GetString("loki_config.param_query")
 
 	if host == "" {
-		logrus.Println("Loki functions disabled")
+		logger.Info("Loki functions disabled")
 		return service.ServiceLoki{Active: false}
 	}
 
@@ -1159,9 +1257,9 @@ func getRemoteDBSession() service.ServiceLoki {
 		Active:     true,
 	}
 
-	logrus.Println("------------------------------------ ")
-	logrus.Println("**** Loki Session created **** ")
-	logrus.Println("------------------------------------ ")
+	logger.Info("------------------------------------ ")
+	logger.Info("**** Loki Session created **** ")
+	logger.Info("------------------------------------ ")
 	return ServiceLoki
 }
 
@@ -1202,7 +1300,7 @@ func readConfig() {
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Println("No configuration file loaded: ", err)
-		logrus.Errorln("No configuration file loaded - using defaults")
+		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
 	}
 	if *appFlags.WatchConfig {
@@ -1231,7 +1329,7 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 	err := viper.WriteConfig()
 	if err != nil {
 		fmt.Println("No configuration file loaded: ", err)
-		logrus.Errorln("No configuration file loaded - using defaults")
+		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
 	}
 }
@@ -1251,7 +1349,7 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 	err := viper.WriteConfig()
 	if err != nil {
 		fmt.Println("No configuration file loaded: ", err)
-		logrus.Errorln("No configuration file loaded - using defaults")
+		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
 	}
 }
@@ -1317,25 +1415,23 @@ func registerGetRedirect(e *echo.Echo, path string) {
 // middle ware handler
 func bodyDumpHandler(c echo.Context, reqBody, resBody []byte) {
 
-	logrus.Println("================================")
+	logger.Debug("================================")
 
-	//printRequest(c.Request())
-
-	logrus.Println("--------request body-------")
+	logger.Debug("--------request body-------")
 	printBody(reqBody)
-	logrus.Println("---------------------------")
+	logger.Info("---------------------------")
 
-	logrus.Println("-------- response body --------")
+	logger.Debug("-------- response body --------")
 	printBody(resBody)
-	logrus.Println("-------------------------------")
-	logrus.Println("=================================")
+	logger.Debug("-------------------------------")
+	logger.Debug("=================================")
 }
 
 // body dump skipper
 func skipper(c echo.Context) bool {
 
 	if c.Request().Method == "POST" {
-		logrus.Println(c.Request().URL.Path)
+		logger.Debug(c.Request().URL.Path)
 		return true
 	}
 
@@ -1345,19 +1441,9 @@ func skipper(c echo.Context) bool {
 // private method
 func printBody(obj []byte) {
 
-	logrus.WithFields(logrus.Fields{
+	logger.Logger.WithFields(logrus.Fields{
 		"json": string(obj),
 	}).Info("Payload")
-}
-
-func printRequest(request *http.Request) {
-
-	logrus.WithFields(logrus.Fields{
-		"HOST":       request.Host,
-		"PATH":       request.URL.Path,
-		"METHOD":     request.Method,
-		"QueryParam": request.URL.Query().Encode(),
-	}).Info("Request")
 }
 
 func checkHelpVersionFlags() {
@@ -1388,8 +1474,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1410,8 +1496,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1432,8 +1518,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1458,8 +1544,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1473,8 +1559,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection to data. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection to data. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1494,8 +1580,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1517,8 +1603,8 @@ func checkAdminFlags() {
 			appFlags.DatabaseSSLMode)
 
 		if err != nil {
-			logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-			logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+			logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+			logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 			panic(err)
 		}
 
@@ -1540,8 +1626,8 @@ func initDB() {
 		appFlags.DatabaseSSLMode)
 
 	if err != nil {
-		logrus.Error("Couldn't establish connection. Please be sure you can have correct password", err)
-		logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+		logger.Error("Couldn't establish connection. Please be sure you can have correct password", err)
+		logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 		panic(err)
 	}
 
@@ -1562,8 +1648,8 @@ func initDB() {
 		appFlags.DatabaseSSLMode)
 
 	if err != nil {
-		logrus.Error("Couldn't establish connection to databaseDb. Please be sure you can have correct password", err)
-		logrus.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
+		logger.Error("Couldn't establish connection to databaseDb. Please be sure you can have correct password", err)
+		logger.Error("Try run: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'postgres';\"")
 		panic(err)
 	}
 
@@ -1598,10 +1684,10 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 
 		pingErr := db.DB().Ping()
 		if pingErr != nil {
-			logrus.Error(fmt.Sprintf("couldn't make ping to [Host: %s], Type: [%s], Node: [%s]  Error: [%v]",
+			logger.Error(fmt.Sprintf("couldn't make ping to [Host: %s], Type: [%s], Node: [%s]  Error: [%v]",
 				host, typeData, node, pingErr))
 		} else {
-			logrus.Debug(fmt.Printf("Successful ping: %s, Type: %s, Node: %s", host, typeData, node))
+			logger.Debug(fmt.Printf("Successful ping: %s, Type: %s, Node: %s", host, typeData, node))
 		}
 
 		time.Sleep(time.Duration(60) * time.Second)

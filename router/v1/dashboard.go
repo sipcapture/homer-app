@@ -24,5 +24,7 @@ func RouteDashboardApis(acc *echo.Group, session *gorm.DB) {
 	acc.PUT("/dashboard/store/:dashboardId", dbc.UpdateDashboard)
 	// delete dashboard
 	acc.DELETE("/dashboard/store/:dashboardId", dbc.DeleteDashboard)
+	// dashboard reset
+	acc.GET("/dashboard/reset", dbc.ResetUserDashboard)
 
 }

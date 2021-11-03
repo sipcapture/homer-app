@@ -100,7 +100,7 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
-// swagger:route GET /search/remote/data remote remoteRemoteData
+// swagger:route POST /search/remote/data remote remoteRemoteData
 //
 // Returns data based upon filtered json
 // ---
@@ -121,12 +121,6 @@ func (pc *RemoteController) RemoteValues(c echo.Context) error {
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// parameters:
-// + name: Request
-//   in: body
-//   description: Request
-//   required: true
-//   type: RemoteRequest
 // responses:
 //   200: body:RemoteResponseData
 //   400: body:FailureResponse

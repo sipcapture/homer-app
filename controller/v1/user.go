@@ -275,7 +275,7 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, response)
 }
 
-// swagger:route POST /auth user auth userLoginUser
+// swagger:route POST /auth user userLoginUser
 //
 // Returns a JWT Token and UUID attached to user
 // ---
@@ -322,7 +322,7 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusCreated, response)
 }
 
-// swagger:route GET /auth/type/list Users SuccessResponse
+// swagger:route GET /auth/type/list user GetAuthTypeList
 //
 // Returns data from server
 // ---
@@ -330,22 +330,17 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-//  Security:
-//   - JWT
-//   - ApiKeyAuth
+// Security:
+// - bearer: []
 //
 // SecurityDefinitions:
-// JWT:
+// bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
 //
 // responses:
-//   200: body:SuccessResponse
+//   200: body:AuthTypeList
 //   400: body:FailureResponse
 func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 

@@ -22,7 +22,7 @@ type UserSettingsController struct {
 
 // swagger:route GET /user/settings settings settingsGetAll
 //
-// Returns the list of settings
+// Returns the list of user settings
 // ---
 // produces:
 // - application/json
@@ -49,7 +49,7 @@ func (usc *UserSettingsController) GetAll(c echo.Context) error {
 
 // swagger:route GET /user/settings/{category} settings settingsGetCategory
 //
-// Returns the list of settings
+// Returns the list of user settings
 // ---
 // consumes:
 // - application/json
@@ -83,7 +83,7 @@ func (usc *UserSettingsController) GetCategory(c echo.Context) error {
 
 // swagger:route POST /user/settings settings settingsAddUserSettings
 //
-// Adds user settings
+// Add new user setting
 // ---
 // consumes:
 // - application/json
@@ -125,7 +125,7 @@ func (usc *UserSettingsController) AddUserSettings(c echo.Context) error {
 
 // swagger:route DELETE /user/settings/{guid} settings settingsDeleteUserSettings
 //
-// Delete user settings
+// Delete user setting
 // ---
 // consumes:
 // - application/json
@@ -178,7 +178,7 @@ func (usc *UserSettingsController) DeleteUserSettings(c echo.Context) error {
 
 // swagger:route PUT /user/settings/{guid} settings settingsUpdateUserSettings
 //
-// Update user settings
+// Update user setting
 // ---
 // consumes:
 // - application/json

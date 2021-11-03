@@ -29,27 +29,6 @@
             "bearer": [
               "[]"
             ]
-          },
-          {
-            "SecurityDefinitions": []
-          },
-          {
-            "bearer": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "name": [
-              "Authorization"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
           }
         ],
         "description": "Returns data from server",
@@ -57,7 +36,12 @@
           "application/json"
         ],
         "produces": [
-          "application/json"
+          "application/json",
+          "securityDefinitions:",
+          "bearer:",
+          "type: apiKey",
+          "in: header",
+          "name: Authorization"
         ],
         "tags": [
           "Admin"
@@ -1166,8 +1150,7 @@
           "application/json"
         ],
         "tags": [
-          "user",
-          "auth"
+          "user"
         ],
         "operationId": "userLoginUser",
         "parameters": [
@@ -1204,10 +1187,15 @@
       "get": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
             "SecurityDefinitions": []
           },
           {
-            "JWT": []
+            "bearer": []
           },
           {
             "type": [
@@ -1223,24 +1211,6 @@
             "in": [
               "header"
             ]
-          },
-          {
-            "ApiKeyAuth": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          },
-          {
-            "name": [
-              "Auth-Token"
-            ]
           }
         ],
         "description": "Returns data from server",
@@ -1251,14 +1221,14 @@
           "application/json"
         ],
         "tags": [
-          "Users"
+          "user"
         ],
-        "operationId": "SuccessResponse",
+        "operationId": "GetAuthTypeList",
         "responses": {
           "200": {
-            "description": "SuccessResponse",
+            "description": "AuthTypeList",
             "schema": {
-              "$ref": "#/definitions/SuccessResponse"
+              "$ref": "#/definitions/AuthTypeList"
             }
           },
           "400": {
@@ -1321,7 +1291,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -1392,7 +1362,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -1463,7 +1433,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -1521,11 +1491,81 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "Dashboard"
         ],
         "operationId": "dashboardGetDashBoardLists",
         "responses": {
           "200": {
+            "description": "DashboardElementList",
+            "schema": {
+              "$ref": "#/definitions/DashboardElementList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/reset": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Reset user Dashboards to default",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dashboard"
+        ],
+        "operationId": "ListDashboard",
+        "responses": {
+          "201": {
             "description": "DashboardElementList",
             "schema": {
               "$ref": "#/definitions/DashboardElementList"
@@ -1570,7 +1610,7 @@
             ]
           }
         ],
-        "description": "Get dashboard by param",
+        "description": "Get dashboard by dashboard ID",
         "consumes": [
           "application/json"
         ],
@@ -1578,14 +1618,14 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "Dashboard"
         ],
         "operationId": "dashboardGetDashBoard",
         "parameters": [
           {
             "type": "string",
             "description": "ID of dashboard",
-            "name": "dashboard ID",
+            "name": "dashboardId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1638,7 +1678,7 @@
             ]
           }
         ],
-        "description": "Add dashboard",
+        "description": "Update dashboard",
         "consumes": [
           "application/json"
         ],
@@ -1646,14 +1686,14 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "Dashboard"
         ],
-        "operationId": "dashboardInsertDashboard",
+        "operationId": "UpdateDashboard",
         "parameters": [
           {
             "type": "string",
             "description": "the ID of dashboard",
-            "name": "dashboard ID",
+            "name": "dashboardId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1718,7 +1758,7 @@
             ]
           }
         ],
-        "description": "Add dashboard",
+        "description": "Add new dashboard",
         "consumes": [
           "application/json"
         ],
@@ -1726,14 +1766,14 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "Dashboard"
         ],
         "operationId": "dashboardInsertDashboard",
         "parameters": [
           {
             "type": "string",
             "description": "the ID of dashboard",
-            "name": "dashboard ID",
+            "name": "dashboardId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1806,14 +1846,14 @@
           "application/json"
         ],
         "tags": [
-          "dashboard"
+          "Dashboard"
         ],
         "operationId": "dashboardDeleteDashboard",
         "parameters": [
           {
             "type": "string",
             "description": "the ID of dashboard",
-            "name": "dashboard ID",
+            "name": "dashboardId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1868,7 +1908,7 @@
             ]
           }
         ],
-        "description": "Get mappings",
+        "description": "Get list of DB nodes",
         "consumes": [
           "application/json"
         ],
@@ -1946,7 +1986,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -1970,9 +2010,7 @@
       "post": {
         "security": [
           {
-            "bearer": [
-              "[]"
-            ]
+            "bearer": []
           },
           {
             "SecurityDefinitions": []
@@ -2017,7 +2055,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -2464,31 +2502,15 @@
       "post": {
         "security": [
           {
-            "bearer": []
-          }
-        ],
-        "description": "Add hepsubsearch item",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "hep"
-        ],
-        "operationId": "hepSubSearchDoHepsubsearch",
-        "responses": {}
-      }
-    },
-    "/import/data/pcap": {
-      "post": {
-        "security": [
+            "bearer": [
+              "[]"
+            ]
+          },
           {
             "SecurityDefinitions": []
           },
           {
-            "JWT": []
+            "bearer": []
           },
           {
             "type": [
@@ -2504,9 +2526,62 @@
             "in": [
               "header"
             ]
+          }
+        ],
+        "description": "Add hepsubsearch item",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hep"
+        ],
+        "operationId": "hepSubSearchDoHepsubsearch",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "SearchObject parameters",
+            "name": "SearchObject",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "SearchObject parameters",
+              "type": "object",
+              "$ref": "#/definitions/SearchObject"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "HepsubCreateSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/HepsubCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/import/data/pcap": {
+      "post": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
           },
           {
-            "ApiKeyAuth": []
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
           },
           {
             "type": [
@@ -2514,13 +2589,13 @@
             ]
           },
           {
-            "in": [
-              "header"
+            "name": [
+              "Authorization"
             ]
           },
           {
-            "name": [
-              "Auth-Token"
+            "in": [
+              "header"
             ]
           }
         ],
@@ -2545,7 +2620,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/object"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -2569,10 +2644,15 @@
       "post": {
         "security": [
           {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
             "SecurityDefinitions": []
           },
           {
-            "JWT": []
+            "bearer": []
           },
           {
             "type": [
@@ -2587,24 +2667,6 @@
           {
             "in": [
               "header"
-            ]
-          },
-          {
-            "ApiKeyAuth": []
-          },
-          {
-            "type": [
-              "apiKey"
-            ]
-          },
-          {
-            "in": [
-              "header"
-            ]
-          },
-          {
-            "name": [
-              "Auth-Token"
             ]
           }
         ],
@@ -2629,7 +2691,7 @@
             "schema": {
               "description": "SearchObject parameters",
               "type": "object",
-              "$ref": "#/definitions/object"
+              "$ref": "#/definitions/SearchObject"
             }
           }
         ],
@@ -3072,6 +3134,190 @@
         }
       }
     },
+    "/oauth/auth": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Make redirect to the External Server URI",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SuccessResponse",
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/oauth/redirect": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Make redirect to the External Server URI",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SuccessResponse",
+        "responses": {
+          "200": {
+            "description": "SuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/token": {
+      "post": {
+        "description": "Returns a JWT Token and UUID attached to user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user",
+          "auth"
+        ],
+        "operationId": "userLoginUser",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "user login structure",
+            "name": "userLoginStruct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "user login structure",
+              "type": "object",
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "UserLoginSuccessResponse",
+            "schema": {
+              "$ref": "#/definitions/UserLoginSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
     "/prometheus/label/{labelName}": {
       "get": {
         "security": [
@@ -3290,7 +3536,7 @@
             ]
           }
         ],
-        "description": "Returns data based upon filtered json",
+        "description": "Returns dashboard from Grafana with specific UID",
         "produces": [
           "application/json"
         ],
@@ -3357,7 +3603,7 @@
             ]
           }
         ],
-        "description": "Returns data based upon filtered json",
+        "description": "Returns list of folders from Grafana",
         "produces": [
           "application/json"
         ],
@@ -3411,7 +3657,7 @@
             ]
           }
         ],
-        "description": "Returns data based upon filtered json",
+        "description": "Returns data about Grafana organization",
         "produces": [
           "application/json"
         ],
@@ -3460,7 +3706,7 @@
             ]
           }
         ],
-        "description": "Returns data based upon filtered json",
+        "description": "Returns Grafana folder based on UID",
         "produces": [
           "application/json"
         ],
@@ -3527,7 +3773,7 @@
             ]
           }
         ],
-        "description": "Returns data based upon filtered json",
+        "description": "Returns Grafana Proxy Url",
         "produces": [
           "application/json"
         ],
@@ -3765,7 +4011,7 @@
       }
     },
     "/search/remote/data": {
-      "get": {
+      "post": {
         "security": [
           {
             "bearer": [
@@ -3813,18 +4059,6 @@
               "description": "RemoteObject parameters",
               "type": "object",
               "$ref": "#/definitions/RemoteObject"
-            }
-          },
-          {
-            "type": "object",
-            "description": "Request",
-            "name": "Request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "description": "Request",
-              "type": "object",
-              "$ref": "#/definitions/RemoteRequest"
             }
           }
         ],
@@ -4502,7 +4736,7 @@
             ]
           }
         ],
-        "description": "Get all tokens",
+        "description": "Get all authentication token data",
         "consumes": [
           "application/json"
         ],
@@ -4557,7 +4791,7 @@
             ]
           }
         ],
-        "description": "Add token",
+        "description": "Add authentication token",
         "consumes": [
           "application/json"
         ],
@@ -4628,7 +4862,7 @@
             ]
           }
         ],
-        "description": "Get token by guid",
+        "description": "Get authentication token data by guid",
         "consumes": [
           "application/json"
         ],
@@ -4696,7 +4930,7 @@
             ]
           }
         ],
-        "description": "Update token by guid",
+        "description": "Update authentication token data by guid",
         "consumes": [
           "application/json"
         ],
@@ -4776,7 +5010,7 @@
             ]
           }
         ],
-        "description": "Delete token by guid",
+        "description": "Delete authentication token by guid",
         "consumes": [
           "application/json"
         ],
@@ -4816,7 +5050,7 @@
         }
       }
     },
-    "/user/settings": {
+    "/user/profile": {
       "get": {
         "security": [
           {
@@ -4868,6 +5102,60 @@
             }
           }
         }
+      }
+    },
+    "/user/settings": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of user settings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "settings"
+        ],
+        "operationId": "settingsGetAll",
+        "responses": {
+          "200": {
+            "description": "UserSettingList",
+            "schema": {
+              "$ref": "#/definitions/UserSettingList"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
       },
       "post": {
         "security": [
@@ -4898,7 +5186,7 @@
             ]
           }
         ],
-        "description": "Adds user settings",
+        "description": "Add new user setting",
         "consumes": [
           "application/json"
         ],
@@ -4969,7 +5257,7 @@
             ]
           }
         ],
-        "description": "Returns the list of settings",
+        "description": "Returns the list of user settings",
         "consumes": [
           "application/json"
         ],
@@ -5039,7 +5327,7 @@
             ]
           }
         ],
-        "description": "Update user settings",
+        "description": "Update user setting",
         "consumes": [
           "application/json"
         ],
@@ -5119,7 +5407,7 @@
             ]
           }
         ],
-        "description": "Delete user settings",
+        "description": "Delete user setting",
         "consumes": [
           "application/json"
         ],
@@ -5282,7 +5570,129 @@
         }
       }
     },
+    "/users/groups": {
+      "get": {
+        "security": [
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "JWT": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          },
+          {
+            "name": [
+              "Auth-Token"
+            ]
+          }
+        ],
+        "description": "Returns the list of groups",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "operationId": "groups",
+        "responses": {
+          "201": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      }
+    },
     "/users/{userGuid}": {
+      "get": {
+        "security": [
+          {
+            "bearer": [
+              "[]"
+            ]
+          },
+          {
+            "SecurityDefinitions": []
+          },
+          {
+            "bearer": []
+          },
+          {
+            "type": [
+              "apiKey"
+            ]
+          },
+          {
+            "name": [
+              "Authorization"
+            ]
+          },
+          {
+            "in": [
+              "header"
+            ]
+          }
+        ],
+        "description": "Returns the list of Users",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "userGetUser",
+        "responses": {
+          "200": {
+            "description": "ListUsers",
+            "schema": {
+              "$ref": "#/definitions/ListUsers"
+            }
+          },
+          "400": {
+            "description": "FailureResponse",
+            "schema": {
+              "$ref": "#/definitions/FailureResponse"
+            }
+          }
+        }
+      },
       "put": {
         "security": [
           {
@@ -5671,54 +6081,113 @@
     "AuthToken": {
       "type": "object",
       "properties": {
-        "active": {
-          "type": "boolean",
-          "x-go-name": "Active"
-        },
-        "create_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "CreateDate"
-        },
-        "creator_guid": {
-          "type": "string",
-          "x-go-name": "UserGUID"
-        },
-        "expire_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "ExpireDate"
-        },
-        "guid": {
-          "type": "string",
-          "x-go-name": "GUID"
-        },
-        "ip_address": {
-          "type": "string",
-          "x-go-name": "IPAddress"
-        },
-        "lastusage_date": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "LastUsageDate"
-        },
-        "limit_calls": {
+        "count": {
           "type": "integer",
           "format": "int64",
-          "x-go-name": "LimitCalls"
+          "x-go-name": "Count"
         },
-        "name": {
-          "type": "string",
-          "x-go-name": "Name"
-        },
-        "usage_calls": {
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "UsageCalls"
-        },
-        "user_object": {
-          "type": "object",
-          "x-go-name": "UserObject"
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean",
+                "x-go-name": "Active",
+                "example": true
+              },
+              "create_date": {
+                "type": "string",
+                "x-go-name": "CreateDate",
+                "example": "2021-10-01T17:36:21.80063Z"
+              },
+              "creator_guid": {
+                "type": "string",
+                "x-go-name": "CreatorGUID",
+                "example": "ced47b64-ae93-417b-9e1b-8dd1b1410807"
+              },
+              "expire_date": {
+                "type": "string",
+                "x-go-name": "ExpireDate",
+                "example": "2021-10-09T17:36:21.80063Z"
+              },
+              "guid": {
+                "type": "string",
+                "x-go-name": "GUID",
+                "example": "9e4afbd5-7453-415d-b2d4-181057afbfe5\""
+              },
+              "ip_address": {
+                "type": "string",
+                "x-go-name": "IPAddress"
+              },
+              "lastusage_date": {
+                "type": "string",
+                "x-go-name": "LastusageDate",
+                "example": "2021-10-08T17:36:21.80063Z"
+              },
+              "limit_calls": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "LimitCalls",
+                "example": 1000
+              },
+              "name": {
+                "type": "string",
+                "x-go-name": "Name",
+                "example": "JGoolsby-Api"
+              },
+              "usage_calls": {
+                "type": "integer",
+                "format": "int64",
+                "x-go-name": "UsageCalls",
+                "example": 1
+              },
+              "user_object": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "x-go-name": "Email",
+                    "example": "JGoolsby@example.com"
+                  },
+                  "firstname": {
+                    "type": "string",
+                    "x-go-name": "Firstname",
+                    "example": "James"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "ID",
+                    "example": 1000
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "x-go-name": "Lastname",
+                    "example": "Goolsby"
+                  },
+                  "partid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Partid",
+                    "example": 10
+                  },
+                  "usergroup": {
+                    "type": "string",
+                    "x-go-name": "Usergroup",
+                    "example": "admin"
+                  },
+                  "username": {
+                    "type": "string",
+                    "x-go-name": "Username",
+                    "example": "JGoolsby"
+                  }
+                },
+                "x-go-name": "UserObject"
+              }
+            }
+          },
+          "x-go-name": "Data"
         }
       },
       "x-go-name": "TableAuthToken",
@@ -5793,6 +6262,102 @@
           "type": "string",
           "x-go-name": "Message",
           "example": "successfully updated authtoken"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "AuthTypeList": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "internal": {
+                "type": "object",
+                "properties": {
+                  "enable": {
+                    "type": "boolean",
+                    "x-go-name": "Enable",
+                    "example": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "x-go-name": "Name",
+                    "example": "internal"
+                  },
+                  "position": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Position",
+                    "example": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "x-go-name": "Type",
+                    "example": "internal"
+                  }
+                },
+                "x-go-name": "Internal"
+              },
+              "oauth2": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "enable": {
+                      "type": "boolean",
+                      "x-go-name": "Enable",
+                      "example": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "x-go-name": "Name",
+                      "example": "Google OAuth"
+                    },
+                    "position": {
+                      "type": "integer",
+                      "format": "int64",
+                      "x-go-name": "Position",
+                      "example": 2
+                    },
+                    "provider_image": {
+                      "type": "string",
+                      "x-go-name": "ProviderImage",
+                      "example": "https://lh3.googleusercontent.com/j2SG2D_31o6aFxudKxHoXpTbMZIfA8afeRbxAM-PH9jFJPbj20YN0RUOSiikGWInnMP68lSmWG7j8qM-FGq6Y3bdSBPIwyPe7wPF=w96-rj-sc0xf8f9fa"
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "x-go-name": "ProviderName",
+                      "example": "Google"
+                    },
+                    "type": {
+                      "type": "string",
+                      "x-go-name": "Type",
+                      "example": "oauth"
+                    },
+                    "url": {
+                      "type": "string",
+                      "x-go-name": "URL",
+                      "example": "/api/v3/oauth2/redirect/google"
+                    }
+                  }
+                },
+                "x-go-name": "Oauth2"
+              }
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
         }
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
@@ -7194,6 +7759,27 @@
       "x-go-name": "StreamRemoteData",
       "x-go-package": "github.com/sipcapture/homer-app/data/service"
     },
+    "ListExternalUsers": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "description": "count",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Count"
+        },
+        "data": {
+          "description": "the data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateUserStruct"
+          },
+          "x-go-name": "Data"
+        }
+      },
+      "x-go-name": "GetExternalUser",
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "ListLabels": {
       "type": "array",
       "items": {
@@ -8042,6 +8628,48 @@
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "OAuth2MapToken": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "create_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreateDate"
+        },
+        "datajson": {
+          "type": "object",
+          "x-go-name": "DataJson"
+        },
+        "expire_date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpireDate"
+        },
+        "profile_json": {
+          "type": "object",
+          "x-go-name": "ProfileJson"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
+    "OAuth2TokenExchange": {
+      "type": "object",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string",
+          "x-go-name": "OneTimeToken",
+          "example": "token"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "PCAPResponse": {
       "type": "object",
       "properties": {
@@ -8175,7 +8803,7 @@
       },
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
-    "RemoteRequest": {
+    "RemoteObject": {
       "type": "object",
       "properties": {
         "param": {
@@ -8221,7 +8849,6 @@
           "x-go-name": "Timestamp"
         }
       },
-      "x-go-name": "RemoteObject",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
     "RemoteResponseData": {
@@ -8981,7 +9608,7 @@
         "data": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/SearchTransactionRtcp"
+            "$ref": "#/definitions/SearchTransactionRtp"
           },
           "x-go-name": "Data"
         }
@@ -9489,6 +10116,45 @@
       "x-go-name": "UserTokenSuccessfulResponse",
       "x-go-package": "github.com/sipcapture/homer-app/model"
     },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "type": "boolean",
+          "x-go-name": "UserAdmin"
+        },
+        "avatar": {
+          "type": "string",
+          "x-go-name": "Avatar"
+        },
+        "displayname": {
+          "type": "string",
+          "x-go-name": "DisplayName"
+        },
+        "external_auth": {
+          "type": "boolean",
+          "x-go-name": "ExternalAuth"
+        },
+        "external_profile": {
+          "type": "string",
+          "x-go-name": "ExternalProfile"
+        },
+        "group": {
+          "type": "string",
+          "x-go-name": "UserGroup"
+        },
+        "guid": {
+          "type": "string",
+          "x-go-name": "GUID",
+          "example": "dashboard"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "UserName"
+        }
+      },
+      "x-go-package": "github.com/sipcapture/homer-app/model"
+    },
     "UserSetting": {
       "type": "object",
       "properties": {
@@ -9616,6 +10282,11 @@
           "type": "object",
           "x-go-name": "Data"
         },
+        "external": {
+          "description": "external",
+          "type": "boolean",
+          "x-go-name": "IsExternal"
+        },
         "guid": {
           "description": "should be a unique value representing user",
           "type": "string",
@@ -9676,5 +10347,10 @@
       "name": "Authorization",
       "in": "header"
     }
-  }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
 }

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// swagger:model RemoteRequest
+// swagger:model RemoteObject
 type RemoteObject struct {
 	Param struct {
 		// example: 100

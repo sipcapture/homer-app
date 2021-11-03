@@ -15,7 +15,7 @@ type HepsubsearchController struct {
 	HepsubsearchService *service.HepsubsearchService
 }
 
-// swagger:operation POST /hepsub/search hep hepSubSearchDoHepsubsearch
+// swagger:route POST /hepsub/search hep hepSubSearchDoHepsubsearch
 //
 // Add hepsubsearch item
 // ---
@@ -23,6 +23,14 @@ type HepsubsearchController struct {
 // - application/json
 // produces:
 // - application/json
+// parameters:
+// + name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     type: SearchObject
+//   required: true
 // Security:
 // - bearer: []
 //

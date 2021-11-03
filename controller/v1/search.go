@@ -79,7 +79,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		} else {
 			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
 				aliasData[ip.String()+":"+Port] = row.Alias
-				if config.Setting.UseCaptureIDInAlias {
+				if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias {
 					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
 				}
 			}
@@ -253,7 +253,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 		} else {
 			for ip := ipAddr.Mask(ipNet.Mask); ipNet.Contains(ip); inc(ip) {
 				aliasData[ip.String()+":"+Port] = row.Alias
-				if config.Setting.UseCaptureIDInAlias {
+				if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias {
 					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
 				}
 			}

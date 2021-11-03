@@ -33,10 +33,10 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"reflect"
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
@@ -338,8 +338,8 @@ func configureServiceObjects() {
 	servicesObject.serviceGrafana = getGrafanaSession()
 
 	/***********************************/
-	config.Setting.IsolateQuery = viper.GetString("group_settings.isolate_query")
-	config.Setting.IsolateGroup = viper.GetString("group_settings.isolate_group")
+	config.Setting.MAIN_SETTINGS.IsolateQuery = viper.GetString("group_settings.isolate_query")
+	config.Setting.MAIN_SETTINGS.IsolateGroup = viper.GetString("group_settings.isolate_group")
 
 	/***********************************/
 	if viper.IsSet("transaction_settings.deduplicate") {
@@ -355,7 +355,7 @@ func configureServiceObjects() {
 
 	/* CaptID alias */
 	if viper.IsSet("api_settings.add_captid_to_resolve") {
-		config.Setting.UseCaptureIDInAlias = viper.GetBool("api_settings.add_captid_to_resolve")
+		config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias = viper.GetBool("api_settings.add_captid_to_resolve")
 	}
 
 	/* init map */
@@ -415,21 +415,21 @@ func configureServiceObjects() {
 
 	/***********************************/
 	if viper.IsSet("auth_settings.type") {
-		config.Setting.DefaultAuth = viper.GetString("auth_settings.type")
+		config.Setting.MAIN_SETTINGS.DefaultAuth = viper.GetString("auth_settings.type")
 	}
 
 	/* auth settings */
 	if viper.IsSet("auth_settings.user_groups") {
-		config.Setting.UserGroups = viper.GetStringSlice("auth_settings.user_groups")
+		config.Setting.MAIN_SETTINGS.UserGroups = viper.GetStringSlice("auth_settings.user_groups")
 	}
 
 	/* check the auth type */
-	if config.Setting.DefaultAuth == "" {
-		config.Setting.DefaultAuth = "internal"
+	if config.Setting.MAIN_SETTINGS.DefaultAuth == "" {
+		config.Setting.MAIN_SETTINGS.DefaultAuth = "internal"
 	}
 
 	if config.Setting.OAUTH2_SETTINGS.Enable {
-		config.Setting.OAuth2Config = oauth2.Config{
+		config.Setting.MAIN_SETTINGS.OAuth2Config = oauth2.Config{
 			ClientID:     config.Setting.OAUTH2_SETTINGS.ClientID,
 			ClientSecret: config.Setting.OAUTH2_SETTINGS.ClientSecret,
 			Scopes:       config.Setting.OAUTH2_SETTINGS.Scope,
@@ -442,7 +442,7 @@ func configureServiceObjects() {
 	}
 
 	/* Check LDAP here */
-	switch config.Setting.DefaultAuth {
+	switch config.Setting.MAIN_SETTINGS.DefaultAuth {
 	case "ldap":
 
 		defaults.SetDefaults(&ldapClient) //<-- This set the defaults values
@@ -1704,13 +1704,12 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 
 func ShowCurrentConfigToConsole() {
 
-	heputils.Colorize(heputils.ColorRed, "\r\nCurrent variables:\r\n")
+	heputils.Colorize(heputils.ColorRed, "\r\nMAIN_SETTINGS:\r\n")
 
-	s := reflect.ValueOf(&config.Setting).Elem()
-	typeOfT := s.Type()
+	spew.Dump(config.Setting)
 
-	for i := 0; i < s.NumField(); i++ {
-		f := s.Field(i)
-		fmt.Printf("%d: %s %s = %v\n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
-	}
+	heputils.Colorize(heputils.ColorRed, "\r\nLDAP:\r\n")
+
+	spew.Dump(ldapClient)
+
 }

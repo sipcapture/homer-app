@@ -65,10 +65,10 @@ func (us *UserService) GetUserByUUID(GUID, UserName string) ([]*model.TableUser,
 /* get all */
 func (us *UserService) GetGroups() (string, error) {
 
-	count := len(config.Setting.UserGroups)
+	count := len(config.Setting.MAIN_SETTINGS.UserGroups)
 	reply := gabs.New()
 	reply.Set(count, "count")
-	reply.Set(config.Setting.UserGroups, "data")
+	reply.Set(config.Setting.MAIN_SETTINGS.UserGroups, "data")
 	return reply.String(), nil
 }
 
@@ -82,7 +82,7 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 		return errors.New("empty password")
 	}
 
-	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+	if !heputils.ElementRealExists(config.Setting.MAIN_SETTINGS.UserGroups, user.UserGroup) {
 		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
 		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
 	}
@@ -124,7 +124,7 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 		return fmt.Errorf("the user with id '%s' was not found", user.GUID)
 	}
 
-	if !heputils.ElementRealExists(config.Setting.UserGroups, user.UserGroup) {
+	if !heputils.ElementRealExists(config.Setting.MAIN_SETTINGS.UserGroups, user.UserGroup) {
 		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
 		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
 	}
@@ -302,7 +302,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 	replyInternal.Set("internal", "type")
 	replyInternal.Set(1, "position")
 
-	if config.Setting.DefaultAuth == "internal" {
+	if config.Setting.MAIN_SETTINGS.DefaultAuth == "internal" {
 		replyInternal.Set(true, "enable")
 	} else {
 		replyInternal.Set(false, "enable")
@@ -313,7 +313,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 	replyLdap.Set("ldap", "type")
 	replyLdap.Set(2, "position")
 
-	if config.Setting.DefaultAuth == "ldap" {
+	if config.Setting.MAIN_SETTINGS.DefaultAuth == "ldap" {
 		replyLdap.Set(true, "enable")
 	} else {
 		replyLdap.Set(false, "enable")

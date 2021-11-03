@@ -389,7 +389,7 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	logger.Debug("Doing URL for provider", providerName)
 
-	u := config.Setting.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
+	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
 		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
 
@@ -442,14 +442,14 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	oAuth2Object := model.OAuth2MapToken{}
 
-	token, err := config.Setting.OAuth2Config.Exchange(context.Background(), code,
+	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code,
 		oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 	}
 
 	//scope := c.QueryParam("scope")
-	tokenSource := config.Setting.OAuth2Config.TokenSource(context.Background(), token)
+	tokenSource := config.Setting.MAIN_SETTINGS.OAuth2Config.TokenSource(context.Background(), token)
 
 	client := oauth2.NewClient(context.Background(), tokenSource)
 	resp, _ := client.Get(config.Setting.OAUTH2_SETTINGS.ProfileURL)

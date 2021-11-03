@@ -343,11 +343,11 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	sql := "create_date between ? AND ?"
 	dataArrayValues := []interface{}{}
 
-	logger.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)
 	logger.Debug("USERGROUP ", userGroup)
 
-	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
-		sql = sql + " AND " + config.Setting.IsolateQuery
+	if config.Setting.MAIN_SETTINGS.IsolateGroup != "" && config.Setting.MAIN_SETTINGS.IsolateGroup == userGroup {
+		sql = sql + " AND " + config.Setting.MAIN_SETTINGS.IsolateQuery
 	}
 
 	var sLimit int
@@ -468,7 +468,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		}
 
 		//add capture ID
-		if config.Setting.UseCaptureIDInAlias && dataElement.Exists("captureId") {
+		if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias && dataElement.Exists("captureId") {
 
 			captureID := dataElement.S("captureId").Data().(string)
 
@@ -1147,11 +1147,11 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		query += "AND " + fieldKey + " in (?)"
 	}
 
-	logger.Debug("ISOLATEGROUP ", config.Setting.IsolateGroup)
+	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)
 	logger.Debug("USERGROUP ", userGroup)
 
-	if config.Setting.IsolateGroup != "" && config.Setting.IsolateGroup == userGroup {
-		query = query + " AND " + config.Setting.IsolateQuery
+	if config.Setting.MAIN_SETTINGS.IsolateGroup != "" && config.Setting.MAIN_SETTINGS.IsolateGroup == userGroup {
+		query = query + " AND " + config.Setting.MAIN_SETTINGS.IsolateQuery
 	}
 
 	for _, ip := range whitelist {
@@ -1358,7 +1358,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		dstIPPortZero := callElement.DstIP + ":" + strconv.Itoa(0)
 
 		//add capture ID
-		if config.Setting.UseCaptureIDInAlias && dataElement.Exists("captureId") {
+		if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias && dataElement.Exists("captureId") {
 
 			captureID := dataElement.S("captureId").Data().(string)
 

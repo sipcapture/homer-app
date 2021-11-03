@@ -14,9 +14,8 @@
 //
 //     Produces:
 //     - application/json
-//
 //     Security:
-//     - bearer
+//     - bearer:
 //
 //     SecurityDefinitions:
 //     bearer:

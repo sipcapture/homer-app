@@ -16,7 +16,7 @@ type GrafanaController struct {
 
 // swagger:route GET /proxy/grafana/url proxy grafanaGrafanaURL
 //
-// Returns data based upon filtered json
+// Returns Grafana Proxy Url
 // ---
 // produces:
 // - application/json
@@ -44,7 +44,7 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 
 // swagger:route GET /proxy/grafana/org proxy grafanaGrafanaORG
 //
-// Returns data based upon filtered json
+// Returns data about Grafana organization
 // ---
 // produces:
 // - application/json
@@ -76,7 +76,7 @@ func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 
 // swagger:route GET /proxy/grafana/folders proxy grafanaGrafanaFolders
 //
-// Returns data based upon filtered json
+// Returns list of folders from Grafana
 // ---
 // produces:
 // - application/json
@@ -108,7 +108,7 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 
 // swagger:route GET /proxy/grafana/dashboards/uid/{uid} proxy grafanaGrafanaGetDashboardAgainstUUID
 //
-// Returns data based upon filtered json
+// Returns dashboard from Grafana with specific UID
 // ---
 // produces:
 // - application/json
@@ -149,7 +149,7 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 
 // swagger:route GET /proxy/grafana/search/{uid} proxy GrafanaGetFoldersAgainstUUID
 //
-// Returns data based upon filtered json
+// Returns Grafana folder based on UID
 // ---
 // produces:
 // - application/json

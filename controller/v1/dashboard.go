@@ -73,14 +73,14 @@ func (dbc *DashBoardController) GetDashBoardLists(c echo.Context) error {
 
 // swagger:route GET /dashboard/store/{dashboardId} dashboard dashboardGetDashBoard
 //
-// Get dashboard by param
+// Get dashboard by dashboard ID
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// + name: dashboard ID
+// + name: dashboardId
 //   in: path
 //   example: home
 //   description: ID of dashboard
@@ -146,14 +146,14 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 // swagger:route POST /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
 //
-// Add dashboard
+// Add new dashboard
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// + name: dashboard ID
+// + name: dashboardId
 //   in: path
 //   example: home
 //   description: the ID of dashboard
@@ -204,16 +204,16 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 }
 
-// swagger:route PUT /dashboard/store/{dashboardId} dashboard dashboardInsertDashboard
+// swagger:route PUT /dashboard/store/{dashboardId} dashboard UpdateDashboard
 //
-// Add dashboard
+// Update dashboard
 // ---
 // consumes:
 // - application/json
 // produces:
 // - application/json
 // parameters:
-// + name: dashboard ID
+// + name: dashboardId
 //   in: path
 //   example: home
 //   description: the ID of dashboard
@@ -271,7 +271,7 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: dashboard ID
+// + name: dashboardId
 //   in: path
 //   example: home
 //   description: the ID of dashboard

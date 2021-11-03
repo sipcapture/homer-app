@@ -32,14 +32,14 @@ func (pc *ProfileController) GetHepsub(c echo.Context) error {
 // - application/json
 // produces:
 // - application/json
-// Security:
-// - bearer: []
+// securityDefinitions:
+//   bearer:
+//     type: apiKey
+//     in: header
+//     name: Authorization
+// security:
+//   - bearer: []
 //
-// SecurityDefinitions:
-// bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
 //
 // responses:
 //   201: body:HepsubSchema
@@ -56,7 +56,7 @@ func (pc *ProfileController) GetDashboardList(c echo.Context) error {
 
 // swagger:route GET /database/node/list profile profileGetDBNodeList
 //
-// Get mappings
+// Get list of DB nodes
 // ---
 // consumes:
 // - application/json

@@ -112,3 +112,37 @@ type UserDeleteSuccessfulResponse struct {
 	// example: successfully deleted user
 	Message string `json:"message"`
 }
+
+//swagger:model AuthTypeList
+type AuthTypeList struct {
+	Count int `json:"count"`
+	Data  map[string]struct {
+		Internal struct {
+			// example: true
+			Enable bool `json:"enable"`
+			// example: internal
+			Name string `json:"name"`
+			// example: 1
+			Position int `json:"position"`
+			// example: internal
+			Type string `json:"type"`
+		} `json:"internal"`
+		Oauth2 []struct {
+			// example: true
+			Enable bool `json:"enable"`
+			// example: Google OAuth
+			Name string `json:"name"`
+			// example: 2
+			Position int `json:"position"`
+			// example: https://lh3.googleusercontent.com/j2SG2D_31o6aFxudKxHoXpTbMZIfA8afeRbxAM-PH9jFJPbj20YN0RUOSiikGWInnMP68lSmWG7j8qM-FGq6Y3bdSBPIwyPe7wPF=w96-rj-sc0xf8f9fa
+			ProviderImage string `json:"provider_image"`
+			// example: Google
+			ProviderName string `json:"provider_name"`
+			// example: oauth
+			Type string `json:"type"`
+			// example: /api/v3/oauth2/redirect/google
+			URL string `json:"url"`
+		} `json:"oauth2"`
+	} `json:"data"`
+	Message string `json:"message"`
+}

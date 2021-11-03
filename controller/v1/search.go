@@ -218,7 +218,7 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     type: SearchRequest
+//     type: SearchObject
 //   required: true
 // responses:
 //   200: body:SearchTransaction
@@ -286,7 +286,7 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     type: SearchRequest
+//     type: SearchObject
 //   required: true
 //
 // responses:
@@ -333,7 +333,7 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     type: SearchRequest
+//     type: SearchObject
 //   required: true
 //
 // responses:
@@ -391,7 +391,7 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     type: SearchRequest
+//     type: SearchObject
 //   required: true
 //
 // responses:
@@ -440,10 +440,10 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 // produces:
 // - application/octet-stream
 // Security:
-// - bearer: []
+// - bearer:
 //
 // SecurityDefinitions:
-// bearer:
+//   bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
@@ -454,7 +454,7 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     type: SearchRequest
+//     type: SearchObject
 //   required: true
 //
 // responses:
@@ -507,21 +507,16 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     "$ref": "#/definitions/ExportCallData"
+//     type: SearchObject
 //   required: true
-//  Security:
-//   - JWT
-//   - ApiKeyAuth
+// Security:
+// - bearer: []
 //
 // SecurityDefinitions:
-// JWT:
+// bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
 //
 // responses:
 //   201: body:ListUsers
@@ -579,21 +574,16 @@ func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 //   type: object
 //   description: SearchObject parameters
 //   schema:
-//     "$ref": "#/definitions/ExportCallData"
+//     type: SearchObject
 //   required: true
-//  Security:
-//   - JWT
-//   - ApiKeyAuth
+// Security:
+// - bearer: []
 //
 // SecurityDefinitions:
-// JWT:
+// bearer:
 //      type: apiKey
 //      name: Authorization
 //      in: header
-// ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
 //
 // responses:
 //   201: body:ListUsers

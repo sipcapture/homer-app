@@ -23,7 +23,7 @@ type AuthtokenController struct {
 
 // swagger:route GET /token/auth token authTokenGetAuthtoken
 //
-// Get all tokens
+// Get all authentication token data
 // ---
 // consumes:
 // - application/json
@@ -52,7 +52,7 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 // swagger:route GET /token/auth/{guid} token authTokenGetAuthtokenAgainstGUID
 //
-// Get token by guid
+// Get authentication token data by guid
 // ---
 // consumes:
 // - application/json
@@ -88,7 +88,7 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 
 // swagger:route POST /token/auth token authTokenAddAuthToken
 //
-// Add token
+// Add authentication token
 // ---
 // consumes:
 // - application/json
@@ -147,7 +147,7 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 
 // swagger:route PUT /token/auth/{guid} token authTokenUpdateAuthtokenAgainstGUID
 //
-// Update token by guid
+// Update authentication token data by guid
 // ---
 // consumes:
 // - application/json
@@ -205,7 +205,7 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 
 // swagger:route DELETE /token/auth/{guid} token authTokenDeleteAuthtokenAgainstGUID
 //
-// Delete token by guid
+// Delete authentication token by guid
 // ---
 // consumes:
 // - application/json

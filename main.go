@@ -130,7 +130,7 @@ type CommandLineFlags struct {
 	LogName                   *string    `json:"log_name_webapp"`
 	APIPrefix                 *string    `json:"api_prefix"`
 	WatchConfig               *bool      `json:"watch_config"`
-	PrintOutConfig            *bool      `json:"print_out_config"`
+	ShowCurrentConfig         *bool      `json:"show_current_config"`
 }
 
 //params for  Services
@@ -194,7 +194,7 @@ func initFlags() {
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 	appFlags.APIPrefix = flag.String("webapp-api-prefix", "", "API prefix.")
 	appFlags.WatchConfig = flag.Bool("watch-config", false, "Watch the configuration for changes")
-	appFlags.PrintOutConfig = flag.Bool("print-out-config", false, "print out the current config and exit")
+	appFlags.ShowCurrentConfig = flag.Bool("show-current-config", false, "print out the current config and exit")
 
 	flag.Parse()
 }
@@ -260,8 +260,8 @@ func main() {
 	// update version
 	updateVersionApplication(servicesObject.configDBSession)
 
-	if *appFlags.PrintOutConfig {
-		printOutConfigToConsole()
+	if *appFlags.ShowCurrentConfig {
+		ShowCurrentConfigToConsole()
 		os.Exit(0)
 	}
 
@@ -1702,7 +1702,7 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 	}
 }
 
-func printOutConfigToConsole() {
+func ShowCurrentConfigToConsole() {
 
 	heputils.Colorize(heputils.ColorRed, "\r\nCurrent variables:\r\n")
 

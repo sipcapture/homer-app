@@ -78,7 +78,6 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 
 var appFlags CommandLineFlags
 var ldapClient ldap.LDAPClient
-var authType string
 var httpAuth httpauth.Client
 
 type arrayFlags []string
@@ -812,7 +811,7 @@ func performV1APIRouting(e *echo.Echo) {
 	// accessible web services will fall in this group
 	acc := e.Group(prefix + "/api/v3")
 
-	switch authType {
+	switch config.Setting.MAIN_SETTINGS.DefaultAuth {
 	case "ldap":
 		apirouterv1.RouteUserApis(acc, servicesObject.configDBSession, &ldapClient, nil)
 	case "http_auth":

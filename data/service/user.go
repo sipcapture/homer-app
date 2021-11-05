@@ -277,7 +277,11 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 		if userData.UserGroup != "" && strings.Contains(strings.ToLower(userData.UserGroup), "admin") {
 			userData.IsAdmin = true
 		}
+	}
 
+	if config.Setting.MAIN_SETTINGS.EnableGravatar && userData.Email != "" {
+		hash := md5.Sum([]byte(userData.Email))
+		userData.Avatar = fmt.Sprintf(config.Setting.MAIN_SETTINGS.GravatarUrl, hex.EncodeToString(hash[:]))
 	}
 
 	token, err := auth.Token(userData)
@@ -380,6 +384,11 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 		userData.Avatar = userJsonData.S("picture").Data().(string)
 	}
 
+	if config.Setting.OAUTH2_SETTINGS.EnableGravatar && userData.Email != "" {
+		hash := md5.Sum([]byte(userData.Email))
+		userData.Avatar = fmt.Sprintf(config.Setting.OAUTH2_SETTINGS.GravatarUrl, hex.EncodeToString(hash[:]))
+	}
+
 	if userJsonData.Exists("id") {
 
 		s := (userJsonData.S("id").Data().(string))
@@ -403,7 +412,7 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 }
 
 // this method gets all users from database
-func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (model.TableUser, error) {
+/*func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (model.TableUser, error) {
 
 	userProfile := model.TableUser{}
 
@@ -419,6 +428,7 @@ func (us *UserService) GetUserFromToken(userTokenProfile *auth.JwtUserClaim) (mo
 
 	return userProfile, nil
 }
+*/
 
 /* get all */
 func (us *UserService) GetUserProfileFromToken(userTokenProfile *auth.JwtUserClaim) (string, error) {

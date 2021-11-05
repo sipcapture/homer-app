@@ -103,6 +103,8 @@
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",
+    "gravatar": false,
+    "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
     "token_expire": 1200,
     "user_groups": ["admin", "user", "support"]
   },
@@ -150,6 +152,8 @@
     "profile_url": "https://www.googleapis.com/oauth2/v1/userinfo",
     "provider_name": "google",
     "scope": ["email", "openid", "profile"],
+    "gravatar": false,
+    "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
     "provider_image": ""
   },
   "decoder_shark": {

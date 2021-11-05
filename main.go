@@ -407,6 +407,15 @@ func configureServiceObjects() {
 		config.Setting.OAUTH2_SETTINGS.ProfileURL = viper.GetString("oauth2.profile_url")
 	}
 
+	/***********************************/
+	if viper.IsSet("oauth2.gravatar") {
+		config.Setting.OAUTH2_SETTINGS.EnableGravatar = viper.GetBool("oauth2.gravatar")
+	}
+
+	/***********************************/
+	if viper.IsSet("oauth2.gravatar_url") {
+		config.Setting.OAUTH2_SETTINGS.GravatarUrl = viper.GetString("oauth2.gravatar_url")
+	}
 	/*********** DASHBOARD *******************/
 	if viper.IsSet("dashboard_settings.dashboard_home") {
 		config.Setting.DASHBOARD_SETTINGS.ExternalHomeDashboard = viper.GetString("dashboard_settings.dashboard_home")
@@ -415,6 +424,11 @@ func configureServiceObjects() {
 	/***********************************/
 	if viper.IsSet("auth_settings.type") {
 		config.Setting.MAIN_SETTINGS.DefaultAuth = viper.GetString("auth_settings.type")
+	}
+
+	/***********************************/
+	if viper.IsSet("auth_settings.gravatar") {
+		config.Setting.MAIN_SETTINGS.EnableGravatar = viper.GetBool("auth_settings.gravatar")
 	}
 
 	/* auth settings */

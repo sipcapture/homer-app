@@ -15,6 +15,8 @@ type HomerSettingServer struct {
 		IsolateGroup        string `default:""`
 		UseCaptureIDInAlias bool   `default:"false"`
 		DefaultAuth         string `default:"internal"`
+		EnableGravatar      bool   `default:"false"`
+		GravatarUrl         string `default:"https://www.gravatar.com/avatar/%s.jpg"`
 		OAuth2Config        oauth2.Config
 		GlobalToken         *oauth2.Token
 		UserGroups          []string `default:"[admin,user,support]"`
@@ -54,6 +56,8 @@ type HomerSettingServer struct {
 		StateValue           string   `default:"jkwh027yasj"`
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
 		Scope                []string `default:"[email,openid,profile]"`
+		EnableGravatar       bool     `default:"false"`
+		GravatarUrl          string   `default:"https://www.gravatar.com/avatar/%s.jpg"`
 		ExpireSSOToken       uint32   `default:"5"`
 	}
 

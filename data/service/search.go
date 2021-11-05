@@ -1089,7 +1089,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 			} else if typeReport == 1 {
 				err := export.WriteDataPcapBuffer(h)
 				if err != nil {
-					logger.Error("write error to the pcap buffer", err)
+					logger.Error("write error to the pcap buffer = ", err)
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/sipcapture/homer-app/utils/heputils"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 //
@@ -156,11 +157,16 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 	if testInput.To4() == nil && testInput.To16() != nil {
 		ethType = layers.EthernetTypeIPv6
 	}
+
+	logger.Debug("source IP ["+packet.SrcIP+"], type: ", ethType)
+
 	/* test if DstHost is IPv6 */
 	testInput = net.ParseIP(packet.DstIP)
 	if testInput.To4() == nil && testInput.To16() != nil {
 		ethType = layers.EthernetTypeIPv6
 	}
+
+	logger.Debug("destination IP ["+packet.DstIP+"], type: ", ethType)
 
 	ethernetLayer := &layers.Ethernet{
 		SrcMAC:       net.HardwareAddr{0x02, 0x5d, 0x69, 0x74, 0x20, 0x12},
@@ -200,6 +206,7 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		)
 
 		if err != nil {
+			logger.Error("bad serialize layer for IPv4 = ", err)
 			return err
 		}
 
@@ -229,6 +236,7 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		)
 
 		if err != nil {
+			logger.Error("bad serialize layer for IPv6 = ", err)
 			return err
 		}
 	}
@@ -237,6 +245,10 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 	capInfo.CaptureLength = capInfo.Length
 
 	err := w.WritePcapPacket(capInfo, buffer.Bytes())
+
+	if err != nil {
+		logger.Error("bad WritePcapPacket = ", err)
+	}
 
 	return err
 }

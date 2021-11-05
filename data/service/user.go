@@ -360,6 +360,8 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 
 	userData := model.TableUser{}
 
+	logger.Debug("LoginUserUsingOauthToken json profile: ", string(oAuth2Object.ProfileJson))
+
 	if userJsonData.Exists("email") {
 		userData.Email = userJsonData.S("email").Data().(string)
 		userData.UserName = userData.Email

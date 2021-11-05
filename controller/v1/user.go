@@ -479,7 +479,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	oAuth2Object.Oauth2Token = token
 	oAuth2Object.CreateDate = time.Now()
 	oAuth2Object.ExpireDate = time.Now().Add(time.Duration(config.Setting.OAUTH2_SETTINGS.ExpireSSOToken) * time.Minute)
-	logger.Debug("AuthSericeRequest GenerateToken: ", ssoToken, " Object: ", oAuth2Object)
+	logger.Debug("AuthSericeRequest GenerateToken: ", ssoToken)
 
 	config.OAuth2TokenMap[ssoToken] = oAuth2Object
 

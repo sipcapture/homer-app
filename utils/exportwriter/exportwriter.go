@@ -150,28 +150,35 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		capInfo.Timestamp, _ = time.Parse(time.RFC3339, packet.CreateDate)
 	}
 	capInfo.InterfaceIndex = 1
-	ethType := layers.EthernetTypeIPv4
+	ethTypeSource := layers.EthernetTypeIPv4
+	ethTypeDestination := layers.EthernetTypeIPv4
 
 	/* test if SrcHost is IPv6 */
 	testInput := net.ParseIP(packet.SrcIP)
 	if testInput.To4() == nil && testInput.To16() != nil {
-		ethType = layers.EthernetTypeIPv6
+		ethTypeSource = layers.EthernetTypeIPv6
 	}
 
-	logger.Debug("source IP ["+packet.SrcIP+"], type: ", ethType)
+	logger.Debug("source IP ["+packet.SrcIP+"], type: ", ethTypeSource)
 
 	/* test if DstHost is IPv6 */
 	testInput = net.ParseIP(packet.DstIP)
 	if testInput.To4() == nil && testInput.To16() != nil {
-		ethType = layers.EthernetTypeIPv6
+		ethTypeDestination = layers.EthernetTypeIPv6
 	}
 
-	logger.Debug("destination IP ["+packet.DstIP+"], type: ", ethType)
+	logger.Debug("destination IP ["+packet.DstIP+"], type: ", ethTypeDestination)
+
+	ethTypeFinal := layers.EthernetTypeIPv4
+
+	if ethTypeSource == layers.EthernetTypeIPv6 && ethTypeDestination == layers.EthernetTypeIPv6 {
+		ethTypeFinal = layers.EthernetTypeIPv6
+	}
 
 	ethernetLayer := &layers.Ethernet{
 		SrcMAC:       net.HardwareAddr{0x02, 0x5d, 0x69, 0x74, 0x20, 0x12},
 		DstMAC:       net.HardwareAddr{0x06, 0x3d, 0x20, 0x12, 0x10, 0x20},
-		EthernetType: ethType,
+		EthernetType: ethTypeFinal,
 	}
 
 	buffer := gopacket.NewSerializeBuffer()
@@ -180,14 +187,53 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 		ComputeChecksums: true,
 	}
 
-	if ethType == layers.EthernetTypeIPv4 {
+	if ethTypeFinal == layers.EthernetTypeIPv4 {
 
-		ipLayer := &layers.IPv4{
-			SrcIP:    net.ParseIP(packet.SrcIP),
-			DstIP:    net.ParseIP(packet.DstIP),
-			Version:  4,
-			TTL:      54,
-			Protocol: layers.IPProtocolUDP,
+		var ipLayer *layers.IPv4
+		var ipLayerv6 *layers.IPv6
+
+		if ethTypeSource == layers.EthernetTypeIPv4 && ethTypeDestination == layers.EthernetTypeIPv4 {
+			ipLayer = &layers.IPv4{
+				SrcIP:    net.ParseIP(packet.SrcIP),
+				DstIP:    net.ParseIP(packet.DstIP),
+				Version:  4,
+				TTL:      54,
+				Protocol: layers.IPProtocolUDP,
+			}
+		} else if ethTypeSource == layers.EthernetTypeIPv6 && ethTypeDestination == layers.EthernetTypeIPv4 {
+
+			ipLayer = &layers.IPv4{
+				SrcIP:    net.ParseIP(packet.DstIP),
+				DstIP:    net.ParseIP(packet.DstIP),
+				Version:  4,
+				TTL:      54,
+				Protocol: layers.IPProtocolIPv6,
+			}
+
+			ipLayerv6 = &layers.IPv6{
+				SrcIP:      net.ParseIP(packet.SrcIP),
+				DstIP:      net.ParseIP(packet.SrcIP),
+				Version:    6,
+				HopLimit:   64,
+				NextHeader: layers.IPProtocolUDP,
+			}
+		} else if ethTypeSource == layers.EthernetTypeIPv4 && ethTypeDestination == layers.EthernetTypeIPv6 {
+
+			ipLayer = &layers.IPv4{
+				SrcIP:    net.ParseIP(packet.SrcIP),
+				DstIP:    net.ParseIP(packet.SrcIP),
+				Version:  4,
+				TTL:      54,
+				Protocol: layers.IPProtocolIPv6,
+			}
+
+			ipLayerv6 = &layers.IPv6{
+				SrcIP:      net.ParseIP(packet.DstIP),
+				DstIP:      net.ParseIP(packet.DstIP),
+				Version:    6,
+				HopLimit:   64,
+				NextHeader: layers.IPProtocolUDP,
+			}
 		}
 
 		udpLayer := &layers.UDP{
@@ -200,10 +246,17 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 			return nil
 		}
 
-		err = gopacket.SerializeLayers(buffer, opts,
-			ethernetLayer, ipLayer, udpLayer,
-			gopacket.Payload(packet.Message),
-		)
+		if ipLayerv6 != nil {
+			err = gopacket.SerializeLayers(buffer, opts,
+				ethernetLayer, ipLayer, ipLayerv6, udpLayer,
+				gopacket.Payload(packet.Message),
+			)
+		} else {
+			err = gopacket.SerializeLayers(buffer, opts,
+				ethernetLayer, ipLayer, udpLayer,
+				gopacket.Payload(packet.Message),
+			)
+		}
 
 		if err != nil {
 			logger.Error("bad serialize layer for IPv4 = ", err)

@@ -126,9 +126,18 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 	for k, v := range elems {
 		mapData := v.(map[string]interface{})
 		if formVal, ok := mapData["value"]; ok {
-			formValue := formVal.(string)
+			formValue := ""
 			formName := mapData["name"].(string)
 			formType := mapData["type"].(string)
+
+			//We should be sure  that this is value string
+			switch x := formVal.(type) {
+			case string:
+				formValue = formVal.(string)
+			default:
+				logger.Error("Unsupported type:", x, ", Value: ", formVal, "Name:", formName, ", Type: ", formType, "MAPDATA: ", mapData)
+				continue
+			}
 
 			if formName == "smartinput" {
 
@@ -225,7 +234,7 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 					sql = " AND " + sql
 				}
 
-				logger.Error("NEW SQL: ", sql)
+				logger.Debug("NEW SQL: ", sql)
 
 				continue
 			}

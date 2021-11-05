@@ -200,6 +200,7 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 				TTL:      54,
 				Protocol: layers.IPProtocolUDP,
 			}
+			//this is a workaround for mix IPv4 and IPv6 source and destination. Normaly it should never happend
 		} else if ethTypeSource == layers.EthernetTypeIPv6 && ethTypeDestination == layers.EthernetTypeIPv4 {
 
 			ipLayer = &layers.IPv4{

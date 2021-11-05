@@ -431,6 +431,11 @@ func configureServiceObjects() {
 		config.Setting.MAIN_SETTINGS.EnableGravatar = viper.GetBool("auth_settings.gravatar")
 	}
 
+	/***********************************/
+	if viper.IsSet("auth_settings.gravatar_url") {
+		config.Setting.MAIN_SETTINGS.GravatarUrl = viper.GetString("auth_settings.gravatar_url")
+	}
+
 	/* auth settings */
 	if viper.IsSet("auth_settings.user_groups") {
 		config.Setting.MAIN_SETTINGS.UserGroups = viper.GetStringSlice("auth_settings.user_groups")

@@ -123,20 +123,24 @@ func (dbc *DashBoardController) GetDashBoard(c echo.Context) error {
 
 			_, err := dbc.DashBoardService.InsertDashboardByName(username, "home", dashboardHome)
 			if err != nil {
+				logger.Error("Couldn't create dashboard home: ", err.Error())
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}
 
 			dbc.DashBoardService.InsertDashboardByName(username, "smartsearch", jsonschema.DashboardSmartSearch)
 			if err != nil {
+				logger.Error("Couldn't create dashboard smartsearch: ", err.Error())
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.HomeDashboardNotExists)
 			}
 
 			reply, err = dbc.DashBoardService.GetDashBoard(username, dashboardID)
 			if err != nil {
+				logger.Error("Couldn't get dashboards : ", err.Error())
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DashboardNotExists)
 			}
 
 		} else {
+			logger.Error("Couldn't find correct dashboard : ", err.Error())
 			return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DashboardNotExists)
 		}
 	}

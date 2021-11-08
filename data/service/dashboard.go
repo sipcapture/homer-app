@@ -179,6 +179,8 @@ func (us *DashBoardService) InsertDashboardByName(username string, dashboardName
 	newDashboard.Data = data
 
 	if err := us.Session.Debug().Table("user_settings").Save(&newDashboard).Error; err != nil {
+		logger.Error("Couldn't add dashboard to table user_settings: ", err.Error())
+		logger.Debug("Dashboard: user_settings: ", string(data))
 		return "", err
 	}
 

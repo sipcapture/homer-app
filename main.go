@@ -249,6 +249,9 @@ func main() {
 		os.Exit(0)
 	}
 
+	//http client
+	initHttpClient()
+
 	configureServiceObjects()
 
 	/* force to upgrade */
@@ -439,6 +442,11 @@ func configureServiceObjects() {
 	/* auth settings */
 	if viper.IsSet("auth_settings.user_groups") {
 		config.Setting.MAIN_SETTINGS.UserGroups = viper.GetStringSlice("auth_settings.user_groups")
+	}
+
+	/***********************************/
+	if viper.IsSet("http_client.connection_timeout") {
+		config.Setting.MAIN_SETTINGS.TimeoutHttpClient = viper.GetUint32("http_client.connection_timeout")
 	}
 
 	/* check the auth type */
@@ -1730,4 +1738,9 @@ func ShowCurrentConfigToConsole() {
 
 	spew.Dump(ldapClient)
 
+}
+
+func initHttpClient() {
+
+	config.Setting.MAIN_SETTINGS.SubscribeHttpClient = &http.Client{Timeout: time.Duration(config.Setting.MAIN_SETTINGS.TimeoutHttpClient) * time.Second}
 }

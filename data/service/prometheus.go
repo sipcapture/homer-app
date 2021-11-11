@@ -95,7 +95,7 @@ func (ps *PrometheusService) PrometheusValue(prometheusObject *model.PrometheusO
 
 		// This one line implements the authentication required for the task.
 		req.SetBasicAuth(ps.User, ps.Password)
-
+		defer ps.HttpClient.CloseIdleConnections()
 		data, err := ps.HttpClient.Do(req)
 		if err != nil {
 			logger.Error("Couldn't make http query:", promQuery)
@@ -146,7 +146,7 @@ func (ps *PrometheusService) PrometheusLabels() (string, error) {
 
 	// This one line implements the authentication required for the task.
 	req.SetBasicAuth(ps.User, ps.Password)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", promQuery)
@@ -196,7 +196,7 @@ func (ps *PrometheusService) PrometheusLabelData(label string) (string, error) {
 
 	// This one line implements the authentication required for the task.
 	req.SetBasicAuth(ps.User, ps.Password)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", promQuery)

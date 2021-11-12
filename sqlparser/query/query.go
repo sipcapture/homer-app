@@ -64,7 +64,7 @@ var OperatorString = []string{
 	"=",
 	"!=",
 	">",
-	">=",
+	"<",
 	">=",
 	"<=",
 	"LIKE",

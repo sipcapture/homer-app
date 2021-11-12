@@ -210,6 +210,8 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			userData.UserGroup = val
 		}
 
+		logger.Debug("LDAP Auth: user: ", userData.UserName, " userID: ", userData.Id, " UserGUID: ", userData.GUID)
+
 		userid := username
 
 		// Microsoft AD implementations require DN for 1.2.840.113556.1.4.1941 recursive group query

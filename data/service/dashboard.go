@@ -24,11 +24,12 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	var count int
 	if err := us.Session.Debug().Table("user_settings").Where("category = 'dashboard' AND (username = ? and param = ?)", username, "home").
 		Find(&userSettings).Count(&count).Error; err != nil {
+		logger.Error("bad selection for  dashboard for user: ", username)
 		return "", err
 	}
 
 	if len(userSettings) == 0 || count == 0 {
-		logger.Error("no home dashboard ..")
+		logger.Error("no home dashboard for user: ", username)
 		return "", fmt.Errorf("no home dashboard here")
 	}
 
@@ -38,7 +39,7 @@ func (us *DashBoardService) GetDashBoardsLists(username string) (string, error) 
 	}
 
 	if len(userSettings) == 0 {
-		logger.Error("no dashboard at all....")
+		logger.Error("no dashboard at all....", username)
 		return "", fmt.Errorf("no dashboard here")
 	}
 
@@ -177,6 +178,8 @@ func (us *DashBoardService) InsertDashboardByName(username string, dashboardName
 	newDashboard.Category = "dashboard"
 	newDashboard.CreateDate = time.Now()
 	newDashboard.Data = data
+
+	logger.Debug("Dashboard: for user: : ", username, " param: ", dashboardName)
 
 	if err := us.Session.Debug().Table("user_settings").Save(&newDashboard).Error; err != nil {
 		logger.Error("Couldn't add dashboard to table user_settings: ", err.Error())

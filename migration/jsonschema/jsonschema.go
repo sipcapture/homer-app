@@ -427,6 +427,16 @@ var FieldsMapping1call = json.RawMessage(`[
 	  "skip": false,
 	  "hide": false
 	},
+  {
+    "id": "data_header.user_agent",
+    "name": "User Agent",
+    "type": "string",
+    "index": "none",
+    "form_type": "input",
+    "position": 8,
+    "skip": false,
+    "hide": true
+  },
 	{
 	  "id": "protocol_header.srcIp",
 	  "name": "Source IP",
@@ -686,6 +696,16 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "skip": false,
 	  "hide": false
 	},
+  {
+    "id": "data_header.user_agent",
+    "name": "User Agent",
+    "type": "string",
+    "index": "none",
+    "form_type": "input",
+    "position": 8,
+    "skip": false,
+    "hide": true
+  },
 	{
 	  "id": "protocol_header.srcIp",
 	  "name": "Source IP",

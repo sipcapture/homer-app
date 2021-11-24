@@ -145,7 +145,7 @@ func (w *Writer) WriteDataPcapBuffer(h *gabs.Container) error {
 	packet, _ := w.createExportElementfromGab(h)
 
 	if packet.TimeSeconds == 0 {
-		capInfo.Timestamp = time.Unix(int64(packet.TimeSeconds), int64(packet.TimeUseconds))
+		capInfo.Timestamp = time.Unix(int64(packet.TimeSeconds), int64(packet.TimeUseconds*1000))
 	} else {
 		capInfo.Timestamp, _ = time.Parse(time.RFC3339, packet.CreateDate)
 	}

@@ -13,6 +13,7 @@ import (
 	"sort"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/exportwriter"
 	"github.com/sipcapture/homer-app/utils/logger"
@@ -281,8 +282,8 @@ func (hs *AgentsubService) DoSearchByPost(agentObject model.TableAgentLocationSe
 
 	// This one line implements the authentication required for the task.
 	//req.SetBasicAuth(ps.User, ps.Password)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	defer config.Setting.MAIN_SETTINGS.SubscribeHttpClient.CloseIdleConnections()
+	resp, err := config.Setting.MAIN_SETTINGS.SubscribeHttpClient.Do(req)
 	if err != nil {
 		logger.Error("Agent HEPSUB: Couldn't make http query:", serverURL)
 		return nil, err

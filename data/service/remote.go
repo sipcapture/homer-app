@@ -118,7 +118,7 @@ func (ps *RemoteService) RemoteData(remoteObject *model.RemoteObject) (string, e
 
 	// This one line implements the authentication required for the task.
 	req.SetBasicAuth(ps.User, ps.Password)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", baseURL.String())
@@ -190,7 +190,7 @@ func (ps *RemoteService) RemoteLabels(serverName string) (string, error) {
 
 	// This one line implements the authentication required for the task.
 	req.SetBasicAuth(ps.User, ps.Password)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", lokiQuery)
@@ -243,7 +243,7 @@ func (ps *RemoteService) RemoteValues(serverName string, label string) (string, 
 
 	// This one line implements the authentication required for the task.
 	req.SetBasicAuth(ps.User, ps.Password)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", lokiQuery)

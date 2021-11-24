@@ -1,6 +1,8 @@
 package config
 
 import (
+	"net/http"
+
 	"github.com/sipcapture/homer-app/model"
 	"golang.org/x/oauth2"
 )
@@ -20,6 +22,8 @@ type HomerSettingServer struct {
 		OAuth2Config        oauth2.Config
 		GlobalToken         *oauth2.Token
 		UserGroups          []string `default:"[admin,user,support]"`
+		SubscribeHttpClient *http.Client
+		TimeoutHttpClient   uint32 `default:"10"`
 	}
 
 	GRAFANA_SETTINGS struct {

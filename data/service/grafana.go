@@ -88,6 +88,7 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
+	defer ps.HttpClient.CloseIdleConnections()
 
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
@@ -130,7 +131,7 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
@@ -172,7 +173,7 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
-
+	defer ps.HttpClient.CloseIdleConnections()
 	data, err := ps.HttpClient.Do(req)
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)

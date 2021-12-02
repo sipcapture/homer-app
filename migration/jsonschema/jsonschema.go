@@ -584,7 +584,7 @@ var FieldsMapping1call = json.RawMessage(`[
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 22,
-	  "skip": true,
+	  "skip": false,
 	  "hide": true
   },
   {
@@ -853,7 +853,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 22,
-	  "skip": true,
+	  "skip": false,
 	  "hide": true
   },
   {

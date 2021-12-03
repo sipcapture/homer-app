@@ -7,3 +7,5 @@ if ! [ -x "$(command -v swagger)" ]; then
 fi
 
 swagger generate spec -m -o ./swagger.json
+#Docker
+cp swagger.json etc

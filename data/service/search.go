@@ -118,10 +118,12 @@ const (
 	RESET  = 10
 )
 
-func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) (sql string, sLimit int, dataValueArray []interface{}) {
+func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, element int) (sql string, sLimit int, dataValueArray []interface{}) {
 	sLimit = 200
 
 	smartMap := make(map[string]model.MappingSmart)
+
+	firsLoop := true
 
 	for k, v := range elems {
 		mapData := v.(map[string]interface{})
@@ -230,9 +232,9 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 				}
 
 				// make query inside
-				if sql != "" {
-					sql = " AND " + sql
-				}
+				//if sql != "" {
+				//	sql = " AND " + sql
+				//}
 
 				logger.Debug("NEW SQL: ", sql)
 
@@ -245,6 +247,11 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 
 			if orLogic {
 				operator = " OR "
+			}
+
+			if firsLoop && element == 0 {
+				operator = ""
+				firsLoop = false
 			}
 
 			if strings.HasPrefix(formValue, "||") {
@@ -336,6 +343,12 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage) 
 			}
 		}
 	}
+
+	// make query inside
+	if sql != "" {
+		sql = " AND ( " + sql + " )"
+	}
+
 	return sql, sLimit, dataValueArray
 }
 
@@ -350,6 +363,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	Data, _ := json.Marshal(searchObject.Param.Search)
 	sData, _ := gabs.ParseJSON(Data)
 	sql := "create_date between ? AND ?"
+	dataArrayExtraValues := []interface{}{}
 	dataArrayValues := []interface{}{}
 
 	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)
@@ -368,12 +382,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
 			mappingJSON := mapsFieldsData[key]
-			s, l, dArray := buildQuery(elems, searchObject.Param.OrLogic, mappingJSON)
-			dataArrayValues = append(dataArrayValues, dArray...)
+			s, l, dArray := buildQuery(elems, searchObject.Param.OrLogic, mappingJSON, len(dataArrayExtraValues))
+			dataArrayExtraValues = append(dataArrayExtraValues, dArray...)
 			sql += s
 			sLimit = l
 		}
 	}
+
+	dataArrayValues = append(dataArrayValues, dataArrayExtraValues...)
 
 	//var searchData
 	for session := range ss.Session {

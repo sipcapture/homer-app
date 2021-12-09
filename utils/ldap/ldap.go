@@ -296,6 +296,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 										return groups, nil
 									} else if rdnTypeAndValue.Value == lc.UserGroup {
 										logger.Debug("Short: User is a member of the user group ", lc.UserGroup)
+										groups = append(groups, rdnTypeAndValue.Value)
 										notFound = true
 									} else if lc.NestedGroup {
 										groups = append(groups, rdnTypeAndValue.Value)

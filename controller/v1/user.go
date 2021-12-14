@@ -444,9 +444,17 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	}
 
 	oAuth2Object := model.OAuth2MapToken{}
+	options := []oauth2.AuthCodeOption{}
 
-	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code,
-		oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
+		options = append(options,
+			oauth2.SetAuthURLParam("code", code),
+			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
+	}
+
+	options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+
+	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code, options...)
 	if err != nil {
 		logger.Error("AuthSericeRequest OAuth2Config Exchange is invalid:", err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())

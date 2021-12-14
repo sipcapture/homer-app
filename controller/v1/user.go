@@ -1,6 +1,7 @@
 package controllerv1
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -455,24 +456,49 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	tokenSource := config.Setting.MAIN_SETTINGS.OAuth2Config.TokenSource(context.Background(), token)
 
 	client := oauth2.NewClient(context.Background(), tokenSource)
-	resp, _ := client.Get(config.Setting.OAUTH2_SETTINGS.ProfileURL)
-	if err == nil {
-		defer resp.Body.Close()
-		if resp.StatusCode == http.StatusOK {
-			bodyBytes, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				logger.Error("couldn't read the body for email: ", err.Error())
-				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+
+	if config.Setting.OAUTH2_SETTINGS.Method == "POST" {
+		resp, err := client.Post(config.Setting.OAUTH2_SETTINGS.ProfileURL, "application/x-www-form-urlencoded", bytes.NewReader([]byte("")))
+		if err == nil {
+			defer resp.Body.Close()
+			if resp.StatusCode == http.StatusOK {
+				bodyBytes, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					logger.Error("post couldn't read the body for email: ", err.Error())
+					return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+				} else {
+					oAuth2Object.ProfileJson = bodyBytes
+				}
 			} else {
-				oAuth2Object.ProfileJson = bodyBytes
+				logger.Error("post couldn't get profile: ", err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 			}
 		} else {
-			logger.Error("couldn't get profile: ", err.Error())
+			logger.Error("post couldn't get data: ", err.Error())
 			return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 		}
 	} else {
-		logger.Error("couldn't get data: ", err.Error())
-		return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+
+		resp, err := client.Get(config.Setting.OAUTH2_SETTINGS.ProfileURL)
+		if err == nil {
+			defer resp.Body.Close()
+			if resp.StatusCode == http.StatusOK {
+				bodyBytes, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					logger.Error("couldn't read the body for email: ", err.Error())
+					return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+				} else {
+					oAuth2Object.ProfileJson = bodyBytes
+				}
+			} else {
+				logger.Error("couldn't get profile: ", err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			logger.Error("couldn't get data: ", err.Error())
+			return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+		}
+
 	}
 
 	ssoToken := heputils.GenerateToken()

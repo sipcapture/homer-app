@@ -409,6 +409,13 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.profile_url") {
 		config.Setting.OAUTH2_SETTINGS.ProfileURL = viper.GetString("oauth2.profile_url")
 	}
+	if viper.IsSet("oauth2.auth_style") {
+		config.Setting.OAUTH2_SETTINGS.AuthStyle = viper.GetInt("oauth2.auth_style")
+	}
+
+	if viper.IsSet("oauth2.method") {
+		config.Setting.OAUTH2_SETTINGS.Method = viper.GetString("oauth2.method")
+	}
 
 	/***********************************/
 	if viper.IsSet("oauth2.gravatar") {
@@ -461,8 +468,9 @@ func configureServiceObjects() {
 			Scopes:       config.Setting.OAUTH2_SETTINGS.Scope,
 			RedirectURL:  config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName,
 			Endpoint: oauth2.Endpoint{
-				AuthURL:  config.Setting.OAUTH2_SETTINGS.AuthUri,
-				TokenURL: config.Setting.OAUTH2_SETTINGS.TokenUri,
+				AuthURL:   config.Setting.OAUTH2_SETTINGS.AuthUri,
+				TokenURL:  config.Setting.OAUTH2_SETTINGS.TokenUri,
+				AuthStyle: oauth2.AuthStyle(config.Setting.OAUTH2_SETTINGS.AuthStyle),
 			},
 		}
 	}

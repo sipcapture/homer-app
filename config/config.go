@@ -54,6 +54,7 @@ type HomerSettingServer struct {
 		AuthProviderCert     string   `default:"https://www.googleapis.com/oauth2/v1/certs"`
 		RedirectUri          string   `default:"http://localhost:80/api/v3/oauth2/auth"`
 		ProfileURL           string   `default:"https://www.googleapis.com/oauth2/v1/userinfo"`
+		Method               string   `default:"GET"`
 		UserToken            string   `default:"checkRandom"`
 		ServiceProviderName  string   `default:"google"`
 		ServiceProviderImage string   `default:""`
@@ -61,6 +62,7 @@ type HomerSettingServer struct {
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
 		Scope                []string `default:"[email,openid,profile]"`
 		EnableGravatar       bool     `default:"false"`
+		AuthStyle            int      `default:"0"`
 		GravatarUrl          string   `default:"https://www.gravatar.com/avatar/%s.jpg"`
 		ExpireSSOToken       uint32   `default:"5"`
 	}

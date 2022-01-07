@@ -103,7 +103,8 @@
   "auth_settings": {
     "_comment": "The type param can be internal, ldap, http_auth",
     "type": "internal",
-    "jwt_secret": "167f0db2-f83e-4baa-9736-d56064a5b415",
+    "_jwt_help": "Please generate own jwt secret using uuid or the flag generate-jwt-secret",
+    "jwt_secret": "",
     "gravatar": false,
     "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
     "token_expire": 1200,

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
@@ -49,7 +50,7 @@ func Token(user model.TableUser) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte(JwtSecret))
+	t, err := token.SignedString([]byte(config.Setting.AUTH_SETTINGS.JwtSecret))
 	if err != nil {
 		return "", err
 	}

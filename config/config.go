@@ -44,6 +44,10 @@ type HomerSettingServer struct {
 		ExternalHomeDashboard string `default:""`
 	}
 
+	AUTH_SETTINGS struct {
+		JwtSecret string `default:""`
+	}
+
 	OAUTH2_SETTINGS struct {
 		Enable               bool     `default:"false"`
 		ClientID             string   `default:"1234565"`

@@ -1186,7 +1186,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 		config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
 	}
 
-	if config.Setting.AUTH_SETTINGS.JwtSecret == "" {
+	if config.Setting.AUTH_SETTINGS.JwtSecret == "" || config.Setting.AUTH_SETTINGS.JwtSecret == "167f0db2-f83e-4baa-9736-d56064a5b415" {
 		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
 		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)
 		saveConfig = true

@@ -262,7 +262,6 @@ func main() {
 			fmt.Println("No configuration file loaded: ", err)
 			logger.Error("No configuration file loaded - using defaults")
 		}
-
 		os.Exit(0)
 	}
 

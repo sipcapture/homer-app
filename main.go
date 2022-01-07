@@ -1182,7 +1182,10 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 	}
 
 	//generate JWT
-	config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
+	if viper.IsSet("auth_settings.jwt_secret") {
+		config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
+	}
+
 	if config.Setting.AUTH_SETTINGS.JwtSecret == "" {
 		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
 		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)

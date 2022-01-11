@@ -391,6 +391,8 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 	logger.Debug("Doing URL for provider", providerName)
 
 	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
+		oauth2.SetAuthURLParam("response_type", "code"),
+		oauth2.SetAuthURLParam("nonce", "NotGeneratedYet"),
 		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
 
@@ -448,6 +450,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
 		options = append(options,
+			oauth2.SetAuthURLParam("grant_type", "authorization_code"),
 			oauth2.SetAuthURLParam("code", code),
 			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
 	}

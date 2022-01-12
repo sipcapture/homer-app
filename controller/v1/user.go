@@ -392,9 +392,9 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
 		oauth2.SetAuthURLParam("response_type", "code"),
-		oauth2.SetAuthURLParam("nonce", "NotGeneratedYet"))
-//		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
-//		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+//		oauth2.SetAuthURLParam("nonce", "NotGeneratedYet"),
+		oauth2.SetAuthURLParam("code_challenge", config.Setting.OAUTH2_SETTINGS.UserToken),
+		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
 
 	logger.Debug("pgopu in RedirecToSericeAuth Redirecting URL :", u)
 

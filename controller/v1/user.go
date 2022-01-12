@@ -393,7 +393,7 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
 		oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
 		oauth2.SetAuthURLParam("code_challenge", config.Setting.OAUTH2_SETTINGS.UserToken),
-		oauth2.SetAuthURLParam("code_challenge_method", config.Setting.OAUTH2_SETTINGS.UserTokenMethod))
+		oauth2.SetAuthURLParam("code_challenge_method", config.Setting.OAUTH2_SETTINGS.UserTokenGenMethod))
 
 	logger.Debug("RedirecToSericeAuth Redirecting URL :", u)
 

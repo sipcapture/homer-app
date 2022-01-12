@@ -460,8 +460,8 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
 	}
 
-	//options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
-	options = append(options, oauth2.SetAuthURLParam("code_verifier", "M25iVXpKU3puUjFaYWg3T1NDTDQtcW1ROUY5YXlwalNoc0hhakxifmZHag")
+	// options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	options = append(options, oauth2.SetAuthURLParam("code_verifier", "M25iVXpKU3puUjFaYWg3T1NDTDQtcW1ROUY5YXlwalNoc0hhakxifmZHag"))
 	logger.Debug("Options for token exchange in AuthSericeRequest : ", options)
 
 	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code, options...)

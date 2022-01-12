@@ -449,12 +449,13 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	oAuth2Object := model.OAuth2MapToken{}
 	options := []oauth2.AuthCodeOption{}
+        redirecturi := config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName
 
 	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
 		options = append(options,
 			oauth2.SetAuthURLParam("grant_type", "authorization_code"),
 			oauth2.SetAuthURLParam("code", code),
-			oauth2.SetAuthURLParam("redirect_uri", config.Setting.OAUTH2_SETTINGS.RedirectUri),
+			oauth2.SetAuthURLParam("redirect_uri", redirecturi),
 			oauth2.SetAuthURLParam("client_secret", config.Setting.OAUTH2_SETTINGS.ClientSecret),
 			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
 	}

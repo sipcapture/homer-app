@@ -62,7 +62,6 @@ type HomerSettingServer struct {
 		ResponseType         string   `default:"code"`
 		GrantType            string   `default:"authorization_code"`
 		UserToken            string   `default:"checkRandom"`
-		UserTokenGenMethod   string   `default:"S256"`
 		ServiceProviderName  string   `default:"google"`
 		ServiceProviderImage string   `default:""`
 		StateValue           string   `default:"jkwh027yasj"`

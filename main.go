@@ -382,7 +382,6 @@ func configureServiceObjects() {
 	/* oauth2 */
 	if viper.IsSet("oauth2.enable") {
 		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
-		config.Setting.OAUTH2_SETTINGS.UserToken = heputils.GenCodeChallengeS256("checkRandom")
 	}
 	if viper.IsSet("oauth2.grant_type") {
 		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.grant_type")

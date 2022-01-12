@@ -461,6 +461,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	}
 
 	options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	logger.Debug("Options for token exchange in AuthSericeRequest : ", options)
 
 	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code, options...)
 	if err != nil {

@@ -391,12 +391,11 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 	logger.Debug("Doing URL for provider:", providerName)
 
 	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
-		oauth2.SetAuthURLParam("response_type", "code"),
-//		oauth2.SetAuthURLParam("nonce", "NotGeneratedYet"),
+		oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
 		oauth2.SetAuthURLParam("code_challenge", config.Setting.OAUTH2_SETTINGS.UserToken),
-		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+		oauth2.SetAuthURLParam("code_challenge_method", config.Setting.OAUTH2_SETTINGS.UserTokenMethod))
 
-	logger.Debug("pgopu in RedirecToSericeAuth Redirecting URL :", u)
+	logger.Debug("RedirecToSericeAuth Redirecting URL :", u)
 
 	return c.Redirect(http.StatusFound, u)
 }
@@ -453,7 +452,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
 		options = append(options,
-			oauth2.SetAuthURLParam("grant_type", "authorization_code"),
+			oauth2.SetAuthURLParam("grant_type", config.Setting.OAUTH2_SETTINGS.GrantType),
 			oauth2.SetAuthURLParam("code", code),
 			oauth2.SetAuthURLParam("redirect_uri", redirecturi),
 			oauth2.SetAuthURLParam("client_secret", config.Setting.OAUTH2_SETTINGS.ClientSecret),

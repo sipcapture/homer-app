@@ -130,6 +130,7 @@ type CommandLineFlags struct {
 	APIPrefix                 *string    `json:"api_prefix"`
 	WatchConfig               *bool      `json:"watch_config"`
 	ShowCurrentConfig         *bool      `json:"show_current_config"`
+	GenerateJwtSecret         *bool      `json:"generate_jwt_secret"`
 }
 
 //params for  Services
@@ -195,6 +196,9 @@ func initFlags() {
 	appFlags.WatchConfig = flag.Bool("watch-config", false, "Watch the configuration for changes")
 	appFlags.ShowCurrentConfig = flag.Bool("show-current-config", false, "print out the current config and exit")
 
+	//Jwt
+	appFlags.GenerateJwtSecret = flag.Bool("generate-jwt-secret", false, "generate jwt secret")
+
 	flag.Parse()
 }
 
@@ -246,6 +250,18 @@ func main() {
 		logger.Info(fmt.Sprintf("Updating password for user: [%s]\n", *appFlags.UpdateUIUser))
 		migration.UpdateHomerUser(servicesObject.configDBSession, nameHomerConfig, *appFlags.UpdateUIUser, *appFlags.UpdateUIPassword)
 
+		os.Exit(0)
+	}
+
+	if *appFlags.GenerateJwtSecret {
+		logger.Info("Generating jwt secret...")
+		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
+		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)
+		err := viper.WriteConfig()
+		if err != nil {
+			fmt.Println("No configuration file loaded: ", err)
+			logger.Error("No configuration file loaded - using defaults")
+		}
 		os.Exit(0)
 	}
 
@@ -870,7 +886,7 @@ func performV1APIRouting(e *echo.Echo) {
 	// Configure middleware with the custom claims type
 	config := middleware.JWTConfig{
 		Claims:     &auth.JwtUserClaim{},
-		SigningKey: []byte(auth.JwtSecret),
+		SigningKey: []byte(config.Setting.AUTH_SETTINGS.JwtSecret),
 	}
 
 	res.Use(middleware.JWTWithConfig(config))
@@ -1165,6 +1181,17 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 	if recordApp.GUID == "" {
 		recordApp.GUID = uuid.NewV4().String()
 		viper.Set("system_settings.uuid", recordApp.GUID)
+		saveConfig = true
+	}
+
+	//generate JWT
+	if viper.IsSet("auth_settings.jwt_secret") {
+		config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
+	}
+
+	if config.Setting.AUTH_SETTINGS.JwtSecret == "" || config.Setting.AUTH_SETTINGS.JwtSecret == "167f0db2-f83e-4baa-9736-d56064a5b415" {
+		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
+		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)
 		saveConfig = true
 	}
 

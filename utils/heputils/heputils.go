@@ -361,9 +361,12 @@ func GenCodeChallengeS256(s string) string {
 		hex.EncodeToString(hash.Sum(nil))
 		return base64.StdEncoding.EncodeToString(hash.Sum(nil))
 	*/
+        hasher := sha256.New()
+        hasher.Write([]byte(s))
+        codeChallenge := base64.RawURLEncoding.EncodeToString(hasher.Sum(nil))
 
 	/* we have to remove the = because RFC is not allowed */
 	//TrimRight - remove all ==
-	s256 := sha256.Sum256([]byte(s))
-	return strings.TrimSuffix(base64.URLEncoding.EncodeToString(s256[:]), "=")
+//	s256 := sha256.Sum256([]byte(s))
+//	return strings.TrimSuffix(base64.URLEncoding.EncodeToString(s256[:]), "=")
 }

@@ -59,7 +59,9 @@ type HomerSettingServer struct {
 		RedirectUri          string   `default:"http://localhost:80/api/v3/oauth2/auth"`
 		ProfileURL           string   `default:"https://www.googleapis.com/oauth2/v1/userinfo"`
 		Method               string   `default:"GET"`
-		UserToken            string   `default:"checkRandom"`
+		ResponseType         string   `default:"code"`
+		GrantType            string   `default:"authorization_code"`
+		UserToken            string   `default:"randommin43characterstringisneededasusertoken"`
 		ServiceProviderName  string   `default:"google"`
 		ServiceProviderImage string   `default:""`
 		StateValue           string   `default:"jkwh027yasj"`

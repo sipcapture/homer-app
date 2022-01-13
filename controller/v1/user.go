@@ -388,11 +388,14 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	providerName := c.Param("provider")
 
-	logger.Debug("Doing URL for provider", providerName)
+	logger.Debug("Doing URL for provider:", providerName)
 
 	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
+		oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
 		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+
+	logger.Debug("RedirecToSericeAuth Redirecting URL :", u)
 
 	return c.Redirect(http.StatusFound, u)
 }
@@ -445,14 +448,19 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	oAuth2Object := model.OAuth2MapToken{}
 	options := []oauth2.AuthCodeOption{}
+        redirecturi := config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName
 
 	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
 		options = append(options,
+			oauth2.SetAuthURLParam("grant_type", config.Setting.OAUTH2_SETTINGS.GrantType),
 			oauth2.SetAuthURLParam("code", code),
+			oauth2.SetAuthURLParam("redirect_uri", redirecturi),
+			oauth2.SetAuthURLParam("client_secret", config.Setting.OAUTH2_SETTINGS.ClientSecret),
 			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
 	}
 
 	options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	logger.Debug("Options for token exchange in AuthSericeRequest : ", options)
 
 	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code, options...)
 	if err != nil {

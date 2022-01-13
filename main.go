@@ -412,6 +412,9 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.auth_style") {
 		config.Setting.OAUTH2_SETTINGS.AuthStyle = viper.GetInt("oauth2.auth_style")
 	}
+	if viper.IsSet("oauth2.user_token") {
+		config.Setting.OAUTH2_SETTINGS.UserToken = viper.GetString("oauth2.user_token")
+	}
 
 	if viper.IsSet("oauth2.method") {
 		config.Setting.OAUTH2_SETTINGS.Method = viper.GetString("oauth2.method")

@@ -389,7 +389,7 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.response_type") {
 		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.response_type")
 	}
-        if viper.IsSet("oauth2.user_token") {
+	if viper.IsSet("oauth2.user_token") {
 		config.Setting.OAUTH2_SETTINGS.UserToken = viper.GetString("oauth2.user_token")
 	}
 	if viper.IsSet("oauth2.client_id") {
@@ -657,6 +657,10 @@ func configureAsHTTPServer() {
 	e := echo.New()
 	// add validation
 	e.Validator = &CustomValidator{validator: validator.New()}
+
+	//workaround for JWT missing
+	e.HTTPErrorHandler = customHTTPErrorHandler
+
 	// Middleware
 	if httpDebugEnable := viper.GetBool("http_settings.debug"); httpDebugEnable {
 		e.Use(middleware.Logger())
@@ -1790,4 +1794,13 @@ func ShowCurrentConfigToConsole() {
 func initHttpClient() {
 
 	config.Setting.MAIN_SETTINGS.SubscribeHttpClient = &http.Client{Timeout: time.Duration(config.Setting.MAIN_SETTINGS.TimeoutHttpClient) * time.Second}
+}
+
+//custom error handling in case JWT is missing
+func customHTTPErrorHandler(err error, c echo.Context) {
+	if err == middleware.ErrJWTMissing {
+		c.Error(echo.NewHTTPError(http.StatusUnauthorized, "Login required"))
+		return
+	}
+	c.Echo().DefaultHTTPErrorHandler(err, c)
 }

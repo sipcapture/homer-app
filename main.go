@@ -837,34 +837,48 @@ func configureAsHTTPServer() {
 
 	// perform routing for v1 version of web apis
 	performV1APIRouting(e)
-	if viper.GetBool("https_settings.enable") {
-		httpsHost := viper.GetString("https_settings.host")
-		httpsPort := viper.GetString("https_settings.port")
-		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
 
-		httpsCert := viper.GetString("https_settings.cert")
-		httpsKey := viper.GetString("https_settings.key")
-		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
-		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
+	httpEnable := true
+	if viper.IsSet("http_settings.enable") {
+		httpEnable = viper.GetBool("http_settings.enable")
+	}
 
-		//Doc Swagger for future. For now - external
-		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
-		 */
-		e.Logger.Fatal(e.StartTLS(httpsURL, httpsCert, httpsKey))
-	} else {
+	heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
+	heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s.", getName(), getVersion()))
+
+	if httpEnable {
+		/* need excute it in background because HTTP locks */
 		httpHost := viper.GetString("http_settings.host")
 		httpPort := viper.GetString("http_settings.port")
 		httpURL := fmt.Sprintf("%s:%s", httpHost, httpPort)
 
-		heputils.Colorize(heputils.ColorRed, heputils.HomerLogo)
-		heputils.Colorize(heputils.ColorGreen, fmt.Sprintf("Version: %s %s", getName(), getVersion()))
-
-		//Doc Swagger for future. For now - external
-		/* e.GET("/swagger/*", echoSwagger.WrapHandler)
-		 */
-		e.Logger.Fatal(e.Start(httpURL))
+		if viper.GetBool("https_settings.enable") {
+			go func(url string) {
+				e.Logger.Fatal(e.Start(url))
+			}(httpURL)
+		} else {
+			err := e.Start(httpURL)
+			if err != nil {
+				logger.Error(err.Error())
+				e.Logger.Fatal("Couldn't start server")
+			}
+		}
 	}
 
+	if viper.GetBool("https_settings.enable") {
+
+		httpsHost := viper.GetString("https_settings.host")
+		httpsPort := viper.GetString("https_settings.port")
+		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
+		httpsCert := viper.GetString("https_settings.cert")
+		httpsKey := viper.GetString("https_settings.key")
+
+		err := e.StartTLS(httpsURL, httpsCert, httpsKey)
+		if err != nil {
+			logger.Error(err.Error())
+			e.Logger.Fatal("Couldn't start https server")
+		}
+	}
 }
 
 func performV1APIRouting(e *echo.Echo) {

@@ -37,15 +37,25 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$HTTP_PORT" ]; then sed -i "s/homer_web_port/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; 
    else sed -i "s/homer_web_port/80/g" /usr/local/homer/etc/webapp_config.json; fi
 
-   if [ -n "$AUTH_TYPE" ]; then sed -i "s/internal/${AUTH_TYPE}/g" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$LDAP_BASE" ]; then sed -i "/Base/ s/dc=example,dc=com/${LDAP_BASE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$AUTH_TYPE" ]; then sed -i "/type/ s/internal/${AUTH_TYPE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_BASE" ]; then sed -i "/base/ s/dc=example,dc=com/${LDAP_BASE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_HOST" ]; then sed -i "s/ldap.example.com/${LDAP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_PORT" ]; then sed -i "s/389/${LDAP_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$LDAP_SSL" ];  then sed -i "/UseSSL/ s/false/${LDAP_SSL}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_SSL" ];  then sed -i "/usessl/ s/false/${LDAP_SSL}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_SKIP_TLS" ]; then sed -i "/skiptls/ s/true/${LDAP_SKIP_TLS}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_BIND_DN" ];  then sed -i "s/uid=readonlysuer,ou=People,dc=example,dc=com/${LDAP_BIND_DN}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_BIND_PASS" ]; then sed -i "s/readonlypassword/${LDAP_BIND_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USER_FILTER" ]; then sed -i "s/(uid=%s)/${LDAP_USER_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_GROUP_FILTER" ]; then sed -i "s/(memberUid=%s)/${LDAP_GROUP_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_GROUP_ATTRIB" ]; then sed -i "/group_attributes/ {N;N;N;N;N;N;N;N; s/\[.*/\[\n\t${LDAP_GROUP_ATTRIB}\n\t\],/g}" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ADMINGROUP" ]; then sed -i "/admingroup/ s/admin/${LDAP_ADMINGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ADMINMODE" ]; then sed -i "/adminmode/ s/true/${LDAP_ADMINMODE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_USERGROUP" ]; then sed -i "/usergroup/ s/HOMER_user/${LDAP_USERGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_USERMODE" ]; then sed -i "/usermode/ s/true/${LDAP_USERMODE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ATTRIBUTES" ]; then sed -i "/attributes/ s/\[\([^]]*\)\]/\[${LDAP_ATTRIBUTES}\]/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_SKIP_VERIFY" ]; then sed -i "/skipverify/ s/true/${LDAP_SKIP_VERIFY}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ANONYMOUS" ]; then sed -i "/anonymous/ s/false/${LDAP_ANONYMOUS}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_USER_DN" ]; then sed -i "/userdn/ s/uid=%s,ou=People,dc=example,dc=com/${LDAP_USER_DN}/g" /usr/local/homer/etc/webapp_config.json; fi
 
    echo "Pre-Flight provisioning completed!"
 

@@ -54,15 +54,30 @@
     "type": "internal"
   },
   "ldap_config": {
-    "Base": "dc=example,dc=com",
-    "Host": "ldap.example.com",
-    "Port": 389,
-    "UseSSL": false,
-    "BindDN": "uid=readonlysuer,ou=People,dc=example,dc=com",
-    "BindPassword": "readonlypassword",
-    "UserFilter": "(uid=%s)",
-    "GroupFilter": "(memberUid=%s)",
-    "GroupAttribute": "cn",
-    "Attributes": "\"givenName\", \"sn\", \"mail\", \"uid\""
+    "base": "dc=example,dc=com",
+    "host": "ldap.example.com",
+    "port": 389,
+    "usessl": false,
+    "skiptls": true,
+    "binddn": "uid=readonlysuer,ou=People,dc=example,dc=com",
+    "bindpassword": "readonlypassword",
+    "userfilter": "(uid=%s)",
+    "groupfilter": "(memberUid=%s)",
+    "group_attributes": [
+      "cn",
+      "memberOf",
+      "GroupAttribute",
+      "distinguishedName",
+      "dn",
+      "member"
+    ],
+    "admingroup": "admin",
+    "adminmode": true,
+    "usergroup": "HOMER_user",
+    "usermode": true,
+    "attributes": ["dn", "givenName", "sn", "mail", "uid"],
+    "skipverify": true,
+    "anonymous": false,
+    "userdn": "uid=%s,ou=People,dc=example,dc=com"
   }
 }

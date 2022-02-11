@@ -1,11 +1,11 @@
 FROM node:12-alpine as webapp
-ENV BUILD 20200205-001
+ENV BUILD 20220211-001
 RUN apk add git && git clone https://github.com/sipcapture/homer-ui /app
 WORKDIR /app
 RUN npm install && npm install -g @angular/cli && npm run build
 
 FROM golang:alpine as webapi
-ENV BUILD 20200205-001
+ENV BUILD 20220211-001
 RUN apk --update add git make
 COPY . /homer-app
 WORKDIR /homer-app

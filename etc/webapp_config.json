@@ -69,6 +69,7 @@
     "port": 9080,
     "root": "/usr/local/homer/dist",
     "gzip": true,
+    "path": "/",
     "gzip_static": true,
     "debug": false
   },

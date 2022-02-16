@@ -732,6 +732,7 @@ func configureAsHTTPServer() {
 	if rootPath == "" {
 		rootPath = "/usr/local/homer/dist"
 	}
+
 	/* static */
 	e.Use(middleware.Static(rootPath))
 
@@ -1462,52 +1463,74 @@ func registerGetRedirect(e *echo.Echo, path string) {
 	}
 
 	e.GET(prefix+"/dashboard/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/call/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/call/:name/", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/search/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/search/:name/", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/registration/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/registration/:name/", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"(system:login)", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET(prefix+"/preference/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET("/transaction/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET("/search/result/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
 
 	e.GET("/search/:name", func(c echo.Context) (err error) {
-		return c.File(path + "/index.html")
+		return sendIndexHtml(c, path)
 	})
+
+}
+
+func sendIndexHtml(c echo.Context, path string) error {
+
+	//RelativePath
+	if viper.IsSet("http_settings.path") {
+
+		relativePath := viper.GetString("http_settings.path")
+
+		content, err := ioutil.ReadFile(path + "/index.html")
+		if err != nil {
+			logger.Debug("not found....", err.Error())
+			return c.String(http.StatusNotFound, "Not found")
+		}
+
+		newBody := strings.ReplaceAll(string(content), "window['base-href'] = '/';", "window['base-href'] = '"+relativePath+"/';")
+		return c.HTML(http.StatusOK, newBody)
+
+	} else {
+		return c.File(path + "/index.html")
+	}
 
 }
 

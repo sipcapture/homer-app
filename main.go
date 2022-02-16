@@ -1519,6 +1519,11 @@ func sendIndexHtml(c echo.Context, path string) error {
 
 		relativePath := viper.GetString("http_settings.path")
 
+		//if it's standard / - we should do nothing
+		if relativePath == "/" {
+			return c.File(path + "/index.html")
+		}
+
 		content, err := ioutil.ReadFile(path + "/index.html")
 		if err != nil {
 			logger.Debug("not found....", err.Error())

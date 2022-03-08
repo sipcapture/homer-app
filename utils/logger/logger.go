@@ -36,7 +36,7 @@ const (
 /* gorm logger for logrus */
 func (*GormLogger) Print(v ...interface{}) {
 	if v[0] == "sql" {
-		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "sql"}).Print(v[3])
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "sql"}).Print(v[1:])
 	}
 	if v[0] == "log" {
 		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "log"}).Print(v[2])
@@ -153,6 +153,14 @@ func configureSyslogHook() {
 
 func Info(args ...interface{}) {
 	Logger.Info(args...)
+}
+
+func Infof(format string, args ...interface{}) {
+	Logger.Infof(format, args)
+}
+
+func Printf(format string, args ...interface{}) {
+	Logger.Printf(format, args)
 }
 
 func Error(args ...interface{}) {

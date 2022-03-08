@@ -292,6 +292,16 @@ func ItemExists(arr []string, elem string) bool {
 	return false
 }
 
+func AppendIfNotExists(arr []string, elem string) []string {
+	for index := range arr {
+		if arr[index] == elem {
+			return arr
+		}
+	}
+
+	return append(arr, elem)
+}
+
 /* check if the element exists */
 func ElementExists(arr []string, elem string) bool {
 

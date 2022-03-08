@@ -1,6 +1,7 @@
 package model
 
 import (
+	"container/list"
 	"encoding/json"
 	"os"
 	"time"
@@ -60,7 +61,7 @@ type SearchObject struct {
 }
 
 type HepTable struct {
-	Id             int             `json:"id"`
+	Id             int64           `json:"id"`
 	Sid            string          `json:"sid"`
 	CreatedDate    time.Time       `gorm:"column:create_date" json:"create_date"`
 	ProtocolHeader json.RawMessage `gorm:"column:protocol_header" json:"protocol_header"`
@@ -69,6 +70,23 @@ type HepTable struct {
 	DBNode         string          `gorm:"column:-" json:"dbnode"`
 	Node           string          `gorm:"column:-" json:"node"`
 	Profile        string          `gorm:"column:-" json:"profile"`
+}
+
+type TransactionTable struct {
+	ViaBranch string               `json:"via_branch"`
+	Name      string               `json:"name"`
+	ErrorName string               `json:"error_name"`
+	BeginDate time.Time            `json:"begin_date"`
+	FromUser  string               `json:"from_user"`
+	ToUser    string               `json:"to_user"`
+	TMethods  []*TransactionMethod `json:"t_methods"`
+}
+
+type TransactionMethod struct {
+	Name      string     `json:"name"`
+	CSeq      string     `json:"cseq"`
+	BeginDate time.Time  `json:"begin_date"`
+	BodyList  *list.List `json:"body_list"`
 }
 
 type Message struct {
@@ -85,16 +103,18 @@ type ProtocolHeader struct {
 	DstPort        int    `json:"dstPort"`
 	SrcPort        int    `json:"srcPort"`
 	Protocol       int    `json:"protocol"`
-	CaptureID      int    `json:"captureId"`
+	CaptureID      string `json:"captureId"`
 	CapturePass    string `json:"capturePass"`
 	PayloadType    int    `json:"payloadType"`
 	TimeSeconds    int    `json:"timeSeconds"`
 	TimeUseconds   int    `json:"timeUseconds"`
+	correlationId  string `json:"correlation_id"`
 	ProtocolFamily int    `json:"protocolFamily"`
 }
 
 type DataHeader struct {
-	Callid     string `json:"callid"`
+	CallID     string `json:"callid"`
+	CSeq       string `json:"cseq"`
 	Method     string `json:"method"`
 	ToTag      string `json:"to_tag"`
 	ToUser     string `json:"to_user"`
@@ -105,6 +125,7 @@ type DataHeader struct {
 	RuriUser   string `json:"ruri_user"`
 	UserAgent  string `json:"user_agent"`
 	RuriDomain string `json:"ruri_domain"`
+	ViaBranch  string `json:"via_branch"`
 }
 
 /*
@@ -149,7 +170,7 @@ type SecondData struct {
 
 type CallElement struct {
 	// example: 5162
-	ID float64 `json:"id"`
+	ID int64 `json:"id"`
 	// example: wvn6zg@127.0.0.1
 	Sid string `json:"sid"`
 	// example: 179.12.245.132
@@ -165,13 +186,13 @@ type CallElement struct {
 	// example: 179.12.245.132
 	DstIP string `json:"dstIp"`
 	// example: 5060
-	SrcPort float64 `json:"srcPort"`
+	SrcPort int `json:"srcPort"`
 	// example: Client
 	AliasSrc string `json:"aliasSrc"`
 	// example: Support
 	AliasDst string `json:"aliasDst"`
 	// example: 5060
-	DstPort float64 `json:"dstPort"`
+	DstPort int `json:"dstPort"`
 	// example: INVITE
 	Method string `json:"method"`
 	// example: INVITE
@@ -179,7 +200,7 @@ type CallElement struct {
 	// example: 1633374982350
 	CreateDate int64 `json:"create_date"`
 	// example: 17
-	Protocol float64 `json:"protocol"`
+	Protocol int `json:"protocol"`
 	// example: blue
 	MsgColor string `json:"msg_color"`
 	Table    string `json:"table"`
@@ -189,6 +210,17 @@ type CallElement struct {
 	Destination int `json:"destination"`
 	// example: 1633374982350
 	MicroTs int64 `json:"micro_ts"`
+}
+
+type TransactionElement struct {
+	ViaBranch string        `json:"via_branch"`
+	Name      string        `json:"name"`
+	ErrorName string        `json:"error_name"`
+	BeginDate int64         `json:"begin_date"`
+	FromUser  string        `json:"from_user"`
+	ToUser    string        `json:"to_user"`
+	Host      []string      `json:"host"`
+	CallData  []CallElement `json:"call_data"`
 }
 
 // swagger:model SearchTransactionLog

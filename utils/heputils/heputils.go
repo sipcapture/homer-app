@@ -258,11 +258,9 @@ func ConvertProtoTypeToString(val float64) string {
 
 /* isup to HEX */
 func IsupToHex(s string) string {
-	p1 := strings.Index(s, "/isup")
+	p1 := strings.Index(strings.ToLower(s), "content-type: application/isup")
 	if p1 == -1 {
-		if p1 = strings.Index(s, "/ISUP"); p1 == -1 {
-			return s
-		}
+		return s
 	}
 
 	if p2 := strings.Index(s[p1:], "\r\n\r\n"); p2 > -1 {
@@ -361,8 +359,8 @@ func GenCodeChallengeS256(s string) string {
 		hex.EncodeToString(hash.Sum(nil))
 		return base64.StdEncoding.EncodeToString(hash.Sum(nil))
 	*/
-        hasher := sha256.New()
-        hasher.Write([]byte(s))
-        codeChallenge := base64.RawURLEncoding.EncodeToString(hasher.Sum(nil))
-        return codeChallenge
+	hasher := sha256.New()
+	hasher.Write([]byte(s))
+	codeChallenge := base64.RawURLEncoding.EncodeToString(hasher.Sum(nil))
+	return codeChallenge
 }

@@ -68,6 +68,7 @@ type HomerSettingServer struct {
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
 		Scope                []string `default:"[email,openid,profile]"`
 		EnableGravatar       bool     `default:"false"`
+		EnableAutoRedirect   bool     `default:"false"`
 		AuthStyle            int      `default:"0"`
 		GravatarUrl          string   `default:"https://www.gravatar.com/avatar/%s.jpg"`
 		ExpireSSOToken       uint32   `default:"5"`

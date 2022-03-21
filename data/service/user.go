@@ -331,6 +331,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "provider_name")
 		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect+"/"+config.Setting.OAUTH2_SETTINGS.ServiceProviderName, "url")
 		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.ServiceProviderImage, "provider_image")
+		replyOauth.Set(config.Setting.OAUTH2_SETTINGS.EnableAutoRedirect, "auto_redirect")
 		replyOauth.Set("oauth2", "type")
 		replyOauth.Set(3, "position")
 		replyOauth.Set(true, "enable")

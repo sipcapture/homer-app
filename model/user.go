@@ -172,6 +172,8 @@ type AuthTypeList struct {
 			Type string `json:"type"`
 			// example: /api/v3/oauth2/redirect/google
 			URL string `json:"url"`
+			// example: false
+			EnableAutoRedirect bool `json:"auto_redirect"`
 		} `json:"oauth2"`
 	} `json:"data"`
 	Message string `json:"message"`

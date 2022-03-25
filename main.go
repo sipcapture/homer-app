@@ -446,6 +446,11 @@ func configureServiceObjects() {
 	}
 
 	/***********************************/
+	if viper.IsSet("oauth2.auto_redirect") {
+		config.Setting.OAUTH2_SETTINGS.EnableAutoRedirect = viper.GetBool("oauth2.auto_redirect")
+	}
+
+	/***********************************/
 	if viper.IsSet("oauth2.gravatar") {
 		config.Setting.OAUTH2_SETTINGS.EnableGravatar = viper.GetBool("oauth2.gravatar")
 	}

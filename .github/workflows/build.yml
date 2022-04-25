@@ -28,12 +28,9 @@ jobs:
       run: |
          echo TAG_NAME=$(cat version.go | grep VERSION | awk -F'"' '{print $2}') >> $GITHUB_ENV
          
-    - name: Get App Tags
+    - name: Build Packages
       run: |
-         echo RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+') >> $GITHUB_ENV
-         
-    - name: Package
-      run: |
+          sed -i 's|goreleaser/nfpm|goreleaser/nfpm:1.8|g' scripts/build_package.sh
           RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
           VERSION=$RELEASE make package
           ls -alFh

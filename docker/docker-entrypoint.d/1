@@ -36,6 +36,8 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$HTTP_PORT" ]; then sed -i "s/homer_web_port/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; 
    else sed -i "s/homer_web_port/80/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$HTTP_PATH" ]; then sed -i "s=homer_serve_path=${HTTP_PATH}=g" /usr/local/homer/etc/webapp_config.json;
+   else sed -i "s=homer_serve_path=/=g" /usr/local/homer/etc/webapp_config.json; fi
 
    if [ -n "$AUTH_TYPE" ]; then sed -i "/type/ s/internal/${AUTH_TYPE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_BASE" ]; then sed -i "/base/ s/dc=example,dc=com/${LDAP_BASE}/g" /usr/local/homer/etc/webapp_config.json; fi

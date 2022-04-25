@@ -1,0 +1,40 @@
+name: App Builder
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build Frontend
+      run: echo y | ./scripts/build_frontend.sh
+      
+    - name: Build Binary
+      run: echo y |./scripts/build_binary.sh
+
+    - name: Get Version Tag
+      run: |
+         echo TAG_NAME=$(cat version.go | grep VERSION | awk -F'"' '{print $2}') >> $GITHUB_ENV
+         
+    - name: Get App Tags
+      run: |
+         echo RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+') >> $GITHUB_ENV
+         
+    - name: Package
+      run: |
+          RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
+          VERSION=$RELEASE make package
+          ls -alFh
+          

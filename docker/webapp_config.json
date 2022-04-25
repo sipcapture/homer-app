@@ -39,6 +39,7 @@
     "host": "0.0.0.0",
     "port": homer_web_port,
     "root": "/usr/local/homer/dist",
+    "path": "homer_serve_path",
     "gzip": true,
     "debug": false
   },

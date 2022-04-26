@@ -29,9 +29,25 @@ jobs:
          echo TAG_NAME=$(cat version.go | grep VERSION | awk -F'"' '{print $2}') >> $GITHUB_ENV
          
     - name: Build Packages
+      if: github.event_name != 'pull_request'
       run: |
           sed -i 's|goreleaser/nfpm|goreleaser/nfpm:v1.8|g' scripts/build_package.sh
           RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
           VERSION=$RELEASE make package
           ls -alFh
           
+    - name: Upload release
+      if: github.event_name != 'pull_request'
+      uses: boxpositron/upload-multiple-releases@1.0.7
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_config: |
+            homer-app
+            homer-app-v${{ env.TAG_NAME }}-amd64.deb
+            homer-app-v${{ env.TAG_NAME }}-amd64.rpm
+        tag_name: v${{ env.TAG_NAME }}
+        release_name: homer-app-v${{ env.TAG_NAME }}
+        draft: false
+        prerelease: false
+        overwrite: true   

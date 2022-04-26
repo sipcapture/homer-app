@@ -32,6 +32,10 @@ jobs:
           echo "TAG_NAME=$RELEASE" >> $GITHUB_ENV
           VERSION=$RELEASE make package
           
+    - name: Archive Frontend
+      if: github.event_name != 'pull_request'
+      run: tar cvfz homer-ui-${{env.TAG_NAME}}.tgz dist
+      
     - name: Upload release
       if: github.event_name != 'pull_request'
       uses: boxpositron/upload-multiple-releases@1.0.7
@@ -42,6 +46,7 @@ jobs:
             homer-app
             homer-app-${{ env.TAG_NAME }}-amd64.deb
             homer-app-${{ env.TAG_NAME }}-amd64.rpm
+            homer-ui-${{ env.TAG_NAME }}-tgz
         tag_name: ${{ env.TAG_NAME }}
         release_name: homer-app-${{ env.TAG_NAME }}
         draft: false

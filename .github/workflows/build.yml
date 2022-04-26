@@ -46,7 +46,7 @@ jobs:
             homer-app
             homer-app-v${{ env.TAG_NAME }}-amd64.deb
             homer-app-v${{ env.TAG_NAME }}-amd64.rpm
-        tag_name: v${{ env.TAG_NAME }}
+        tag_name: ${{ env.TAG_NAME }}
         release_name: homer-app-v${{ env.TAG_NAME }}
         draft: false
         prerelease: false

@@ -23,18 +23,14 @@ jobs:
       
     - name: Build Binary
       run: echo y |./scripts/build_binary.sh
-
-    - name: Get Version Tag
-      run: |
-         echo TAG_NAME=$(cat version.go | grep VERSION | awk -F'"' '{print $2}') >> $GITHUB_ENV
          
     - name: Build Packages
       if: github.event_name != 'pull_request'
       run: |
           sed -i 's|goreleaser/nfpm|goreleaser/nfpm:v1.8|g' scripts/build_package.sh
           RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
+          echo "TAG_NAME=$RELEASE" >> $GITHUB_ENV
           VERSION=$RELEASE make package
-          ls -alFh
           
     - name: Upload release
       if: github.event_name != 'pull_request'

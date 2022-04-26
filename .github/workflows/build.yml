@@ -46,7 +46,7 @@ jobs:
             homer-app
             homer-app-${{ env.TAG_NAME }}-amd64.deb
             homer-app-${{ env.TAG_NAME }}-amd64.rpm
-            homer-ui-${{ env.TAG_NAME }}-tgz
+            homer-ui-${{ env.TAG_NAME }}.tgz
         tag_name: ${{ env.TAG_NAME }}
         release_name: homer-app-${{ env.TAG_NAME }}
         draft: false

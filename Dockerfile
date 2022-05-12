@@ -18,6 +18,7 @@ RUN apk --update add bash sed
 RUN mkdir -p /usr/local/homer
 COPY --from=webapi /homer-app/homer-app .
 COPY --from=webapi /homer-app/docker/webapp_config.json /usr/local/homer/etc/webapp_config.json
+COPY --from=webapi /homer-app/swagger.json /usr/local/homer/etc/swagger.json
 COPY --from=webapp /app/dist/homer-ui /usr/local/homer/dist
 # Configure entrypoint
 COPY ./docker/docker-entrypoint.sh /

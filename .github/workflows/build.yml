@@ -1,0 +1,54 @@
+name: App Builder
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build Frontend
+      run: echo y | ./scripts/build_frontend.sh
+      
+    - name: Build Binary
+      run: echo y |./scripts/build_binary.sh
+         
+    - name: Build Packages
+      if: github.event_name != 'pull_request'
+      run: |
+          sed -i 's|goreleaser/nfpm|goreleaser/nfpm:v1.8|g' scripts/build_package.sh
+          RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
+          echo "TAG_NAME=$RELEASE" >> $GITHUB_ENV
+          VERSION=$RELEASE make package
+          
+    - name: Archive Frontend
+      if: github.event_name != 'pull_request'
+      run: tar cvfz homer-ui-${{env.TAG_NAME}}.tgz dist
+      
+    - name: Upload release
+      if: github.event_name != 'pull_request'
+      uses: boxpositron/upload-multiple-releases@1.0.7
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_config: |
+            homer-app
+            homer-app-${{ env.TAG_NAME }}-amd64.deb
+            homer-app-${{ env.TAG_NAME }}-amd64.rpm
+            homer-ui-${{ env.TAG_NAME }}.tgz
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: homer-app-${{ env.TAG_NAME }}
+        draft: false
+        prerelease: false
+        overwrite: true   

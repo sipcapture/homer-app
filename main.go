@@ -384,10 +384,10 @@ func configureServiceObjects() {
 		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
 	}
 	if viper.IsSet("oauth2.grant_type") {
-		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.grant_type")
+		config.Setting.OAUTH2_SETTINGS.GrantType = viper.GetString("oauth2.grant_type")
 	}
 	if viper.IsSet("oauth2.response_type") {
-		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.response_type")
+		config.Setting.OAUTH2_SETTINGS.ResponseType = viper.GetString("oauth2.response_type")
 	}
 	if viper.IsSet("oauth2.user_token") {
 		config.Setting.OAUTH2_SETTINGS.UserToken = viper.GetString("oauth2.user_token")

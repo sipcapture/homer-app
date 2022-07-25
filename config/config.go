@@ -27,12 +27,14 @@ type HomerSettingServer struct {
 	}
 
 	GRAFANA_SETTINGS struct {
-		URL      string `default:"http://grafana/"`
-		AuthKey  string `default:""`
-		User     string `default:""`
-		Password string `default:""`
-		Path     string `default:"/grafana"`
-		Enable   bool   `default:"false"`
+		URL          string `default:"http://grafana/"`
+		AuthKey      string `default:""`
+		User         string `default:""`
+		Password     string `default:""`
+		ProxyControl bool   `default:"false"`
+		Path         string `default:"/grafana"`
+		ProxyCheck   string `default:"simple"`
+		Enable       bool   `default:"false"`
 	}
 
 	TRANSACTION_SETTINGS struct {

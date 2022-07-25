@@ -57,11 +57,13 @@
     "param_query": "query_range"
   },
   "grafana_config": {
-    "enable": true,
     "help": "Settings for Grafana",
     "host": "http://127.0.0.1:3000",
     "path": "/grafana",
-    "token": ""
+    "token": "",
+    "proxy_control": false,
+    "proxy_check": "simple",
+    "enable": true
   },
   "http_settings": {
     "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",

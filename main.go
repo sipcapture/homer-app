@@ -684,6 +684,7 @@ func configureAsHTTPServer() {
 
 	if viper.IsSet("grafana_config.host") {
 		config.Setting.GRAFANA_SETTINGS.URL = viper.GetString("grafana_config.host")
+		config.Setting.GRAFANA_SETTINGS.Enable = true
 	}
 
 	if viper.IsSet("grafana_config.path") {
@@ -692,6 +693,18 @@ func configureAsHTTPServer() {
 
 	if viper.IsSet("grafana_config.token") {
 		config.Setting.GRAFANA_SETTINGS.AuthKey = viper.GetString("grafana_config.token")
+	}
+
+	if viper.IsSet("grafana_config.proxy_control") {
+		config.Setting.GRAFANA_SETTINGS.ProxyControl = viper.GetBool("grafana_config.proxy_control")
+	}
+
+	if viper.IsSet("grafana_config.proxy_check") {
+		config.Setting.GRAFANA_SETTINGS.ProxyCheck = viper.GetString("grafana_config.proxy_check")
+	}
+
+	if viper.IsSet("grafana_config.enable") {
+		config.Setting.GRAFANA_SETTINGS.Enable = viper.GetBool("grafana_config.enable")
 	}
 
 	// Reverse Proxy

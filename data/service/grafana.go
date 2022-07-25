@@ -9,6 +9,7 @@ import (
 	"github.com/Jeffail/gabs"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/system/webmessages"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
 
@@ -21,52 +22,78 @@ type GrafanaService struct {
 // LabelsData: this method get all Grafana labels from database
 func (ps *GrafanaService) GrafanaURL() (string, error) {
 
-	var userGlobalSettings = model.TableGlobalSettings{}
-
-	if err := ps.Session.Debug().Table("global_settings").
-		Where("param = ?", "grafana").
-		Find(&userGlobalSettings).Error; err != nil {
-		return "", err
-	}
-
-	sData, _ := gabs.ParseJSON(userGlobalSettings.Data)
+	urlGrafana := ""
 	replyData := gabs.New()
-	urlGrafana := ps.Host
 
-	if sData.Exists("host") {
-		urlGrafana = sData.Search("host").Data().(string)
+	if !config.Setting.GRAFANA_SETTINGS.Enable {
+		var userGlobalSettings = model.TableGlobalSettings{}
+
+		if err := ps.Session.Debug().Table("global_settings").
+			Where("param = ?", "grafana").
+			Find(&userGlobalSettings).Error; err != nil {
+			return "", err
+		}
+
+		sData, _ := gabs.ParseJSON(userGlobalSettings.Data)
+		urlGrafana = ps.Host
+
+		if sData.Exists("host") {
+			urlGrafana = sData.Search("host").Data().(string)
+		}
+	} else {
+		urlGrafana = config.Setting.GRAFANA_SETTINGS.URL
 	}
 
 	replyData.Set(urlGrafana, "data")
 	return replyData.String(), nil
 }
 
+// LabelsData: if grafana has been activated
+func (ps *GrafanaService) GrafanaStatus() (string, error) {
+
+	replyData := gabs.New()
+	replyStatus := gabs.New()
+
+	replyStatus.Set(config.Setting.GRAFANA_SETTINGS.Enable, "enable")
+	replyData.Set(replyStatus.Data(), "data")
+
+	return replyData.String(), nil
+}
+
 func (ps *GrafanaService) SetGrafanaObject() error {
 
-	var userGlobalSettings = model.TableGlobalSettings{}
+	// assign only need
+	if !config.Setting.GRAFANA_SETTINGS.Enable {
+		var userGlobalSettings = model.TableGlobalSettings{}
 
-	if err := ps.Session.Debug().Table("global_settings").
-		Where("param = ?", "grafana").
-		Find(&userGlobalSettings).Error; err != nil {
-		return err
-	}
+		if err := ps.Session.Debug().Table("global_settings").
+			Where("param = ?", "grafana").
+			Find(&userGlobalSettings).Error; err != nil {
+			return err
+		}
 
-	sData, _ := gabs.ParseJSON(userGlobalSettings.Data)
+		sData, _ := gabs.ParseJSON(userGlobalSettings.Data)
 
-	if sData.Exists("host") {
-		ps.Host = sData.Search("host").Data().(string)
-	}
+		if sData.Exists("host") {
+			ps.Host = sData.Search("host").Data().(string)
+		}
 
-	if sData.Exists("user") {
-		ps.User = sData.Search("user").Data().(string)
-	}
+		if sData.Exists("user") {
+			ps.User = sData.Search("user").Data().(string)
+		}
 
-	if sData.Exists("password") {
-		ps.Password = sData.Search("password").Data().(string)
-	}
+		if sData.Exists("password") {
+			ps.Password = sData.Search("password").Data().(string)
+		}
 
-	if sData.Exists("token") {
-		ps.Token = sData.Search("token").Data().(string)
+		if sData.Exists("token") {
+			ps.Token = sData.Search("token").Data().(string)
+		}
+	} else {
+		ps.Host = config.Setting.GRAFANA_SETTINGS.URL
+		ps.User = config.Setting.GRAFANA_SETTINGS.User
+		ps.Password = config.Setting.GRAFANA_SETTINGS.Password
+		ps.Token = config.Setting.GRAFANA_SETTINGS.AuthKey
 	}
 
 	return nil
@@ -90,9 +117,10 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
-	defer ps.HttpClient.CloseIdleConnections()
 
 	data, err := ps.HttpClient.Do(req)
+	defer ps.HttpClient.CloseIdleConnections()
+
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
@@ -108,9 +136,20 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 	sData, err := gabs.ParseJSON(buf)
 	if err != nil {
-		logger.Error("couldn't encode json body")
+		logger.Error("error parsing: ", err.Error())
 		return "", err
 	}
+
+	if data.StatusCode >= 400 {
+		err = fmt.Errorf("receive bad response from grafana: %d", data.StatusCode)
+		logger.Error("error: ", err.Error())
+		reply := gabs.New()
+		reply.Set("1048", "errorcode")
+		reply.Set(webmessages.GrafanaProcessingError+fmt.Sprintf(" httpcode: %d", data.StatusCode), "message")
+		reply.Set(sData.Data(), "data")
+		return reply.String(), nil
+	}
+
 	return sData.String(), nil
 
 }
@@ -133,8 +172,10 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
-	defer ps.HttpClient.CloseIdleConnections()
+
 	data, err := ps.HttpClient.Do(req)
+	defer ps.HttpClient.CloseIdleConnections()
+
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
@@ -153,6 +194,17 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 		logger.Error("couldn't encode json body")
 		return "", err
 	}
+
+	if data.StatusCode >= 400 {
+		reply := gabs.New()
+		reply.Set("1048", "errorcode")
+		reply.Set(webmessages.GrafanaProcessingError+fmt.Sprintf(" httpcode: %d", data.StatusCode), "message")
+		reply.Set(sData.Data(), "data")
+		err = fmt.Errorf("receive bad response from grafana: ", data.StatusCode)
+		logger.Error("error: ", err.Error())
+		return reply.String(), err
+	}
+
 	return sData.String(), nil
 
 }
@@ -175,8 +227,10 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 	}
 
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
-	defer ps.HttpClient.CloseIdleConnections()
+
 	data, err := ps.HttpClient.Do(req)
+	defer ps.HttpClient.CloseIdleConnections()
+
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
@@ -195,6 +249,17 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 		logger.Error("couldn't encode json body")
 		return "", err
 	}
+
+	if data.StatusCode >= 400 {
+		reply := gabs.New()
+		reply.Set("1048", "errorcode")
+		reply.Set(webmessages.GrafanaProcessingError+fmt.Sprintf(" httpcode: %d", data.StatusCode), "message")
+		reply.Set(sData.Data(), "data")
+		err = fmt.Errorf("receive bad response from grafana: ", data.StatusCode)
+		logger.Error("error: ", err.Error())
+		return reply.String(), err
+	}
+
 	return sData.String(), nil
 
 }
@@ -219,6 +284,8 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 	req.Header.Add("Authorization", "Bearer "+ps.Token)
 
 	data, err := ps.HttpClient.Do(req)
+	defer ps.HttpClient.CloseIdleConnections()
+
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
 		return "", err
@@ -237,20 +304,19 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 		logger.Error("couldn't encode json body")
 		return "", err
 	}
+
+	if data.StatusCode >= 400 {
+		reply := gabs.New()
+		reply.Set("1048", "errorcode")
+		reply.Set(webmessages.GrafanaProcessingError+fmt.Sprintf(" httpcode: %d", data.StatusCode), "message")
+		reply.Set(sData.Data(), "data")
+		err = fmt.Errorf("receive bad response from grafana: ", data.StatusCode)
+		logger.Error("error: ", err.Error())
+		return reply.String(), err
+	}
+
 	return sData.String(), nil
 
-}
-
-// LabelsData: if grafana has been activated
-func (ps *GrafanaService) GrafanaStatus() (string, error) {
-
-	replyData := gabs.New()
-	replyStatus := gabs.New()
-
-	replyStatus.Set(config.Setting.GRAFANA_SETTINGS.Enable, "enable")
-	replyData.Set(replyStatus.Data(), "data")
-
-	return replyData.String(), nil
 }
 
 //LabelsData: this method get all Grafana labels from database

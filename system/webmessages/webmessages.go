@@ -37,4 +37,5 @@ const (
 	SwaggerFileNotExistsError   = "swagger file couldn't be found"
 	BadPCAPData                 = "bad pcap data"
 	BadDatabaseRetrieve         = "db data retrieve error"
+	GrafanaProcessingError      = "grafana returned"
 )

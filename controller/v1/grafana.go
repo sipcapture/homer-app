@@ -42,6 +42,38 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
 
+// swagger:route GET /proxy/grafana/status Proxy grafana
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - JWT
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (pc *GrafanaController) GrafanaStatus(c echo.Context) error {
+
+	responseData, err := pc.GrafanaService.GrafanaStatus()
+	if err != nil {
+		logger.Error("GrafanaURL: ", responseData)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
 // swagger:route GET /proxy/grafana/org proxy grafanaGrafanaORG
 //
 // Returns data about Grafana organization
@@ -185,4 +217,48 @@ func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error 
 		logger.Debug(responseData)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
+// swagger:route GET /proxy/grafana/request/d/{uid}/{param} Proxy grafanaRequest
+//
+// Returns data based upon filtered json
+// ---
+// produces:
+// - application/json
+// Security:
+// - JWT
+//
+// SecurityDefinitions:
+// JWT:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// ApiKeyAuth:
+//      type: apiKey
+//      in: header
+//      name: Auth-Token
+//
+// Responses:
+//   201: body:ListUsers
+//   400: body:FailureResponse
+func (pc *GrafanaController) GrafanaGetDashboardRequest(c echo.Context) error {
+
+	requestDashboard := c.Param("uid")
+	requestID := c.Param("param")
+	queryString := c.QueryString()
+
+	err := pc.GrafanaService.SetGrafanaObject()
+	if err != nil {
+		logger.Error("Grafana service is not configured")
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "No Grafana service is not configured")
+	}
+
+	responseData, err := pc.GrafanaService.GrafanaGetDashboardRequest(requestDashboard, requestID, queryString)
+	if err != nil {
+		logger.Error("GrafanaGetFoldersAgainstUUID", responseData)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "No Grafana service is not configured")
+	}
+
+	return c.HTML(http.StatusOK, responseData)
+
 }

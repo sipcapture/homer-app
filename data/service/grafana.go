@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/Jeffail/gabs"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
@@ -236,5 +238,59 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 		return "", err
 	}
 	return sData.String(), nil
+
+}
+
+// LabelsData: if grafana has been activated
+func (ps *GrafanaService) GrafanaStatus() (string, error) {
+
+	replyData := gabs.New()
+	replyStatus := gabs.New()
+
+	replyStatus.Set(config.Setting.GRAFANA_SETTINGS.Enable, "enable")
+	replyData.Set(replyStatus.Data(), "data")
+
+	return replyData.String(), nil
+}
+
+//LabelsData: this method get all Grafana labels from database
+func (ps *GrafanaService) GrafanaGetDashboardRequest(dashboard string, uuid string, query string) (string, error) {
+
+	grafanaQuery := fmt.Sprintf("%s/d/%s/%s?%s", ps.Host, dashboard, uuid, query)
+
+	req, err := http.NewRequest("GET", grafanaQuery, nil)
+
+	if err != nil {
+		logger.Error("Couldn't make NewRequest query:", grafanaQuery)
+		return "", err
+	}
+
+	// This one line implements the authentication required for the task.
+	if ps.Password != "" && ps.User != "" {
+		req.SetBasicAuth(ps.User, ps.Password)
+	}
+
+	req.Header.Add("Authorization", "Bearer "+ps.Token)
+
+	data, err := ps.HttpClient.Do(req)
+	defer ps.HttpClient.CloseIdleConnections()
+
+	if err != nil {
+		logger.Error("Couldn't make http query:", grafanaQuery)
+		return "", err
+	}
+
+	defer data.Body.Close()
+
+	buf, _ := ioutil.ReadAll(data.Body)
+	if err != nil {
+		logger.Error("Couldn't read the data from IO-Buffer")
+		return "", err
+	}
+
+	//dataResponse := string(buf)
+	dataResponse := strings.ReplaceAll(string(buf), "base href=\"/\"", "base href=\"/grafana/\"")
+
+	return dataResponse, nil
 
 }

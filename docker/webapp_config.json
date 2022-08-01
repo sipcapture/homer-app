@@ -72,7 +72,7 @@
       "dn",
       "member"
     ],
-    "admingroup": "admin",
+    "admingroup": "HOMER_admin",
     "adminmode": true,
     "usergroup": "HOMER_user",
     "usermode": true,

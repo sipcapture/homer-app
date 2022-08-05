@@ -29,6 +29,11 @@
     "host": "http://prom_host:9090",
     "api": "api/v1"
   },
+  "grafana_config": {
+    "host": "http://grafana_host:3000",
+    "path": "grafana_path",
+    "token": "grafana_token"
+  },
   "loki_config": {
     "user": "loki_user",
     "pass": "loki_pass",

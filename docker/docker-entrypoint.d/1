@@ -6,6 +6,7 @@ DB_KEEPALIVE=${DB_KEEPALIVE,,} #set to lower-case
 INFLUX_DB=${INFLUX_DB:-localhost}
 PROM_HOST=${PROM_HOST:-localhost}
 LOKI_HOST=${LOKI_HOST:-localhost}
+GRAFANA_HOST=${GRAFANA_HOST:-localhost}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
@@ -32,6 +33,12 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LOKI_PORT" ]; then sed -i "s/3100/${LOKI_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LOKI_USER" ]; then sed -i "s/loki_user/${LOKI_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LOKI_PASS" ]; then sed -i "s/loki_pass/${LOKI_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
+
+   
+   if [ -n "$GRAFANA_HOST" ]; then sed -i "s/grafana_host/${GRAFANA_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$GRAFANA_PORT" ]; then sed -i "s/3000/${GRAFANA_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$GRAFANA_TOKEN" ]; then sed -i "s/grafana_token/${GRAFANA_TOKEN}/g" /usr/local/homer/etc/webapp_config.json; fi
+   sed -i "s/grafana_path/${GRAFANA_PATH}/g" /usr/local/homer/etc/webapp_config.json
 
    if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$HTTP_PORT" ]; then sed -i "s/homer_web_port/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; 

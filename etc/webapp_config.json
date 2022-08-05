@@ -59,7 +59,7 @@
   "grafana_config": {
     "help": "Settings for Grafana",
     "host": "http://127.0.0.1:3000",
-    "path": "/grafana",
+    "path": "",
     "token": "",
     "proxy_control": false,
     "proxy_check": "simple",

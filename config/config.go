@@ -32,7 +32,7 @@ type HomerSettingServer struct {
 		User         string `default:""`
 		Password     string `default:""`
 		ProxyControl bool   `default:"false"`
-		Path         string `default:"/grafana"`
+		Path         string `default:""`
 		ProxyCheck   string `default:"simple"`
 		Enable       bool   `default:"false"`
 	}

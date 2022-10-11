@@ -47,7 +47,13 @@ type HomerSettingServer struct {
 	}
 
 	AUTH_SETTINGS struct {
-		JwtSecret string `default:""`
+		JwtSecret       string `default:""`
+		AuthTokenHeader string `default:"Auth-Token"`
+		AuthTokenExpire uint32 `default:"1200"`
+	}
+
+	API_SETTINGS struct {
+		EnableTokenAccess bool `default:"false"`
 	}
 
 	OAUTH2_SETTINGS struct {

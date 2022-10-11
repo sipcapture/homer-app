@@ -2,31 +2,32 @@
 //
 // Homer-App User interface for WEB AI
 //
-//     Schemes: http, https
-//     Host: localhost:9080
-//     BasePath: /api/v3
-//     Version: 1.1.2
-//     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
-//	   Copyright: QXIP B.V. 2019-2020
+//	    Schemes: http, https
+//	    Host: localhost:9080
+//	    BasePath: /api/v3
+//	    Version: 1.1.2
+//	    License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
+//		   Copyright: QXIP B.V. 2019-2020
 //
-//     Consumes:
-//     - application/json
+//	    Consumes:
+//	    - application/json
 //
-//     Produces:
-//     - application/json
-//     Security:
-//     - bearer:
+//	    Produces:
+//	    - application/json
+//	    Security:
+//	    - bearer:
 //
-//     SecurityDefinitions:
-//     bearer:
-//          type: apiKey
-//          name: Authorization
-//          in: header
+//	    SecurityDefinitions:
+//	    bearer:
+//	         type: apiKey
+//	         name: Authorization
+//	         in: header
 //
 // swagger:meta
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -66,7 +67,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-//CustomValidator function
+// CustomValidator function
 type CustomValidator struct {
 	validator *validator.Validate
 }
@@ -91,7 +92,7 @@ func (i *arrayFlags) Set(value string) error {
 	return nil
 }
 
-//params for Flags
+// params for Flags
 type CommandLineFlags struct {
 	InitializeDB              *bool      `json:"initialize_db"`
 	CreateConfigDB            *bool      `json:"create_config_db"`
@@ -133,7 +134,7 @@ type CommandLineFlags struct {
 	GenerateJwtSecret         *bool      `json:"generate_jwt_secret"`
 }
 
-//params for  Services
+// params for  Services
 type ServicesObject struct {
 	configDBSession   *gorm.DB
 	dataDBSession     map[string]*gorm.DB
@@ -641,12 +642,6 @@ func configureServiceObjects() {
 		httpAuth.InsecureSkipVerify = viper.GetBool("skipverify")
 	}
 
-	/* apply token expire - default 1200 */
-	authTokenExpire := viper.GetInt("auth_settings.token_expire")
-	if authTokenExpire > 0 {
-		auth.TokenExpiryTime = authTokenExpire
-	}
-
 	if versionPg, err := migration.CheckVersion(servicesObject.configDBSession); err != nil {
 		heputils.Colorize(heputils.ColorRed, "\r\nVersion of DB couldn't be retrieved\r\n")
 	} else if (versionPg / 10000) < jsonschema.MinimumPgSQL {
@@ -933,6 +928,68 @@ func performV1APIRouting(e *echo.Echo) {
 	config := middleware.JWTConfig{
 		Claims:     &auth.JwtUserClaim{},
 		SigningKey: []byte(config.Setting.AUTH_SETTINGS.JwtSecret),
+		Skipper: func(c echo.Context) bool {
+
+			if !config.Setting.API_SETTINGS.EnableTokenAccess {
+				logger.Debug("Token access has been disabled: api_settings.enable_token_access")
+				return false
+			}
+
+			/* TOKEN */
+			tokenValue := c.Request().Header.Get(config.Setting.AUTH_SETTINGS.AuthTokenHeader)
+			if tokenValue != "" {
+				var tokenObject model.TableAuthToken
+				var count int
+
+				if err := servicesObject.configDBSession.Debug().Table("auth_token").
+					Where("expire_date > NOW() AND active = true AND token = ? ", tokenValue).
+					Find(&tokenObject).Count(&count).Error; err != nil {
+					return false
+				}
+
+				if tokenObject.Token != tokenValue {
+					logger.Error(fmt.Errorf("no auth_token found or it has been expired: [%s]", tokenValue))
+					return false
+				}
+
+				logger.Debug("Token object: ", tokenObject)
+
+				userObject := model.UserObjectToken{}
+				isAdmin := false
+				userName := "guest"
+				userGroup := "guest"
+
+				err := json.Unmarshal(tokenObject.UserObject, &userObject)
+
+				if err == nil {
+					if userObject.Usergroup == "admin" {
+						isAdmin = true
+					}
+
+					if userObject.UserName != "" {
+						userName = userObject.UserName
+					}
+
+					if userObject.Usergroup != "" {
+						userGroup = userObject.Usergroup
+					}
+				}
+
+				keyContext := model.KeyContext{
+					Context:     c,
+					AuthKey:     tokenValue,
+					TokenObject: tokenObject,
+					UserAdmin:   isAdmin,
+					UserName:    userName,
+					UserGroup:   userGroup,
+					Auth:        false,
+				}
+
+				c.Set("authtoken", keyContext)
+				return true
+			}
+			return false
+		},
 	}
 
 	res.Use(middleware.JWTWithConfig(config))
@@ -1233,6 +1290,18 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 	//generate JWT
 	if viper.IsSet("auth_settings.jwt_secret") {
 		config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
+	}
+
+	if viper.IsSet("auth_settings.token_expire") {
+		config.Setting.AUTH_SETTINGS.AuthTokenExpire = viper.GetUint32("auth_settings.token_expire")
+	}
+
+	if viper.IsSet("auth_settings.auth_token_header") {
+		config.Setting.AUTH_SETTINGS.AuthTokenHeader = viper.GetString("auth_settings.auth_token_header")
+	}
+
+	if viper.IsSet("api_settings.enable_token_access") {
+		config.Setting.API_SETTINGS.EnableTokenAccess = viper.GetBool("api_settings.enable_token_access")
 	}
 
 	if config.Setting.AUTH_SETTINGS.JwtSecret == "" || config.Setting.AUTH_SETTINGS.JwtSecret == "167f0db2-f83e-4baa-9736-d56064a5b415" {
@@ -1856,7 +1925,7 @@ func initHttpClient() {
 	config.Setting.MAIN_SETTINGS.SubscribeHttpClient = &http.Client{Timeout: time.Duration(config.Setting.MAIN_SETTINGS.TimeoutHttpClient) * time.Second}
 }
 
-//custom error handling in case JWT is missing
+// custom error handling in case JWT is missing
 func customHTTPErrorHandler(err error, c echo.Context) {
 	if err == middleware.ErrJWTMissing {
 		c.Error(echo.NewHTTPError(http.StatusUnauthorized, "Login required"))

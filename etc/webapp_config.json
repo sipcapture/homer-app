@@ -81,6 +81,7 @@
     }
   },
   "api_settings": {
+    "enable_token_access": false,
     "add_captid_to_resolve": false
   },
   "https_settings": {
@@ -109,6 +110,7 @@
     "_jwt_help": "Please generate own jwt secret using uuid or the flag generate-jwt-secret",
     "jwt_secret": "",
     "gravatar": false,
+    "auth_token_header": "Auth-Token",
     "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
     "token_expire": 1200,
     "user_groups": ["admin", "user", "support"]

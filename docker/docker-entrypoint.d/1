@@ -57,7 +57,7 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LDAP_USER_FILTER" ]; then sed -i "s/(uid=%s)/${LDAP_USER_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_GROUP_FILTER" ]; then sed -i "s/(memberUid=%s)/${LDAP_GROUP_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_GROUP_ATTRIB" ]; then sed -i "/group_attributes/ {N;N;N;N;N;N;N;N; s/\[.*/\[\n\t${LDAP_GROUP_ATTRIB}\n\t\],/g}" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$LDAP_ADMINGROUP" ]; then sed -i "/admingroup/ s/admin/${LDAP_ADMINGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ADMINGROUP" ]; then sed -i "/admingroup/ s/HOMER_admin/${LDAP_ADMINGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_ADMINMODE" ]; then sed -i "/adminmode/ s/true/${LDAP_ADMINMODE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USERGROUP" ]; then sed -i "/usergroup/ s/HOMER_user/${LDAP_USERGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USERMODE" ]; then sed -i "/usermode/ s/true/${LDAP_USERMODE}/g" /usr/local/homer/etc/webapp_config.json; fi

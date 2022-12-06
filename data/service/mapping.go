@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/sipcapture/homer-app/migration"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
@@ -182,4 +183,67 @@ func (mps *MappingService) GetSmartSuggestionAginstProfile(hepid string, profile
 	dataReply.Set(dataObject.Data(), "data")
 
 	return dataReply.String(), nil
+}
+
+// this method gets all the mapping from database
+func (mps *MappingService) RecreateMapping() error {
+
+	mappingSchema := migration.GetMappingSchemas()
+
+	tableName := "mapping_schema"
+
+	/* globalSettingData data */
+	logger.Debug("reinstalling " + tableName)
+
+	mps.Session.Exec("TRUNCATE TABLE " + tableName)
+	for _, el := range mappingSchema {
+		db := mps.Session.Save(&el)
+		if db != nil && db.Error != nil {
+			logger.Error(fmt.Sprintf("RecreateMapping: Save failed for table [%s]: with error %s. HEPID:[%d], Profile:[%s]", tableName, db.Error, el.Hepid, el.Profile))
+		} else {
+			logger.Debug(fmt.Sprintf("RecreateMapping: Save for table [%s] was success. HEPID:[%d], Profile:[%s]", tableName, el.Hepid, el.Profile))
+		}
+	}
+
+	return nil
+}
+
+// this method gets all the mapping from database
+func (mps *MappingService) RecreateMappingByUUID(guid string) error {
+
+	var mappingObject []*model.TableMappingSchema
+	var count int
+	if err := mps.Session.Debug().Table("mapping_schema").
+		Where("guid = ?", guid).
+		Find(&mappingObject).Count(&count).Error; err != nil {
+		return err
+	}
+	if len(mappingObject) == 0 {
+		return fmt.Errorf("data was not found")
+	}
+
+	mappingSchema := migration.GetMappingSchemas()
+
+	for _, el := range mappingSchema {
+
+		if el.Hepid == mappingObject[0].Hepid && el.HepAlias == mappingObject[0].HepAlias && el.Profile == mappingObject[0].Profile {
+
+			if err := mps.Session.Debug().Table("mapping_schema").
+				Where("guid = ?", guid).
+				Delete(&mappingObject).Error; err != nil {
+				return err
+			}
+
+			db := mps.Session.Save(&el)
+			if db != nil && db.Error != nil {
+				logger.Error(fmt.Sprintf("RecreateMappingByUUID: Save failed for table mapping_schema: with error %s. HEPID:[%d], Profile:[%s]", db.Error, el.Hepid, el.Profile))
+			} else {
+				logger.Debug(fmt.Sprintf("RecreateMappingByUUID: Save for table mapping_schema was success. HEPID:[%d], Profile:[%s]", el.Hepid, el.Profile))
+			}
+
+			return nil
+		}
+	}
+
+	return fmt.Errorf("couldn't find this profile in the default mapping")
 }

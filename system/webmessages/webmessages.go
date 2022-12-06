@@ -19,6 +19,7 @@ const (
 	DeleteDashboardFailed       = "failed to delete the dashboard"
 	MappingSchemaFailed         = "failed to get mapping schema"
 	HepSubRequestFailed         = "failed to get hep sub schema"
+	MappingRecreateFailed       = "failed to recreated all mappings"
 	GetAgentSubFailed           = "failed to get agent sub"
 	GetAuthTokenFailed          = "failed to get auth token"
 	DeleteAdvancedAgainstFailed = "failed to delete advanced setting"

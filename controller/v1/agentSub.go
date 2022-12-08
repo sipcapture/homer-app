@@ -125,7 +125,10 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 //	201: body:AgentsLocationList
 //	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -240,12 +243,15 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 //	201: body:AgentLocationUpdateSuccessResponse
 //	400: body:FailureResponse
 func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
-	// Stub an user to be populated from the body
+	// Stub a user to be populated from the body
 	u := model.TableAgentLocationSession{}
 	err = c.Bind(&u)
 	if err != nil {
@@ -295,8 +301,10 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 //	201: body:AgentLocationDeleteSuccessResponse
 //	400: body:FailureResponse
 func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -349,8 +357,14 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 //	201: body:AgentsLocationList
 //	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-	typeRequest := url.QueryEscape(c.Param("type"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	typeRequest, err := url.QueryUnescape(c.Param("type"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {

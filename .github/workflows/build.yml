@@ -85,7 +85,7 @@ jobs:
       uses: docker/metadata-action@v4.1.1
       with:
         images: |
-          ghcr.io/sipcapture/homer-app
+          ghcr.io/${{ github.repository }}
         tags: |
           latest
           ${{ steps.tag_bump.outputs.tag }}

@@ -108,7 +108,10 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 //   201: body:GlobalSettingsUpdateSuccessfulResponse
 //   400: body:FailureResponse
 func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -159,7 +162,10 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 //   201: body:GlobalSettingsDeleteSuccessfulResponse
 //   400: body:FailureResponse
 func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -199,7 +205,10 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 //   400: body:FailureResponse
 func (ac *AdvancedController) GetAdvancedAgainstGUID(c echo.Context) error {
 
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ac.AdvancedService.GetAdvancedAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.GetAdvancedAgainstFailed)

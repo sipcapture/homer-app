@@ -184,7 +184,10 @@ func (dbc *DashBoardController) InsertDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
 	username := cc.UserName
-	dashboardId := url.QueryEscape(c.Param("dashboardId"))
+	dashboardId, err := url.QueryUnescape(c.Param("dashboardId"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	logger.Debug("*** Database Session created *** ")
 
@@ -244,7 +247,10 @@ func (dbc *DashBoardController) UpdateDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
 	username := cc.UserName
-	dashboardId := url.QueryEscape(c.Param("dashboardId"))
+	dashboardId, err := url.QueryUnescape(c.Param("dashboardId"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	var jsonData map[string]interface{} = map[string]interface{}{}
 	if err := c.Bind(&jsonData); err != nil {
@@ -296,7 +302,10 @@ func (dbc *DashBoardController) DeleteDashboard(c echo.Context) error {
 
 	cc := c.(model.AppContext)
 	username := cc.UserName
-	dashboardId := url.QueryEscape(c.Param("dashboardId"))
+	dashboardId, err := url.QueryUnescape(c.Param("dashboardId"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := dbc.DashBoardService.DeleteDashboard(username, dashboardId)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.DeleteDashboardFailed)

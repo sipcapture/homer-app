@@ -89,8 +89,14 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 //	400: body:FailureResponse
 func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
-	id := url.QueryEscape(c.Param("id"))
-	transaction := url.QueryEscape(c.Param("transaction"))
+	id, err := url.QueryUnescape(c.Param("id"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	transaction, err := url.QueryUnescape(c.Param("transaction"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingFields(id, transaction)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaFailed)
@@ -131,7 +137,10 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 //	400: body:FailureResponse
 func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
@@ -226,7 +235,10 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 //	201: body:MappingUpdateSuccessResponse
 //	400: body:FailureResponse
 func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -281,7 +293,10 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 //	201: body:MappingDeleteSuccessResponse
 //	400: body:FailureResponse
 func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -331,8 +346,14 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 //	400: body:FailureResponse
 func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
-	hepid := url.QueryEscape(c.Param("hepid"))
-	profile := url.QueryEscape(c.Param("profile"))
+	hepid, err := url.QueryUnescape(c.Param("hepid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	profile, err := url.QueryUnescape(c.Param("profile"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	queryString := c.QueryString()
 
@@ -434,8 +455,11 @@ func (mpc *MappingController) ResetMappingAgainstUUID(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingRecreateFailed)
 	}
 
-	uuid := url.QueryEscape(c.Param("uuid"))
-	err := mpc.MappingService.RecreateMappingByUUID(uuid)
+	uuid, err := url.QueryUnescape(c.Param("uuid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	err = mpc.MappingService.RecreateMappingByUUID(uuid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
 	}

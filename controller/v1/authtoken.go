@@ -77,7 +77,10 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 //   200: body:AuthToken
 //   400: body:FailureResponse
 func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AuthtokenService.GetAuthtokenAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -178,12 +181,15 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 //   201: body:AuthTokenUpdateSuccessfulResponse
 //   400: body:FailureResponse
 func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AuthtokenService.GetAuthtokenAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
-	// Stub an user to be populated from the body
+	// Stub a user to be populated from the body
 	u := model.TableAuthToken{}
 	err = c.Bind(&u)
 	if err != nil {
@@ -230,8 +236,10 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 //   201: body:AuthTokenDeleteSuccessfulResponse
 //   400: body:FailureResponse
 func (ass *AuthtokenController) DeleteAuthtokenAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AuthtokenService.GetAuthtokenAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

@@ -74,7 +74,10 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 //   201: body:HepsubSchema
 //   400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -116,8 +119,14 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 //   201: body:HepsubSchema
 //   400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
-	id := url.QueryEscape(c.Param("id"))
-	transaction := url.QueryEscape(c.Param("transaction"))
+	id, err := url.QueryUnescape(c.Param("id"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	transaction, err := url.QueryUnescape(c.Param("transaction"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := hsc.HepsubService.GetHepSubFields(id, transaction)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -205,7 +214,10 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 //   201: body:HepsubUpdateSuccessResponse
 //   400: body:FailureResponse
 func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -256,8 +268,10 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 //   201: body:HepsubDeleteSuccessResponse
 //   400: body:FailureResponse
 func (hsc *HepsubController) DeleteHepSubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := hsc.HepsubService.GetHepSubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

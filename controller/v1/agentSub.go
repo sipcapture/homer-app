@@ -83,10 +83,13 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 //	200: body:AgentsLocationList
 //	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
-	typeRequest := url.QueryEscape(c.Param("type"))
+	typeRequest, err := url.QueryUnescape(c.Param("type"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstType(typeRequest)
 	if err != nil {
-		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }

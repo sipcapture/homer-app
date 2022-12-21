@@ -30,7 +30,7 @@ type SearchObject struct {
 		// type: array
 		// items:
 		//  type: string
-		// 	example: ["192.1698.10.20"]
+		// 	example: ["192.168.10.20"]
 		WhiteList []string `json:"whitelist"`
 		// location
 		// required: false
@@ -48,11 +48,11 @@ type SearchObject struct {
 	} `json:"param"`
 	// this control the time range for used for search
 	Timestamp struct {
-		// current timestamp in miliseconds
+		// current timestamp in milliseconds
 		// required :true
 		// example: 1581793200000
 		From int64 `json:"from"`
-		// current timestamp in miliseconds
+		// current timestamp in milliseconds
 		// required :true
 		// example: 1581879599000
 		To int64 `json:"to"`

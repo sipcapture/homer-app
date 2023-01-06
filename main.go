@@ -423,6 +423,9 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.service_redirect") {
 		config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect = viper.GetString("oauth2.service_redirect")
 	}
+	if viper.IsSet("oauth2.service_root") {
+		config.Setting.OAUTH2_SETTINGS.UrlToService = viper.GetString("oauth2.service_root")
+	}
 	if viper.IsSet("oauth2.scope") {
 		config.Setting.OAUTH2_SETTINGS.Scope = viper.GetStringSlice("oauth2.scope")
 	}

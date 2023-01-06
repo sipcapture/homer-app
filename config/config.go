@@ -74,6 +74,7 @@ type HomerSettingServer struct {
 		ServiceProviderImage string   `default:""`
 		StateValue           string   `default:"jkwh027yasj"`
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
+                UrlToService         string   `default:"/"`
 		Scope                []string `default:"[email,openid,profile]"`
 		EnableGravatar       bool     `default:"false"`
 		EnableAutoRedirect   bool     `default:"false"`

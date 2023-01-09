@@ -18,20 +18,19 @@ require (
 	github.com/influxdata/influxdb1-client v0.0.0-20190809212627-fc22c7df067e
 	github.com/jinzhu/gorm v1.9.11
 	github.com/jonboulle/clockwork v0.1.0 // indirect
-	github.com/labstack/echo/v4 v4.5.0
-	github.com/labstack/gommon v0.3.0
+	github.com/labstack/echo/v4 v4.9.0
+	github.com/labstack/gommon v0.3.1
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.5 // indirect
 	github.com/manifoldco/promptui v0.7.0
 	github.com/mcuadros/go-defaults v1.2.0
-	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/satori/go.uuid v1.2.0
 	github.com/shomali11/util v0.0.0-20190608141102-c39c2521a2ab
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.8.1
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0

@@ -526,7 +526,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 	config.OAuth2TokenMap[ssoToken] = oAuth2Object
 
 	//c.Response().Header().Add("Authorization", "Bearer "+token.AccessToken)
-	return c.Redirect(http.StatusFound, "/?token="+ssoToken)
+	return c.Redirect(http.StatusFound, config.Setting.OAUTH2_SETTINGS.UrlToService+"?token="+ssoToken)
 
 }
 

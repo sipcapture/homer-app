@@ -29,8 +29,8 @@ require (
 	github.com/shomali11/util v0.0.0-20190608141102-c39c2521a2ab
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.8.1
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
-	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f
+	golang.org/x/crypto v0.1.0
+	golang.org/x/net v0.1.0
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0

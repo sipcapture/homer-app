@@ -37,12 +37,15 @@ type UserController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:ListUsers
-//   400: body:FailureResponse
+//
+//	200: body:ListUsers
+//	400: body:FailureResponse
 func (uc *UserController) GetUser(c echo.Context) error {
 
 	userName, isAdmin := auth.IsRequestAdmin(c)
@@ -72,12 +75,15 @@ func (uc *UserController) GetUser(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:ListUsers
-//   400: body:FailureResponse
+//
+//	200: body:ListUsers
+//	400: body:FailureResponse
 func (uc *UserController) GetUserByGUID(c echo.Context) error {
 
 	// Stub an user to be populated from the body
@@ -102,28 +108,33 @@ func (uc *UserController) GetUserByGUID(c echo.Context) error {
 //
 // Returns the list of groups
 // ---
-//     Consumes:
-//     - application/json
 //
-// 	   Produces:
-// 	   - application/json
+//	    Consumes:
+//	    - application/json
 //
-//	   Security:
-//	   - JWT
+//		   Produces:
+//		   - application/json
+//
+//		   Security:
+//		   - JWT
 //
 // SecurityDefinitions:
 // JWT:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
 //
 // Responses:
-//   201: body:ListUsers
-//   400: body:FailureResponse
+//
+//	201: body:ListUsers
+//	400: body:FailureResponse
 func (uc *UserController) GetGroups(c echo.Context) error {
 
 	reply, err := uc.UserService.GetGroups()
@@ -142,23 +153,27 @@ func (uc *UserController) GetGroups(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: CreateUserStruct
-//   in: body
-//   description: user structure
-//   schema:
+//   - name: CreateUserStruct
+//     in: body
+//     description: user structure
+//     schema:
 //     type: CreateUserStruct
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:UserCreateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:UserCreateSuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) CreateUser(c echo.Context) error {
 
 	// Stub an user to be populated from the body
@@ -192,29 +207,33 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: userGuid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: uuid of the user to update
-//   required: true
-//   type: string
-// + name: createUserStruct
-//   in: body
-//   description: user parameters
-//   schema:
+//   - name: userGuid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: uuid of the user to update
+//     required: true
+//     type: string
+//   - name: createUserStruct
+//     in: body
+//     description: user parameters
+//     schema:
 //     "$ref": "#/definitions/CreateUserStruct"
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:UserUpdateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:UserUpdateSuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) UpdateUser(c echo.Context) error {
 
 	// Stub an user to be populated from the body
@@ -248,23 +267,27 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: userGuid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: uuid of the user to update
-//   required: true
-//   type: string
+//   - name: userGuid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: uuid of the user to update
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:UserDeleteSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:UserDeleteSuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) DeleteUser(c echo.Context) error {
 	u := model.TableUser{}
 
@@ -285,15 +308,17 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: userLoginStruct
-//   in: body
-//   description: user login structure
-//   schema:
-//      type: UserLogin
-//   required: true
+//   - name: userLoginStruct
+//     in: body
+//     description: user login structure
+//     schema:
+//     type: UserLogin
+//     required: true
+//
 // responses:
-//   201: body:UserLoginSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:UserLoginSuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) LoginUser(c echo.Context) error {
 	u := model.UserloginDetails{}
 	if err := c.Bind(&u); err != nil {
@@ -336,13 +361,15 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // responses:
-//   200: body:AuthTypeList
-//   400: body:FailureResponse
+//
+//	200: body:AuthTypeList
+//	400: body:FailureResponse
 func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 
 	reply, err := uc.UserService.GetAuthTypeList()
@@ -362,24 +389,28 @@ func (uc *UserController) GetAuthTypeList(c echo.Context) error {
 // consumes:
 // - application/json
 // produces:
-// - application/json
-//  Security:
+//   - application/json
+//     Security:
 //   - JWT
 //   - ApiKeyAuth
 //
 // SecurityDefinitions:
 // JWT:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
 //
 // responses:
-//   200: body:SuccessResponse
-//   400: body:FailureResponse
+//
+//	200: body:SuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	if !config.Setting.OAUTH2_SETTINGS.Enable {
@@ -407,24 +438,28 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 // consumes:
 // - application/json
 // produces:
-// - application/json
-//  Security:
+//   - application/json
+//     Security:
 //   - JWT
 //   - ApiKeyAuth
 //
 // SecurityDefinitions:
 // JWT:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
 //
 // responses:
-//   200: body:SuccessResponse
-//   400: body:FailureResponse
+//
+//	200: body:SuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	if !config.Setting.OAUTH2_SETTINGS.Enable {
@@ -448,7 +483,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 
 	oAuth2Object := model.OAuth2MapToken{}
 	options := []oauth2.AuthCodeOption{}
-        redirecturi := config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName
+	redirecturi := config.Setting.OAUTH2_SETTINGS.RedirectUri + "/" + config.Setting.OAUTH2_SETTINGS.ServiceProviderName
 
 	if config.Setting.OAUTH2_SETTINGS.AuthStyle == 1 {
 		options = append(options,
@@ -486,7 +521,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 					oAuth2Object.ProfileJson = bodyBytes
 				}
 			} else {
-				logger.Error("post couldn't get profile: ", err.Error())
+				logger.Error("post couldn't get profile error code: ", resp.StatusCode)
 				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 			}
 		} else {
@@ -507,7 +542,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 					oAuth2Object.ProfileJson = bodyBytes
 				}
 			} else {
-				logger.Error("couldn't get profile: ", err.Error())
+				logger.Error("post couldn't get profile error code: ", resp.StatusCode)
 				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
 			}
 		} else {
@@ -539,15 +574,17 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: userLoginStruct
-//   in: body
-//   description: user login structure
-//   schema:
-//      type: UserLogin
-//   required: true
+//   - name: userLoginStruct
+//     in: body
+//     description: user login structure
+//     schema:
+//     type: UserLogin
+//     required: true
+//
 // responses:
-//   201: body:UserLoginSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:UserLoginSuccessResponse
+//	400: body:FailureResponse
 func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
 
 	logger.Debug("Doing Oauth2TokenExchange....")
@@ -610,12 +647,15 @@ func (uc *UserController) Oauth2TokenExchange(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:UserSettingList
-//   400: body:FailureResponse
+//
+//	200: body:UserSettingList
+//	400: body:FailureResponse
 func (uc *UserController) GetCurrentUserProfile(c echo.Context) error {
 
 	userProfile, err := auth.GetUserProfile(c)

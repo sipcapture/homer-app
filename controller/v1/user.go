@@ -522,7 +522,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 				}
 			} else {
 				logger.Error("post couldn't get profile error code: ", resp.StatusCode)
-				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, fmt.Sprintf("couldn't retrieve user profile [%d]", resp.StatusCode))
 			}
 		} else {
 			logger.Error("post couldn't get data: ", err.Error())
@@ -543,7 +543,7 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 				}
 			} else {
 				logger.Error("post couldn't get profile error code: ", resp.StatusCode)
-				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, err.Error())
+				return httpresponse.CreateBadResponse(&c, http.StatusInternalServerError, fmt.Sprintf("couldn't retrieve user profile [%d]", resp.StatusCode))
 			}
 		} else {
 			logger.Error("couldn't get data: ", err.Error())

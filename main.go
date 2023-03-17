@@ -682,7 +682,6 @@ func configureAsHTTPServer() {
 
 	if viper.IsSet("grafana_config.host") {
 		config.Setting.GRAFANA_SETTINGS.URL = viper.GetString("grafana_config.host")
-		config.Setting.GRAFANA_SETTINGS.Enable = true
 	}
 
 	if viper.IsSet("grafana_config.path") {

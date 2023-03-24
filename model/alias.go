@@ -16,7 +16,7 @@ type TableAlias struct {
 	// alias name
 	// example: verizon
 	// required: true
-	Alias string `gorm:"column:alias;type:varchar(40)" json:"alias" validate:"required"`
+	Alias string `gorm:"column:alias;type:varchar(250)" json:"alias" validate:"required"`
 	// example: 192.168.10.20
 	// required: true
 	IP string `gorm:"column:ip;type:varchar(60)" json:"ip" validate:"required,ip"`

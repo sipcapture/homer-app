@@ -29,7 +29,7 @@ license: "AGPLv3"
 contents:
   # Basic file that applies to all packagers
   - src: /tmp/pkg/homer-app
-    dst: /usr/local/homer/bin/homer-app
+    dst: /usr/local/bin/homer-app
   - src: /tmp/pkg/log/.keepme
     dst: /usr/local/homer/log/.keepme
   - src: /tmp/pkg/dist/**/*
@@ -42,5 +42,5 @@ contents:
     dst: /usr/local/homer/etc/swagger.json
     type: config
   - src: /tmp/pkg/etc/webapp_config.json
-    dst: /usr/local/homer/etc/webapp_config.json.example
+    dst: /usr/local/homer/etc/webapp_config.json
     type: config

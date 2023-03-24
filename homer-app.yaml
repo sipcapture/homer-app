@@ -34,6 +34,8 @@ contents:
     dst: /usr/local/homer/log/.keepme
   - src: /tmp/pkg/dist/**/*
     dst: /usr/local/homer/dist
+  - src: /tmp/pkg/dist/*
+    dst: /usr/local/homer/dist
     # Simple config file
   - src: /tmp/pkg/homer-app.service
     dst: /lib/systemd/system/homer-app.service

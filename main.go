@@ -1092,6 +1092,24 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				connectString += fmt.Sprintf(" port=%d", port)
 			}
 
+			//SSL mode
+			if sslMode == "verify-full" {
+				if viper.IsSet(keyData + ".sslrootcert") {
+					sslRoot := viper.GetString(keyData + ".sslrootcert")
+					connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+				}
+
+				if viper.IsSet(keyData + ".sslkey") {
+					sslKey := viper.GetString(keyData + ".sslkey")
+					connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+				}
+
+				if viper.IsSet(keyData + ".sslcert") {
+					sslCert := viper.GetString(keyData + ".sslcert")
+					connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+				}
+			}
+
 			dbA, err := gorm.Open("postgres", connectString)
 
 			if err != nil {
@@ -1181,6 +1199,25 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			connectString += fmt.Sprintf(" port=%d", port)
 		}
 
+		//SSL mode
+		if sslMode == "verify-full" {
+			keyData := "database_data"
+			if viper.IsSet(keyData + ".sslrootcert") {
+				sslRoot := viper.GetString(keyData + ".sslrootcert")
+				connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+			}
+
+			if viper.IsSet(keyData + ".sslkey") {
+				sslKey := viper.GetString(keyData + ".sslkey")
+				connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+			}
+
+			if viper.IsSet(keyData + ".sslcert") {
+				sslCert := viper.GetString(keyData + ".sslcert")
+				connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+			}
+		}
+
 		db, err := gorm.Open("postgres", connectString)
 
 		db.DB().SetMaxIdleConns(5)
@@ -1235,6 +1272,25 @@ func getConfigDBSession() *gorm.DB {
 
 	if port != 0 {
 		connectString += fmt.Sprintf(" port=%d", port)
+	}
+
+	//SSL mode
+	if sslMode == "verify-full" {
+		keyData := "database_config"
+		if viper.IsSet(keyData + ".sslrootcert") {
+			sslRoot := viper.GetString(keyData + ".sslrootcert")
+			connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+		}
+
+		if viper.IsSet(keyData + ".sslkey") {
+			sslKey := viper.GetString(keyData + ".sslkey")
+			connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+		}
+
+		if viper.IsSet(keyData + ".sslcert") {
+			sslCert := viper.GetString(keyData + ".sslcert")
+			connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+		}
 	}
 
 	logger.Info(fmt.Sprintf("Connecting to the config: [%s, %s, %s, %d]\n", host, user, name, port))

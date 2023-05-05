@@ -27,6 +27,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -888,8 +889,94 @@ func configureAsHTTPServer() {
 		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
 		httpsCert := viper.GetString("https_settings.cert")
 		httpsKey := viper.GetString("https_settings.key")
+		minTLSVersionConfigured := viper.GetString("https_settings.min_tls_version")
+		useMozillaProfile := viper.GetBool("https_settings.use_mozilla_profile")
 
-		err := e.StartTLS(httpsURL, httpsCert, httpsKey)
+		var minTLSVersion uint16
+		var usedCipherSuites []uint16
+
+		// reference: https://ssl-config.mozilla.org/#server=go
+		var CipherSuitesModern = []uint16{
+			tls.TLS_AES_128_GCM_SHA256,
+			tls.TLS_AES_256_GCM_SHA384,
+			tls.TLS_CHACHA20_POLY1305_SHA256,
+		}
+		var cipherSuitesIntermediate = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+		}
+		var cipherSuitesOld = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+		}
+
+		switch minTLSVersionConfigured {
+		case "1.0":
+			minTLSVersion = tls.VersionTLS10
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesOld
+			}
+		case "1.1":
+			minTLSVersion = tls.VersionTLS11
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesOld
+			}
+		case "1.2":
+			minTLSVersion = tls.VersionTLS12
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesIntermediate
+			}
+		case "1.3":
+			minTLSVersion = tls.VersionTLS13
+			if useMozillaProfile {
+				usedCipherSuites = CipherSuitesModern
+			}
+		default:
+			minTLSVersion = tls.VersionTLS12
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesIntermediate
+			}
+		}
+
+		tlsCfg := &tls.Config{ // only set TLS version and leave ciphers at default
+			MinVersion: minTLSVersion,
+		}
+		if useMozillaProfile { // set TLS version, cipher suites and prefer Server cipher suites
+			tlsCfg = &tls.Config{
+				MinVersion:               minTLSVersion,
+				PreferServerCipherSuites: useMozillaProfile,
+				CipherSuites:             usedCipherSuites,
+			}
+		}
+
+		// reference: https://echo.labstack.com/guide/http_server/#https-server
+		s := http.Server{
+			Addr:      httpsURL,
+			Handler:   e,
+			TLSConfig: tlsCfg,
+		}
+
+		err := s.ListenAndServeTLS(httpsCert, httpsKey)
 		if err != nil {
 			logger.Error(err.Error())
 			e.Logger.Fatal("Couldn't start https server")

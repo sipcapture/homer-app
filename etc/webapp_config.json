@@ -89,6 +89,8 @@
     "enable": false,
     "host": "0.0.0.0",
     "port": 443,
+    "min_tls_version": "1.2",
+    "use_mozilla_profile": true,
     "cert": "/usr/local/homer/tls/cert.pem",
     "key": "/usr/local/homer/tls/key.pem"
   },

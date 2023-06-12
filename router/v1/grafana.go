@@ -20,7 +20,8 @@ func RouteGrafanaApis(acc *echo.Group, session *gorm.DB, serviceGrafana service.
 
 	// create new stats
 	acc.GET("/proxy/grafana/url", src.GrafanaURL)
-
+	//
+	acc.GET("/proxy/grafana/path", src.GrafanaPath)
 	// create new stats
 	acc.GET("/proxy/grafana/status", src.GrafanaStatus)
 

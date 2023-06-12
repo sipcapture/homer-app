@@ -19,7 +19,23 @@ type GrafanaService struct {
 	ServiceGrafana
 }
 
-// LabelsData: this method get all Grafana labels from database
+// This method will return sub-path from config to UI
+func (ps *GrafanaService) GrafanaPath() (string, error) {
+
+	urlGrafana := ""
+	replyData := gabs.New()
+
+	if !config.Setting.GRAFANA_SETTINGS.Enable {
+		urlGrafana = "grafana"
+	} else {
+		urlGrafana = config.Setting.GRAFANA_SETTINGS.Path
+	}
+
+	replyData.Set(urlGrafana, "data")
+	return replyData.String(), nil
+}
+
+// This method returns Grafana Host from config
 func (ps *GrafanaService) GrafanaURL() (string, error) {
 
 	urlGrafana := ""
@@ -48,7 +64,7 @@ func (ps *GrafanaService) GrafanaURL() (string, error) {
 	return replyData.String(), nil
 }
 
-// LabelsData: if grafana has been activated
+// This method returns if Grafana is enabled in the system
 func (ps *GrafanaService) GrafanaStatus() (string, error) {
 
 	replyData := gabs.New()
@@ -60,6 +76,7 @@ func (ps *GrafanaService) GrafanaStatus() (string, error) {
 	return replyData.String(), nil
 }
 
+// This method sets values in service based on Config
 func (ps *GrafanaService) SetGrafanaObject() error {
 
 	// assign only need
@@ -99,7 +116,7 @@ func (ps *GrafanaService) SetGrafanaObject() error {
 	return nil
 }
 
-// LabelsData: this method get all Grafana labels from database
+// This method returns Grafana Organisation
 func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 	grafanaQuery := fmt.Sprintf("%s/api/org", ps.Host)
@@ -120,9 +137,10 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 	data, err := ps.HttpClient.Do(req)
 	defer ps.HttpClient.CloseIdleConnections()
-
+	println("token" + ps.Token)
 	if err != nil {
 		logger.Error("Couldn't make http query:", grafanaQuery)
+		println("ERROR IN HTTP REQUEST" + grafanaQuery)
 		return "", err
 	}
 
@@ -154,7 +172,7 @@ func (ps *GrafanaService) GrafanaORG() (string, error) {
 
 }
 
-// LabelsData: this method get all Grafana labels from database
+// This method returns all Grafana Folders
 func (ps *GrafanaService) GrafanaFolders() (string, error) {
 
 	grafanaQuery := fmt.Sprintf("%s/api/search?folderIds=0", ps.Host)
@@ -209,7 +227,7 @@ func (ps *GrafanaService) GrafanaFolders() (string, error) {
 
 }
 
-//LabelsData: this method get all Grafana labels from database
+// This method perfroms search in Grafana for Dashboard by UUID
 func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error) {
 
 	grafanaQuery := fmt.Sprintf("%s/api/dashboards/uid/%s", ps.Host, uuid)
@@ -264,7 +282,7 @@ func (ps *GrafanaService) GrafanaGetDashboardByUUUID(uuid string) (string, error
 
 }
 
-//LabelsData: this method get all Grafana labels from database
+// This method perfroms search in Grafana for Dashboard Folder by UUID
 func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error) {
 
 	grafanaQuery := fmt.Sprintf("%s/api/search?folderIds=%s", ps.Host, uuid)
@@ -319,7 +337,7 @@ func (ps *GrafanaService) GrafanaGetFoldersdByUUUID(uuid string) (string, error)
 
 }
 
-//LabelsData: this method get all Grafana labels from database
+// This method returns Grafana dashboard by UUID
 func (ps *GrafanaService) GrafanaGetDashboardRequest(dashboard string, uuid string, query string) (string, error) {
 
 	grafanaQuery := fmt.Sprintf("%s/d/%s/%s?%s", ps.Host, dashboard, uuid, query)

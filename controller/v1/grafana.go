@@ -14,6 +14,36 @@ type GrafanaController struct {
 	GrafanaService *service.GrafanaService
 }
 
+// swagger:route GET /proxy/grafana/path proxy grafanaGrafanaPath
+//
+// Returns Grafana Proxy Path
+// ---
+// produces:
+// - application/json
+// Security:
+// - bearer: []
+//
+// SecurityDefinitions:
+// bearer:
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
+// responses:
+//
+//	200: body:GrafanaUrl
+//	400: body:FailureResponse
+func (pc *GrafanaController) GrafanaPath(c echo.Context) error {
+
+	responseData, err := pc.GrafanaService.GrafanaPath()
+	if err != nil {
+		logger.Debug(responseData)
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Grafana service is not configured")
+	}
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
+}
+
 // swagger:route GET /proxy/grafana/url proxy grafanaGrafanaURL
 //
 // Returns Grafana Proxy Url
@@ -25,13 +55,15 @@ type GrafanaController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // responses:
-//   200: body:GrafanaUrl
-//   400: body:FailureResponse
+//
+//	200: body:GrafanaUrl
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 
 	responseData, err := pc.GrafanaService.GrafanaURL()
@@ -53,17 +85,21 @@ func (pc *GrafanaController) GrafanaURL(c echo.Context) error {
 //
 // SecurityDefinitions:
 // JWT:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
 //
 // Responses:
-//   201: body:ListUsers
-//   400: body:FailureResponse
+//
+//	201: body:ListUsers
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaStatus(c echo.Context) error {
 
 	responseData, err := pc.GrafanaService.GrafanaStatus()
@@ -85,12 +121,15 @@ func (pc *GrafanaController) GrafanaStatus(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:GrafanaOrg
-//   400: body:UserLoginFailureResponse
+//
+//	200: body:GrafanaOrg
+//	400: body:UserLoginFailureResponse
 func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
@@ -117,12 +156,15 @@ func (pc *GrafanaController) GrafanaORG(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:GrafanaFolders
-//   400: body:FailureResponse
+//
+//	200: body:GrafanaFolders
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 
 	err := pc.GrafanaService.SetGrafanaObject()
@@ -145,23 +187,27 @@ func (pc *GrafanaController) GrafanaFolders(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: uid
-//   in: path
-//   example: 9Aklz9aGz
-//   description: uid
-//   required: true
-//   type: string
+//   - name: uid
+//     in: path
+//     example: 9Aklz9aGz
+//     description: uid
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:GrafanaResponseValue
-//   400: body:FailureResponse
+//
+//	200: body:GrafanaResponseValue
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) error {
 
 	uuidDashboard := c.Param("uid")
@@ -189,19 +235,23 @@ func (pc *GrafanaController) GrafanaGetDashboardAgainstUUID(c echo.Context) erro
 // - bearer
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // parameters:
-// + name: uid
-//   in: path
-//   example: 9Aklz9aGz
-//   description: uid
-//   required: true
-//   type: string
+//   - name: uid
+//     in: path
+//     example: 9Aklz9aGz
+//     description: uid
+//     required: true
+//     type: string
+//
 // responses:
-//   200: body:ListUsers
-//   400: body:FailureResponse
+//
+//	200: body:ListUsers
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error {
 
 	uuidDashboard := c.Param("uid")
@@ -230,17 +280,21 @@ func (pc *GrafanaController) GrafanaGetFoldersAgainstUUID(c echo.Context) error 
 //
 // SecurityDefinitions:
 // JWT:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // ApiKeyAuth:
-//      type: apiKey
-//      in: header
-//      name: Auth-Token
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
 //
 // Responses:
-//   201: body:ListUsers
-//   400: body:FailureResponse
+//
+//	201: body:ListUsers
+//	400: body:FailureResponse
 func (pc *GrafanaController) GrafanaGetDashboardRequest(c echo.Context) error {
 
 	requestDashboard := c.Param("uid")

@@ -32,7 +32,7 @@ type HomerSettingServer struct {
 		User         string `default:""`
 		Password     string `default:""`
 		ProxyControl bool   `default:"false"`
-		Path         string `default:""`
+		Path         string `default:"grafana"`
 		ProxyCheck   string `default:"simple"`
 		Enable       bool   `default:"false"`
 	}
@@ -74,7 +74,7 @@ type HomerSettingServer struct {
 		ServiceProviderImage string   `default:""`
 		StateValue           string   `default:"jkwh027yasj"`
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
-                UrlToService         string   `default:"/"`
+		UrlToService         string   `default:"/"`
 		Scope                []string `default:"[email,openid,profile]"`
 		EnableGravatar       bool     `default:"false"`
 		EnableAutoRedirect   bool     `default:"false"`

@@ -48,13 +48,16 @@
         "api_host": "127.0.0.1:9080"
     },
     "loki_config": {
-        "enable": true,
         "help": "Settings for LOKI Database (optional)",
         "user": "admin",
-        "pass": "admin",
+        "password": "admin",
+        "param_query": "query_range",
+        "regexp": false,
         "host": "http://127.0.0.1:3100",
+        "template": "{job=\"heplify-server\"}",
+        "external_url": "",
         "api": "loki/api/v1",
-        "param_query": "query_range"
+        "enable": true
     },
     "grafana_config": {
         "help": "Settings for Grafana",

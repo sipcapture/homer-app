@@ -692,7 +692,9 @@ func configureAsHTTPServer() {
 	if viper.IsSet("grafana_config.token") {
 		config.Setting.GRAFANA_SETTINGS.AuthKey = viper.GetString("grafana_config.token")
 	}
-
+	if viper.IsSet("loki_config.template") {
+		config.Setting.LOKI_CONFIG.Template = viper.GetString("loki_config.template")
+	}
 	if viper.IsSet("grafana_config.proxy_control") {
 		config.Setting.GRAFANA_SETTINGS.ProxyControl = viper.GetBool("grafana_config.proxy_control")
 	}

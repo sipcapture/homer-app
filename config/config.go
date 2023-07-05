@@ -112,4 +112,17 @@ type HomerSettingServer struct {
 		ImportNode string   `default:""`
 		Enable     bool     `default:"false"`
 	}
+	//Loki
+	LOKI_CONFIG struct {
+		User         string `json:"user" mapstructure:"user" default:"admin"`
+		Pass         string `json:"pass" mapstructure:"pass" default:""`
+		OldStylePass string `json:"password" mapstructure:"password" default:""`
+		ParamQuery   string `json:"param_query" mapstructure:"param_query" default:"query_range"`
+		Regexp       bool   `json:"regexp" mapstructure:"regexp" default:"false"`
+		Host         string `json:"host" mapstructure:"host" default:"http:/127.0.0.1:3100"`
+		Template     string `json:"template" mapstructure:"template" default:"{job=\"heplify-server\"}"`
+		ExternalUrl  string `json:"external_url" mapstructure:"external_url" default:""`
+		Api          string `json:"api" mapstructure:"api" default:"api/v1"`
+		Enable       bool   `json:"enable" mapstructure:"enable" default:"false"`
+	} `json:"loki_config" mapstructure:"loki_config"`
 }

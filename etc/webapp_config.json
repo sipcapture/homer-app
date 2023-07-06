@@ -54,7 +54,7 @@
         "param_query": "query_range",
         "regexp": false,
         "host": "http://127.0.0.1:3100",
-        "template": "{job=\"heplify-server\"}",
+        "template": "{job=\"heplify-server\" |~ \"callid\"}",
         "external_url": "",
         "api": "loki/api/v1",
         "enable": true

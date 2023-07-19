@@ -40,6 +40,9 @@
     "host": "http://loki_host:3100",
     "api": "api/prom"
   },
+  "api_settings": {
+    "enable_token_access": homer_enable_api
+  },
   "http_settings": {
     "host": "0.0.0.0",
     "port": homer_web_port,

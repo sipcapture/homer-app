@@ -2,31 +2,33 @@
 //
 // Homer-App User interface for WEB AI
 //
-//     Schemes: http, https
-//     Host: localhost:9080
-//     BasePath: /api/v3
-//     Version: 1.1.2
-//     License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
-//	   Copyright: QXIP B.V. 2019-2020
+//	    Schemes: http, https
+//	    Host: localhost:9080
+//	    BasePath: /api/v3
+//	    Version: 1.1.2
+//	    License: AGPL https://www.gnu.org/licenses/agpl-3.0.en.html
+//		   Copyright: QXIP B.V. 2019-2020
 //
-//     Consumes:
-//     - application/json
+//	    Consumes:
+//	    - application/json
 //
-//     Produces:
-//     - application/json
-//     Security:
-//     - bearer:
+//	    Produces:
+//	    - application/json
+//	    Security:
+//	    - bearer:
 //
-//     SecurityDefinitions:
-//     bearer:
-//          type: apiKey
-//          name: Authorization
-//          in: header
+//	    SecurityDefinitions:
+//	    bearer:
+//	         type: apiKey
+//	         name: Authorization
+//	         in: header
 //
 // swagger:meta
 package main
 
 import (
+	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -66,7 +68,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-//CustomValidator function
+// CustomValidator function
 type CustomValidator struct {
 	validator *validator.Validate
 }
@@ -91,7 +93,7 @@ func (i *arrayFlags) Set(value string) error {
 	return nil
 }
 
-//params for Flags
+// params for Flags
 type CommandLineFlags struct {
 	InitializeDB              *bool      `json:"initialize_db"`
 	CreateConfigDB            *bool      `json:"create_config_db"`
@@ -133,7 +135,7 @@ type CommandLineFlags struct {
 	GenerateJwtSecret         *bool      `json:"generate_jwt_secret"`
 }
 
-//params for  Services
+// params for  Services
 type ServicesObject struct {
 	configDBSession   *gorm.DB
 	dataDBSession     map[string]*gorm.DB
@@ -384,10 +386,10 @@ func configureServiceObjects() {
 		config.Setting.OAUTH2_SETTINGS.Enable = viper.GetBool("oauth2.enable")
 	}
 	if viper.IsSet("oauth2.grant_type") {
-		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.grant_type")
+		config.Setting.OAUTH2_SETTINGS.GrantType = viper.GetString("oauth2.grant_type")
 	}
 	if viper.IsSet("oauth2.response_type") {
-		config.Setting.OAUTH2_SETTINGS.ClientID = viper.GetString("oauth2.response_type")
+		config.Setting.OAUTH2_SETTINGS.ResponseType = viper.GetString("oauth2.response_type")
 	}
 	if viper.IsSet("oauth2.user_token") {
 		config.Setting.OAUTH2_SETTINGS.UserToken = viper.GetString("oauth2.user_token")
@@ -421,6 +423,9 @@ func configureServiceObjects() {
 	}
 	if viper.IsSet("oauth2.service_redirect") {
 		config.Setting.OAUTH2_SETTINGS.UrlToServiceRedirect = viper.GetString("oauth2.service_redirect")
+	}
+	if viper.IsSet("oauth2.service_root") {
+		config.Setting.OAUTH2_SETTINGS.UrlToService = viper.GetString("oauth2.service_root")
 	}
 	if viper.IsSet("oauth2.scope") {
 		config.Setting.OAUTH2_SETTINGS.Scope = viper.GetStringSlice("oauth2.scope")
@@ -641,12 +646,6 @@ func configureServiceObjects() {
 		httpAuth.InsecureSkipVerify = viper.GetBool("skipverify")
 	}
 
-	/* apply token expire - default 1200 */
-	authTokenExpire := viper.GetInt("auth_settings.token_expire")
-	if authTokenExpire > 0 {
-		auth.TokenExpiryTime = authTokenExpire
-	}
-
 	if versionPg, err := migration.CheckVersion(servicesObject.configDBSession); err != nil {
 		heputils.Colorize(heputils.ColorRed, "\r\nVersion of DB couldn't be retrieved\r\n")
 	} else if (versionPg / 10000) < jsonschema.MinimumPgSQL {
@@ -692,6 +691,20 @@ func configureAsHTTPServer() {
 
 	if viper.IsSet("grafana_config.token") {
 		config.Setting.GRAFANA_SETTINGS.AuthKey = viper.GetString("grafana_config.token")
+	}
+	if viper.IsSet("loki_config.template") {
+		config.Setting.LOKI_CONFIG.Template = viper.GetString("loki_config.template")
+	}
+	if viper.IsSet("grafana_config.proxy_control") {
+		config.Setting.GRAFANA_SETTINGS.ProxyControl = viper.GetBool("grafana_config.proxy_control")
+	}
+
+	if viper.IsSet("grafana_config.proxy_check") {
+		config.Setting.GRAFANA_SETTINGS.ProxyCheck = viper.GetString("grafana_config.proxy_check")
+	}
+
+	if viper.IsSet("grafana_config.enable") {
+		config.Setting.GRAFANA_SETTINGS.Enable = viper.GetBool("grafana_config.enable")
 	}
 
 	// Reverse Proxy
@@ -878,8 +891,94 @@ func configureAsHTTPServer() {
 		httpsURL := fmt.Sprintf("%s:%s", httpsHost, httpsPort)
 		httpsCert := viper.GetString("https_settings.cert")
 		httpsKey := viper.GetString("https_settings.key")
+		minTLSVersionConfigured := viper.GetString("https_settings.min_tls_version")
+		useMozillaProfile := viper.GetBool("https_settings.use_mozilla_profile")
 
-		err := e.StartTLS(httpsURL, httpsCert, httpsKey)
+		var minTLSVersion uint16
+		var usedCipherSuites []uint16
+
+		// reference: https://ssl-config.mozilla.org/#server=go
+		var CipherSuitesModern = []uint16{
+			tls.TLS_AES_128_GCM_SHA256,
+			tls.TLS_AES_256_GCM_SHA384,
+			tls.TLS_CHACHA20_POLY1305_SHA256,
+		}
+		var cipherSuitesIntermediate = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+		}
+		var cipherSuitesOld = []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA256,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+		}
+
+		switch minTLSVersionConfigured {
+		case "1.0":
+			minTLSVersion = tls.VersionTLS10
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesOld
+			}
+		case "1.1":
+			minTLSVersion = tls.VersionTLS11
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesOld
+			}
+		case "1.2":
+			minTLSVersion = tls.VersionTLS12
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesIntermediate
+			}
+		case "1.3":
+			minTLSVersion = tls.VersionTLS13
+			if useMozillaProfile {
+				usedCipherSuites = CipherSuitesModern
+			}
+		default:
+			minTLSVersion = tls.VersionTLS12
+			if useMozillaProfile {
+				usedCipherSuites = cipherSuitesIntermediate
+			}
+		}
+
+		tlsCfg := &tls.Config{ // only set TLS version and leave ciphers at default
+			MinVersion: minTLSVersion,
+		}
+		if useMozillaProfile { // set TLS version, cipher suites and prefer Server cipher suites
+			tlsCfg = &tls.Config{
+				MinVersion:               minTLSVersion,
+				PreferServerCipherSuites: useMozillaProfile,
+				CipherSuites:             usedCipherSuites,
+			}
+		}
+
+		// reference: https://echo.labstack.com/guide/http_server/#https-server
+		s := http.Server{
+			Addr:      httpsURL,
+			Handler:   e,
+			TLSConfig: tlsCfg,
+		}
+
+		err := s.ListenAndServeTLS(httpsCert, httpsKey)
 		if err != nil {
 			logger.Error(err.Error())
 			e.Logger.Fatal("Couldn't start https server")
@@ -920,6 +1019,68 @@ func performV1APIRouting(e *echo.Echo) {
 	config := middleware.JWTConfig{
 		Claims:     &auth.JwtUserClaim{},
 		SigningKey: []byte(config.Setting.AUTH_SETTINGS.JwtSecret),
+		Skipper: func(c echo.Context) bool {
+
+			if !config.Setting.API_SETTINGS.EnableTokenAccess {
+				logger.Debug("Token access has been disabled: api_settings.enable_token_access")
+				return false
+			}
+
+			/* TOKEN */
+			tokenValue := c.Request().Header.Get(config.Setting.AUTH_SETTINGS.AuthTokenHeader)
+			if tokenValue != "" {
+				var tokenObject model.TableAuthToken
+				var count int
+
+				if err := servicesObject.configDBSession.Debug().Table("auth_token").
+					Where("expire_date > NOW() AND active = true AND token = ? ", tokenValue).
+					Find(&tokenObject).Count(&count).Error; err != nil {
+					return false
+				}
+
+				if tokenObject.Token != tokenValue {
+					logger.Error(fmt.Errorf("no auth_token found or it has been expired: [%s]", tokenValue))
+					return false
+				}
+
+				logger.Debug("Token object: ", tokenObject)
+
+				userObject := model.UserObjectToken{}
+				isAdmin := false
+				userName := "guest"
+				userGroup := "guest"
+
+				err := json.Unmarshal(tokenObject.UserObject, &userObject)
+
+				if err == nil {
+					if userObject.Usergroup == "admin" {
+						isAdmin = true
+					}
+
+					if userObject.UserName != "" {
+						userName = userObject.UserName
+					}
+
+					if userObject.Usergroup != "" {
+						userGroup = userObject.Usergroup
+					}
+				}
+
+				keyContext := model.KeyContext{
+					Context:     c,
+					AuthKey:     tokenValue,
+					TokenObject: tokenObject,
+					UserAdmin:   isAdmin,
+					UserName:    userName,
+					UserGroup:   userGroup,
+					Auth:        false,
+				}
+
+				c.Set("authtoken", keyContext)
+				return true
+			}
+			return false
+		},
 	}
 
 	res.Use(middleware.JWTWithConfig(config))
@@ -1020,6 +1181,24 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				connectString += fmt.Sprintf(" port=%d", port)
 			}
 
+			//SSL mode
+			if sslMode == "verify-full" {
+				if viper.IsSet(keyData + ".sslrootcert") {
+					sslRoot := viper.GetString(keyData + ".sslrootcert")
+					connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+				}
+
+				if viper.IsSet(keyData + ".sslkey") {
+					sslKey := viper.GetString(keyData + ".sslkey")
+					connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+				}
+
+				if viper.IsSet(keyData + ".sslcert") {
+					sslCert := viper.GetString(keyData + ".sslcert")
+					connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+				}
+			}
+
 			dbA, err := gorm.Open("postgres", connectString)
 
 			if err != nil {
@@ -1109,6 +1288,25 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			connectString += fmt.Sprintf(" port=%d", port)
 		}
 
+		//SSL mode
+		if sslMode == "verify-full" {
+			keyData := "database_data"
+			if viper.IsSet(keyData + ".sslrootcert") {
+				sslRoot := viper.GetString(keyData + ".sslrootcert")
+				connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+			}
+
+			if viper.IsSet(keyData + ".sslkey") {
+				sslKey := viper.GetString(keyData + ".sslkey")
+				connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+			}
+
+			if viper.IsSet(keyData + ".sslcert") {
+				sslCert := viper.GetString(keyData + ".sslcert")
+				connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+			}
+		}
+
 		db, err := gorm.Open("postgres", connectString)
 
 		db.DB().SetMaxIdleConns(5)
@@ -1163,6 +1361,25 @@ func getConfigDBSession() *gorm.DB {
 
 	if port != 0 {
 		connectString += fmt.Sprintf(" port=%d", port)
+	}
+
+	//SSL mode
+	if sslMode == "verify-full" {
+		keyData := "database_config"
+		if viper.IsSet(keyData + ".sslrootcert") {
+			sslRoot := viper.GetString(keyData + ".sslrootcert")
+			connectString += fmt.Sprintf(" sslrootcert=%s", sslRoot)
+		}
+
+		if viper.IsSet(keyData + ".sslkey") {
+			sslKey := viper.GetString(keyData + ".sslkey")
+			connectString += fmt.Sprintf(" sslkey=%s", sslKey)
+		}
+
+		if viper.IsSet(keyData + ".sslcert") {
+			sslCert := viper.GetString(keyData + ".sslcert")
+			connectString += fmt.Sprintf(" sslcert=%s", sslCert)
+		}
 	}
 
 	logger.Info(fmt.Sprintf("Connecting to the config: [%s, %s, %s, %d]\n", host, user, name, port))
@@ -1220,6 +1437,18 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 	//generate JWT
 	if viper.IsSet("auth_settings.jwt_secret") {
 		config.Setting.AUTH_SETTINGS.JwtSecret = viper.GetString("auth_settings.jwt_secret")
+	}
+
+	if viper.IsSet("auth_settings.token_expire") {
+		config.Setting.AUTH_SETTINGS.AuthTokenExpire = viper.GetUint32("auth_settings.token_expire")
+	}
+
+	if viper.IsSet("auth_settings.auth_token_header") {
+		config.Setting.AUTH_SETTINGS.AuthTokenHeader = viper.GetString("auth_settings.auth_token_header")
+	}
+
+	if viper.IsSet("api_settings.enable_token_access") {
+		config.Setting.API_SETTINGS.EnableTokenAccess = viper.GetBool("api_settings.enable_token_access")
 	}
 
 	if config.Setting.AUTH_SETTINGS.JwtSecret == "" || config.Setting.AUTH_SETTINGS.JwtSecret == "167f0db2-f83e-4baa-9736-d56064a5b415" {
@@ -1843,7 +2072,7 @@ func initHttpClient() {
 	config.Setting.MAIN_SETTINGS.SubscribeHttpClient = &http.Client{Timeout: time.Duration(config.Setting.MAIN_SETTINGS.TimeoutHttpClient) * time.Second}
 }
 
-//custom error handling in case JWT is missing
+// custom error handling in case JWT is missing
 func customHTTPErrorHandler(err error, c echo.Context) {
 	if err == middleware.ErrJWTMissing {
 		c.Error(echo.NewHTTPError(http.StatusUnauthorized, "Login required"))

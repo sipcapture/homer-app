@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sipcapture/homer-app/auth"
+	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -33,12 +33,15 @@ type AgentsubController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AgentsLocationList
-//   400: body:FailureResponse
+//
+//	201: body:AgentsLocationList
+//	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 
 	reply, err := ass.AgentsubService.GetAgentsub()
@@ -58,28 +61,35 @@ func (ass *AgentsubController) GetAgentsub(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: type
-//   in: path
-//   example: home
-//   description: type of agent
-//   required: true
-//   type: string
+//   - name: type
+//     in: path
+//     example: home
+//     description: type of agent
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:AgentsLocationList
-//   400: body:FailureResponse
+//
+//	200: body:AgentsLocationList
+//	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
-	typeRequest := url.QueryEscape(c.Param("type"))
+	typeRequest, err := url.QueryUnescape(c.Param("type"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstType(typeRequest)
 	if err != nil {
-		return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
 }
@@ -93,25 +103,32 @@ func (ass *AgentsubController) GetAgentsubByType(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of agent
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of agent
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AgentsLocationList
-//   400: body:FailureResponse
+//
+//	201: body:AgentsLocationList
+//	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -129,23 +146,27 @@ func (ass *AgentsubController) GetAgentsubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: AgentsLocation Struct
-//   in: body
-//   description: agent parameters
-//   schema:
+//   - name: AgentsLocation Struct
+//     in: body
+//     description: agent parameters
+//     schema:
 //     type: AgentsLocation
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AgentLocationCreateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:AgentLocationCreateSuccessResponse
+//	400: body:FailureResponse
 func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 	// Stub an user to be populated from the body
 	agentSub := model.TableAgentLocationSession{}
@@ -159,7 +180,7 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	authToken := c.Request().Header.Get(auth.TokenHeader)
+	authToken := c.Request().Header.Get(config.Setting.AUTH_SETTINGS.AuthTokenHeader)
 	if authToken == "" {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, "Auth-Token header not present or has empty value")
 	}
@@ -194,36 +215,43 @@ func (ass *AgentsubController) AddAgentsubWithKey(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of agent
-//   required: true
-//   type: string
-// + name: AgentsLocation Struct
-//   in: body
-//   description: agent parameters
-//   schema:
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of agent
+//     required: true
+//     type: string
+//   - name: AgentsLocation Struct
+//     in: body
+//     description: agent parameters
+//     schema:
 //     type: AgentsLocation
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AgentLocationUpdateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:AgentLocationUpdateSuccessResponse
+//	400: body:FailureResponse
 func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
-	// Stub an user to be populated from the body
+	// Stub a user to be populated from the body
 	u := model.TableAgentLocationSession{}
 	err = c.Bind(&u)
 	if err != nil {
@@ -251,26 +279,32 @@ func (ass *AgentsubController) UpdateAgentsubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of agent
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of agent
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AgentLocationDeleteSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:AgentLocationDeleteSuccessResponse
+//	400: body:FailureResponse
 func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := ass.AgentsubService.GetAgentsubAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -295,34 +329,42 @@ func (ass *AgentsubController) DeleteAgentsubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of agent
-//   required: true
-//   type: string
-// + name: type
-//   in: path
-//   example: home
-//   description: type of agent
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of agent
+//     required: true
+//     type: string
+//   - name: type
+//     in: path
+//     example: home
+//     description: type of agent
+//     required: true
+//     type: string
 //
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // responses:
-//   201: body:AgentsLocationList
-//   400: body:FailureResponse
+//
+//	201: body:AgentsLocationList
+//	400: body:FailureResponse
 func (ass *AgentsubController) GetAgentSearchByTypeAndGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
-	typeRequest := url.QueryEscape(c.Param("type"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	typeRequest, err := url.QueryUnescape(c.Param("type"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	transactionObject := model.SearchObject{}
 	if err := c.Bind(&transactionObject); err != nil {

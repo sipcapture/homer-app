@@ -6,6 +6,7 @@ DB_KEEPALIVE=${DB_KEEPALIVE,,} #set to lower-case
 INFLUX_DB=${INFLUX_DB:-localhost}
 PROM_HOST=${PROM_HOST:-localhost}
 LOKI_HOST=${LOKI_HOST:-localhost}
+GRAFANA_HOST=${GRAFANA_HOST:-localhost}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
@@ -33,6 +34,12 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LOKI_USER" ]; then sed -i "s/loki_user/${LOKI_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LOKI_PASS" ]; then sed -i "s/loki_pass/${LOKI_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
 
+   
+   if [ -n "$GRAFANA_HOST" ]; then sed -i "s/grafana_host/${GRAFANA_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$GRAFANA_PORT" ]; then sed -i "s/3000/${GRAFANA_PORT}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$GRAFANA_TOKEN" ]; then sed -i "s/grafana_token/${GRAFANA_TOKEN}/g" /usr/local/homer/etc/webapp_config.json; fi
+   sed -i "s/grafana_path/${GRAFANA_PATH}/g" /usr/local/homer/etc/webapp_config.json
+
    if [ -n "$HTTP_HOST" ]; then sed -i "s/0.0.0.0/${HTTP_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$HTTP_PORT" ]; then sed -i "s/homer_web_port/${HTTP_PORT}/g" /usr/local/homer/etc/webapp_config.json; 
    else sed -i "s/homer_web_port/80/g" /usr/local/homer/etc/webapp_config.json; fi
@@ -50,7 +57,7 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LDAP_USER_FILTER" ]; then sed -i "s/(uid=%s)/${LDAP_USER_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_GROUP_FILTER" ]; then sed -i "s/(memberUid=%s)/${LDAP_GROUP_FILTER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_GROUP_ATTRIB" ]; then sed -i "/group_attributes/ {N;N;N;N;N;N;N;N; s/\[.*/\[\n\t${LDAP_GROUP_ATTRIB}\n\t\],/g}" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$LDAP_ADMINGROUP" ]; then sed -i "/admingroup/ s/admin/${LDAP_ADMINGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$LDAP_ADMINGROUP" ]; then sed -i "/admingroup/ s/HOMER_admin/${LDAP_ADMINGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_ADMINMODE" ]; then sed -i "/adminmode/ s/true/${LDAP_ADMINMODE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USERGROUP" ]; then sed -i "/usergroup/ s/HOMER_user/${LDAP_USERGROUP}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USERMODE" ]; then sed -i "/usermode/ s/true/${LDAP_USERMODE}/g" /usr/local/homer/etc/webapp_config.json; fi

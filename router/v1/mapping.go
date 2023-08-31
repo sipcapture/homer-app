@@ -17,6 +17,8 @@ func RouteMappingdApis(acc *echo.Group, session *gorm.DB) {
 	}
 	// get all dashboards
 	acc.GET("/mapping/protocol", mpc.GetMapping)
+	acc.GET("/mapping/protocol/reset", mpc.ResetMapping)
+	acc.GET("/mapping/protocol/reset/:uuid", mpc.ResetMappingAgainstUUID)
 	acc.GET("/mapping/protocol/:id/:transaction", mpc.GetMappingFields)
 	acc.GET("/mapping/protocol/:guid", mpc.GetMappingAgainstGUID)
 	acc.POST("/mapping/protocol", mpc.AddMapping, auth.IsAdmin)

@@ -12,43 +12,83 @@ import (
 func MiddlewareRes(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user := c.Get("user").(*jwt.Token)
-		claims := user.Claims.(*JwtUserClaim)
-		logger.Debug("Claims")
-		logger.Debug(claims)
+		if c.Get("user") != nil {
+			user := c.Get("user").(*jwt.Token)
+			claims := user.Claims.(*JwtUserClaim)
+			logger.Debug("Claims")
+			logger.Debug(claims)
 
-		appContext := model.AppContext{
-			Context:      c,
-			UserName:     claims.UserName,
-			Admin:        claims.UserAdmin,
-			UserGroup:    claims.UserGroup,
-			ExternalAuth: claims.ExternalAuth,
+			appContext := model.AppContext{
+				Context:      c,
+				UserName:     claims.UserName,
+				Admin:        claims.UserAdmin,
+				UserGroup:    claims.UserGroup,
+				ExternalAuth: claims.ExternalAuth,
+			}
+			if err := next(appContext); err != nil {
+				c.Error(err)
+			}
+
+			return nil
 		}
-		if err := next(appContext); err != nil {
-			c.Error(err)
+
+		if c.Get("authtoken") != nil {
+
+			tokenKey := c.Get("authtoken").(model.KeyContext)
+
+			logger.Debug("Authkey: ", tokenKey.AuthKey)
+			logger.Debug(tokenKey)
+
+			if err := next(tokenKey); err != nil {
+				c.Error(err)
+			}
+			return nil
 		}
+
 		return nil
 	}
 }
 
 func IsAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user := c.Get("user").(*jwt.Token)
-		claims := user.Claims.(*JwtUserClaim)
-		isAdmin := claims.UserAdmin
-		if !isAdmin {
-			return echo.NewHTTPError(403, "This API requires admin access. The AuthToken in use!")
+		if c.Get("user") != nil {
+			user := c.Get("user").(*jwt.Token)
+			claims := user.Claims.(*JwtUserClaim)
+			isAdmin := claims.UserAdmin
+			if !isAdmin {
+				return echo.NewHTTPError(403, "This API requires admin access.")
+			}
+			return next(c)
+		} else if c.Get("authtoken") != nil {
+
+			tokenKey := c.Get("authtoken").(model.KeyContext)
+			isAdmin := tokenKey.UserAdmin
+
+			if !isAdmin {
+				return echo.NewHTTPError(403, "This API requires admin access. The AuthToken in use!")
+			}
+			return next(c)
+		} else {
+			//return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+			return echo.NewHTTPError(403, "This API requires admin access!")
 		}
-		return next(c)
 	}
 }
 
 /* check if it's admin */
 func IsRequestAdmin(c echo.Context) (string, bool) {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*JwtUserClaim)
-	isAdmin := claims.UserAdmin
-	return claims.UserName, isAdmin
+	if c.Get("user") != nil {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*JwtUserClaim)
+		isAdmin := claims.UserAdmin
+		return claims.UserName, isAdmin
+	} else if c.Get("authtoken") != nil {
+		tokenKey := c.Get("authtoken").(model.KeyContext)
+		isAdmin := tokenKey.UserAdmin
+		return tokenKey.UserName, isAdmin
+	} else {
+		return "default", false
+	}
 }
 
 /* get user group */
@@ -56,12 +96,11 @@ func GetUserGroup(c echo.Context) string {
 
 	if c.Get("user") != nil {
 		user := c.Get("user").(*jwt.Token)
-		if user != nil {
-			claims := user.Claims.(*JwtUserClaim)
-			return claims.UserGroup
-		} else {
-			return "guest"
-		}
+		claims := user.Claims.(*JwtUserClaim)
+		return claims.UserGroup
+	} else if c.Get("authtoken") != nil {
+		tokenKey := c.Get("authtoken").(model.KeyContext)
+		return tokenKey.UserGroup
 	} else {
 		return "guest"
 	}

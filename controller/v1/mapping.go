@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
+	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -31,12 +32,15 @@ type MappingController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:MappingSchemaList
-//   400: body:FailureResponse
+//
+//	201: body:MappingSchemaList
+//	400: body:FailureResponse
 func (mpc *MappingController) GetMapping(c echo.Context) error {
 	reply, err := mpc.MappingService.GetMapping()
 	if err != nil {
@@ -54,34 +58,45 @@ func (mpc *MappingController) GetMapping(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: id
-//   in: path
-//   example: 1
-//   description: hepid
-//   required: true
-//   type: number
+//   - name: id
+//     in: path
+//     example: 1
+//     description: hepid
+//     required: true
+//     type: number
+//
 // parameters:
-// + name: transaction
-//   in: path
-//   example: call
-//   description: profile
-//   required: true
-//   type: string
+//   - name: transaction
+//     in: path
+//     example: call
+//     description: profile
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:MappingSchemaList
-//   400: body:FailureResponse
+//
+//	201: body:MappingSchemaList
+//	400: body:FailureResponse
 func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 
-	id := url.QueryEscape(c.Param("id"))
-	transaction := url.QueryEscape(c.Param("transaction"))
+	id, err := url.QueryUnescape(c.Param("id"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	transaction, err := url.QueryUnescape(c.Param("transaction"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingFields(id, transaction)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaFailed)
@@ -99,26 +114,33 @@ func (mpc *MappingController) GetMappingFields(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of mapping
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:MappingSchemaList
-//   400: body:FailureResponse
+//
+//	201: body:MappingSchemaList
+//	400: body:FailureResponse
 func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
@@ -139,18 +161,22 @@ func (mpc *MappingController) GetMappingAgainstGUID(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // parameters:
-// + name: MappingSchema
-//   in: body
-//   description: Mapping parameters
-//   schema:
+//   - name: MappingSchema
+//     in: body
+//     description: Mapping parameters
+//     schema:
 //     type: MappingSchema
+//
 // responses:
-//   201: body:MappingCreateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:MappingCreateSuccessResponse
+//	400: body:FailureResponse
 func (mpc *MappingController) AddMapping(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableMappingSchema{}
@@ -182,30 +208,37 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
-//   required: true
-//   type: string
-// + name: MappingSchema
-//   in: body
-//   description: Mapping parameters
-//   schema:
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of mapping
+//     required: true
+//     type: string
+//   - name: MappingSchema
+//     in: body
+//     description: Mapping parameters
+//     schema:
 //     type: MappingSchema
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:MappingUpdateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:MappingUpdateSuccessResponse
+//	400: body:FailureResponse
 func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -238,25 +271,32 @@ func (mpc *MappingController) UpdateMappingAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of mapping
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of mapping
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:MappingDeleteSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:MappingDeleteSuccessResponse
+//	400: body:FailureResponse
 func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
-	guid := url.QueryEscape(c.Param("guid"))
+	guid, err := url.QueryUnescape(c.Param("guid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 	reply, err := mpc.MappingService.GetMappingAgainstGUID(guid)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -277,33 +317,43 @@ func (mpc *MappingController) DeleteMappingAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: hepid
-//   in: path
-//   example: 1
-//   description: hepid
-//   required: true
-//   type: string
-// + name: profile
-//   in: path
-//   example:
-//   description: profile
-//   required: true
-//   type: string
+//   - name: hepid
+//     in: path
+//     example: 1
+//     description: hepid
+//     required: true
+//     type: string
+//   - name: profile
+//     in: path
+//     example:
+//     description: profile
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:SmartSearchFieldList
-//   400: body:FailureResponse
+//
+//	201: body:SmartSearchFieldList
+//	400: body:FailureResponse
 func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 
-	hepid := url.QueryEscape(c.Param("hepid"))
-	profile := url.QueryEscape(c.Param("profile"))
+	hepid, err := url.QueryUnescape(c.Param("hepid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	profile, err := url.QueryUnescape(c.Param("profile"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	queryString := c.QueryString()
 
@@ -313,4 +363,106 @@ func (mpc *MappingController) GetSmartHepProfile(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SmartHepProfileFailed)
 	}
 	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(reply))
+}
+
+// swagger:route GET /mapping/protocol/reset Mapping resetProtocols
+//
+// Get mapping against id and profile
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+//
+//	Security:
+//	 - JWT
+//	 - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
+// ApiKeyAuth:
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
+//
+// Responses:
+//
+//	201: body:SuccessResponse
+//	400: body:FailureResponse
+func (mpc *MappingController) ResetMapping(c echo.Context) error {
+
+	_, isAdmin := auth.IsRequestAdmin(c)
+
+	if !isAdmin {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingRecreateFailed)
+	}
+
+	err := mpc.MappingService.RecreateMapping()
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
+	}
+
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(""))
+}
+
+// swagger:route GET /mapping/protocol/reset/{uuid} Mapping ResetMapping
+//
+// Get mapping against id and profile
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+//   - name: id
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: uuid of mapping
+//     required: true
+//     type: string
+//     Security:
+//   - JWT
+//   - ApiKeyAuth
+//
+// SecurityDefinitions:
+// JWT:
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
+// ApiKeyAuth:
+//
+//	type: apiKey
+//	in: header
+//	name: Auth-Token
+//
+// Responses:
+//
+//	201: body:SuccessResponse
+//	400: body:FailureResponse
+func (mpc *MappingController) ResetMappingAgainstUUID(c echo.Context) error {
+
+	_, isAdmin := auth.IsRequestAdmin(c)
+
+	if !isAdmin {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingRecreateFailed)
+	}
+
+	uuid, err := url.QueryUnescape(c.Param("uuid"))
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
+	err = mpc.MappingService.RecreateMappingByUUID(uuid)
+	if err != nil {
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.MappingSchemaByUUIDFailed)
+	}
+
+	return httpresponse.CreateSuccessResponseWithJson(&c, http.StatusOK, []byte(""))
 }

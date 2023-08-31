@@ -101,3 +101,14 @@ type AuthTokenUpdateSuccessfulResponse struct {
 	// example: successfully updated authtoken
 	Message string `json:"message"`
 }
+
+// swagger:model UserObjectToken
+type UserObjectToken struct {
+	UserName  string `default:"test" json:"username"`
+	FirstName string `default:"Tester" json:"firstname"`
+	Lastname  string `default:"Tester" json:"lastname"`
+	Email     string `default:"tester@test.com" json:"email"`
+	Usergroup string `default:"user" json:"usergroup"`
+	ID        uint32 `default:"1000" json:"id"`
+	PartID    uint32 `default:"10" json:"partid"`
+}

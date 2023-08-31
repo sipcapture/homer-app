@@ -6,9 +6,9 @@ version: "v${VERSION}"
 section: "default"
 priority: "extra"
 replaces:
-- webapp-go
+- homer-app
 provides:
-- webapp-go
+- homer-app
 #depends:
 #- telegraf
 # recommends on rpm packages requires rpmbuild >= 4.13
@@ -22,25 +22,27 @@ provides:
 #- not-bar
 maintainer: "QXIP SIPCapture <support@sipcapture.org>"
 description: |
-    HOMER 7.7 WebAPP + API
+    HOMER 7 WebAPP + API
 vendor: "QXIP"
 homepage: "http://qxip.net"
 license: "AGPLv3"
-bindir: "/usr/local/bin"
-files:
-  /tmp/pkg/homer-app: "/usr/local/bin/homer-app"
-  /tmp/pkg/log/.keepme: "/usr/local/homer/log/.keepme"
-  /tmp/pkg/dist/**/*: "/usr/local/homer/dist"
-config_files:
-  /tmp/pkg/swagger.json: "/usr/local/homer/etc/swagger.json"
-  /tmp/pkg/etc/webapp_config.json: "/usr/local/homer/etc/webapp_config.json"
-  /tmp/pkg/homer-app.service: "/lib/systemd/system/homer-app.service"
-#overrides:
-#  rpm:
-#    scripts:
-#      preinstall: ./scripts/preinstall.sh
-#      postremove: ./scripts/postremove.sh
-#  deb:
-#    scripts:
-#      postinstall: ./scripts/postinstall.sh
-#      preremove: ./scripts/preremove.sh
+contents:
+  # Basic file that applies to all packagers
+  - src: /tmp/pkg/homer-app
+    dst: /usr/local/bin/homer-app
+  - src: /tmp/pkg/log/.keepme
+    dst: /usr/local/homer/log/.keepme
+  - src: /tmp/pkg/dist/**/*
+    dst: /usr/local/homer/dist
+  - src: /tmp/pkg/dist/*
+    dst: /usr/local/homer/dist
+    # Simple config file
+  - src: /tmp/pkg/homer-app.service
+    dst: /lib/systemd/system/homer-app.service
+    type: config
+  - src: /tmp/pkg/swagger.json
+    dst: /usr/local/homer/etc/swagger.json
+    type: config
+  - src: /tmp/pkg/etc/webapp_config.json
+    dst: /usr/local/homer/etc/webapp_config.json
+    type: config

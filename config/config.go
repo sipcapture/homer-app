@@ -27,12 +27,14 @@ type HomerSettingServer struct {
 	}
 
 	GRAFANA_SETTINGS struct {
-		URL      string `default:"http://grafana/"`
-		AuthKey  string `default:""`
-		User     string `default:""`
-		Password string `default:""`
-		Path     string `default:"/grafana"`
-		Enable   bool   `default:"false"`
+		URL          string `default:"http://grafana:3000/"`
+		AuthKey      string `default:""`
+		User         string `default:""`
+		Password     string `default:""`
+		ProxyControl bool   `default:"false"`
+		Path         string `default:"grafana"`
+		ProxyCheck   string `default:"simple"`
+		Enable       bool   `default:"false"`
 	}
 
 	TRANSACTION_SETTINGS struct {
@@ -45,7 +47,13 @@ type HomerSettingServer struct {
 	}
 
 	AUTH_SETTINGS struct {
-		JwtSecret string `default:""`
+		JwtSecret       string `default:""`
+		AuthTokenHeader string `default:"Auth-Token"`
+		AuthTokenExpire uint32 `default:"1200"`
+	}
+
+	API_SETTINGS struct {
+		EnableTokenAccess bool `default:"false"`
 	}
 
 	OAUTH2_SETTINGS struct {
@@ -66,6 +74,7 @@ type HomerSettingServer struct {
 		ServiceProviderImage string   `default:""`
 		StateValue           string   `default:"jkwh027yasj"`
 		UrlToServiceRedirect string   `default:"/api/v3/oauth2/redirect"`
+		UrlToService         string   `default:"/"`
 		Scope                []string `default:"[email,openid,profile]"`
 		EnableGravatar       bool     `default:"false"`
 		EnableAutoRedirect   bool     `default:"false"`
@@ -103,4 +112,17 @@ type HomerSettingServer struct {
 		ImportNode string   `default:""`
 		Enable     bool     `default:"false"`
 	}
+	//Loki
+	LOKI_CONFIG struct {
+		User         string `json:"user" mapstructure:"user" default:"admin"`
+		Pass         string `json:"pass" mapstructure:"pass" default:""`
+		OldStylePass string `json:"password" mapstructure:"password" default:""`
+		ParamQuery   string `json:"param_query" mapstructure:"param_query" default:"query_range"`
+		Regexp       bool   `json:"regexp" mapstructure:"regexp" default:"false"`
+		Host         string `json:"host" mapstructure:"host" default:"http:/127.0.0.1:3100"`
+		Template     string `json:"template" mapstructure:"template" default:"{job=\"heplify-server\"}"`
+		ExternalUrl  string `json:"external_url" mapstructure:"external_url" default:""`
+		Api          string `json:"api" mapstructure:"api" default:"api/v1"`
+		Enable       bool   `json:"enable" mapstructure:"enable" default:"false"`
+	} `json:"loki_config" mapstructure:"loki_config"`
 }

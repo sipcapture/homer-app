@@ -1,9 +1,8 @@
 package main
 
-//VERSION
-var VERSION_APPLICATION = "1.5.35"
+var VERSION_APPLICATION = "1.4.59"
 
-//NAME
+// NAME
 var NAME_APPLICATION = "homer-app"
 
 func getVersion() string {

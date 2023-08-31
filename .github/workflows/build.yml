@@ -3,11 +3,18 @@ name: App Builder
 on:
   push:
     branches: [ master, main ]
+    paths-ignore:
+      - '**.md'
+      - '**.yml'
   pull_request:
     branches: [ master, main ]
+    paths-ignore:
+      - '**.md'
+
+env:
+  REGISTRY: ghcr.io
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +26,7 @@ jobs:
         go-version: 1.18
 
     - name: Build Frontend
+      if: github.event_name != 'pull_request'
       run: echo y | ./scripts/build_frontend.sh
       
     - name: Build Binary
@@ -27,7 +35,7 @@ jobs:
     - name: Build Packages
       if: github.event_name != 'pull_request'
       run: |
-          sed -i 's|goreleaser/nfpm|goreleaser/nfpm:v1.8|g' scripts/build_package.sh
+          sed -i 's|goreleaser/nfpm|goreleaser/nfpm|g' scripts/build_package.sh
           RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
           echo "TAG_NAME=$RELEASE" >> $GITHUB_ENV
           VERSION=$RELEASE make package
@@ -52,3 +60,47 @@ jobs:
         draft: false
         prerelease: false
         overwrite: true   
+            
+  docker-push:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      packages: write
+      contents: read
+    
+    steps:
+    - uses: actions/checkout@v3
+    - id: tag_bump
+      name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.39.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_BUMP: none
+        BRANCH: master
+          
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2.1.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4.1.1
+      with:
+        images: |
+          ghcr.io/${{ github.repository }}
+        tags: |
+          latest
+          ${{ steps.tag_bump.outputs.tag }}
+          
+    - name: Build and push
+      uses: docker/build-push-action@v3.2.0
+      with:
+        context: .
+        file: ./Dockerfile
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

@@ -8,7 +8,7 @@ import (
 	"github.com/sipcapture/homer-app/model"
 )
 
-//comments
+// comments
 func RouteProfileApis(acc *echo.Group, session *gorm.DB, databaseNodeMap []model.DatabasesMap) {
 	// initialize service of user
 	ProfileService := service.ProfileService{ServiceConfig: service.ServiceConfig{Session: session}, DatabaseNodeMap: &databaseNodeMap}
@@ -19,6 +19,7 @@ func RouteProfileApis(acc *echo.Group, session *gorm.DB, databaseNodeMap []model
 	// get all dashboards
 	acc.GET("/admin/profiles", hs.GetDashboardList)
 	acc.GET("/database/node/list", hs.GetDBNodeList)
+	acc.GET("/modules/status", hs.GetModulesStatus)
 
 	//acc.GET("/hepsub/protocol", hs.GetHepsub)
 }

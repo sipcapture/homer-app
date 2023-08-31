@@ -29,3 +29,14 @@ type SuccessfulResponse struct {
 	// required: true
 	Message string `json:"message"`
 }
+
+// swagger:model KeyContext
+type KeyContext struct {
+	echo.Context
+	TokenObject TableAuthToken `json:"token"`
+	UserName    string         `json:"username"`
+	UserGroup   string         `json:"usergroup"`
+	UserAdmin   bool           `json:"admin"`
+	AuthKey     string         `json:"auth-key"`
+	Auth        bool           `json:"auth"`
+}

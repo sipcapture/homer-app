@@ -23,6 +23,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.5 // indirect
+	github.com/lib/pq v1.1.1
 	github.com/manifoldco/promptui v0.7.0
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/satori/go.uuid v1.2.0

@@ -54,9 +54,12 @@ func CreateNewUser(dataRootDBSession *gorm.DB, user *string, password *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("CREATE USER %s WITH PASSWORD ?", pq.QuoteIdentifier(*user))
+	userQuoted := pq.QuoteIdentifier(*user)
+	passwordQuoted := pq.QuoteLiteral(*password)
 
-	dataRootDBSession.Debug().Exec(sql, *password)
+	sql := fmt.Sprintf("CREATE USER %s WITH PASSWORD %s", userQuoted, passwordQuoted)
+
+	dataRootDBSession.Debug().Exec(sql)
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 
@@ -81,7 +84,7 @@ func CreateHomerDB(dataRootDBSession *gorm.DB, dbname *string, user *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("CREATE DATABASE %s OWNER %s", p.QuoteIdentifier(*dbname), pq.QuoteIdentifier(*user))
+	sql := fmt.Sprintf("CREATE DATABASE %s OWNER %s", pq.QuoteIdentifier(*dbname), pq.QuoteIdentifier(*user))
 
 	dataRootDBSession.Debug().Exec(sql)
 

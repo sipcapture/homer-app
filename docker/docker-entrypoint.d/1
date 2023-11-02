@@ -3,6 +3,8 @@
 DB_HOST=${DB_HOST:-localhost}
 DB_KEEPALIVE=${DB_KEEPALIVE:-false} #default to false
 DB_KEEPALIVE=${DB_KEEPALIVE,,} #set to lower-case
+DB_HOMER_CONFIG=${DB_HOMER_CONFIG:-homer_config}
+DB_HOMER_DATA=${DB_HOMER_DATA:-homer_data}
 INFLUX_DB=${INFLUX_DB:-localhost}
 PROM_HOST=${PROM_HOST:-localhost}
 LOKI_HOST=${LOKI_HOST:-localhost}
@@ -14,6 +16,8 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$DB_USER" ]; then sed -i "s/homer_user/${DB_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_PASS" ]; then sed -i "s/homer_password/${DB_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_KEEPALIVE" ]; then sed -i "s/homer_db_keepalive/${DB_KEEPALIVE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$DB_HOMER_CONFIG" ]; then sed -i "s/homer_config/${DB_HOMER_CONFIG}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$DB_HOMER_DATA" ]; then sed -i "s/homer_data/${DB_HOMER_DATA}/g" /usr/local/homer/etc/webapp_config.json; fi
 
    if [ -n "$HOMER_LOGLEVEL" ]; then sed -i "s/homer_loglevel/${HOMER_LOGLEVEL}/g" /usr/local/homer/etc/webapp_config.json; 
    else sed -i "s/homer_loglevel/error/g" /usr/local/homer/etc/webapp_config.json; fi

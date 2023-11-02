@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/lib/pq"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
@@ -53,7 +54,10 @@ func CreateNewUser(dataRootDBSession *gorm.DB, user *string, password *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("CREATE USER %s WITH PASSWORD  '%s'", *user, *password)
+	userQuoted := pq.QuoteIdentifier(*user)
+	passwordQuoted := pq.QuoteLiteral(*password)
+
+	sql := fmt.Sprintf("CREATE USER %s WITH PASSWORD %s", userQuoted, passwordQuoted)
 
 	dataRootDBSession.Debug().Exec(sql)
 
@@ -67,7 +71,7 @@ func DeleteNewUser(dataRootDBSession *gorm.DB, user *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("DROP ROLE IF EXISTS %s", *user)
+	sql := fmt.Sprintf("DROP ROLE IF EXISTS %s", pq.QuoteIdentifier(*user))
 
 	dataRootDBSession.Debug().Exec(sql)
 
@@ -80,7 +84,7 @@ func CreateHomerDB(dataRootDBSession *gorm.DB, dbname *string, user *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("CREATE DATABASE %s OWNER %s", *dbname, *user)
+	sql := fmt.Sprintf("CREATE DATABASE %s OWNER %s", pq.QuoteIdentifier(*dbname), pq.QuoteIdentifier(*user))
 
 	dataRootDBSession.Debug().Exec(sql)
 
@@ -93,20 +97,24 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, dataHomeDBSession *gorm.DB, use
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("GRANT ALL PRIVILEGES ON DATABASE %s to %s;", *homerDBconfig, *user)
+	userQuoted := pq.QuoteIdentifier(*user)
+	homeDBConfigQuoted := pq.QuoteIdentifier(*homerDBconfig)
+	homeDBDataQuoted := pq.QuoteIdentifier(*homerDBdata)
+
+	sql := fmt.Sprintf("GRANT ALL PRIVILEGES ON DATABASE %s to %s;", homeDBConfigQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("GRANT ALL PRIVILEGES ON DATABASE %s to %s;", *homerDBdata, *user)
+	sql = fmt.Sprintf("GRANT ALL PRIVILEGES ON DATABASE %s to %s;", homeDBDataQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", *homerDBconfig, *user)
+	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", homeDBConfigQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", *homerDBdata, *user)
+	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", homeDBDataQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = "SELECT  schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
-		"AND schemaname != 'information_schema' AND tableowner != '" + *user + "' AND tablename LIKE 'hep_proto%'"
+	sql = "SELECT schemaname, tablename, tableowner FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' " +
+		"AND schemaname != 'information_schema' AND tableowner != " + pq.QuoteLiteral(*user) + " AND tablename LIKE 'hep_proto%'"
 
 	var Schemaname, Tablename, Tableowner string
 	rows, _ := dataHomeDBSession.Debug().Raw(sql).Rows() // (*sql.Rows, error)
@@ -116,7 +124,7 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, dataHomeDBSession *gorm.DB, use
 		err := rows.Scan(&Schemaname, &Tablename, &Tableowner)
 		if err == nil {
 			fmt.Println(fmt.Sprintf("changing owner of [%s].[%s] from [%s] to [%s]", Schemaname, Tablename, Tableowner, *user))
-			sql = fmt.Sprintf("GRANT ALL ON TABLE %s.%s TO %s;", Schemaname, Tablename, *user)
+			sql = fmt.Sprintf("GRANT ALL ON TABLE %s.%s TO %s;", pq.QuoteIdentifier(Schemaname), pq.QuoteIdentifier(Tablename), userQuoted)
 			dataHomeDBSession.Debug().Exec(sql)
 		} else {
 			logger.Error(fmt.Sprintf("Some error during pg_catalog.pg_tables query: %s]: \n", err))
@@ -132,16 +140,20 @@ func RevokeHomerRole(dataRootDBSession *gorm.DB, user *string, homerDBconfig *st
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("REVOKE ALL PRIVILEGES ON DATABASE %s FROM %s;", *homerDBconfig, *user)
+	userQuoted := pq.QuoteIdentifier(*user)
+	homeDBConfigQuoted := pq.QuoteIdentifier(*homerDBconfig)
+	homeDBDataQuoted := pq.QuoteIdentifier(*homerDBdata)
+
+	sql := fmt.Sprintf("REVOKE ALL PRIVILEGES ON DATABASE %s FROM %s;", homeDBConfigQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("REVOKE ALL PRIVILEGES ON DATABASE %s FROM %s;", *homerDBdata, *user)
+	sql = fmt.Sprintf("REVOKE ALL PRIVILEGES ON DATABASE %s FROM %s;", homeDBDataQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO postgres;", *homerDBconfig)
+	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO postgres;", homeDBConfigQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
-	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO postgres;", *homerDBdata)
+	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO postgres;", homeDBDataQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
@@ -743,7 +755,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
 		//configDBSession.Exec("TRUNCATE TABLE versions")
 		for _, el := range tableVersions {
-			sql := fmt.Sprintf("DELETE FROM versions WHERE table_name = '%s'", el.NameTable)
+			sql := fmt.Sprintf("DELETE FROM versions WHERE table_name = %s", pq.QuoteIdentifier(el.NameTable))
 			db := configDBSession.Exec(sql)
 			if db != nil && db.Error != nil {
 				logger.Error(fmt.Sprintf("Exec delete failed for table [%s]: with error %s", tableName, db.Error))

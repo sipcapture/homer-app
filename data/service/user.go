@@ -63,7 +63,7 @@ func (us *UserService) IsAdmin(email string) (bool, error) {
 		return false, nil
 	}
 
-	return user[0].IsAdmin, nil
+	return user[0].UserGroup != "" && strings.Contains(strings.ToLower(user[0].UserGroup), "admin"), nil
 }
 
 // this method gets all users from database

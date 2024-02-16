@@ -19,9 +19,12 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$DB_HOMER_CONFIG" ]; then sed -i "s/homer_config/${DB_HOMER_CONFIG}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_HOMER_DATA" ]; then sed -i "s/homer_data/${DB_HOMER_DATA}/g" /usr/local/homer/etc/webapp_config.json; fi
 
-   if [ -n "$HOMER_LOGLEVEL" ]; then sed -i "s/homer_loglevel/${HOMER_LOGLEVEL}/g" /usr/local/homer/etc/webapp_config.json; 
+   if [ -n "$HOMER_LOGLEVEL" ]; then sed -i "s/homer_loglevel/${HOMER_LOGLEVEL}/g" /usr/local/homer/etc/webapp_config.json;
    else sed -i "s/homer_loglevel/error/g" /usr/local/homer/etc/webapp_config.json; fi
    
+   if [ -n "$HOMER_ENABLE_API" ]; then sed -i "s/homer_enable_api/${HOMER_ENABLE_API}/g" /usr/local/homer/etc/webapp_config.json;
+   else sed -i "s/homer_enable_api/false/g" /usr/local/homer/etc/webapp_config.json; fi
+
    if [ -n "$INFLUX_HOST" ]; then sed -i "s/influx_host/${INFLUX_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$INFLUX_USER" ]; then sed -i "s/influx_user/${INFLUX_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$INFLUX_PASS" ]; then sed -i "s/influx_pass/${INFLUX_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi

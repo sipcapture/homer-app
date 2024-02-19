@@ -47,6 +47,25 @@ func (us *UserService) GetUser(UserName string, isAdmin bool) ([]*model.TableUse
 	return user, len(user), nil
 }
 
+// this method checks if a user is admin using the email address
+func (us *UserService) IsAdmin(email string) (bool, error) {
+
+	var user []*model.TableUser
+	var sqlWhere = make(map[string]interface{})
+
+	sqlWhere = map[string]interface{}{"email": email}
+
+	if err := us.Session.Debug().Table("users").Where(sqlWhere).Find(&user).Error; err != nil {
+		return false, err
+	}
+
+	if len(user) != 1 {
+		return false, nil
+	}
+
+	return user[0].UserGroup != "" && strings.Contains(strings.ToLower(user[0].UserGroup), "admin"), nil
+}
+
 // this method gets all users from database
 func (us *UserService) GetUserByUUID(GUID, UserName string) ([]*model.TableUser, int, error) {
 
@@ -369,10 +388,17 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 
 	logger.Debug("LoginUserUsingOauthToken json profile: ", string(oAuth2Object.ProfileJson))
 
+	userData.UserGroup = "user"
+	userData.IsAdmin = false
 	if userJsonData.Exists("email") {
 		userData.Email = userJsonData.S("email").Data().(string)
 		userData.UserName = userData.Email
 		userData.Id = int(hashString(userData.UserName))
+		isAdmin, _ := us.IsAdmin(userData.Email)
+		if isAdmin {
+			userData.UserGroup = "admin"
+			userData.IsAdmin = true
+		}
 	}
 
 	if userJsonData.Exists("family_name") {
@@ -407,8 +433,6 @@ func (us *UserService) LoginUserUsingOauthToken(oAuth2Object model.OAuth2MapToke
 	hash := md5.Sum([]byte(userData.UserName))
 	userData.GUID = hex.EncodeToString(hash[:])
 	userData.ExternalAuth = true
-	userData.UserGroup = "user"
-	userData.IsAdmin = false
 
 	token, err := auth.Token(userData)
 	return token, userData, err

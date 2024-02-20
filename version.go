@@ -1,6 +1,5 @@
 package main
 
-// VERSION
 var VERSION_APPLICATION = "1.4.59"
 
 // NAME

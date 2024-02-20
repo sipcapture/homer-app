@@ -272,6 +272,68 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 }
 
+// swagger:operation POST /call/transaction search searchGetTransaction
+//
+// Returns transaction data based upon filtered json
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// - name: SearchObject
+//   in: body
+//   type: object
+//   description: SearchObject parameters
+//   schema:
+//     "$ref": "#/definitions/SearchCallData"
+//   required: true
+// SecurityDefinitions:
+// bearer:
+//      type: apiKey
+//      name: Authorization
+//      in: header
+// responses:
+//   '200': body:ListUsers
+//   '400': body:UserLoginFailureResponse
+func (sc *SearchController) GetTransactionV2(c echo.Context) error {
+	transactionObject := model.SearchObject{}
+	if err := c.Bind(&transactionObject); err != nil {
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
+	}
+
+	transactionData, _ := json.Marshal(transactionObject)
+	correlation, _ := sc.SettingService.GetCorrelationMapsV2(&transactionObject)
+	aliasRowData, _ := sc.AliasService.GetAllActive()
+
+	aliasData := make(map[string]string)
+	for _, row := range aliasRowData {
+		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
+		Port := strconv.Itoa(*row.Port)
+		CaptureID := row.CaptureID
+		ip, ipnet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			logger.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
+		} else {
+			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+				aliasData[ip.String()+":"+Port] = row.Alias
+				if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias {
+					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
+				}
+			}
+		}
+	}
+
+	userGroup := auth.GetUserGroup(c)
+
+	reply, _ := sc.SearchService.GetTransactionV2(transactionData,
+		correlation, aliasData, transactionObject.Param.Location.Node,
+		sc.SettingService, userGroup, transactionObject.Param.WhiteList)
+
+	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
+}
+
 // swagger:route POST /call/report/qos search searchGetTransactionQos
 //
 // Returns qos data based upon filtered json

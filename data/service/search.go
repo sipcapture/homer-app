@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"container/list"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -135,7 +136,7 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, 
 			//We should be sure  that this is value string
 			switch x := formVal.(type) {
 			case string:
-				formValue = formVal.(string)
+				formValue = strings.TrimSpace(formVal.(string))
 			default:
 				logger.Error("Unsupported type:", x, ", Value: ", formVal, "Name:", formName, ", Type: ", formType, "MAPDATA: ", mapData)
 				continue
@@ -377,6 +378,14 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	dataArrayValues = append(dataArrayValues, searchFromTime)
 	dataArrayValues = append(dataArrayValues, searchToTime)
 
+	/**
+	 * case "INVITE", "ACK", "BYE", "CANCEL", "UPDATE", "PRACK", "REFER", "INFO":
+	 *		h.SIP.Profile = "call"
+	 * case "REGISTER":
+	 * 	h.SIP.Profile = "registration"
+	 * default:
+	 *		h.SIP.Profile = "default"
+	 */
 	for key, _ := range sData.ChildrenMap() {
 		table = "hep_proto_" + key
 		if sData.Exists(key) {
@@ -403,6 +412,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 		ss.Session[session].Debug().
 			Table(table).
 			Where(sql, dataArrayValues...).
+			Order("create_date DESC").
 			Limit(sLimit).
 			Find(&searchTmp)
 
@@ -417,9 +427,11 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 	}
 
 	/* lets sort it */
-	sort.Slice(searchData, func(i, j int) bool {
-		return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
-	})
+	//sort.Slice(searchData, func(i, j int) bool {
+	//	return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
+	//})
+
+	searchData = uniqueHepTable(searchData)
 
 	rows, _ := json.Marshal(searchData)
 	data, _ := gabs.ParseJSON(rows)
@@ -1126,36 +1138,429 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	}
 }
 
-func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
-	keys := make(map[string]bool)
-	list := []model.HepTable{}
-	for _, entry := range hepSlice {
-		dataKey := strconv.Itoa(entry.Id) + ":" + entry.CreatedDate.String()
-		if _, value := keys[dataKey]; !value {
-			keys[dataKey] = true
-			list = append(list, entry)
+func (ss *SearchService) GetTransactionV2(data []byte, tableMappingSchema []model.TableMappingSchema,
+	aliasData map[string]string, nodes []string, settingService *UserSettingsService, userGroup string, whitelist []string) (string, error) {
+	var dataWhere []interface{}
+	requestData, _ := gabs.ParseJSON(data)
+	for _, value := range requestData.Search("param", "search").ChildrenMap() {
+		for _, v := range value.Search("callid").Data().([]interface{}) {
+			dataWhere = append(dataWhere, v)
 		}
 	}
 
-	if config.Setting.TRANSACTION_SETTINGS.GlobalDeduplicate {
+	timeWhereFrom := requestData.S("timestamp", "from").Data().(float64)
+	timeWhereTo := requestData.S("timestamp", "to").Data().(float64)
+	timeFrom := time.Unix(int64(timeWhereFrom/float64(time.Microsecond)), 0).UTC()
+	timeTo := time.Unix(int64(timeWhereTo/float64(time.Microsecond)), 0).UTC()
 
-		logger.Debug("Transaction size after first filter:", len(list))
-		keys2 := make(map[string]string)
-		list2 := []model.HepTable{}
-		for _, entry := range list {
-			var protocolHeader map[string]interface{}
+	dataRow := ss.getCorrelationFromDB(dataWhere, tableMappingSchema, timeFrom, timeTo, nodes, settingService, userGroup, aliasData, whitelist)
+
+	transactionTables := convert2TransactionTables(dataRow)
+
+	//debug log info
+	logger.Infof("[GetTransactionV2] sorted ttransactionTables = %#v\n", transactionTables)
+	reply := ss.getTransactionSummaryV2(transactionTables, aliasData)
+	return reply, nil
+}
+
+func (ss *SearchService) getCorrelationFromDB(dataWhere []interface{}, tableMappingSchema []model.TableMappingSchema,
+	timeFrom, timeTo time.Time, nodes []string, settingService *UserSettingsService, userGroup string,
+	aliasData map[string]string, whitelist []string) []model.HepTable {
+	var dataRow []model.HepTable
+	duplicateIdFilter := make(map[int64]bool)
+	duplicateRawFilter := make(map[string]string)
+	tableArray := [3]string{"hep_proto_1_call", "hep_proto_1_default", "hep_proto_1_registration"}
+	for index := 0; index < len(tableArray); index++ {
+		table := tableArray[index]
+		tempDataRow, _ := ss.GetTransactionData(table, "sid", dataWhere, timeFrom, timeTo, nodes, userGroup, false, whitelist)
+		if len(tempDataRow) <= 0 {
+			continue
+		}
+		sort.Slice(tempDataRow, func(i, j int) bool {
+			var protocolHeaderI model.ProtocolHeader
+			json.Unmarshal(tempDataRow[i].ProtocolHeader, &protocolHeaderI)
+			var protocolHeaderJ model.ProtocolHeader
+			json.Unmarshal(tempDataRow[j].ProtocolHeader, &protocolHeaderJ)
+
+			return protocolHeaderI.CaptureID < protocolHeaderJ.CaptureID && tempDataRow[i].CreatedDate.Before(tempDataRow[j].CreatedDate)
+		})
+
+		for _, entry := range tempDataRow {
+			if duplicateIdFilter[entry.Id] {
+				continue
+			}
+			duplicateIdFilter[entry.Id] = true
+
+			var protocolHeader model.ProtocolHeader
 			json.Unmarshal(entry.ProtocolHeader, &protocolHeader)
-			dataKey := entry.Raw
-			if value, exists := keys2[dataKey]; value == protocolHeader["captureId"].(string) || !exists {
-				keys2[dataKey] = protocolHeader["captureId"].(string)
-				list2 = append(list2, entry)
+			captureId, exists := duplicateRawFilter[entry.Raw]
+			captureStrings := strings.Split(protocolHeader.CaptureID, "_")
+			//eg: ALIAS-NAME_10.2.38.203
+			if len(captureStrings) == 2 {
+				if _, ok := aliasData[captureStrings[1]]; !ok {
+					aliasData[captureStrings[1]] = captureStrings[0]
+				}
+			}
+
+			if exists && captureId != protocolHeader.CaptureID {
+				continue
+			}
+			duplicateRawFilter[entry.Raw] = protocolHeader.CaptureID
+			dataRow = append(dataRow, entry)
+		}
+	}
+
+	if len(dataRow) <= 0 {
+		return dataRow
+	}
+
+	marshalData, _ := json.Marshal(dataRow)
+	jsonParsed, _ := gabs.ParseJSON(marshalData)
+
+	for index := 0; index < len(tableMappingSchema); index++ {
+		correlationJSON := tableMappingSchema[index].CorrelationMapping
+		correlation, _ := gabs.ParseJSON(correlationJSON)
+		var dataSrcField = make(map[string][]interface{})
+
+		if len(correlationJSON) > 0 {
+			// S is shorthand for Search
+			for _, child := range jsonParsed.Search().Children() {
+				for _, corrChild := range correlation.Search().Children() {
+					sf := corrChild.Search("source_field").Data().(string)
+					nKey := make(map[string][]interface{})
+					if strings.Index(sf, ".") > -1 {
+						elemArray := strings.Split(sf, ".")
+						switch child.Search(elemArray[0], elemArray[1]).Data().(type) {
+						case string:
+							nKey[sf] = append(nKey[sf], child.Search(elemArray[0], elemArray[1]).Data().(string))
+						case float64:
+							nKey[sf] = append(nKey[sf], child.Search(elemArray[0], elemArray[1]).Data().(float64))
+						}
+					} else {
+						nKey[sf] = append(nKey[sf], child.Search(sf).Data().(string))
+					}
+					if len(nKey) != 0 {
+						for _, v := range nKey[sf] {
+							if !function.KeyExits(v, dataSrcField[sf]) {
+								dataSrcField[sf] = append(dataSrcField[sf], v)
+							}
+						}
+					}
+				}
 			}
 		}
-		logger.Debug("Transaction size after second filter:", len(list2))
-		return list2
-	} else {
-		return list
+
+		var foundCidData []string
+
+		for _, corrs := range correlation.Children() {
+			var from time.Time
+			var to time.Time
+
+			sourceField := corrs.Search("source_field").Data().(string)
+			lookupID := corrs.Search("lookup_id").Data().(float64)
+			lookupProfile := corrs.Search("lookup_profile").Data().(string)
+			lookupField := corrs.Search("lookup_field").Data().(string)
+			lookupRange := corrs.Search("lookup_range").Data().([]interface{})
+			newWhereData := dataSrcField[sourceField]
+			likeSearch := false
+
+			if len(newWhereData) == 0 {
+				continue
+			}
+
+			table := "hep_proto_" + strconv.FormatFloat(lookupID, 'f', 0, 64) + "_" + lookupProfile
+
+			logger.Printf("[getCorrelationFromDB] search table name = %#v \n", table)
+			if len(lookupRange) > 0 {
+				from = timeFrom.Add(time.Duration(lookupRange[0].(float64)) * time.Second).UTC()
+				to = timeTo.Add(time.Duration(lookupRange[1].(float64)) * time.Second).UTC()
+			}
+			if lookupID == 0 {
+				logger.Error("We need to implement remote call here")
+			} else {
+				if sourceField == "data_header.callid" {
+
+					logger.Debug(lookupProfile)
+					logger.Debug(lookupField)
+				}
+
+				if corrs.Exists("input_function_js") {
+					inputFunction := corrs.Search("input_function_js").Data().(string)
+					logger.Debug("Input function: ", inputFunction)
+					newDataArray := executeJSInputFunction(inputFunction, newWhereData)
+					logger.Debug("sid array before JS:", newWhereData)
+					if newDataArray != nil {
+						newWhereData = append(newWhereData, newDataArray...)
+					}
+				}
+
+				if corrs.Exists("input_script") {
+					inputScript := corrs.Search("input_script").Data().(string)
+					logger.Debug("Input function: ", inputScript)
+					dataScript, err := settingService.GetScriptByParam("scripts", inputScript)
+					if err == nil {
+						scriptNew, _ := strconv.Unquote(dataScript)
+						logger.Debug("OUR script:", scriptNew)
+						newDataArray := executeJSInputFunction(scriptNew, newWhereData)
+						logger.Debug("sid array before JS:", newWhereData)
+						if newDataArray != nil {
+							newWhereData = append(newWhereData, newDataArray...)
+							logger.Debug("sid array after JS:", newWhereData)
+						}
+					}
+				}
+
+				if len(foundCidData) > 0 {
+					for _, v := range foundCidData {
+						newWhereData = append(newWhereData, v)
+					}
+				}
+				if corrs.Exists("like_search") && corrs.Search("like_search").Data().(bool) {
+					likeSearch = true
+				}
+
+				newDataRow, _ := ss.GetTransactionData(table, lookupField, newWhereData, from, to, nodes, userGroup, likeSearch, whitelist)
+				logger.Printf("[getCorrelationFromDB] search newDataRow count = %d \n", len(newDataRow))
+				if corrs.Exists("append_sid") && corrs.Search("append_sid").Data().(bool) {
+					marshalData, _ = json.Marshal(newDataRow)
+					jsonParsed, _ = gabs.ParseJSON(marshalData)
+					for _, value := range jsonParsed.Children() {
+						elems := value.Search("sid").Data().(string)
+						if !heputils.ItemExists(foundCidData, elems) {
+							foundCidData = append(foundCidData, elems)
+						}
+					}
+				}
+
+				for _, entry := range newDataRow {
+					if duplicateIdFilter[entry.Id] {
+						continue
+					}
+					duplicateIdFilter[entry.Id] = true
+
+					var protocolHeader model.ProtocolHeader
+					json.Unmarshal(entry.ProtocolHeader, &protocolHeader)
+					captureId, exists := duplicateRawFilter[entry.Raw]
+					if exists && captureId != protocolHeader.CaptureID {
+						continue
+					}
+					duplicateRawFilter[entry.Raw] = protocolHeader.CaptureID
+					dataRow = append(dataRow, entry)
+				}
+
+				logger.Debug("Correlation data len:", len(dataRow))
+
+				if corrs.Exists("output_script") {
+					outputScript := corrs.Search("output_script").Data().(string)
+					logger.Debug("Output function: ", outputScript)
+					dataScript, err := settingService.GetScriptByParam("scripts", outputScript)
+					if err == nil {
+						scriptNew, _ := strconv.Unquote(dataScript)
+						logger.Debug("OUR script:", scriptNew)
+						newDataRaw := executeJSOutputFunction(scriptNew, dataRow)
+						//logrus.Debug("sid array before JS:", newDataRaw)
+						if newDataRaw != nil {
+							dataRow = newDataRaw
+							//logrus.Debug("sid array after JS:", dataRow)
+						}
+					}
+				}
+			}
+		}
 	}
+
+	return dataRow
+}
+
+func convert2TransactionTables(dataRow []model.HepTable) []*model.TransactionTable {
+	sort.Slice(dataRow, func(i, j int) bool {
+		return dataRow[i].CreatedDate.Before(dataRow[j].CreatedDate)
+	})
+
+	var transactionTables []*model.TransactionTable
+	for _, entry := range dataRow {
+		var protocolHeader model.ProtocolHeader
+		json.Unmarshal(entry.ProtocolHeader, &protocolHeader)
+		var dataHeader model.DataHeader
+		json.Unmarshal(entry.DataHeader, &dataHeader)
+
+		var transactionTable *model.TransactionTable
+		for _, entryT := range transactionTables {
+			if strings.Contains(entryT.ViaBranch, dataHeader.ViaBranch) ||
+				strings.Contains(dataHeader.ViaBranch, entryT.ViaBranch) {
+				transactionTable = entryT
+				break
+			}
+		}
+
+		if transactionTable == nil {
+			transactionTable = new(model.TransactionTable)
+			transactionTable.BeginDate = entry.CreatedDate
+			transactionTable.FromUser = dataHeader.FromUser
+			transactionTable.ToUser = dataHeader.ToUser
+			transactionTables = append(transactionTables, transactionTable)
+		}
+
+		if len(transactionTable.ViaBranch) < len(dataHeader.ViaBranch) {
+			transactionTable.ViaBranch = dataHeader.ViaBranch
+		}
+
+		var transactionMethod *model.TransactionMethod
+		for _, entryM := range transactionTable.TMethods {
+			if strings.Contains(entryM.Name, dataHeader.Method) {
+				transactionMethod = entryM
+				break
+			}
+		}
+
+		if transactionMethod == nil {
+			transactionMethod = new(model.TransactionMethod)
+			if strings.ToUpper(dataHeader.Method) == "INVITE" || strings.ToUpper(dataHeader.Method) == "100" {
+				if strings.Contains(entry.Raw, "a=sendonly") || strings.Contains(entry.Raw, "a=recvonly") {
+					transactionMethod.Name = "INVITE(HOLD)|100"
+				} else {
+					transactionMethod.Name = "INVITE|100"
+				}
+
+			} else {
+				transactionMethod.Name = dataHeader.Method
+			}
+
+			transactionMethod.CSeq = dataHeader.CSeq
+			transactionMethod.BeginDate = entry.CreatedDate
+			transactionMethod.BodyList = list.New()
+			transactionTable.TMethods = append(transactionTable.TMethods, transactionMethod)
+		}
+		transactionMethod.BodyList.PushBack(entry)
+	}
+
+	for _, entryT := range transactionTables {
+		for _, entryM := range entryT.TMethods {
+			if !strings.Contains(entryT.Name, entryM.Name) {
+				if len(entryT.Name) <= 0 {
+					entryT.Name = entryM.Name
+				} else {
+					entryT.Name = entryT.Name + "|" + entryM.Name
+				}
+
+				if strings.HasPrefix(entryM.Name, "4") {
+					if len(entryT.ErrorName) <= 0 {
+						entryT.ErrorName = entryM.Name
+					} else {
+						entryT.ErrorName = entryT.ErrorName + "|" + entryM.Name
+					}
+				}
+			}
+
+			newBodyList := list.New()
+			for rightElem := entryM.BodyList.Front(); rightElem != nil; rightElem = rightElem.Next() {
+				rightHepTable := rightElem.Value.(model.HepTable)
+				var rightDataHeader model.DataHeader
+				json.Unmarshal(rightHepTable.DataHeader, &rightDataHeader)
+
+				leftElem := newBodyList.Back()
+				for ; leftElem != nil; leftElem = leftElem.Prev() {
+					leftHepTable := leftElem.Value.(model.HepTable)
+					var leftDataHeader model.DataHeader
+					json.Unmarshal(leftHepTable.DataHeader, &leftDataHeader)
+					if isInsertAfter(entryT.ViaBranch, &leftDataHeader, &rightDataHeader) {
+						break
+					}
+				}
+
+				if leftElem == nil {
+					newBodyList.PushFront(rightHepTable)
+				} else {
+					newBodyList.InsertAfter(rightHepTable, leftElem)
+				}
+			}
+			entryM.BodyList = newBodyList
+		}
+	}
+
+	return transactionTables
+}
+
+func isInsertAfter(viaBranch string, left *model.DataHeader, right *model.DataHeader) bool {
+	viaBranchList := strings.Split(viaBranch, ";")
+	leftViaBranchList := strings.Split(left.ViaBranch, ";")
+	leftViaCount := len(leftViaBranchList)
+	if leftViaCount == 1 {
+		leftViaCount = len(viaBranchList)
+		for i := 0; i < len(viaBranchList); i++ {
+			if viaBranchList[i] == left.ViaBranch {
+				break
+			}
+			leftViaCount--
+		}
+	}
+	rightViaBranchList := strings.Split(right.ViaBranch, ";")
+	rightViaCount := len(rightViaBranchList)
+	if rightViaCount == 1 {
+		rightViaCount = len(viaBranchList)
+		for i := 0; i < len(viaBranchList); i++ {
+			if viaBranchList[i] == right.ViaBranch {
+				break
+			}
+			rightViaCount--
+		}
+	}
+
+	if left.Method == right.Method {
+		if strings.HasSuffix(right.CSeq, right.Method) || left.Method == "100" {
+			return leftViaCount <= rightViaCount
+		}
+		return leftViaCount >= rightViaCount
+	}
+
+	if strings.ToUpper(left.Method) == "INVITE" && right.Method == "100" {
+		return leftViaCount <= rightViaCount
+	}
+
+	if left.Method == "100" && strings.ToUpper(right.Method) == "INVITE" {
+		return leftViaCount < rightViaCount
+	}
+
+	//hop by hop
+	if left.CSeq == right.CSeq && leftViaCount == rightViaCount {
+		if strings.HasSuffix(left.CSeq, left.Method) {
+			return true
+		}
+
+		if strings.HasSuffix(right.CSeq, right.Method) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
+	keys := make(map[string]bool)
+	keys2 := make(map[string]string)
+	var list []model.HepTable
+	for _, entry := range hepSlice {
+		dataKey := strconv.FormatInt(entry.Id, 10) + ":" + entry.CreatedDate.String()
+		if keys[dataKey] {
+			continue
+		}
+		keys[dataKey] = true
+
+		if config.Setting.TRANSACTION_SETTINGS.GlobalDeduplicate {
+			var protocolHeader model.ProtocolHeader
+			json.Unmarshal(entry.ProtocolHeader, &protocolHeader)
+			captureId, exists := keys2[entry.Raw]
+			if exists && captureId != protocolHeader.CaptureID {
+				continue
+			}
+
+			keys2[entry.Raw] = protocolHeader.CaptureID
+		}
+
+		list = append(list, entry)
+	}
+
+	return list
 }
 
 // this method create new user in the database
@@ -1280,7 +1685,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		}
 
 		if dataElement.Exists("id") {
-			callElement.ID = dataElement.S("id").Data().(float64)
+			callElement.ID = int64(dataElement.S("id").Data().(float64))
 		}
 		if dataElement.Exists("srcIp") {
 			callElement.SrcIP = dataElement.S("srcIp").Data().(string)
@@ -1292,10 +1697,10 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			callElement.DstHost = dataElement.S("dstIp").Data().(string)
 		}
 		if dataElement.Exists("srcPort") {
-			callElement.SrcPort = heputils.CheckFloatValue(dataElement.S("srcPort").Data())
+			callElement.SrcPort = int(heputils.CheckFloatValue(dataElement.S("srcPort").Data()))
 		}
 		if dataElement.Exists("dstPort") {
-			callElement.DstPort = heputils.CheckFloatValue(dataElement.S("dstPort").Data())
+			callElement.DstPort = int(heputils.CheckFloatValue(dataElement.S("dstPort").Data()))
 		}
 
 		if dataElement.Exists("method") {
@@ -1328,7 +1733,7 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		}
 
 		if dataElement.Exists("protocol") {
-			callElement.Protocol = heputils.CheckFloatValue(dataElement.S("protocol").Data())
+			callElement.Protocol = int(heputils.CheckFloatValue(dataElement.S("protocol").Data()))
 		}
 		if dataElement.Exists("sid") {
 			callElement.Sid = dataElement.S("sid").Data().(string)
@@ -1360,23 +1765,23 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 			}
 		}
 
-		callElement.SrcID = callElement.SrcHost + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-		callElement.DstID = callElement.DstHost + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+		callElement.SrcID = callElement.SrcHost + ":" + strconv.Itoa(callElement.SrcPort)
+		callElement.DstID = callElement.DstHost + ":" + strconv.Itoa(callElement.DstPort)
 
-		srcIPPort := callElement.SrcIP + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-		dstIPPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+		srcIPPort := callElement.SrcIP + ":" + strconv.Itoa(callElement.SrcPort)
+		dstIPPort := callElement.DstIP + ":" + strconv.Itoa(callElement.DstPort)
 
 		testInput := net.ParseIP(callElement.SrcHost)
 		if testInput.To4() == nil && testInput.To16() != nil {
-			srcIPPort = "[" + callElement.SrcIP + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-			callElement.SrcID = "[" + callElement.SrcHost + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
+			srcIPPort = "[" + callElement.SrcIP + "]:" + strconv.Itoa(callElement.SrcPort)
+			callElement.SrcID = "[" + callElement.SrcHost + "]:" + strconv.Itoa(callElement.SrcPort)
 
 		}
 
 		testInput = net.ParseIP(callElement.DstIP)
 		if testInput.To4() == nil && testInput.To16() != nil {
-			dstIPPort = "[" + callElement.DstIP + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
-			callElement.DstID = "[" + callElement.DstHost + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+			dstIPPort = "[" + callElement.DstIP + "]:" + strconv.Itoa(callElement.DstPort)
+			callElement.DstID = "[" + callElement.DstHost + "]:" + strconv.Itoa(callElement.DstPort)
 		}
 
 		srcIPPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
@@ -1466,6 +1871,108 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 	reply.Set(callData, "data", "calldata")
 	reply.Set(alias.Data(), "data", "alias")
 	reply.Set(dataKeys.Data(), "keys")
+	return reply.String()
+}
+
+func (ss *SearchService) getTransactionSummaryV2(transactionTables []*model.TransactionTable, aliasData map[string]string) string {
+	alias := gabs.New()
+	dataReply := gabs.Wrap([]interface{}{})
+	var transactionElements []model.TransactionElement
+	var hosts []string
+	for _, entryT := range transactionTables {
+		transactionElement := model.TransactionElement{
+			ViaBranch: entryT.ViaBranch,
+			Name:      entryT.Name,
+			ErrorName: entryT.ErrorName,
+			BeginDate: entryT.BeginDate.UnixNano() / 1000000,
+			FromUser:  entryT.FromUser,
+			ToUser:    entryT.ToUser,
+		}
+		for _, entryM := range entryT.TMethods {
+			for elem := entryM.BodyList.Front(); elem != nil; elem = elem.Next() {
+				hepTable := elem.Value.(model.HepTable)
+				var protocolHeader model.ProtocolHeader
+				json.Unmarshal(hepTable.ProtocolHeader, &protocolHeader)
+				var dataHeader model.DataHeader
+				json.Unmarshal(hepTable.DataHeader, &dataHeader)
+				callElement := model.CallElement{
+					MsgColor:    "blue",
+					Destination: 0,
+				}
+				callElement.ID = hepTable.Id
+				callElement.Sid = hepTable.Sid
+				callElement.SrcHost = protocolHeader.SrcIP
+				callElement.SrcIP = protocolHeader.SrcIP
+				callElement.SrcPort = protocolHeader.SrcPort
+				callElement.SrcID = protocolHeader.SrcIP + ":" + strconv.Itoa(protocolHeader.SrcPort)
+				callElement.DstIP = protocolHeader.DstIP
+				callElement.DstHost = protocolHeader.DstIP
+				callElement.DstPort = protocolHeader.DstPort
+				callElement.DstID = protocolHeader.DstIP + ":" + strconv.Itoa(protocolHeader.DstPort)
+				callElement.Method = dataHeader.Method
+				callElement.MethodText = dataHeader.Method
+				callElement.CreateDate = hepTable.CreatedDate.UnixNano() / 1000000
+				callElement.MicroTs = hepTable.CreatedDate.UnixNano() / 1000000
+				callElement.Protocol = protocolHeader.Protocol
+				callElement.RuriUser = dataHeader.RuriUser
+
+				if !alias.Exists(callElement.SrcID) {
+					if valueAlias, okAlias := aliasData[callElement.SrcIP]; okAlias {
+						alias.Set(valueAlias, callElement.SrcID)
+					}
+				}
+
+				if !alias.Exists(callElement.DstID) {
+					if valueAlias, okAlias := aliasData[callElement.DstIP]; okAlias {
+						alias.Set(valueAlias, callElement.DstID)
+					}
+				}
+
+				transactionElement.CallData = append(transactionElement.CallData, callElement)
+				dataElement := gabs.New()
+				marshalData, _ := json.Marshal(hepTable)
+				jsonParsed, _ := gabs.ParseJSON(marshalData)
+				for k, v := range jsonParsed.ChildrenMap() {
+					switch k {
+					case "data_header", "protocol_header":
+						dataElement.Merge(v)
+					case "sid", "correlation_id":
+						sidData := gabs.New()
+						sidData.Set(v.Data().(interface{}), k)
+						dataElement.Merge(sidData)
+					default:
+						newData := gabs.New()
+						newData.Set(v.Data().(interface{}), k)
+						dataElement.Merge(newData)
+					}
+				}
+				dataReply.ArrayAppend(dataElement.Data())
+
+				transactionElement.Host = heputils.AppendIfNotExists(transactionElement.Host, callElement.SrcID)
+				transactionElement.Host = heputils.AppendIfNotExists(transactionElement.Host, callElement.DstID)
+
+			}
+		}
+		transactionElements = append(transactionElements, transactionElement)
+		for indexI := 0; indexI < len(transactionElement.Host); indexI++ {
+			indexJ := 0
+			for ; indexJ < len(hosts); indexJ++ {
+				if hosts[indexJ] == transactionElement.Host[indexI] {
+					break
+				}
+			}
+
+			if indexJ >= len(hosts) {
+				hosts = append(hosts, transactionElement.Host[indexI])
+			}
+		}
+	}
+
+	reply := gabs.New()
+	reply.Set(dataReply.Data(), "data", "messages")
+	reply.Set(hosts, "data", "hosts")
+	reply.Set(transactionElements, "data", "transaction_elements")
+	reply.Set(alias.Data(), "data", "alias")
 	return reply.String()
 }
 

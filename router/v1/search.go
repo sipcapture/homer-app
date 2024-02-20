@@ -27,6 +27,7 @@ func RouteSearchApis(acc *echo.Group, dataSession map[string]*gorm.DB, configSes
 
 	acc.POST("/search/call/decode/message", src.GetDecodeMessageById)
 	acc.POST("/call/transaction", src.GetTransaction)
+	acc.POST("/call/transaction/v2", src.GetTransactionV2)
 	acc.POST("/call/report/qos", src.GetTransactionQos)
 	acc.POST("/call/report/log", src.GetTransactionLog)
 	acc.POST("/export/call/messages/pcap", src.GetMessagesAsPCap)

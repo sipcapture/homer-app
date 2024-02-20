@@ -530,7 +530,7 @@ var FieldsMapping1call = json.RawMessage(`[
 	{
 	  "id": "protocol_header.captureId",
 	  "name": "Capture ID",
-	  "type": "integer",
+	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 17,
@@ -799,7 +799,7 @@ var FieldsMapping1default = json.RawMessage(`[
 	{
 	  "id": "protocol_header.captureId",
 	  "name": "Capture ID",
-	  "type": "integer",
+	  "type": "string",
 	  "index": "none",
 	  "form_type": "input",
 	  "position": 17,
@@ -1018,7 +1018,7 @@ var FieldsMapping34default = json.RawMessage(`[
   {
     "id": "protocol_header.captureId",
     "name": "Capture ID",
-    "type": "integer",
+    "type": "string",
     "index": "none",
     "form_type": "input",
     "position": 12,
@@ -1164,7 +1164,7 @@ var FieldsMapping100default = json.RawMessage(`[
   {
       "id": "protocol_header.captureId",
       "name": "Capture ID",
-      "type": "integer",
+      "type": "string",
       "index": "none",
       "form_type": "input",
       "position": 17,
@@ -1350,27 +1350,7 @@ var FieldsMapping2000loki = json.RawMessage(`[
 	}
 ]`)
 
-var CorrelationMapping1call = json.RawMessage(`[		
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 100,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 5,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
+var CorrelationMapping1call = json.RawMessage(`[
     {
         "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,
@@ -1395,27 +1375,7 @@ var CorrelationMapping1call = json.RawMessage(`[
 	]	
 `)
 
-var CorrelationMapping1registration = json.RawMessage(`[		
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 100,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 5,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
+var CorrelationMapping1registration = json.RawMessage(`[
     {
         "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,
@@ -1430,26 +1390,6 @@ var CorrelationMapping1registration = json.RawMessage(`[
 `)
 
 var CorrelationMapping1default = json.RawMessage(`[
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 100,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
-    {
-        "source_field": "data_header.callid",
-        "lookup_id": 5,
-        "lookup_profile": "default",
-        "lookup_field": "sid",
-        "lookup_range": [
-            -300,
-            200
-        ]
-    },
     {
         "source_field": "protocol_header.correlation_id",
         "lookup_id": 1,

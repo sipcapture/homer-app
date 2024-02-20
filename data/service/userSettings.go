@@ -41,6 +41,28 @@ func (ss *UserSettingsService) GetCorrelationMap(data *model.SearchObject) ([]by
 	return mappingSchema.CorrelationMapping, nil
 }
 
+func (ss *UserSettingsService) GetCorrelationMapsV2(data *model.SearchObject) ([]model.TableMappingSchema, error) {
+
+	mappingSchema := []model.TableMappingSchema{}
+	Data, _ := json.Marshal(data.Param.Search)
+	sData, _ := gabs.ParseJSON(Data)
+	hepid := 1
+	//profile := "call"
+
+	for key := range sData.ChildrenMap() {
+		dataParse := strings.Split(key, "_")
+		hepid, _ = strconv.Atoi(dataParse[0])
+		//profile = dataParse[1]
+	}
+
+	ss.Session.Debug().
+		Table("mapping_schema").
+		Where("hepid = ? and profile in ('call', 'default', 'registration')", hepid).
+		Find(&mappingSchema)
+
+	return mappingSchema, nil
+}
+
 // get all mapping from database
 func (ss *UserSettingsService) GetAllMapping() (map[string]json.RawMessage, error) {
 

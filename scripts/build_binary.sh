@@ -10,7 +10,7 @@ read -p "This will drop and rebuild the homer-app binary from source. Continue (
 if [ "$CONT" = "y" ]; then
  docker run --rm \
   -v $PWD:/app \
-  golang:1.16 \
+  golang:1.22 \
   bash -c "cd /app && make modules && make all"
 else
   echo "Exiting..."

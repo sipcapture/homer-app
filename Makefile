@@ -1,7 +1,7 @@
 NAME=homer-app
 
 all:
-	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -o $(NAME) 
+	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -buildvcs=false -o $(NAME) 
 	#go build -a -ldflags '-extldflags "-static"' -o $(NAME) 
 
 debug:

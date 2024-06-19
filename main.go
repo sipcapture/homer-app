@@ -1166,6 +1166,11 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				keepAlive = viper.GetBool(keyData + ".keepalive")
 			}
 
+			customcli := ""
+			if viper.IsSet(keyData + ".custom_cli") {
+				customcli = viper.GetString(keyData + ".custom_cli")
+			}
+
 			sslMode := "disable"
 			if viper.IsSet(keyData + ".sslmode") {
 				sslMode = viper.GetString(keyData + ".sslmode")
@@ -1173,9 +1178,9 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 				sslMode = "require"
 			}
 
-			logger.Info(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s]\n", host, user, name, node, port, sslMode))
+			logger.Info(fmt.Sprintf("Connecting to [%s, %s, %s, %s, %d, ssl: %s, custom_cli: %s]\n", host, user, name, node, port, sslMode, customcli))
 
-			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
+			connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s %s", host, user, name, sslMode, password, customcli)
 
 			if port != 0 {
 				connectString += fmt.Sprintf(" port=%d", port)
@@ -1273,7 +1278,12 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			keepAlive = viper.GetBool("database_data.keepalive")
 		}
 
-		logger.Info(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d]\n", host, user, name, port))
+		customcli := ""
+		if viper.IsSet("database_data.custom_cli") {
+			customcli = viper.GetString("database_data.custom_cli")
+		}
+
+		logger.Info(fmt.Sprintf("Connecting to the old way: [%s, %s, %s, %d, %s]\n", host, user, name, port, customcli))
 
 		sslMode := "disable"
 		if viper.IsSet("database_data.sslmode") {
@@ -1282,7 +1292,7 @@ func getDataDBSession() (map[string]*gorm.DB, []model.DatabasesMap) {
 			sslMode = "require"
 		}
 
-		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
+		connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s %s", host, user, name, sslMode, password, customcli)
 
 		if port != 0 {
 			connectString += fmt.Sprintf(" port=%d", port)
@@ -1357,7 +1367,12 @@ func getConfigDBSession() *gorm.DB {
 		sslMode = "require"
 	}
 
-	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", host, user, name, sslMode, password)
+	customcli := ""
+	if viper.IsSet("database_config.custom_cli") {
+		customcli = viper.GetString("database_config.custom_cli")
+	}
+
+	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s %s", host, user, name, sslMode, password, customcli)
 
 	if port != 0 {
 		connectString += fmt.Sprintf(" port=%d", port)

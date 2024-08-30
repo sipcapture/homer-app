@@ -82,39 +82,56 @@ type LDAPClient struct {
 // Connect connects to the ldap backend.
 func (lc *LDAPClient) Connect() error {
 	if lc.Conn == nil {
+		// Split the space-separated host string into a slice of hosts
+		hosts := strings.Split(lc.Host, " ")
+
 		var l *ldap.Conn
 		var err error
-		address := fmt.Sprintf("%s:%d", lc.Host, lc.Port)
-		if !lc.UseSSL {
-			l, err = ldap.Dial("tcp", address)
-			if err != nil {
-				return err
-			}
-
-			// Reconnect with TLS
-			if !lc.SkipTLS {
-				err = l.StartTLS(&tls.Config{InsecureSkipVerify: true})
+		
+		
+		// Iterate over each host and attempt to connect
+		for _, host := range hosts {
+			address := fmt.Sprintf("%s:%d", host, lc.Port)
+			if !lc.UseSSL {
+				l, err = ldap.Dial("tcp", address)
 				if err != nil {
-					return err
+					continue // Try the next host
+				}
+	
+				// Reconnect with TLS
+				if !lc.SkipTLS {
+					err = l.StartTLS(&tls.Config{InsecureSkipVerify: true})
+					if err != nil {
+						l.Close() // Close the connection before trying the next host
+						continue // Try the next host
+					}
+				}
+			} else {
+				config := &tls.Config{
+					InsecureSkipVerify: lc.InsecureSkipVerify,
+					ServerName:         lc.ServerName,
+				}
+				if lc.ClientCertificates != nil && len(lc.ClientCertificates) > 0 {
+					config.Certificates = lc.ClientCertificates
+				}
+				l, err = ldap.DialTLS("tcp", address, config)
+				if err != nil {
+					continue // Try the next host
 				}
 			}
-		} else {
-			config := &tls.Config{
-				InsecureSkipVerify: lc.InsecureSkipVerify,
-				ServerName:         lc.ServerName,
-			}
-			if lc.ClientCertificates != nil && len(lc.ClientCertificates) > 0 {
-				config.Certificates = lc.ClientCertificates
-			}
-			l, err = ldap.DialTLS("tcp", address, config)
-			if err != nil {
-				return err
-			}
+	
+			lc.Conn = l
+			return nil // Successfully connected to a host
 		}
 
-		lc.Conn = l
+		// If no connection was successful, return the last error encountered
+		if err != nil {
+			return err
+		}
+		return errors.New("failed to connect to any LDAP server")
 	}
-	return nil
+
+	return nil // Already connected
 }
 
 // Close closes the ldap backend connection.

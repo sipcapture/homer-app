@@ -2,14 +2,14 @@
   "database_data": {
     "local": {
       "node": "LocalNode",
-      "user": "homer_user",
+      "user": "homer_db_user",
       "pass": "homer_password",
       "name": "homer_data",
       "host": "homer_db_host"
     }
   },
   "database_config": {
-    "user": "homer_user",
+    "user": "homer_db_user",
     "pass": "homer_password",
     "name": "homer_config",
     "host": "homer_db_host",

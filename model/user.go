@@ -25,6 +25,9 @@ type TableUser struct {
 	Password string `gorm:"-" json:"password"`
 	// required: true
 
+	Enabled bool `gorm:"column:enabled;type:bool;default:true" json:"enabled"`
+	// required: true
+
 	FirstName string `gorm:"column:firstname;type:varchar(50);not null" json:"firstname" validate:"required"`
 	// required: true
 	LastName string `gorm:"column:lastname;type:varchar(50);not null" json:"lastname"`

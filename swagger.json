@@ -6172,6 +6172,11 @@
                     "x-go-name": "Partid",
                     "example": 10
                   },
+                  "enabled": {
+                    "type": "boolean",
+                    "x-go-name": "Enabled",
+                    "example": true
+                  },
                   "usergroup": {
                     "type": "string",
                     "x-go-name": "Usergroup",

@@ -9,6 +9,10 @@ INFLUX_DB=${INFLUX_DB:-localhost}
 PROM_HOST=${PROM_HOST:-localhost}
 LOKI_HOST=${LOKI_HOST:-localhost}
 GRAFANA_HOST=${GRAFANA_HOST:-localhost}
+TSHARK_ACTIVE=${TSHARK_ACTIVE:-false}
+TSHARK_BIN=${TSHARK_BIN:-/usr/bin/tshark}
+TSHARK_UID=${TSHARK_UID:-0}
+TSHARK_GID=${TSHARK_GID:-0}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
@@ -72,6 +76,11 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$LDAP_SKIP_VERIFY" ]; then sed -i "/skipverify/ s/true/${LDAP_SKIP_VERIFY}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_ANONYMOUS" ]; then sed -i "/anonymous/ s/false/${LDAP_ANONYMOUS}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$LDAP_USER_DN" ]; then sed -i "/userdn/ s/uid=%s,ou=People,dc=example,dc=com/${LDAP_USER_DN}/g" /usr/local/homer/etc/webapp_config.json; fi
+
+   if [ -n "$TSHARK_UID" ]; then sed -i "s/tshark_uid/${TSHARK_UID}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$TSHARK_GID" ]; then sed -i "s/tshark_gid/${TSHARK_GID}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$TSHARK_ACTIVE" ]; then sed -i "s/tshark_active/${TSHARK_ACTIVE}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$TSHARK_BIN" ]; then sed -i "s/tshark_bin/${TSHARK_BIN}/g" /usr/local/homer/etc/webapp_config.json; fi
 
    echo "Pre-Flight provisioning completed!"
 

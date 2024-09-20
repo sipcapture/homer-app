@@ -1638,13 +1638,13 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 		logger.Debug(fmt.Sprintf("Decoder to [%s, %s, %v]\n", config.Setting.DECODER_SHARK.Bin, config.Setting.DECODER_SHARK.Param, config.Setting.DECODER_SHARK.Protocols))
 		rootExecute := false
 		cmd := exec.Command(config.Setting.DECODER_SHARK.Bin, "-Q", "-T", "json", "-o", "rtp.heuristic_rtp:TRUE", "-l", "-i", "-", config.Setting.DECODER_SHARK.Param)
-		/*check if we root under root - changing to an user */
+		/* check if we are root under root - change to a configured user */
 		uid, gid := os.Getuid(), os.Getgid()
 
 		if uid == 0 || gid == 0 {
-			logger.Info(fmt.Sprintf("running under root/wheel: UID: [%d], GID: [%d] - [%d] - [%d]. Changing to user...", uid, gid, config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
+			logger.Info(fmt.Sprintf("running under root/wheel: UID: [%d], GID: [%d]. Configured: UID: [%d] GID: [%d].", uid, gid, config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
 			if config.Setting.DECODER_SHARK.UID != 0 && config.Setting.DECODER_SHARK.GID != 0 {
-				logger.Info(fmt.Sprintf("Changing to: UID: [%d], GID: [%d]", uid, gid))
+				logger.Info(fmt.Sprintf("Attempting to change user to: UID: [%d], GID: [%d]", config.Setting.DECODER_SHARK.UID, config.Setting.DECODER_SHARK.GID))
 				cmd.SysProcAttr = &syscall.SysProcAttr{
 					Credential: &syscall.Credential{
 						Uid: config.Setting.DECODER_SHARK.UID, Gid: config.Setting.DECODER_SHARK.GID,
@@ -1829,7 +1829,7 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 		}
 
 		if err != nil {
-			logger.Error(fmt.Sprintf("Error commmit transaction Error: %s", err.Error()))
+			logger.Error(fmt.Sprintf("Commit transaction Error: %s", err.Error()))
 			return goodCounter, badCounter, err
 		}
 
@@ -1837,5 +1837,5 @@ func (ss *SearchService) ImportPcapData(buf *bytes.Buffer, now bool) (int, int, 
 		return goodCounter, badCounter, err
 	}
 
-	return 0, 0, fmt.Errorf("tshark has been not enabled")
+	return 0, 0, fmt.Errorf("tshark has not been enabled")
 }

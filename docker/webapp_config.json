@@ -88,5 +88,17 @@
     "skipverify": true,
     "anonymous": false,
     "userdn": "uid=%s,ou=People,dc=example,dc=com"
+  },
+  "decoder_shark": {
+      "_comment": "Here you can do packet decoding using tshark application. Please define uid, gid if you run the app under root",
+      "active": tshark_active,
+      "uid": tshark_uid,
+      "gid": tshark_gid,
+      "bin": "tshark_bin",
+      "protocols": [
+          "1_call",
+          "1_registration",
+          "1_default"
+      ]
   }
 }

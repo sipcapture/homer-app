@@ -104,7 +104,7 @@ type HomerSettingServer struct {
 	}
 
 	DECODER_SHARK struct {
-		Bin        string   `default:"/usr/local/bin/tshark"`
+		Bin        string   `default:"/usr/bin/tshark"`
 		Param      string   `default:""`
 		Protocols  []string `default:""`
 		UID        uint32   `default:"0"`

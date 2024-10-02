@@ -391,6 +391,9 @@ func configureServiceObjects() {
 	if viper.IsSet("oauth2.response_type") {
 		config.Setting.OAUTH2_SETTINGS.ResponseType = viper.GetString("oauth2.response_type")
 	}
+	if viper.IsSet("oauth2.use_pkce") {
+		config.Setting.OAUTH2_SETTINGS.UsePkce = viper.GetBool("oauth2.use_pkce")
+	}
 	if viper.IsSet("oauth2.user_token") {
 		config.Setting.OAUTH2_SETTINGS.UserToken = viper.GetString("oauth2.user_token")
 	}

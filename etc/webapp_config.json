@@ -176,6 +176,7 @@
         "grant_type": "authorization_code",
         "response_type": "code",
         "auth_style": 1,
+        "use_pkce": true,
         "user_token": "RandomURLSafeStringWithAMinimumLengthOf43Characters",
         "scope": [
             "email",

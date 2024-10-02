@@ -421,10 +421,17 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	logger.Debug("Doing URL for provider:", providerName)
 
-	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
+	options := []oauth2.AuthCodeOption{
 		oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
-		oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
-		oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+	}
+
+	if config.Setting.OAUTH2_SETTINGS.UsePkce {
+		options = append(options,
+			oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
+			oauth2.SetAuthURLParam("code_challenge_method", "S256"))
+	}
+
+	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue, options...)
 
 	logger.Debug("RedirecToSericeAuth Redirecting URL :", u)
 
@@ -494,7 +501,10 @@ func (uc *UserController) AuthSericeRequest(c echo.Context) error {
 			oauth2.SetAuthURLParam("client_id", config.Setting.OAUTH2_SETTINGS.ClientID))
 	}
 
-	options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	if config.Setting.OAUTH2_SETTINGS.UsePkce == true {
+		options = append(options, oauth2.SetAuthURLParam("code_verifier", config.Setting.OAUTH2_SETTINGS.UserToken))
+	}
+
 	logger.Debug("Options for token exchange in AuthSericeRequest : ", options)
 
 	token, err := config.Setting.MAIN_SETTINGS.OAuth2Config.Exchange(context.Background(), code, options...)

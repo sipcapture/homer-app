@@ -421,16 +421,17 @@ func (uc *UserController) RedirecToSericeAuth(c echo.Context) error {
 
 	logger.Debug("Doing URL for provider:", providerName)
 
-	u := ""
-	if config.Setting.OAUTH2_SETTINGS.UsePkce == true {
-		u = config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
-			oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
+	options := []oauth2.AuthCodeOption{
+		oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType),
+	}
+
+	if config.Setting.OAUTH2_SETTINGS.UsePkce {
+		options = append(options,
 			oauth2.SetAuthURLParam("code_challenge", heputils.GenCodeChallengeS256(config.Setting.OAUTH2_SETTINGS.UserToken)),
 			oauth2.SetAuthURLParam("code_challenge_method", "S256"))
-	} else {
-		u = config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue,
-			oauth2.SetAuthURLParam("response_type", config.Setting.OAUTH2_SETTINGS.ResponseType))
 	}
+
+	u := config.Setting.MAIN_SETTINGS.OAuth2Config.AuthCodeURL(config.Setting.OAUTH2_SETTINGS.StateValue, options...)
 
 	logger.Debug("RedirecToSericeAuth Redirecting URL :", u)
 

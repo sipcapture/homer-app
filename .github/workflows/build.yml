@@ -2,14 +2,17 @@ name: App Builder
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
     paths-ignore:
       - '**.md'
       - '**.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
     paths-ignore:
       - '**.md'
+  release:
+    types: [published]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io

@@ -79,7 +79,7 @@ jobs:
       uses: danielmundi/upload-packagecloud@v1
       with: 
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.deb
-        PACKAGECLOUD-REPO: sipcapture
+        PACKAGECLOUD-REPO: siptest
         PACKAGECLOUD-DISTRIB: any/any
         PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
       uses: danielmundi/upload-packagecloud@v1
       with: 
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.rpm
-        PACKAGECLOUD-REPO: sipcapture
+        PACKAGECLOUD-REPO: siptest
         PACKAGECLOUD-DISTRIB: rpm_any/rpm_any
         PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}

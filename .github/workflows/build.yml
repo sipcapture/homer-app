@@ -10,9 +10,6 @@ on:
     branches: [ master, main ]
     paths-ignore:
       - '**.md'
-  release:
-    types: [published]
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -82,7 +79,7 @@ jobs:
       uses: danielmundi/upload-packagecloud@v1
       with: 
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.deb
-        PACKAGECLOUD-REPO: siptest
+        PACKAGECLOUD-REPO: sipcapture
         PACKAGECLOUD-DISTRIB: any/any
         PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
@@ -93,11 +90,12 @@ jobs:
       uses: danielmundi/upload-packagecloud@v1
       with: 
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.rpm
-        PACKAGECLOUD-REPO: siptest
+        PACKAGECLOUD-REPO: sipcapture
         PACKAGECLOUD-DISTRIB: rpm_any/rpm_any
         PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
         continue-on-error: true
+        
   docker-push:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest

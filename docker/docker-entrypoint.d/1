@@ -17,7 +17,7 @@ TSHARK_GID=${TSHARK_GID:-0}
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
    if [ -n "$DB_HOST" ]; then sed -i "s/homer_db_host/${DB_HOST}/g" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$DB_USER" ]; then sed -i "s/homer_user/${DB_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$DB_USER" ]; then sed -i "s/homer_db_user/${DB_USER}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_PASS" ]; then sed -i "s/homer_password/${DB_PASS}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_KEEPALIVE" ]; then sed -i "s/homer_db_keepalive/${DB_KEEPALIVE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$DB_HOMER_CONFIG" ]; then sed -i "s/homer_config/${DB_HOMER_CONFIG}/g" /usr/local/homer/etc/webapp_config.json; fi

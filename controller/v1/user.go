@@ -339,6 +339,14 @@ func (uc *UserController) LoginUser(c echo.Context) error {
 		response, _ := json.Marshal(loginObject)
 		return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
 	}
+	if !userData.Enabled {
+		loginObject := model.UserTokenBadResponse{}
+		loginObject.StatusCode = http.StatusUnauthorized
+		loginObject.Message = webmessages.Unauthorized
+		loginObject.Error = webmessages.Unauthorized
+		response, _ := json.Marshal(loginObject)
+		return httpresponse.CreateBadResponseWithJson(&c, http.StatusUnauthorized, response)
+	}
 
 	loginObject := model.UserTokenSuccessfulResponse{}
 	loginObject.Token = token

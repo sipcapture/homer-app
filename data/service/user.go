@@ -161,14 +161,14 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 	}
 	if !isAdmin {
 		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{Email: user.Email, FirstName: user.FirstName,
-			LastName: user.LastName, Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
+			LastName: user.LastName, Department: user.Department, Hash: user.Hash, CreatedAt: user.CreatedAt, Enabled: user.Enabled}).Error
 		if err != nil {
 			return err
 		}
 	} else {
 		err := us.Session.Debug().Table("users").Model(&model.TableUser{}).Where(sqlWhere).Update(model.TableUser{UserName: user.UserName,
 			PartId: user.PartId, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName, Department: user.Department, UserGroup: user.UserGroup,
-			Hash: user.Hash, CreatedAt: user.CreatedAt}).Error
+			Hash: user.Hash, CreatedAt: user.CreatedAt, Enabled: user.Enabled}).Error
 		if err != nil {
 			return err
 		}

@@ -69,11 +69,8 @@ func (us *UserService) IsAdmin(email string) (bool, error) {
 func (us *UserService) GetUserByUUID(GUID, UserName string) ([]*model.TableUser, int, error) {
 
 	var user []*model.TableUser
-	var sqlWhere = make(map[string]interface{})
 
-	sqlWhere = map[string]interface{}{"username": UserName, "guid": GUID}
-
-	if err := us.Session.Debug().Table("users").Where(sqlWhere).Find(&user).Error; err != nil {
+	if err := us.Session.Debug().Table("users").Where("username = ? AND guid = ?", UserName, GUID).Find(&user).Error; err != nil {
 		return user, 0, err
 	}
 

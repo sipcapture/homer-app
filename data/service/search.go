@@ -1179,8 +1179,10 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		query = query + " AND " + config.Setting.MAIN_SETTINGS.IsolateQuery
 	}
 
+	var whitelistParams []interface{}
 	for _, ip := range whitelist {
-		query = query + fmt.Sprintf(" AND (protocol_header->>'srcIp' != '%s' AND protocol_header->>'dstIp' != '%s' ) ", ip, ip)
+		query = query + " AND (protocol_header->>'srcIp' != ? AND protocol_header->>'dstIp' != ? ) "
+		whitelistParams = append(whitelistParams, ip, ip)
 	}
 
 	for session := range ss.Session {
@@ -1192,7 +1194,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).
-			Where(query, timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339), dataWhere).
+			Where(query, append([]interface{}{timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)}, append(dataWhere, whitelistParams...)...)...).
 			Find(&searchTmp).Error; err != nil {
 			logger.Error("GetTransactionData: We have got error: ", err)
 		}

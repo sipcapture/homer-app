@@ -60,8 +60,12 @@ func (hs *HepsubService) GetHepSubFields(id, transaction string) (string, error)
 		return "", err
 	}
 	data, _ := json.Marshal(hepsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
-	return response, nil
+	responseMap := map[string]interface{}{
+		"count": count,
+		"data":  json.RawMessage(data),
+	}
+	response, _ := json.Marshal(responseMap)
+	return string(response), nil
 }
 
 // this method gets all users from database

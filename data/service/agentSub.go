@@ -75,10 +75,8 @@ func (hs *AgentsubService) GetAgentsubAgainstType(typeRequest string) (string, e
 	var AgentsubObject []model.TableAgentLocationSession
 	var count int
 
-	whereSQL := fmt.Sprintf("expire_date > NOW() AND type LIKE '%%%s%%'", typeRequest)
-
 	if err := hs.Session.Debug().Table("agent_location_session").
-		Where(whereSQL).
+		Where("expire_date > NOW() AND type LIKE ?", "%"+typeRequest+"%").
 		Find(&AgentsubObject).Count(&count).Error; err != nil {
 		return "", err
 	}

@@ -177,7 +177,7 @@ func (ss *UserSettingsService) Get(userObject *model.TableUserSettings, UserName
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
-		Where("guid = ? AND username = ?", userObject.GUID, UserName).Find(&data).Error; err != nil {
+		Where(sqlWhere).Find(&data).Error; err != nil {
 		return data, err
 	}
 	return data, nil
@@ -197,7 +197,7 @@ func (ss *UserSettingsService) Delete(userObject *model.TableUserSettings, UserN
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
-		Where("guid = ? AND username = ?", userObject.GUID, UserName).
+		Where(sqlWhere).
 		Delete(model.TableUserSettings{}).Error; err != nil {
 		return err
 	}
@@ -220,7 +220,7 @@ func (ss *UserSettingsService) Update(userObject *model.TableUserSettings, UserN
 		Table("user_settings").
 		Debug().
 		Model(&model.TableUserSettings{}).
-		Where("guid = ? AND username = ?", userObject.GUID, UserName).Update(userObject).Error; err != nil {
+		Where(sqlWhere).Update(userObject).Error; err != nil {
 		return err
 	}
 	return nil

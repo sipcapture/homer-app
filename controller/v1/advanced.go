@@ -5,11 +5,11 @@ import (
 	"net/url"
 
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
 
@@ -30,12 +30,15 @@ type AdvancedController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:GlobalSettingsStructList
-//   400: body:FailureResponse
+//
+//	201: body:GlobalSettingsStructList
+//	400: body:FailureResponse
 func (ac *AdvancedController) GetAll(c echo.Context) error {
 	alias, _ := ac.AdvancedService.GetAll()
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, string(alias))
@@ -54,12 +57,15 @@ func (ac *AdvancedController) GetAll(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:GlobalSettingsCreateSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:GlobalSettingsCreateSuccessfulResponse
+//	400: body:FailureResponse
 func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableGlobalSettings{}
@@ -73,7 +79,7 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	u.GUID = uuid.NewV4().String()
+	u.GUID = heputils.GenereateNewUUID()
 	reply, err := ac.AdvancedService.AddAdvanced(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -90,23 +96,27 @@ func (ac *AdvancedController) AddAdvanced(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of item
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of item
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:GlobalSettingsUpdateSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:GlobalSettingsUpdateSuccessfulResponse
+//	400: body:FailureResponse
 func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -144,23 +154,27 @@ func (ac *AdvancedController) UpdateAdvancedAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of item
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of item
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:GlobalSettingsDeleteSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:GlobalSettingsDeleteSuccessfulResponse
+//	400: body:FailureResponse
 func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -186,23 +200,27 @@ func (ac *AdvancedController) DeleteAdvancedAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of item
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of item
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:GlobalSettingsStruct
-//   400: body:FailureResponse
+//
+//	201: body:GlobalSettingsStruct
+//	400: body:FailureResponse
 func (ac *AdvancedController) GetAdvancedAgainstGUID(c echo.Context) error {
 
 	guid, err := url.QueryUnescape(c.Param("guid"))

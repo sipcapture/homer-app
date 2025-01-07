@@ -50,7 +50,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mcuadros/go-defaults"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
@@ -257,7 +256,7 @@ func main() {
 
 	if *appFlags.GenerateJwtSecret {
 		logger.Info("Generating jwt secret...")
-		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
+		config.Setting.AUTH_SETTINGS.JwtSecret = heputils.GenereateNewUUID()
 		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)
 		err := viper.WriteConfig()
 		if err != nil {
@@ -1447,7 +1446,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 
 	recordApp.GUID = viper.GetString("system_settings.uuid")
 	if recordApp.GUID == "" {
-		recordApp.GUID = uuid.NewV4().String()
+		recordApp.GUID = heputils.GenereateNewUUID()
 		viper.Set("system_settings.uuid", recordApp.GUID)
 		saveConfig = true
 	}
@@ -1470,7 +1469,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 	}
 
 	if config.Setting.AUTH_SETTINGS.JwtSecret == "" || config.Setting.AUTH_SETTINGS.JwtSecret == "167f0db2-f83e-4baa-9736-d56064a5b415" {
-		config.Setting.AUTH_SETTINGS.JwtSecret = uuid.NewV4().String()
+		config.Setting.AUTH_SETTINGS.JwtSecret = heputils.GenereateNewUUID()
 		viper.Set("auth_settings.jwt_secret", config.Setting.AUTH_SETTINGS.JwtSecret)
 		saveConfig = true
 	}

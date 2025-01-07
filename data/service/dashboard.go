@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
@@ -128,8 +127,7 @@ func (us *DashBoardService) GetDashBoard(username, param string) (string, error)
 func (us *DashBoardService) InsertDashboard(username, dashboardId string, data json.RawMessage) (string, error) {
 
 	newDashboard := model.TableUserSettings{}
-	u2 := uuid.NewV4()
-	newDashboard.GUID = u2.String()
+	newDashboard.GUID = heputils.GenereateNewUUID()
 	newDashboard.Param = dashboardId
 	newDashboard.PartId = 10
 	newDashboard.UserName = username
@@ -170,8 +168,7 @@ func (us *DashBoardService) InsertDashboard(username, dashboardId string, data j
 func (us *DashBoardService) InsertDashboardByName(username string, dashboardName string, data json.RawMessage) (string, error) {
 
 	newDashboard := model.TableUserSettings{}
-	u2 := uuid.NewV4()
-	newDashboard.GUID = u2.String()
+	newDashboard.GUID = heputils.GenereateNewUUID()
 	newDashboard.Param = dashboardName
 	newDashboard.PartId = 10
 	newDashboard.UserName = username
@@ -194,8 +191,7 @@ func (us *DashBoardService) InsertDashboardByName(username string, dashboardName
 func (us *DashBoardService) UpdateDashboard(username, dashboardId string, data json.RawMessage) (string, error) {
 
 	newDashboard := model.TableUserSettings{}
-	u2 := uuid.NewV4()
-	newDashboard.GUID = u2.String()
+	newDashboard.GUID = heputils.GenereateNewUUID()
 	newDashboard.Param = dashboardId
 	newDashboard.PartId = 10
 	newDashboard.UserName = username

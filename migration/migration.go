@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lib/pq"
 	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
+	"github.com/lib/pq"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
@@ -275,7 +274,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Department: "Develop",
 			UserGroup:  "admin",
 			Hash:       string(hashedAdminPassword),
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 		},
 		model.TableUser{
 			UserName:   "support",
@@ -286,16 +285,16 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			Department: "Develop",
 			UserGroup:  "admin",
 			Hash:       string(hashedSupportPassword),
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 		},
 	}
 
 	authTokens := []model.TableAuthToken{
 		model.TableAuthToken{
 			ID:            1,
-			GUID:          uuid.NewV4().String(),
+			GUID:          heputils.GenereateNewUUID(),
 			Name:          "Test token",
-			UserGUID:      uuid.NewV4().String(),
+			UserGUID:      heputils.GenereateNewUUID(),
 			Token:         heputils.GenerateToken(),
 			UserObject:    jsonschema.AgentObjectforAuthToken,
 			IPAddress:     "0.0.0.0/0",
@@ -310,35 +309,35 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	globalSettingData := []model.TableGlobalSettings{
 		model.TableGlobalSettings{
-			GUID:     uuid.NewV4().String(),
+			GUID:     heputils.GenereateNewUUID(),
 			PartId:   1,
 			Category: "search",
 			Param:    "lokiserver",
 			Data:     jsonschema.LokiConfig,
 		},
 		model.TableGlobalSettings{
-			GUID:     uuid.NewV4().String(),
+			GUID:     heputils.GenereateNewUUID(),
 			PartId:   1,
 			Category: "search",
 			Param:    "promserver",
 			Data:     jsonschema.PrometheusConfig,
 		},
 		model.TableGlobalSettings{
-			GUID:     uuid.NewV4().String(),
+			GUID:     heputils.GenereateNewUUID(),
 			PartId:   1,
 			Category: "search",
 			Param:    "grafana",
 			Data:     jsonschema.GrafanaConfig,
 		},
 		model.TableGlobalSettings{
-			GUID:     uuid.NewV4().String(),
+			GUID:     heputils.GenereateNewUUID(),
 			PartId:   1,
 			Category: "export",
 			Param:    "transaction",
 			Data:     jsonschema.ExportConfig,
 		},
 		model.TableGlobalSettings{
-			GUID:     uuid.NewV4().String(),
+			GUID:     heputils.GenereateNewUUID(),
 			PartId:   1,
 			Category: "search",
 			Param:    "transaction",
@@ -348,7 +347,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	agentLocationSession := []model.TableAgentLocationSession{
 		model.TableAgentLocationSession{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			Gid:        10,
 			Host:       "127.0.0.1",
 			Port:       8080,
@@ -364,7 +363,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	hepsubSchema := []model.TableHepsubSchema{
 		model.TableHepsubSchema{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			Profile:    "default",
 			Hepid:      1,
 			HepAlias:   "SIP",
@@ -373,7 +372,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableHepsubSchema{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			Profile:    "call",
 			Hepid:      1,
 			HepAlias:   "SIP",
@@ -382,7 +381,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableHepsubSchema{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			Profile:    "registration",
 			Hepid:      1,
 			HepAlias:   "SIP",
@@ -394,7 +393,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	dashboardUsers := []model.TableUserSettings{
 		model.TableUserSettings{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			UserName:   "admin",
 			Param:      "home",
 			PartId:     10,
@@ -403,7 +402,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableUserSettings{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			UserName:   "admin",
 			Param:      "registration",
 			PartId:     10,
@@ -412,7 +411,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableUserSettings{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			UserName:   "admin",
 			Param:      "smartsearch",
 			PartId:     10,
@@ -421,7 +420,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableUserSettings{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			UserName:   "support",
 			Param:      "home",
 			PartId:     10,
@@ -430,7 +429,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate: time.Now(),
 		},
 		model.TableUserSettings{
-			GUID:       uuid.NewV4().String(),
+			GUID:       heputils.GenereateNewUUID(),
 			UserName:   "support",
 			Param:      "smartsearch",
 			PartId:     10,
@@ -444,7 +443,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 
 	mappingSchema := []model.TableMappingSchema{
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -462,7 +461,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "call",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -480,7 +479,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "registration",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -498,7 +497,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              100,
 			HepAlias:           "LOG",
@@ -516,7 +515,7 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              2000,
 			HepAlias:           "LOKI",
@@ -813,7 +812,7 @@ func GetMappingSchemas() []model.TableMappingSchema {
 
 	mappingSchema := []model.TableMappingSchema{
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -831,7 +830,7 @@ func GetMappingSchemas() []model.TableMappingSchema {
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "call",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -849,7 +848,7 @@ func GetMappingSchemas() []model.TableMappingSchema {
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "registration",
 			Hepid:              1,
 			HepAlias:           "SIP",
@@ -867,7 +866,7 @@ func GetMappingSchemas() []model.TableMappingSchema {
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              100,
 			HepAlias:           "LOG",
@@ -885,7 +884,7 @@ func GetMappingSchemas() []model.TableMappingSchema {
 			CreateDate:         time.Now(),
 		},
 		model.TableMappingSchema{
-			GUID:               uuid.NewV4().String(),
+			GUID:               heputils.GenereateNewUUID(),
 			Profile:            "default",
 			Hepid:              2000,
 			HepAlias:           "LOKI",

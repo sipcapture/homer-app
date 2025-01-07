@@ -26,7 +26,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/manifoldco/promptui v0.7.0
 	github.com/mcuadros/go-defaults v1.2.0
-	github.com/satori/go.uuid v1.2.0
+	github.com/satori/go.uuid v1.2.1-0.20180404165556-75cca531ea76
 	github.com/shomali11/util v0.0.0-20190608141102-c39c2521a2ab
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.8.1

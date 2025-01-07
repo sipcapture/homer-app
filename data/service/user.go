@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
@@ -362,7 +361,7 @@ func (us *UserService) GetAuthTypeList() ([]byte, error) {
 
 	userGlobalSettings = model.TableGlobalSettings{
 		Id:         1,
-		GUID:       uuid.NewV4().String(),
+		GUID:       heputils.GenereateNewUUID(),
 		PartId:     10,
 		Category:   "system",
 		Param:      "authtypes",

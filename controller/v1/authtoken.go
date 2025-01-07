@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/model"
@@ -34,12 +33,15 @@ type AuthtokenController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:AuthTokenList
-//   400: body:FailureResponse
+//
+//	200: body:AuthTokenList
+//	400: body:FailureResponse
 func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 
 	reply, err := ass.AuthtokenService.GetAuthtoken()
@@ -59,23 +61,27 @@ func (ass *AuthtokenController) GetAuthtoken(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of token
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of token
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   200: body:AuthToken
-//   400: body:FailureResponse
+//
+//	200: body:AuthToken
+//	400: body:FailureResponse
 func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -98,23 +104,27 @@ func (ass *AuthtokenController) GetAuthtokenAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: authTokenStruct
-//   in: body
-//   description: authToken parameters
-//   schema:
+//   - name: authTokenStruct
+//     in: body
+//     description: authToken parameters
+//     schema:
 //     type: AuthToken
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AuthTokenCreateSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:AuthTokenCreateSuccessfulResponse
+//	400: body:FailureResponse
 func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableAuthToken{}
@@ -133,9 +143,8 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 		uid := uuid.NewV4()
 		u.GUID = uid.String()
 	*/
-	uid := uuid.NewV4()
-	u.GUID = uid.String()
-	u.UserGUID = uid.String()
+	u.GUID = heputils.GenereateNewUUID()
+	u.UserGUID = heputils.GenereateNewUUID()
 	u.Token = heputils.GenerateToken()
 	u.UserObject = jsonschema.AgentObjectforAuthToken
 	u.IPAddress = "0.0.0.0/0"
@@ -157,29 +166,33 @@ func (ass *AuthtokenController) AddAuthtoken(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: f4e2953e-ab42-40df-a7de-9ceb7faca396
-//   description: guid of token
-//   required: true
-//   type: string
-// + name: authTokenStruct
-//   in: body
-//   description: authToken parameters
-//   schema:
+//   - name: guid
+//     in: path
+//     example: f4e2953e-ab42-40df-a7de-9ceb7faca396
+//     description: guid of token
+//     required: true
+//     type: string
+//   - name: authTokenStruct
+//     in: body
+//     description: authToken parameters
+//     schema:
 //     type: AuthToken
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AuthTokenUpdateSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:AuthTokenUpdateSuccessfulResponse
+//	400: body:FailureResponse
 func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -218,23 +231,27 @@ func (ass *AuthtokenController) UpdateAuthtokenAgainstGUID(c echo.Context) error
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: f4e2953e-ab42-40df-a7de-9ceb7faca396
-//   description: guid of token
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: f4e2953e-ab42-40df-a7de-9ceb7faca396
+//     description: guid of token
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:AuthTokenDeleteSuccessfulResponse
-//   400: body:FailureResponse
+//
+//	201: body:AuthTokenDeleteSuccessfulResponse
+//	400: body:FailureResponse
 func (ass *AuthtokenController) DeleteAuthtokenAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {

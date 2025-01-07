@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/model"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
 
@@ -149,8 +149,7 @@ func (ss *UserSettingsService) GetCategory(UserName string, UserCategory string)
 // this method create new userSetting in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *UserSettingsService) Add(userObject *model.TableUserSettings) (string, error) {
-	u1 := uuid.NewV4()
-	userObject.GUID = u1.String()
+	userObject.GUID = heputils.GenereateNewUUID()
 	userObject.CreateDate = time.Now()
 	if err := ss.Session.Debug().
 		Table("user_settings").
@@ -158,7 +157,7 @@ func (ss *UserSettingsService) Add(userObject *model.TableUserSettings) (string,
 		return "", err
 	}
 	reply := gabs.New()
-	reply.Set(u1.String(), "data")
+	reply.Set(userObject.GUID, "data")
 	reply.Set("successfully created userObject", "message")
 	return reply.String(), nil
 }

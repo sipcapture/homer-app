@@ -5,12 +5,12 @@ import (
 	"net/url"
 
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/auth"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
 
@@ -190,8 +190,7 @@ func (mpc *MappingController) AddMapping(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	uid := uuid.NewV4()
-	u.GUID = uid.String()
+	u.GUID = heputils.GenereateNewUUID()
 	reply, err := mpc.MappingService.AddMapping(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())

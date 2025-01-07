@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"github.com/manifoldco/promptui"
+	uuid "github.com/satori/go.uuid"
+	"github.com/sipcapture/homer-app/utils/logger"
 )
 
 type Color string
@@ -45,7 +47,7 @@ var HomerLogo = `
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-//import  checkFloatValue
+// import  checkFloatValue
 func CheckFloatValue(val interface{}) float64 {
 	if val != nil {
 		myType := reflect.TypeOf(val)
@@ -61,7 +63,7 @@ func CheckFloatValue(val interface{}) float64 {
 	return float64(0)
 }
 
-//import  checkFloatValue
+// import  checkFloatValue
 func CheckBoolValue(val interface{}) bool {
 	if val != nil {
 		myType := reflect.TypeOf(val)
@@ -81,7 +83,7 @@ func CheckBoolValue(val interface{}) bool {
 	return false
 }
 
-//import  checkFloatValue
+// import  checkFloatValue
 func CheckIntValue(val interface{}) int {
 	if val != nil {
 		myType := reflect.TypeOf(val)
@@ -116,7 +118,7 @@ func (cir *CaseInsensitiveReplacer) Replace(str string) string {
 	return cir.toReplace.ReplaceAllString(str, cir.replaceWith)
 }
 
-//import  checkFloatValue
+// import  checkFloatValue
 func RemoveSqlInjection(val string) string {
 
 	injStr := []string{"exec", "insert", "select", "delete", "update", "count", "alter", "chr", "mid", "master", "truncate", "char", "declare", ";", "-", "+", "|"}
@@ -130,7 +132,7 @@ func RemoveSqlInjection(val string) string {
 	return val
 }
 
-//import  checkFloatValue
+// import  checkFloatValue
 func CheckSQLValue(val string) string {
 
 	return strings.NewReplacer(
@@ -141,7 +143,7 @@ func CheckSQLValue(val string) string {
 	return val
 }
 
-//import YesNo
+// import YesNo
 func YesNo(table string) bool {
 	prompt := promptui.Select{
 		Label: "Force to populate table [" + table + "]  [Yes/No]",
@@ -190,7 +192,7 @@ func SanitizeIntArray(valArray []string) []int {
 	return intArray
 }
 
-//import  convertPayloadTypeToString
+// import  convertPayloadTypeToString
 func ConvertPayloadTypeToString(val float64) (string, string) {
 
 	var Method, Text string
@@ -233,7 +235,7 @@ func ConvertPayloadTypeToString(val float64) (string, string) {
 	return Method, Text
 }
 
-//import  convertProtoTypeToString
+// import  convertProtoTypeToString
 func ConvertProtoTypeToString(val float64) string {
 
 	var protoText string
@@ -325,11 +327,10 @@ func ElementRealExists(arr []string, elem string) bool {
 }
 
 func GenerateToken() string {
-
-	rand.Seed(time.Now().UnixNano())
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	b := make([]rune, 80)
 	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+		b[i] = letters[r.Intn(len(letters))]
 	}
 	return string(b)
 }
@@ -363,4 +364,15 @@ func GenCodeChallengeS256(s string) string {
 	hasher.Write([]byte(s))
 	codeChallenge := base64.RawURLEncoding.EncodeToString(hasher.Sum(nil))
 	return codeChallenge
+}
+
+func GenereateNewUUID() string {
+
+	localUUID, err := uuid.NewV4()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Error during generating new UUID: %s", err))
+		return ""
+	}
+
+	return localUUID.String()
 }

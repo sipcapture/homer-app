@@ -5,11 +5,11 @@ import (
 	"net/url"
 
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
 	"github.com/sipcapture/homer-app/system/webmessages"
+	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
 )
 
@@ -31,12 +31,15 @@ type HepsubController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubSchemaList
-//   400: body:FailureResponse
+//
+//	201: body:HepsubSchemaList
+//	400: body:FailureResponse
 func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 
 	reply, err := hsc.HepsubService.GetHepSub()
@@ -56,23 +59,27 @@ func (hsc *HepsubController) GetHepSub(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: 11111111-1111-1111-1111-111111111111
-//   description: guid of item
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: 11111111-1111-1111-1111-111111111111
+//     description: guid of item
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubSchema
-//   400: body:FailureResponse
+//
+//	201: body:HepsubSchema
+//	400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -95,29 +102,33 @@ func (hsc *HepsubController) GetHepSubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: id
-//   in: path
-//   example: 1
-//   description: hepid
-//   required: true
-//   type: string
-// + name: transaction
-//   in: path
-//   example: call
-//   description: profile
-//   required: true
-//   type: string
+//   - name: id
+//     in: path
+//     example: 1
+//     description: hepid
+//     required: true
+//     type: string
+//   - name: transaction
+//     in: path
+//     example: call
+//     description: profile
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubSchema
-//   400: body:FailureResponse
+//
+//	201: body:HepsubSchema
+//	400: body:FailureResponse
 func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 	id, err := url.QueryUnescape(c.Param("id"))
 	if err != nil {
@@ -144,22 +155,26 @@ func (hsc *HepsubController) GetHepSubFields(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: HepsubSchema
-//   in: body
-//   description: hepSub parameters
-//   schema:
+//   - name: HepsubSchema
+//     in: body
+//     description: hepSub parameters
+//     schema:
 //     type: HepsubSchema
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubCreateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:HepsubCreateSuccessResponse
+//	400: body:FailureResponse
 func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 	// Stub an user to be populated from the body
 	u := model.TableHepsubSchema{}
@@ -173,8 +188,7 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
 	}
 
-	uid := uuid.NewV4()
-	u.GUID = uid.String()
+	u.GUID = heputils.GenereateNewUUID()
 	reply, err := hsc.HepsubService.AddHepSub(u)
 	if err != nil {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -191,28 +205,32 @@ func (hsc *HepsubController) AddHepSub(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of hepsub item
-//   required: true
-//   type: string
-// + name: HepsubSchema
-//   in: body
-//   description: hepSub parameters
-//   schema:
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of hepsub item
+//     required: true
+//     type: string
+//   - name: HepsubSchema
+//     in: body
+//     description: hepSub parameters
+//     schema:
 //     type: HepsubSchema
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubUpdateSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:HepsubUpdateSuccessResponse
+//	400: body:FailureResponse
 func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {
@@ -250,23 +268,27 @@ func (hsc *HepsubController) UpdateHepSubAgainstGUID(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: guid
-//   in: path
-//   example: eacdae5b-4203-40a2-b388-969312ffcffe
-//   description: guid of hepsub item
-//   required: true
-//   type: string
+//   - name: guid
+//     in: path
+//     example: eacdae5b-4203-40a2-b388-969312ffcffe
+//     description: guid of hepsub item
+//     required: true
+//     type: string
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
 // responses:
-//   201: body:HepsubDeleteSuccessResponse
-//   400: body:FailureResponse
+//
+//	201: body:HepsubDeleteSuccessResponse
+//	400: body:FailureResponse
 func (hsc *HepsubController) DeleteHepSubAgainstGUID(c echo.Context) error {
 	guid, err := url.QueryUnescape(c.Param("guid"))
 	if err != nil {

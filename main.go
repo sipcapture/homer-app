@@ -2080,7 +2080,9 @@ func ShowCurrentConfigToConsole() {
 
 	heputils.Colorize(heputils.ColorRed, "\r\nLDAP:\r\n")
 
-	spew.Dump(ldapClient)
+	sanitizedLdapClient := ldapClient
+	sanitizedLdapClient.BindPassword = "REDACTED"
+	spew.Dump(sanitizedLdapClient)
 
 }
 

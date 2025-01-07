@@ -29,9 +29,14 @@ func (hs *HepsubService) GetHepSubAgainstGUID(guid string) (string, error) {
 	sort.Slice(hepsubObject[:], func(i, j int) bool {
 		return hepsubObject[i].GUID < hepsubObject[j].GUID
 	})
+
 	data, _ := json.Marshal(hepsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":\"%s\"}", count, string(data))
-	return response, nil
+	responseMap := map[string]interface{}{
+		"count": count,
+		"data":  json.RawMessage(data),
+	}
+	response, _ := json.Marshal(responseMap)
+	return string(response), nil
 }
 
 // this method gets all users from database
@@ -45,9 +50,14 @@ func (hs *HepsubService) GetHepSub() (string, error) {
 	sort.Slice(hepsubObject[:], func(i, j int) bool {
 		return hepsubObject[i].GUID < hepsubObject[j].GUID
 	})
+
 	data, _ := json.Marshal(hepsubObject)
-	response := fmt.Sprintf("{\"count\":%d,\"data\":%s}", count, string(data))
-	return response, nil
+	responseMap := map[string]interface{}{
+		"count": count,
+		"data":  json.RawMessage(data),
+	}
+	response, _ := json.Marshal(responseMap)
+	return string(response), nil
 }
 
 // this method gets all users from database

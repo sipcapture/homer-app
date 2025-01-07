@@ -100,7 +100,7 @@ func (lc *LDAPClient) Connect() error {
 	
 				// Reconnect with TLS
 				if !lc.SkipTLS {
-					err = l.StartTLS(&tls.Config{InsecureSkipVerify: true})
+					err = l.StartTLS(&tls.Config{InsecureSkipVerify: lc.InsecureSkipVerify})
 					if err != nil {
 						l.Close() // Close the connection before trying the next host
 						continue // Try the next host

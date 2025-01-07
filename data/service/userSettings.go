@@ -167,17 +167,20 @@ func (ss *UserSettingsService) Add(userObject *model.TableUserSettings) (string,
 func (ss *UserSettingsService) Get(userObject *model.TableUserSettings, UserName string, isAdmin bool) (model.TableUserSettings, error) {
 	data := model.TableUserSettings{}
 
-	var sqlWhere = make(map[string]interface{})
+	var sqlWhere string
+	var args []interface{}
 
 	if !isAdmin {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+		sqlWhere = "guid = ? AND username = ?"
+		args = append(args, userObject.GUID, UserName)
 	} else {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+		sqlWhere = "guid = ?"
+		args = append(args, userObject.GUID)
 	}
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
-		Where(sqlWhere).Find(&data).Error; err != nil {
+		Where(sqlWhere, args...).Find(&data).Error; err != nil {
 		return data, err
 	}
 	return data, nil
@@ -187,18 +190,20 @@ func (ss *UserSettingsService) Get(userObject *model.TableUserSettings, UserName
 // it doesn't check internally whether all the validation are applied or not
 func (ss *UserSettingsService) Delete(userObject *model.TableUserSettings, UserName string, isAdmin bool) error {
 
-	var sqlWhere = make(map[string]interface{})
+	var sqlWhere string
+	var args []interface{}
 
 	if !isAdmin {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+		sqlWhere = "guid = ? AND username = ?"
+		args = append(args, userObject.GUID, UserName)
 	} else {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+		sqlWhere = "guid = ?"
+		args = append(args, userObject.GUID)
 	}
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
-		Where(sqlWhere).
-		Delete(model.TableUserSettings{}).Error; err != nil {
+		Where(sqlWhere, args...).Delete(model.TableUserSettings{}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -208,19 +213,22 @@ func (ss *UserSettingsService) Delete(userObject *model.TableUserSettings, UserN
 // it doesn't check internally whether all the validation are applied or not
 func (ss *UserSettingsService) Update(userObject *model.TableUserSettings, UserName string, isAdmin bool) error {
 
-	var sqlWhere = make(map[string]interface{})
+	var sqlWhere string
+	var args []interface{}
 
 	if !isAdmin {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID, "username": UserName}
+		sqlWhere = "guid = ? AND username = ?"
+		args = append(args, userObject.GUID, UserName)
 	} else {
-		sqlWhere = map[string]interface{}{"guid": userObject.GUID}
+		sqlWhere = "guid = ?"
+		args = append(args, userObject.GUID)
 	}
 
 	if err := ss.Session.Debug().
 		Table("user_settings").
 		Debug().
 		Model(&model.TableUserSettings{}).
-		Where(sqlWhere).Update(userObject).Error; err != nil {
+		Where(sqlWhere, args...).Update(userObject).Error; err != nil {
 		return err
 	}
 	return nil

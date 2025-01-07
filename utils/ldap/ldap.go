@@ -1,6 +1,6 @@
 // Package ldap provides a simple ldap client to authenticate,
 // retrieve basic information and groups for a user.
-//https://github.com/jtblin/go-ldap-clien
+// https://github.com/jtblin/go-ldap-clien
 package ldap
 
 import (
@@ -87,8 +87,7 @@ func (lc *LDAPClient) Connect() error {
 
 		var l *ldap.Conn
 		var err error
-		
-		
+
 		// Iterate over each host and attempt to connect
 		for _, host := range hosts {
 			address := fmt.Sprintf("%s:%d", host, lc.Port)
@@ -97,13 +96,14 @@ func (lc *LDAPClient) Connect() error {
 				if err != nil {
 					continue // Try the next host
 				}
-	
+
 				// Reconnect with TLS
 				if !lc.SkipTLS {
-					err = l.StartTLS(&tls.Config{InsecureSkipVerify: true})
+
+					err = l.StartTLS(&tls.Config{InsecureSkipVerify: lc.InsecureSkipVerify})
 					if err != nil {
 						l.Close() // Close the connection before trying the next host
-						continue // Try the next host
+						continue  // Try the next host
 					}
 				}
 			} else {
@@ -119,7 +119,7 @@ func (lc *LDAPClient) Connect() error {
 					continue // Try the next host
 				}
 			}
-	
+
 			lc.Conn = l
 			return nil // Successfully connected to a host
 		}

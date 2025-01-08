@@ -1,6 +1,8 @@
 name: App Builder
 
 on:
+  release:
+    - published
   push:
     branches: [ master, main ]
     paths-ignore:

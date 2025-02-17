@@ -31,12 +31,12 @@ import (
 	"github.com/sipcapture/homer-app/utils/sipparser"
 )
 
-//search Service
+// search Service
 type SearchService struct {
 	ServiceData
 }
 
-//external decoder
+// external decoder
 type ExternalDecoder struct {
 	Binary    string   `json:"binary"`
 	Param     string   `json:"param"`
@@ -816,8 +816,8 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 	return reply.String(), nil
 }
 
-//this method create new user in the database
-//it doesn't check internally whether all the validation are applied or not
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (interface{}, error) {
 
 	if ss.Decoder.Active {
@@ -906,8 +906,8 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 	return nil, errors.New("decoder not active. You should not be here")
 }
 
-//this method create new user in the database
-//it doesn't check internally whether all the validation are applied or not
+// this method create new user in the database
+// it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
 	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService,
 	userGroup string, whitelist []string) (string, error) {
@@ -1169,7 +1169,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 	if likeSearch {
 		query += "AND " + fieldKey + " LIKE ANY(ARRAY[?])"
 	} else {
-		query += "AND " + fieldKey + " in (?)"
+		query += "AND " + fieldKey + " = ANY(?)"
 	}
 
 	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)

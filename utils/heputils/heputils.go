@@ -376,3 +376,10 @@ func GenereateNewUUID() string {
 
 	return localUUID.String()
 }
+
+func GetSQLEqualityOperator(isLike bool) string {
+	if isLike {
+		return "LIKE"
+	}
+	return "="
+}

@@ -1166,8 +1166,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 	searchData := []model.HepTable{}
 	query := "create_date between ? AND ? "
 
-	var queryMatch = map[bool]string{false: "=", true: "LIKE"}
-	query += "AND " + fieldKey + " " + queryMatch[likeSearch] + " ANY(ARRAY[?])"
+	query += fmt.Sprintf("AND %s %s ANY(ARRAY[?])", fieldKey, heputils.GetSQLEqualityOperator(likeSearch))
 
 	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)
 	logger.Debug("USERGROUP ", userGroup)

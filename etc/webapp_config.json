@@ -1,96 +1,200 @@
 {
-  "api_settings": {
-    "add_captid_to_resolve": false,
-    "enable_token_access": false
-  },
-  "auth_settings": {
-    "_comment": "The type param can be internal, ldap, http_auth",
-    "_jwt_help": "Please generate own jwt secret using uuid or the flag generate-jwt-secret",
-    "auth_token_header": "Auth-Token",
-    "gravatar": false,
-    "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
-    "jwt_secret": "565cd059-a145-4647-91cc-9a3833bcc279",
-    "token_expire": 1200,
-    "type": "internal",
-    "user_groups": [
-      "admin",
-      "user",
-      "support"
-    ]
-  },
-  "database_config": {
-    "help": "Settings for PGSQL Database (settings)",
-    "host": "localhost",
-    "keepalive": true,
-    "name": "homer_config",
-    "node": "LocalConfig",
-    "pass": "s69Twkfru8h4MVoc7pYFB3",
-    "user": "admin"
-  },
-  "database_data": {
-    "localnode": {
-      "help": "Settings for PGSQL Database (data)",
-      "host": "127.0.0.1",
-      "keepalive": true,
-      "name": "homer_data",
-      "node": "LocalNode",
-      "pass": "s69Twkfru8h4MVoc7pYFB3",
-      "user": "admin",
-      "debug": true
+    "database_data": {
+        "LocalNode": {
+            "help": "Settings for PGSQL Database (data)",
+            "node": "LocalNode",
+            "user": "homer_user",
+            "pass": "homer_password",
+            "name": "homer_data",
+            "keepalive": true,
+            "host": "127.0.0.1"
+        }
+    },
+    "hep_relay": {
+        "help": "UDP socket to send HEP data on",
+        "host": "127.0.0.1",
+        "port": 9060
+    },
+    "database_config": {
+        "help": "Settings for PGSQL Database (settings)",
+        "node": "LocalConfig",
+        "user": "homer_user",
+        "pass": "homer_password",
+        "name": "homer_config",
+        "keepalive": true,
+        "host": "localhost"
+    },
+    "influxdb_config": {
+        "enable": true,
+        "help": "Settings for InfluxDB Database (optional)",
+        "user": "influx_user",
+        "pass": "influx_password",
+        "name": "homer_config",
+        "host": "http://127.0.0.1:8086",
+        "database": "homer",
+        "policy": "autogen"
+    },
+    "prometheus_config": {
+        "enable": true,
+        "help": "Settings for Prometheus Database (optional)",
+        "user": "admin",
+        "pass": "admin",
+        "host": "http://127.0.0.1:9090",
+        "api": "api/v1"
+    },
+    "swagger": {
+        "enable": true,
+        "api_json": "/usr/local/homer/etc/swagger.json",
+        "api_host": "127.0.0.1:9080"
+    },
+    "loki_config": {
+        "help": "Settings for LOKI Database (optional)",
+        "user": "admin",
+        "password": "admin",
+        "param_query": "query_range",
+        "regexp": false,
+        "host": "http://127.0.0.1:3100",
+        "template": "{job=\"heplify-server\"} |~ \"%callid%\"",
+        "external_url": "",
+        "api": "loki/api/v1",
+        "enable": true
+    },
+    "grafana_config": {
+        "help": "Settings for Grafana",
+        "host": "http://127.0.0.1:3000",
+        "path": "grafana",
+        "token": "",
+        "proxy_control": false,
+        "proxy_check": "simple",
+        "enable": true
+    },
+    "http_settings": {
+        "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
+        "host": "0.0.0.0",
+        "port": 9080,
+        "root": "/usr/local/homer/dist",
+        "gzip": true,
+        "path": "/",
+        "gzip_static": true,
+        "debug": false
+    },
+    "transaction_settings": {
+        "deduplicate": {
+            "global": false
+        }
+    },
+    "api_settings": {
+        "enable_token_access": false,
+        "add_captid_to_resolve": false
+    },
+    "https_settings": {
+        "help": "SSL settings for homer-app",
+        "enable": false,
+        "host": "0.0.0.0",
+        "port": 443,
+        "min_tls_version": "1.2",
+        "use_mozilla_profile": true,
+        "cert": "/usr/local/homer/tls/cert.pem",
+        "key": "/usr/local/homer/tls/key.pem"
+    },
+    "system_settings": {
+        "help": "Settings for HOMER logs",
+        "logpath": "/usr/local/homer/log",
+        "logname": "homer-app.log",
+        "_loglevels": "can be: fatal, error, warn, info, debug, trace",
+        "loglevel": "error",
+        "logstdout": false
+    },
+    "dashboard_settings": {
+        "_comment": "Here you can define a customs dashboards home",
+        "dashboard_home": "/usr/local/homer/etc/dashboard_home.json"
+    },
+    "auth_settings": {
+        "_comment": "The type param can be internal, ldap, http_auth",
+        "type": "internal",
+        "_jwt_help": "Please generate own jwt secret using uuid or the flag generate-jwt-secret",
+        "jwt_secret": "",
+        "gravatar": false,
+        "auth_token_header": "Auth-Token",
+        "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
+        "token_expire": 1200,
+        "user_groups": [
+            "admin",
+            "user",
+            "support"
+        ]
+    },
+    "ldap_config": {
+        "base": "dc=example,dc=com",
+        "host": "ldap.example.com",
+        "port": 389,
+        "usessl": false,
+        "skiptls": true,
+        "binddn": "uid=readonlysuer,ou=People,dc=example,dc=com",
+        "bindpassword": "readonlypassword",
+        "userfilter": "(uid=%s)",
+        "groupfilter": "(memberUid=%s)",
+        "group_attributes": [
+            "cn",
+            "memberOf",
+            "GroupAttribute",
+            "distinguishedName",
+            "dn",
+            "member"
+        ],
+        "admingroup": "admin",
+        "adminmode": true,
+        "usergroup": "HOMER_user",
+        "usermode": true,
+        "attributes": [
+            "dn",
+            "givenName",
+            "sn",
+            "mail",
+            "uid"
+        ],
+        "skipverify": true,
+        "anonymous": false,
+        "userdn": "uid=%s,ou=People,dc=example,dc=com"
+    },
+    "http_auth": {
+        "url": "http://localhost:1323",
+        "skipverify": true
+    },
+    "oauth2": {
+        "enable": false,
+        "client_id": "1234565",
+        "client_secret": "FAKE",
+        "project_id": "Homer OAuth",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "redirect_uri": "http://localhost:80/api/v3/oauth2/auth",
+        "service_redirect": "/api/v3/oauth2/redirect",
+        "profile_url": "https://www.googleapis.com/oauth2/v1/userinfo",
+        "provider_name": "google",
+        "grant_type": "authorization_code",
+        "response_type": "code",
+        "auth_style": 1,
+        "use_pkce": true,
+        "user_token": "RandomURLSafeStringWithAMinimumLengthOf43Characters",
+        "scope": [
+            "email",
+            "openid",
+            "profile"
+        ],
+        "gravatar": false,
+        "gravatar_url": "https://www.gravatar.com/avatar/%s.jpg",
+        "provider_image": ""
+    },
+    "decoder_shark": {
+        "_comment": "Here you can do packet decoding using tshark application. Please define uid, gid if you run the app under root",
+        "active": false,
+        "bin": "/usr/bin/tshark",
+        "protocols": [
+            "1_call",
+            "1_registration",
+            "1_default"
+        ]
     }
-  },
-  "hep_relay": {
-    "help": "UDP socket to send HEP data on",
-    "host": "127.0.0.1",
-    "port": 9060
-  },
-  "http_auth": {
-    "skipverify": true,
-    "url": "http://localhost:1323"
-  },
-  "http_settings": {
-    "debug": true,
-    "gzip": true,
-    "gzip_static": true,
-    "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
-    "host": "0.0.0.0",
-    "path": "/",
-    "port": 9080,
-    "root": "./dist"
-  },
-  "loki_config": {
-    "api": "loki/api/v1",
-    "enable": true,
-    "external_url": "",
-    "help": "Settings for LOKI Database (optional)",
-    "host": "https://loki.c2hq.aurorateleq.com:3100",
-    "param_query": "query_range",
-    "password": "admin",
-    "regexp": false,
-    "template": "{job=\"heplify-server\"} |~ \"%callid%\"",
-    "user": "admin"
-  },
-  "prometheus_config": {
-    "api": "api/v1",
-    "enable": true,
-    "help": "Settings for Prometheus Database (optional)",
-    "host": "https://prometheus.c2hq.aurorateleq.com",
-    "pass": "admin",
-    "user": "admin"
-  },
-  "system_settings": {
-    "_loglevels": "can be: fatal, error, warn, info, debug, trace",
-    "help": "Settings for HOMER logs",
-    "hostname": "Daniels-MacBook-Pro.local",
-    "loglevel": "trace",
-    "logname": "homer-app.log",
-    "logpath": "/tmp/",
-    "logstdout": false,
-    "uuid": "8500fff6-a433-49d2-b2b2-dd6351e6c3fc"
-  },
-  "transaction_settings": {
-    "deduplicate": {
-      "global": false
-    }
-  }
 }

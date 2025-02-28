@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -382,4 +383,84 @@ func GetSQLEqualityOperator(isLike bool) string {
 		return "LIKE"
 	}
 	return "="
+}
+
+func ApplyPrefixIndexHtml(prefix, root string) error {
+
+	indexHtml := filepath.Join(root, "index.html")
+
+	// Check if file exists in the rootpath of dist
+	if FileExists(indexHtml) {
+
+		// Create the content with the configured prefix
+		if prefix != "" && !strings.HasSuffix(prefix, "/") {
+			prefix = prefix + "/"
+		}
+
+		// Read the file content
+		content, err := os.ReadFile(indexHtml)
+		if err != nil {
+			return fmt.Errorf("error reading file: %w", err)
+		}
+
+		// Convert to string for easier manipulation
+		htmlContent := string(content)
+
+		// Try different patterns to find and replace the PREFIX configuration
+
+		// Pattern 1: Complete window.GLOBAL_CONFIG with PREFIX assignment
+		re1 := regexp.MustCompile(`window\.GLOBAL_CONFIG\s*=\s*\{\s*PREFIX:\s*"[^"]*"\s*\};`)
+		newConfig := fmt.Sprintf(`window.GLOBAL_CONFIG={PREFIX:"%s"};`, prefix)
+
+		// Pattern 2: Just the PREFIX property
+		re2 := regexp.MustCompile(`PREFIX:\s*"[^"]*"`)
+		prefixValue := fmt.Sprintf(`PREFIX: "%s"`, prefix)
+
+		// Pattern 3: Commented PREFIX line
+		re3 := regexp.MustCompile(`//\s*PREFIX:\s*"[^"]*"`)
+		uncommentedPrefix := fmt.Sprintf(`PREFIX: "%s"`, prefix)
+
+		// Pattern 4: Empty GLOBAL_CONFIG
+		re4 := regexp.MustCompile(`window\.GLOBAL_CONFIG\s*=\s*\{\s*\};`)
+		configWithPrefix := fmt.Sprintf(`window.GLOBAL_CONFIG={PREFIX:"%s"};`, prefix)
+
+		// Pattern 5: GLOBAL_CONFIG with commented PREFIX
+		re5 := regexp.MustCompile(`window\.GLOBAL_CONFIG\s*=\s*\{\s*//\s*PREFIX:\s*"[^"]*"\s*\};`)
+		configWithUncommentedPrefix := fmt.Sprintf(`window.GLOBAL_CONFIG={PREFIX:"%s"};`, prefix)
+
+		// Try each pattern in sequence
+		updatedContent := htmlContent
+
+		if re1.MatchString(htmlContent) {
+			updatedContent = re1.ReplaceAllString(htmlContent, newConfig)
+		} else if re5.MatchString(htmlContent) {
+			// Replace GLOBAL_CONFIG with commented PREFIX
+			updatedContent = re5.ReplaceAllString(htmlContent, configWithUncommentedPrefix)
+		} else if re4.MatchString(htmlContent) {
+			// Replace empty GLOBAL_CONFIG
+			updatedContent = re4.ReplaceAllString(htmlContent, configWithPrefix)
+		} else if re3.MatchString(htmlContent) {
+			// Replace commented PREFIX
+			updatedContent = re3.ReplaceAllString(htmlContent, uncommentedPrefix)
+		} else if re2.MatchString(htmlContent) {
+			// Replace PREFIX property
+			updatedContent = re2.ReplaceAllString(htmlContent, prefixValue)
+		}
+
+		// Check if a replacement was made
+		if htmlContent == updatedContent {
+			return fmt.Errorf("failed to match any PREFIX pattern in file %s", indexHtml)
+		}
+
+		// Write the updated content back to file
+		err = os.WriteFile(indexHtml, []byte(updatedContent), 0644)
+		if err != nil {
+			return fmt.Errorf("error writing file: %w", err)
+		}
+
+		return nil
+
+	}
+
+	return nil
 }

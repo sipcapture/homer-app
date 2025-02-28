@@ -31,7 +31,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -129,6 +128,7 @@ type CommandLineFlags struct {
 	LogPathWebApp             *string    `json:"path_log_webapp"`
 	LogName                   *string    `json:"log_name_webapp"`
 	APIPrefix                 *string    `json:"api_prefix"`
+	ApplyPrefixToIndex        *bool      `json:"apply_prefix_to_index"`
 	WatchConfig               *bool      `json:"watch_config"`
 	ShowCurrentConfig         *bool      `json:"show_current_config"`
 	GenerateJwtSecret         *bool      `json:"generate_jwt_secret"`
@@ -194,6 +194,7 @@ func initFlags() {
 	appFlags.LogName = flag.String("webapp-log-name", "", "the name prefix of the log file.")
 	appFlags.LogPathWebApp = flag.String("webapp-log-path", "", "the path for the log file.")
 	appFlags.APIPrefix = flag.String("webapp-api-prefix", "", "API prefix.")
+	appFlags.ApplyPrefixToIndex = flag.Bool("apply-prefix-to-index", false, "Apply API/Html prefix to index page")
 	appFlags.WatchConfig = flag.Bool("watch-config", false, "Watch the configuration for changes")
 	appFlags.ShowCurrentConfig = flag.Bool("show-current-config", false, "print out the current config and exit")
 
@@ -282,6 +283,14 @@ func main() {
 	if *appFlags.ShowCurrentConfig {
 		ShowCurrentConfigToConsole()
 		os.Exit(0)
+	}
+
+	if *appFlags.APIPrefix != "" {
+		config.Setting.MAIN_SETTINGS.APIPrefix = *appFlags.APIPrefix
+	}
+
+	if *appFlags.ApplyPrefixToIndex || config.Setting.MAIN_SETTINGS.ApplyPrefixIndexHtml {
+		heputils.ApplyPrefixIndexHtml(*appFlags.APIPrefix, config.Setting.MAIN_SETTINGS.RootPath)
 	}
 
 	// configure to serve WebServices
@@ -494,6 +503,20 @@ func configureServiceObjects() {
 	/***********************************/
 	if viper.IsSet("http_client.connection_timeout") {
 		config.Setting.MAIN_SETTINGS.TimeoutHttpClient = viper.GetUint32("http_client.connection_timeout")
+	}
+
+	if viper.IsSet("hhttp_settings.api_prefix") {
+		config.Setting.MAIN_SETTINGS.APIPrefix = viper.GetString("http_settings.api_prefix")
+	}
+
+	/***********************************/
+	if viper.IsSet("http_settings.apply_prefix_to_index") {
+		config.Setting.MAIN_SETTINGS.ApplyPrefixIndexHtml = viper.GetBool("http_settings.apply_prefix_to_index")
+	}
+
+	/***********************************/
+	if viper.IsSet("http_settings.root") {
+		config.Setting.MAIN_SETTINGS.RootPath = viper.GetString("http_settings.root")
 	}
 
 	/* check the auth type */
@@ -736,7 +759,7 @@ func configureAsHTTPServer() {
 		e.GET("/doc/api/json", func(c echo.Context) error {
 
 			logger.Debug("Middle swagger ware: ", c.Request().RequestURI)
-			dataJson, err := ioutil.ReadFile(config.Setting.SWAGGER.ApiJson)
+			dataJson, err := os.ReadFile(config.Setting.SWAGGER.ApiJson)
 			if err != nil {
 				return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.SwaggerFileNotExistsError)
 			}
@@ -748,13 +771,17 @@ func configureAsHTTPServer() {
 	}
 
 	/* static */
-	rootPath := viper.GetString("http_settings.root")
-	if rootPath == "" {
-		rootPath = "/usr/local/homer/dist"
+	//Api Prefix
+	if config.Setting.MAIN_SETTINGS.APIPrefix != "" {
+		groupPrefix := e.Group(config.Setting.MAIN_SETTINGS.APIPrefix)
+		groupPrefix.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+			Root:  config.Setting.MAIN_SETTINGS.RootPath,
+			HTML5: true,
+		}))
 	}
 
 	/* static */
-	e.Use(middleware.Static(rootPath))
+	e.Use(middleware.Static(config.Setting.MAIN_SETTINGS.RootPath))
 
 	/* enable guzip*/
 	if gzipEnable := viper.GetBool("http_settings.gzip"); gzipEnable {
@@ -781,7 +808,13 @@ func configureAsHTTPServer() {
 			Skipper: func(c echo.Context) bool {
 
 				if strings.HasSuffix(c.Request().RequestURI, ".js") {
-					if heputils.FileExists(rootPath + c.Request().RequestURI + ".gz") {
+
+					//Prefix
+					if *appFlags.APIPrefix != "" && strings.HasPrefix(c.Request().RequestURI, *appFlags.APIPrefix) {
+						c.Request().RequestURI = strings.TrimPrefix(c.Request().RequestURI, *appFlags.APIPrefix)
+					}
+
+					if heputils.FileExists(config.Setting.MAIN_SETTINGS.RootPath + c.Request().RequestURI + ".gz") {
 						c.Response().Header().Set(echo.HeaderContentEncoding, "gzip")
 						c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJavaScript)
 						return false
@@ -796,7 +829,7 @@ func configureAsHTTPServer() {
 		}))
 	}
 
-	registerGetRedirect(e, rootPath)
+	registerGetRedirect(e, config.Setting.MAIN_SETTINGS.RootPath)
 
 	/* decoder */
 	servicesObject.externalDecoder.Active = false
@@ -1775,7 +1808,7 @@ func sendIndexHtml(c echo.Context, path string) error {
 			return c.File(path + "/index.html")
 		}
 
-		content, err := ioutil.ReadFile(path + "/index.html")
+		content, err := os.ReadFile(path + "/index.html")
 		if err != nil {
 			logger.Debug("not found....", err.Error())
 			return c.String(http.StatusNotFound, "Not found")

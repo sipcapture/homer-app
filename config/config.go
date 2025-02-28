@@ -13,17 +13,20 @@ var OAuth2TokenMap map[string]model.OAuth2MapToken
 
 type HomerSettingServer struct {
 	MAIN_SETTINGS struct {
-		IsolateQuery        string `default:""`
-		IsolateGroup        string `default:""`
-		UseCaptureIDInAlias bool   `default:"false"`
-		DefaultAuth         string `default:"internal"`
-		EnableGravatar      bool   `default:"false"`
-		GravatarUrl         string `default:"https://www.gravatar.com/avatar/%s.jpg"`
-		OAuth2Config        oauth2.Config
-		GlobalToken         *oauth2.Token
-		UserGroups          []string `default:"[admin,user,support]"`
-		SubscribeHttpClient *http.Client
-		TimeoutHttpClient   uint32 `default:"10"`
+		IsolateQuery         string `default:""`
+		IsolateGroup         string `default:""`
+		UseCaptureIDInAlias  bool   `default:"false"`
+		DefaultAuth          string `default:"internal"`
+		EnableGravatar       bool   `default:"false"`
+		GravatarUrl          string `default:"https://www.gravatar.com/avatar/%s.jpg"`
+		OAuth2Config         oauth2.Config
+		GlobalToken          *oauth2.Token
+		UserGroups           []string `default:"[admin,user,support]"`
+		SubscribeHttpClient  *http.Client
+		TimeoutHttpClient    uint32 `default:"10"`
+		APIPrefix            string `default:""`
+		ApplyPrefixIndexHtml bool   `default:"false"`
+		RootPath             string `default:"/usr/local/homer/dist"`
 	}
 
 	GRAFANA_SETTINGS struct {

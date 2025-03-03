@@ -1023,14 +1023,8 @@ func configureAsHTTPServer() {
 
 func performV1APIRouting(e *echo.Echo) {
 
-	prefix := *appFlags.APIPrefix
-
-	if viper.IsSet("http_settings.api_prefix") {
-		prefix = viper.GetString("http_settings.api_prefix")
-	}
-
 	// accessible web services will fall in this group
-	acc := e.Group(prefix + "/api/v3")
+	acc := e.Group(config.Setting.MAIN_SETTINGS.APIPrefix + "/api/v3")
 
 	switch config.Setting.MAIN_SETTINGS.DefaultAuth {
 	case "ldap":
@@ -1049,7 +1043,7 @@ func performV1APIRouting(e *echo.Echo) {
 	apirouterv1.RouteWebSocketApis(acc, addr)
 
 	// restricted web services will fall in this group
-	res := e.Group(prefix + "/api/v3")
+	res := e.Group(config.Setting.MAIN_SETTINGS.APIPrefix + "/api/v3")
 	// Configure middleware with the custom claims type
 	config := middleware.JWTConfig{
 		Claims:     &auth.JwtUserClaim{},

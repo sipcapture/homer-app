@@ -505,7 +505,7 @@ func configureServiceObjects() {
 		config.Setting.MAIN_SETTINGS.TimeoutHttpClient = viper.GetUint32("http_client.connection_timeout")
 	}
 
-	if viper.IsSet("hhttp_settings.api_prefix") {
+	if viper.IsSet("http_settings.api_prefix") {
 		config.Setting.MAIN_SETTINGS.APIPrefix = viper.GetString("http_settings.api_prefix")
 	}
 

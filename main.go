@@ -290,7 +290,7 @@ func main() {
 	}
 
 	if *appFlags.ApplyPrefixToIndex || config.Setting.MAIN_SETTINGS.ApplyPrefixIndexHtml {
-		heputils.ApplyPrefixIndexHtml(*appFlags.APIPrefix, config.Setting.MAIN_SETTINGS.RootPath)
+		heputils.ApplyPrefixIndexHtml(config.Setting.MAIN_SETTINGS.APIPrefix, config.Setting.MAIN_SETTINGS.RootPath)
 	}
 
 	// configure to serve WebServices

@@ -1158,28 +1158,51 @@ func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
 	}
 }
 
-// this method create new user in the database
-// it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataWhere []interface{}, timeFrom,
 	timeTo time.Time, nodes []string, userGroup string, likeSearch bool, whitelist []string) ([]model.HepTable, error) {
 
 	searchData := []model.HepTable{}
-	query := "create_date between ? AND ? "
 
-	query += fmt.Sprintf("AND %s %s ANY(ARRAY[?])", fieldKey, heputils.GetSQLEqualityOperator(likeSearch))
+	// Start with base query conditions
+	baseQuery := "create_date between ? AND ?"
+	params := []interface{}{
+		timeFrom.Format(time.RFC3339),
+		timeTo.Format(time.RFC3339),
+	}
 
+	// Handle the ANY condition differently - we'll construct it based on length of dataWhere
+	anyPlaceholders := make([]string, len(dataWhere))
+	for i := range anyPlaceholders {
+		anyPlaceholders[i] = "?"
+	}
+
+	anyQueryPart := fmt.Sprintf("AND %s %s ANY(ARRAY[%s])",
+		fieldKey,
+		heputils.GetSQLEqualityOperator(likeSearch),
+		strings.Join(anyPlaceholders, ","))
+
+	query := baseQuery + " " + anyQueryPart
+	params = append(params, dataWhere...)
+
+	logger.Debug("GetTransactionData: ", table, fieldKey, dataWhere, timeFrom, timeTo, nodes, userGroup, likeSearch, whitelist)
 	logger.Debug("ISOLATEGROUP ", config.Setting.MAIN_SETTINGS.IsolateGroup)
 	logger.Debug("USERGROUP ", userGroup)
 
+	// Add isolation group condition if needed
 	if config.Setting.MAIN_SETTINGS.IsolateGroup != "" && config.Setting.MAIN_SETTINGS.IsolateGroup == userGroup {
 		query = query + " AND " + config.Setting.MAIN_SETTINGS.IsolateQuery
 	}
 
-	var whitelistParams []interface{}
+	// Add whitelist conditions
 	for _, ip := range whitelist {
-		query = query + " AND (protocol_header->>'srcIp' != ? AND protocol_header->>'dstIp' != ? ) "
-		whitelistParams = append(whitelistParams, ip, ip)
+		query = query + " AND (protocol_header->>'srcIp' != ? AND protocol_header->>'dstIp' != ?) "
+		params = append(params, ip, ip)
 	}
+
+	// Debug the final query and parameters
+	logger.Debug("Final query: ", query)
+	logger.Debug("Params count: ", len(params))
+	logger.Debug("Params: ", params)
 
 	for session := range ss.Session {
 		/* if node doesnt exists - continue */
@@ -1190,15 +1213,15 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		searchTmp := []model.HepTable{}
 		if err := ss.Session[session].Debug().
 			Table(table).
-			Where(query, append([]interface{}{timeFrom.Format(time.RFC3339), timeTo.Format(time.RFC3339)}, append(dataWhere, whitelistParams...)...)...).
+			Where(query, params...).
 			Find(&searchTmp).Error; err != nil {
 			logger.Error("GetTransactionData: We have got error: ", err)
+			return nil, err
 		}
 
 		logger.Debug("GetTransactionData: Len: ", len(searchTmp))
 
 		if len(searchTmp) > 0 {
-
 			profileName := strings.TrimPrefix(table, "hep_proto_")
 
 			for val := range searchTmp {
@@ -1210,7 +1233,6 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 		}
 	}
 
-	//response, _ := json.Marshal(searchData)
 	return searchData, nil
 }
 

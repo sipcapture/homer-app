@@ -810,8 +810,8 @@ func configureAsHTTPServer() {
 				if strings.HasSuffix(c.Request().RequestURI, ".js") {
 
 					//Prefix
-					if *appFlags.APIPrefix != "" && strings.HasPrefix(c.Request().RequestURI, *appFlags.APIPrefix) {
-						c.Request().RequestURI = strings.TrimPrefix(c.Request().RequestURI, *appFlags.APIPrefix)
+					if config.Setting.MAIN_SETTINGS.APIPrefix != "" && strings.HasPrefix(c.Request().RequestURI, config.Setting.MAIN_SETTINGS.APIPrefix) {
+						c.Request().RequestURI = strings.TrimPrefix(c.Request().RequestURI, config.Setting.MAIN_SETTINGS.APIPrefix)
 					}
 
 					if heputils.FileExists(config.Setting.MAIN_SETTINGS.RootPath + c.Request().RequestURI + ".gz") {
@@ -1734,7 +1734,7 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 
 func registerGetRedirect(e *echo.Echo, path string) {
 
-	prefix := *appFlags.APIPrefix
+	prefix := config.Setting.MAIN_SETTINGS.APIPrefix
 
 	if viper.IsSet("http_settings.api_prefix") {
 		prefix = viper.GetString("http_settings.api_prefix")

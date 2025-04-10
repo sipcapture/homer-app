@@ -755,8 +755,9 @@ func configureAsHTTPServer() {
 	}))
 
 	if config.Setting.SWAGGER.Enable {
+		prefix := config.Setting.MAIN_SETTINGS.APIPrefix
 		//e.GET("/swagger/*", echoSwagger.WrapHandler)
-		e.GET("/doc/api/json", func(c echo.Context) error {
+		e.GET(prefix+"/doc/api/json", func(c echo.Context) error {
 
 			logger.Debug("Middle swagger ware: ", c.Request().RequestURI)
 			dataJson, err := os.ReadFile(config.Setting.SWAGGER.ApiJson)

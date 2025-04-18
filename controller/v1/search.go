@@ -5,15 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/auth"
-	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/data/service"
 	"github.com/sipcapture/homer-app/model"
 	httpresponse "github.com/sipcapture/homer-app/network/response"
@@ -41,22 +38,24 @@ type SearchController struct {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchTransactionRequest
-//   in: body
-//   type: object
-//   description: SearchTransactionRequest parameters
-//   schema:
+//   - name: SearchTransactionRequest
+//     in: body
+//     type: object
+//     description: SearchTransactionRequest parameters
+//     schema:
 //     type: SearchTransactionRequest
-//   required: true
+//     required: true
 //
 // responses:
-//   200: body:SearchCallData
-//   400: body:FailureResponse
+//
+//	200: body:SearchCallData
+//	400: body:FailureResponse
 func (sc *SearchController) SearchData(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -66,25 +65,7 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	aliasRowData, _ := sc.AliasService.GetAllActive()
-	aliasData := make(map[string]string)
-	for _, row := range aliasRowData {
-		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
-		Port := strconv.Itoa(*row.Port)
-		CaptureID := row.CaptureID
-		ip, ipnet, err := net.ParseCIDR(cidr)
-		if err != nil {
-			logger.Debug("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-			logger.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-		} else {
-			for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
-				aliasData[ip.String()+":"+Port] = row.Alias
-				if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias {
-					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
-				}
-			}
-		}
-	}
+	aliases, _ := sc.AliasService.GetAllActiveAsMap()
 
 	mapsFieldsData, err := sc.SettingService.GetAllMapping()
 	if err != nil {
@@ -93,22 +74,13 @@ func (sc *SearchController) SearchData(c echo.Context) error {
 
 	userGroup := auth.GetUserGroup(c)
 
-	responseData, err := sc.SearchService.SearchData(&searchObject, aliasData, userGroup, mapsFieldsData)
+	responseData, err := sc.SearchService.SearchData(&searchObject, aliases, userGroup, mapsFieldsData)
 	if err != nil {
 		logger.Error("Error during data select: ", err.Error())
 		logger.Error("Error data select: ", responseData)
 		return httpresponse.CreateBadResponse(&c, http.StatusServiceUnavailable, webmessages.BadDatabaseRetrieve)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
-}
-
-func inc(ip net.IP) {
-	for j := len(ip) - 1; j >= 0; j-- {
-		ip[j]++
-		if ip[j] > 0 {
-			break
-		}
-	}
 }
 
 // swagger:route POST /search/call/message search searchGetMessageById
@@ -125,20 +97,24 @@ func inc(ip net.IP) {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
-//parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
+//
+// parameters:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
+//
 // responses:
-//   200: body:SearchCallData
-//   400: body:UserLoginFailureResponse
+//
+//	200: body:SearchCallData
+//	400: body:UserLoginFailureResponse
 func (sc *SearchController) GetMessageById(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -169,21 +145,24 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
+//
 // responses:
-//   200: body:MessageDecoded
-//   400: body:FailureResponse
+//
+//	200: body:MessageDecoded
+//	400: body:FailureResponse
 func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -213,21 +192,24 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
+//
 // responses:
-//   200: body:SearchTransaction
-//   400: body:FailureResponse
+//
+//	200: body:SearchTransaction
+//	400: body:FailureResponse
 func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	transactionObject := model.SearchObject{}
@@ -238,34 +220,14 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 
 	transactionData, _ := json.Marshal(transactionObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&transactionObject)
-	aliasRowData, _ := sc.AliasService.GetAllActive()
-
-	aliasData := make(map[string]string)
-	for _, row := range aliasRowData {
-		cidr := row.IP + "/" + strconv.Itoa(*row.Mask)
-		Port := strconv.Itoa(*row.Port)
-		CaptureID := row.CaptureID
-		ipAddr, ipNet, err := net.ParseCIDR(cidr)
-
-		if err != nil {
-			logger.Debug("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-			logger.Error("ParseCIDR alias CIDR: ["+cidr+"] error: ", err.Error())
-		} else {
-			for ip := ipAddr.Mask(ipNet.Mask); ipNet.Contains(ip); inc(ip) {
-				aliasData[ip.String()+":"+Port] = row.Alias
-				if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias {
-					aliasData[ip.String()+":"+Port+":"+CaptureID] = row.Alias
-				}
-			}
-		}
-	}
+	aliases, _ := sc.AliasService.GetAllActiveAsMap()
 
 	searchTable := "hep_proto_1_default'"
 
 	userGroup := auth.GetUserGroup(c)
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 0, transactionObject.Param.Location.Node,
+		correlation, false, aliases, 0, transactionObject.Param.Location.Node,
 		sc.SettingService, userGroup, transactionObject.Param.WhiteList)
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
@@ -285,22 +247,24 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
 //
 // responses:
-//   200: body:SearchTransactionQos
-//   400: body:FailureResponse
+//
+//	200: body:SearchTransactionQos
+//	400: body:FailureResponse
 func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -332,22 +296,24 @@ func (sc *SearchController) GetTransactionQos(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
 //
 // responses:
-//   200: body:SearchTransactionLogList
-//   400: body:FailureResponse
+//
+//	200: body:SearchTransactionLogList
+//	400: body:FailureResponse
 func (sc *SearchController) GetTransactionLog(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -390,22 +356,24 @@ func (sc *SearchController) GetTransactionHepSub(c echo.Context) error {
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
 //
 // responses:
-//   200: body:PCAPResponse
-//   400: body:FailureResponse
+//
+//	200: body:PCAPResponse
+//	400: body:FailureResponse
 func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -416,12 +384,12 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
-	aliasData := make(map[string]string)
+	aliases := service.NewAliasMap(nil)
 
 	searchTable := "hep_proto_1_default'"
 	userGroup := auth.GetUserGroup(c)
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliasData, 1,
+	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliases, 1,
 		searchObject.Param.Location.Node, sc.SettingService, userGroup, searchObject.Param.WhiteList)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
@@ -446,23 +414,25 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 // - bearer:
 //
 // SecurityDefinitions:
-//   bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	bearer:
+//	   type: apiKey
+//	   name: Authorization
+//	   in: header
 //
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
 //
 // responses:
-//   200: body:TextResponse
-//   400: body:FailureResponse
+//
+//	200: body:TextResponse
+//	400: body:FailureResponse
 func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	searchObject := model.SearchObject{}
@@ -473,14 +443,14 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
-	aliasData := make(map[string]string)
+	aliases := service.NewAliasMap(nil)
 
 	searchTable := "hep_proto_1_default'"
 
 	userGroup := auth.GetUserGroup(c)
 
 	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
-		correlation, false, aliasData, 2, searchObject.Param.Location.Node,
+		correlation, false, aliases, 2, searchObject.Param.Location.Node,
 		sc.SettingService, userGroup, searchObject.Param.WhiteList)
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
@@ -505,25 +475,28 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // responses:
-//   201: body:ListUsers
-//   400: body:FailureResponse
+//
+//	201: body:ListUsers
+//	400: body:FailureResponse
 func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 
 	file, err := c.FormFile("fileKey")
@@ -572,25 +545,28 @@ func (sc *SearchController) GetDataAsPCap(c echo.Context) error {
 // produces:
 // - application/json
 // parameters:
-// + name: SearchObject
-//   in: body
-//   type: object
-//   description: SearchObject parameters
-//   schema:
+//   - name: SearchObject
+//     in: body
+//     type: object
+//     description: SearchObject parameters
+//     schema:
 //     type: SearchObject
-//   required: true
+//     required: true
+//
 // Security:
 // - bearer: []
 //
 // SecurityDefinitions:
 // bearer:
-//      type: apiKey
-//      name: Authorization
-//      in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // responses:
-//   201: body:ListUsers
-//   400: body:FailureResponse
+//
+//	201: body:ListUsers
+//	400: body:FailureResponse
 func (sc *SearchController) GetDataAsPCapNow(c echo.Context) error {
 
 	file, err := c.FormFile("fileKey")

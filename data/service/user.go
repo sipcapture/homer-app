@@ -264,6 +264,8 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 				if !userData.IsAdmin && !us.LdapClient.UserMode {
 					return "", userData, errors.New("failed group match. Group membership is required for login because AdminMode and UserMode are false")
 				}
+				// thank you nttrandbao for the report and patch
+				userData.Enabled = true
 			}
 		}
 	case us.HttpAuth != nil:

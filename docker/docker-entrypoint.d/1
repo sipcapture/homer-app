@@ -82,7 +82,7 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$TSHARK_UID" ]; then sed -i "s/tshark_uid/${TSHARK_UID}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$TSHARK_GID" ]; then sed -i "s/tshark_gid/${TSHARK_GID}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$TSHARK_ACTIVE" ]; then sed -i "s/tshark_active/${TSHARK_ACTIVE}/g" /usr/local/homer/etc/webapp_config.json; fi
-   if [ -n "$TSHARK_BIN" ]; then sed -i "s/tshark_bin/${TSHARK_BIN}/g" /usr/local/homer/etc/webapp_config.json; fi
+   if [ -n "$TSHARK_BIN" ]; then sed -i "s#tshark_bin#${TSHARK_BIN}#g" /usr/local/homer/etc/webapp_config.json; fi
 
    echo "Pre-Flight provisioning completed!"
 

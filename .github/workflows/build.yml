@@ -67,14 +67,13 @@ jobs:
       id: checkpackagecloud
       shell: bash
       run: |
-        if [ "$SECRET" == "" ] || [ "$USERNAME" == "" ]; then
+        if [ "$SECRET" == "" ]; then
           echo "secretspresent=false" >> $GITHUB_OUTPUT
         else
           echo "secretspresent=true" >> $GITHUB_OUTPUT
         fi
       env:
         SECRET: ${{ secrets.PACKAGECLOUD_TOKEN }}
-        USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
 
     - name: upload deb packagecloud
       if: ${{ steps.checkpackagecloud.outputs.secretspresent == 'true' }}
@@ -83,9 +82,8 @@ jobs:
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.deb
         PACKAGECLOUD-REPO: sipcapture
         PACKAGECLOUD-DISTRIB: any/any
-        PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
+        PACKAGECLOUD-USERNAME: qxip
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-        continue-on-error: true
 
     - name: upload rpm packagecloud
       if: ${{ steps.checkpackagecloud.outputs.secretspresent == 'true' }}
@@ -94,9 +92,8 @@ jobs:
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.rpm
         PACKAGECLOUD-REPO: sipcapture
         PACKAGECLOUD-DISTRIB: rpm_any/rpm_any
-        PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
+        PACKAGECLOUD-USERNAME: qxip
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-        continue-on-error: true
         
   docker-push:
     if: github.event_name != 'pull_request'

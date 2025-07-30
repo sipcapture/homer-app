@@ -11,7 +11,7 @@ If you want to install [Homer](https://github.com/sipcapture/homer) please refer
 If you're just interested in using `homer-app`, download, configure and run the latest release or package.
 
 #### Requirements
-* golang 1.13+
+* golang 1.23+
 * postgres 11+
 * git 2.7+
 * optional

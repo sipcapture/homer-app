@@ -354,7 +354,7 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, 
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData map[string]string,
+func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliases *AliasMap,
 	userGroup string, mapsFieldsData map[string]json.RawMessage) (string, error) {
 	table := "hep_proto_1_default"
 	searchData := []model.HepTable{}
@@ -461,69 +461,61 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliasData 
 			}
 		}
 
-		srcPort, dstPort := "0", "0"
+		srcPortStr, dstPortStr := "0", "0"
 
 		if dataElement.Exists("srcPort") {
-			srcPort = strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
+			srcPortStr = strconv.FormatFloat(dataElement.S("srcPort").Data().(float64), 'f', 0, 64)
 		}
 
 		if dataElement.Exists("dstPort") {
-			dstPort = strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
+			dstPortStr = strconv.FormatFloat(dataElement.S("dstPort").Data().(float64), 'f', 0, 64)
 		}
 
-		srcIP := dataElement.S("srcIp").Data().(string)
-		dstIP := dataElement.S("dstIp").Data().(string)
+		srcIPStr := dataElement.S("srcIp").Data().(string)
+		dstIPStr := dataElement.S("dstIp").Data().(string)
 
-		srcIPPort := srcIP + ":" + srcPort
-		dstIPPort := dstIP + ":" + dstPort
-		srcIPPortZero := srcIP + ":" + "0"
-		dstIPPortZero := dstIP + ":" + "0"
+		srcIPPort := srcIPStr + ":" + dstPortStr
+		dstIPPort := srcIPStr + ":" + dstPortStr
 
-		testInput := net.ParseIP(srcIP)
-		if testInput.To4() == nil && testInput.To16() != nil {
-			srcIPPort = "[" + srcIP + "]:" + srcPort
-			srcIPPortZero = "[" + srcIP + "]:" + "0"
+		srcPort, _ := strconv.Atoi(srcPortStr)
+		srcIP := net.ParseIP(srcIPStr)
+		if srcIP.To4() == nil && srcIP.To16() != nil {
+			srcIPPort = fmt.Sprintf("[%s]:%d", srcIPStr, srcPort)
 		}
 
-		testInput = net.ParseIP(dstIP)
-		if testInput.To4() == nil && testInput.To16() != nil {
-			dstIPPort = "[" + dstIP + "]:" + dstPort
-			dstIPPortZero = "[" + dstIP + "]:" + "0"
-
+		dstPort, _ := strconv.Atoi(dstPortStr)
+		dstIP := net.ParseIP(dstIPStr)
+		if dstIP.To4() == nil && dstIP.To16() != nil {
+			dstIPPort = fmt.Sprintf("[%s]:%d", dstIPStr, dstPort)
 		}
 
 		//add capture ID
 		if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias && dataElement.Exists("captureId") {
-
 			captureID := dataElement.S("captureId").Data().(string)
-
-			if value, ok := aliasData[srcIPPort+":"+captureID]; ok {
+			if value, ok := aliases.Find(srcIP, srcPort, &captureID); ok {
 				alias.Set(value, srcIPPort)
-			} else if value, ok := aliasData[srcIPPortZero+":"+captureID]; ok {
+			} else if value, ok := aliases.Find(srcIP, 0, &captureID); ok {
 				alias.Set(value, srcIPPort)
 			}
-
-			if value, ok := aliasData[dstIPPort+":"+captureID]; ok {
+			if value, ok := aliases.Find(dstIP, dstPort, &captureID); ok {
 				alias.Set(value, dstIPPort)
-			} else if value, ok := aliasData[dstIPPortZero+":"+captureID]; ok {
+			} else if value, ok := aliases.Find(dstIP, 0, &captureID); ok {
 				alias.Set(value, dstIPPort)
 			}
 		}
 
 		if !alias.Exists(srcIPPort) {
-
-			if value, ok := aliasData[srcIPPort]; ok {
+			if value, ok := aliases.Find(srcIP, srcPort, nil); ok {
 				alias.Set(value, srcIPPort)
-			} else if value, ok := aliasData[srcIPPortZero]; ok {
+			} else if value, ok := aliases.Find(srcIP, 0, nil); ok {
 				alias.Set(value, srcIPPort)
 			}
 		}
 
 		if !alias.Exists(dstIPPort) {
-
-			if value, ok := aliasData[dstIPPort]; ok {
+			if value, ok := aliases.Find(dstIP, dstPort, nil); ok {
 				alias.Set(value, dstIPPort)
-			} else if value, ok := aliasData[dstIPPortZero]; ok {
+			} else if value, ok := aliases.Find(dstIP, 0, nil); ok {
 				alias.Set(value, dstIPPort)
 			}
 		}
@@ -909,7 +901,7 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
-	aliasData map[string]string, typeReport int, nodes []string, settingService *UserSettingsService,
+	aliases *AliasMap, typeReport int, nodes []string, settingService *UserSettingsService,
 	userGroup string, whitelist []string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
@@ -1090,7 +1082,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	jsonParsed, _ = gabs.ParseJSON(marshalData)
 
 	if typeReport == 0 {
-		reply := ss.getTransactionSummary(jsonParsed, aliasData)
+		reply := ss.getTransactionSummary(jsonParsed, aliases)
 		return reply, nil
 	} else {
 
@@ -1236,7 +1228,7 @@ func (ss *SearchService) GetTransactionData(table string, fieldKey string, dataW
 	return searchData, nil
 }
 
-func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData map[string]string) string {
+func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliases *AliasMap) string {
 
 	var position = 0
 	sid := gabs.New()
@@ -1386,54 +1378,48 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliasData m
 		srcIPPort := callElement.SrcIP + ":" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
 		dstIPPort := callElement.DstIP + ":" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
 
-		testInput := net.ParseIP(callElement.SrcHost)
-		if testInput.To4() == nil && testInput.To16() != nil {
-			srcIPPort = "[" + callElement.SrcIP + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
-			callElement.SrcID = "[" + callElement.SrcHost + "]:" + strconv.FormatFloat(callElement.SrcPort, 'f', 0, 64)
+		srcPort := int(callElement.SrcPort)
+		srcIP := net.ParseIP(callElement.SrcHost)
+		if srcIP.To4() == nil && srcIP.To16() != nil {
+			srcIPPort = fmt.Sprintf("[%s]:%d", callElement.SrcIP, srcPort)
+			callElement.SrcID = fmt.Sprintf("[%s]:%d", callElement.SrcHost, srcPort)
 
 		}
 
-		testInput = net.ParseIP(callElement.DstIP)
-		if testInput.To4() == nil && testInput.To16() != nil {
-			dstIPPort = "[" + callElement.DstIP + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
-			callElement.DstID = "[" + callElement.DstHost + "]:" + strconv.FormatFloat(callElement.DstPort, 'f', 0, 64)
+		dstPort := int(callElement.DstPort)
+		dstIP := net.ParseIP(callElement.DstIP)
+		if dstIP.To4() == nil && dstIP.To16() != nil {
+			dstIPPort = fmt.Sprintf("[%s]:%d", callElement.DstIP, dstPort)
+			callElement.DstID = fmt.Sprintf("[%s]:%d", callElement.DstHost, dstPort)
 		}
-
-		srcIPPortZero := callElement.SrcIP + ":" + strconv.Itoa(0)
-		dstIPPortZero := callElement.DstIP + ":" + strconv.Itoa(0)
 
 		//add capture ID
 		if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias && dataElement.Exists("captureId") {
-
 			captureID := dataElement.S("captureId").Data().(string)
-
-			if value, ok := aliasData[srcIPPort+":"+captureID]; ok {
+			if value, ok := aliases.Find(srcIP, srcPort, &captureID); ok {
 				alias.Set(value, srcIPPort)
-			} else if value, ok := aliasData[srcIPPortZero+":"+captureID]; ok {
+			} else if value, ok := aliases.Find(srcIP, 0, &captureID); ok {
 				alias.Set(value, srcIPPort)
 			}
-
-			if value, ok := aliasData[dstIPPort+":"+captureID]; ok {
+			if value, ok := aliases.Find(dstIP, dstPort, &captureID); ok {
 				alias.Set(value, dstIPPort)
-			} else if value, ok := aliasData[dstIPPortZero+":"+captureID]; ok {
+			} else if value, ok := aliases.Find(dstIP, 0, &captureID); ok {
 				alias.Set(value, dstIPPort)
 			}
 		}
 
 		if !alias.Exists(srcIPPort) {
-
-			if value, ok := aliasData[srcIPPort]; ok {
+			if value, ok := aliases.Find(srcIP, srcPort, nil); ok {
 				alias.Set(value, srcIPPort)
-			} else if value, ok := aliasData[srcIPPortZero]; ok {
+			} else if value, ok := aliases.Find(srcIP, 0, nil); ok {
 				alias.Set(value, srcIPPort)
 			}
 		}
 
 		if !alias.Exists(dstIPPort) {
-
-			if value, ok := aliasData[dstIPPort]; ok {
+			if value, ok := aliases.Find(dstIP, dstPort, nil); ok {
 				alias.Set(value, dstIPPort)
-			} else if value, ok := aliasData[dstIPPortZero]; ok {
+			} else if value, ok := aliases.Find(dstIP, 0, nil); ok {
 				alias.Set(value, dstIPPort)
 			}
 		}

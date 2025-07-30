@@ -25,15 +25,15 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: 1.22.1
+        go-version: 1.24.5
 
     - name: Build Frontend
       if: github.event_name != 'pull_request'
       run: echo y | ./scripts/build_frontend.sh
-      
+
     - name: Build Binary
       run: echo y |./scripts/build_binary.sh
-         
+
     - name: Build Packages
       if: github.event_name != 'pull_request'
       run: |
@@ -41,11 +41,11 @@ jobs:
           RELEASE=$(./homer-app -version | egrep -o '[0-9].[0-9].[0-9]+')
           echo "TAG_NAME=$RELEASE" >> $GITHUB_ENV
           VERSION=$RELEASE make package
-          
+
     - name: Archive Frontend
       if: github.event_name != 'pull_request'
       run: tar cvfz homer-ui-${{env.TAG_NAME}}.tgz dist
-      
+
     - name: Upload release
       if: github.event_name != 'pull_request'
       uses: boxpositron/upload-multiple-releases@1.0.7
@@ -62,7 +62,7 @@ jobs:
         draft: false
         prerelease: false
         overwrite: true
-        
+
     - name: Check PACKAGECLOUD secret presence
       id: checkpackagecloud
       shell: bash
@@ -79,7 +79,7 @@ jobs:
     - name: upload deb packagecloud
       if: ${{ steps.checkpackagecloud.outputs.secretspresent == 'true' }}
       uses: danielmundi/upload-packagecloud@v1
-      with: 
+      with:
         PACKAGE-NAME: homer-app-${{ env.TAG_NAME }}-amd64.deb
         PACKAGECLOUD-REPO: sipcapture
         PACKAGECLOUD-DISTRIB: any/any
@@ -97,7 +97,7 @@ jobs:
         PACKAGECLOUD-USERNAME: ${{ secrets.PACKAGECLOUD_USERNAME }}
         PACKAGECLOUD-TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
         continue-on-error: true
-        
+
   docker-push:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -105,7 +105,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    
+
     steps:
     - uses: actions/checkout@v3
     - id: tag_bump
@@ -115,7 +115,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: none
         BRANCH: master
-          
+
     - name: Log in to the Container registry
       uses: docker/login-action@v2.1.0
       with:
@@ -132,7 +132,7 @@ jobs:
         tags: |
           latest
           ${{ steps.tag_bump.outputs.tag }}
-          
+
     - name: Build and push
       uses: docker/build-push-action@v3.2.0
       with:

@@ -757,9 +757,9 @@ func configureAsHTTPServer() {
 	if config.Setting.SWAGGER.Enable {
 		prefix := config.Setting.MAIN_SETTINGS.APIPrefix
 		if viper.IsSet("http_settings.api_prefix") {
-		prefix = viper.GetString("http_settings.api_prefix")
+			prefix = viper.GetString("http_settings.api_prefix")
 		}
-		
+
 		//e.GET("/swagger/*", echoSwagger.WrapHandler)
 		e.GET(prefix+"/doc/api/json", func(c echo.Context) error {
 
@@ -2097,7 +2097,7 @@ func makePingKeepAlive(db *gorm.DB, host string, typeData string, node string) {
 			logger.Error(fmt.Sprintf("couldn't make ping to [Host: %s], Type: [%s], Node: [%s]  Error: [%v]",
 				host, typeData, node, pingErr))
 		} else {
-			logger.Debug(fmt.Printf("Successful ping: %s, Type: %s, Node: %s", host, typeData, node))
+			logger.Debug(fmt.Sprintf("Successful ping: %s, Type: %s, Node: %s", host, typeData, node))
 		}
 
 		time.Sleep(time.Duration(60) * time.Second)

@@ -1,7 +1,8 @@
 NAME=homer-app
+GOOS ?= linux
 
 all:
-	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -buildvcs=false -o $(NAME) 
+	CGO_ENABLED=0 GOOS=$(GOOS) go build -ldflags "-s -w" -buildvcs=false -o $(NAME) 
 	#go build -a -ldflags '-extldflags "-static"' -o $(NAME) 
 
 debug:
@@ -18,6 +19,9 @@ package:
 
 frontend:
 	./scripts/build_frontend.sh
+
+localfe:
+	./scripts/build_local_frontend.sh
 
 binary:
 	./scripts/build_binary.sh

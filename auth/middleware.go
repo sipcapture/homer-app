@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"

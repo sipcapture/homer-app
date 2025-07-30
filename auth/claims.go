@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/sipcapture/homer-app/config"
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/logger"
@@ -18,7 +18,7 @@ type JwtUserClaim struct {
 	ExternalProfile string `json:"externaltype"`
 	DisplayName     string `json:"displayname"`
 	Avatar          string `json:"avatar"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func Token(user model.TableUser) (string, error) {
@@ -37,8 +37,8 @@ func Token(user model.TableUser) (string, error) {
 		user.ExternalProfile,
 		user.FirstName + " " + user.LastName,
 		user.Avatar,
-		jwt.StandardClaims{
-			ExpiresAt: newTUTC.Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(newTUTC),
 		},
 	}
 

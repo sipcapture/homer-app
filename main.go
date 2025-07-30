@@ -42,10 +42,12 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 
+	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/influxdata/influxdb1-client" // this is important because of the bug in go mod
 	client "github.com/influxdata/influxdb1-client/v2"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mcuadros/go-defaults"
@@ -1050,8 +1052,10 @@ func performV1APIRouting(e *echo.Echo) {
 	// restricted web services will fall in this group
 	res := e.Group(config.Setting.MAIN_SETTINGS.APIPrefix + "/api/v3")
 	// Configure middleware with the custom claims type
-	config := middleware.JWTConfig{
-		Claims:     &auth.JwtUserClaim{},
+	res.Use(echojwt.WithConfig(echojwt.Config{
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return &auth.JwtUserClaim{}
+		},
 		SigningKey: []byte(config.Setting.AUTH_SETTINGS.JwtSecret),
 		Skipper: func(c echo.Context) bool {
 
@@ -1115,9 +1119,7 @@ func performV1APIRouting(e *echo.Echo) {
 			}
 			return false
 		},
-	}
-
-	res.Use(middleware.JWTWithConfig(config))
+	}))
 	res.Use(auth.MiddlewareRes)
 
 	logger.Debug(auth.JwtUserClaim{})
@@ -2125,7 +2127,7 @@ func initHttpClient() {
 
 // custom error handling in case JWT is missing
 func customHTTPErrorHandler(err error, c echo.Context) {
-	if err == middleware.ErrJWTMissing {
+	if err == echojwt.ErrJWTMissing {
 		c.Error(echo.NewHTTPError(http.StatusUnauthorized, "Login required"))
 		return
 	}

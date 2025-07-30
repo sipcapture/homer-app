@@ -756,6 +756,10 @@ func configureAsHTTPServer() {
 
 	if config.Setting.SWAGGER.Enable {
 		prefix := config.Setting.MAIN_SETTINGS.APIPrefix
+		if viper.IsSet("http_settings.api_prefix") {
+		prefix = viper.GetString("http_settings.api_prefix")
+		}
+		
 		//e.GET("/swagger/*", echoSwagger.WrapHandler)
 		e.GET(prefix+"/doc/api/json", func(c echo.Context) error {
 

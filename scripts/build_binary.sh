@@ -13,7 +13,7 @@ if [ "$CONT" = "y" ]; then
  docker run --rm \
   -v $PWD:/app \
   -e GOOS=${GOOS} \
-  golang:1.22 \
+  golang:1.24.5 \
   bash -c "cd /app && make modules && make all"
 else
   echo "Exiting..."

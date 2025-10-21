@@ -106,6 +106,10 @@ func CreateHomerRole(dataRootDBSession *gorm.DB, dataHomeDBSession *gorm.DB, use
 	sql = fmt.Sprintf("GRANT ALL PRIVILEGES ON DATABASE %s to %s;", homeDBDataQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 
+	// To permit examining data_directory for rotation
+	sql = fmt.Sprintf("GRANT pg_read_all_settings TO %s;", userQuoted)
+	dataRootDBSession.Debug().Exec(sql)
+
 	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s;", homeDBConfigQuoted, userQuoted)
 	dataRootDBSession.Debug().Exec(sql)
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DB_HOST=${DB_HOST:-db}
+DB_PROVISIONING_HOST=${DB_PROVISIONING_HOST:-$DB_HOST}
 DB_PORT=${DB_PORT:-5432}
 DB_USER=${DB_USER:-root}
 DB_PASS=${DB_PASS:-homerSeven}
@@ -12,15 +13,15 @@ PROVISIONED_USERS_PASS=${PROVISIONED_USERS_PASS:-sipcapture}
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 
 ###Create user
-#/homer-app -create-homer-user -database-root-user=$DB_ROOT_USER -database-host=$DB_HOST -database-root-password=$DB_ROOT_PASS -database-ssl-mode=$DB_SSL_MODE
+#/homer-app -create-homer-user -database-root-user=$DB_ROOT_USER -database-host=$DB_PROVISIONING_HOST -database-root-password=$DB_ROOT_PASS -database-ssl-mode=$DB_SSL_MODE
 ###Show user
-#/homer-app -show-db-user -database-root-user=$DB_ROOT_USER -database-host=$DB_HOST -database-root-password=$DB_ROOT_PASS -database-ssl-mode=$DB_SSL_MODE
+#/homer-app -show-db-user -database-root-user=$DB_ROOT_USER -database-host=$DB_PROVISIONING_HOST -database-root-password=$DB_ROOT_PASS -database-ssl-mode=$DB_SSL_MODE
 ###Create Role
 #/homer-app -create-homer-role -database-root-user=$DB_ROOT_USER -database-host=localhost -database-root-password=$DB_ROOT_PASS -database-homer-data=homer_data -database-homer-config=homer_config -database-ssl-mode=$DB_SSL_MODE
 
 ###Create DB
-/homer-app -create-config-db -database-root-user=$DB_ROOT_USER -database-host=$DB_HOST -database-port=$DB_PORT -database-root-password=$DB_ROOT_PASS -database-homer-user=$DB_USER -database-ssl-mode=$DB_SSL_MODE
-/homer-app -create-data-db -database-root-user=$DB_ROOT_USER -database-host=$DB_HOST -database-port=$DB_PORT -database-root-password=$DB_ROOT_PASS -database-homer-user=$DB_USER -database-ssl-mode=$DB_SSL_MODE
+/homer-app -create-config-db -database-root-user=$DB_ROOT_USER -database-host=$DB_PROVISIONING_HOST -database-port=$DB_PORT -database-root-password=$DB_ROOT_PASS -database-homer-user=$DB_USER -database-ssl-mode=$DB_SSL_MODE
+/homer-app -create-data-db -database-root-user=$DB_ROOT_USER -database-host=$DB_PROVISIONING_HOST -database-port=$DB_PORT -database-root-password=$DB_ROOT_PASS -database-homer-user=$DB_USER -database-ssl-mode=$DB_SSL_MODE
 
 #Save it or edit the webapp_config.json manualy
 #/homer-app -save-homer-db-config-settings -database-host=localhost -database-homer-config=homer_config -database-homer-user=homer_user -database-homer-password=homer_password -database-ssl-mode=$DB_SSL_MODE

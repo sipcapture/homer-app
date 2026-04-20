@@ -83,7 +83,17 @@ func CreateHomerDB(dataRootDBSession *gorm.DB, dbname *string, user *string) {
 
 	heputils.Colorize(heputils.ColorRed, createString)
 
-	sql := fmt.Sprintf("CREATE DATABASE %s OWNER %s", pq.QuoteIdentifier(*dbname), pq.QuoteIdentifier(*user))
+	/*
+	 * Create database first, and only then change the owner, because of possible error "permission
+	 * denied to create database" for non-superusers. Relevant on AWS RDS setups where the "root" account
+	 * is not a superuser role.
+	 */
+
+	sql := fmt.Sprintf("CREATE DATABASE %s", pq.QuoteIdentifier(*dbname))
+
+	dataRootDBSession.Debug().Exec(sql)
+
+	sql = fmt.Sprintf("ALTER DATABASE %s OWNER TO %s", pq.QuoteIdentifier(*dbname), pq.QuoteIdentifier(*user))
 
 	dataRootDBSession.Debug().Exec(sql)
 

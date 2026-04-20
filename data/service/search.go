@@ -608,7 +608,7 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 				elems := sData.Search(key, "uuid").Data().([]interface{})
 				keyData := []string{}
 				for _, val := range elems {
-					keyData = append(keyData, fmt.Sprintf("%v", val))
+					keyData = append(keyData, fmt.Sprintf("%d", int64(val.(float64))))
 				}
 				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
 			}
@@ -716,7 +716,7 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 				elems := sData.Search(key, "uuid").Data().([]interface{})
 				keyData := []string{}
 				for _, val := range elems {
-					keyData = append(keyData, fmt.Sprintf("%v", val))
+					keyData = append(keyData, fmt.Sprintf("%d", int64(val.(float64))))
 				}
 				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
 			}

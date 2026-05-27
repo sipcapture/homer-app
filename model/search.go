@@ -187,7 +187,7 @@ type CallElement struct {
 	RuriUser string `json:"ruri_user"`
 	// example: 1
 	Destination int `json:"destination"`
-	// example: 1633374982350
+	// example: 1633374982350000
 	MicroTs int64 `json:"micro_ts"`
 }
 

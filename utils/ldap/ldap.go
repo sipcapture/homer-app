@@ -282,7 +282,7 @@ func (lc *LDAPClient) GetGroupsOfUser(username string) ([]string, error) {
 	searchRequest := ldap.NewSearchRequest(
 		lc.Base,
 		lc.ScopeValue, lc.DerefValue, lc.GroupLimit, lc.TimeLimit, false,
-		fmt.Sprintf(lc.GroupFilter, parsedUsername),
+		fmt.Sprintf(lc.GroupFilter, ldap.EscapeFilter(parsedUsername)),
 		lc.GroupAttribute,
 		nil,
 	)

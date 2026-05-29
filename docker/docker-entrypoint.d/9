@@ -8,7 +8,7 @@ DB_PASS=${DB_PASS:-homerSeven}
 DB_ROOT_USER=${DB_ROOT_USER:-$DB_USER}
 DB_ROOT_PASS=${DB_ROOT_PASS:-$DB_PASS}
 DB_SSL_MODE=${DB_SSL_MODE:-disable}
-PROVISIONED_USERS_PASS=${PROVISIONED_USERS_PASS:-$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 32)}
+PROVISIONED_USERS_PASS=${PROVISIONED_USERS_PASS:-}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 

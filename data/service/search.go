@@ -418,7 +418,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliases *A
 
 	/* lets sort it */
 	sort.Slice(searchData, func(i, j int) bool {
-		return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
+		return microTsFromHepTable(searchData[i]) < microTsFromHepTable(searchData[j])
 	})
 
 	rows, _ := json.Marshal(searchData)
@@ -608,7 +608,7 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 				elems := sData.Search(key, "uuid").Data().([]interface{})
 				keyData := []string{}
 				for _, val := range elems {
-					keyData = append(keyData, fmt.Sprintf("%v", val))
+					keyData = append(keyData, fmt.Sprintf("%d", int64(val.(float64))))
 				}
 				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
 			}
@@ -716,7 +716,7 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 				elems := sData.Search(key, "uuid").Data().([]interface{})
 				keyData := []string{}
 				for _, val := range elems {
-					keyData = append(keyData, fmt.Sprintf("%v", val))
+					keyData = append(keyData, fmt.Sprintf("%d", int64(val.(float64))))
 				}
 				sql = sql + " AND " + fmt.Sprintf("%s IN (%s)", "id", strings.Join(keyData[:], ","))
 			}
@@ -777,7 +777,7 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 		if dataElement.Exists("timeSeconds") {
 			createDate := int64(dataElement.S("timeSeconds").Data().(float64)*1000000 + dataElement.S("timeUseconds").Data().(float64))
 			dataElement.Set(createDate/1000, "create_ts")
-			dataElement.Set(createDate/1000, "micro_ts")
+			dataElement.Set(createDate, "micro_ts")
 		}
 
 		//make back compatible to hepic DB
@@ -1075,7 +1075,7 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 
 	/* lets sort it */
 	sort.Slice(dataRow, func(i, j int) bool {
-		return dataRow[i].CreatedDate.Before(dataRow[j].CreatedDate)
+		return microTsFromHepTable(dataRow[i]) < microTsFromHepTable(dataRow[j])
 	})
 
 	marshalData, _ = json.Marshal(dataRow)
@@ -1116,6 +1116,22 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		}
 		return export.Buffer.String(), nil
 	}
+}
+
+// microTsFromHepTable returns the microsecond-precision Unix timestamp for a
+// HepTable row. It first tries to reconstruct the value from the timeSeconds
+// and timeUseconds fields stored in the protocol_header JSON (sub-millisecond
+// precision). When those are absent it falls back to CreatedDate which is
+// sourced from the database create_date column and may only carry millisecond
+// precision.
+func microTsFromHepTable(h model.HepTable) int64 {
+	var ph model.ProtocolHeader
+	if err := json.Unmarshal(h.ProtocolHeader, &ph); err != nil {
+		logger.Debug("microTsFromHepTable: failed to unmarshal protocol_header: ", err)
+	} else if ph.TimeSeconds != 0 || ph.TimeUseconds != 0 {
+		return int64(ph.TimeSeconds)*1000000 + int64(ph.TimeUseconds)
+	}
+	return h.CreatedDate.UnixNano() / 1000
 }
 
 func uniqueHepTable(hepSlice []model.HepTable) []model.HepTable {
@@ -1332,9 +1348,9 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliases *Al
 		if dataElement.Exists("timeSeconds") && dataElement.Exists("timeUseconds") {
 			ts := int64(heputils.CheckFloatValue(dataElement.S("timeSeconds").Data())*1000000 + heputils.CheckFloatValue(dataElement.S("timeUseconds").Data()))
 			callElement.CreateDate = ts / 1000
-			callElement.MicroTs = callElement.CreateDate
-			dataElement.Set(callElement.MicroTs, "create_date")
-			dataElement.Set(callElement.MicroTs, "create_ts")
+			callElement.MicroTs = ts
+			dataElement.Set(callElement.CreateDate, "create_date")
+			dataElement.Set(callElement.CreateDate, "create_ts")
 			dataElement.Set(callElement.MicroTs, "micro_ts")
 
 		}
@@ -1526,7 +1542,7 @@ func (ss *SearchService) GetTransactionQos(tables [2]string, data []byte, nodes 
 
 		/* lets sort it */
 		sort.Slice(searchData, func(i, j int) bool {
-			return searchData[i].CreatedDate.Before(searchData[j].CreatedDate)
+			return microTsFromHepTable(searchData[i]) < microTsFromHepTable(searchData[j])
 		})
 
 		response, _ := json.Marshal(searchData)

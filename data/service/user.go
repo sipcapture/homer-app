@@ -249,9 +249,16 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 			if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.AdminGroup) {
 				logger.Debug("User ", username, " is a member of the admin group ", us.LdapClient.AdminGroup)
 				userData.IsAdmin = true
+				// A matched group means authentication succeeded, so the account
+				// must be marked enabled. Otherwise the controller's
+				// `if !userData.Enabled` check rejects the login with a 401 even
+				// though the user authenticated and matched a configured group.
+				userData.Enabled = true
 			} else if len(groups) > 0 && heputils.ElementExists(groups, us.LdapClient.UserGroup) {
 				logger.Debug("User ", username, " is a member of the user group ", us.LdapClient.UserGroup)
 				userData.IsAdmin = false
+				// Enable the account on a successful user-group match (see above).
+				userData.Enabled = true
 			} else {
 				if !userData.IsAdmin && us.LdapClient.UserMode {
 					logger.Debug("User ", username, " didn't match any group but still logged in as USER because UserMode is set to true.")

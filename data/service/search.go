@@ -122,6 +122,7 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, 
 	sLimit = 200
 
 	smartMap := make(map[string]model.MappingSmart)
+	fieldAllowlist := buildSearchFieldAllowlist(mappingJSON)
 
 	firsLoop := true
 
@@ -131,6 +132,11 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, 
 			formValue := ""
 			formName := mapData["name"].(string)
 			formType := mapData["type"].(string)
+
+			if formName != "smartinput" && formName != "limit" && !validateSearchFieldName(formName, fieldAllowlist) {
+				logger.Error("Rejected search field name: ", formName)
+				continue
+			}
 
 			//We should be sure  that this is value string
 			switch x := formVal.(type) {
@@ -183,6 +189,11 @@ func buildQuery(elems []interface{}, orLogic bool, mappingJSON json.RawMessage, 
 					if modSmart, ok := smartMap[operandField]; ok {
 						operandField = modSmart.Value
 						typeValue = modSmart.Type
+					}
+
+					if !validateSearchFieldName(operandField, fieldAllowlist) {
+						logger.Error("Rejected smartinput field name: ", operandField)
+						continue
 					}
 
 					if strings.Contains(operandField, ".") {

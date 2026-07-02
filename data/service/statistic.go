@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/Jeffail/gabs"
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -53,36 +52,30 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 		indexRange = "86400s"
 	}
 
-	tagName := ""
-	infQuery := ""
-	myPrefix := ""
-
+	var infQuery client.Query
 	for index, query := range statisticObject.Param.Query {
 		logger.Debug("inside of the array", index)
 		logger.Debug(query.Main)
 
-		if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, query.Type); err != nil {
+		builtQuery, err := buildStatisticDataQuery(
+			query.Database,
+			query.Retention,
+			query.Main,
+			query.Type,
+			statisticObject.Timestamp.From*1000000,
+			statisticObject.Timestamp.To*1000000,
+			int64(statisticObject.Param.Limit),
+			indexRange,
+		)
+		if err != nil {
 			logger.Error("Rejected statistic query parameters: ", err)
 			return "", err
 		}
-
-		counterArray := []string{}
-		for _, el := range query.Type {
-			meanEl := fmt.Sprintf("mean(\"%s%s\") AS %s", myPrefix, el, el)
-			counterArray = append(counterArray, meanEl)
-			logger.Debug(counterArray)
-		}
-
-		infQuery = fmt.Sprintf("SELECT %s FROM %s.%s.\"%s\" WHERE time > %d AND %d > time %s GROUP BY time(%s) FILL(null) ORDER BY time DESC LIMIT %d;",
-			strings.Join(counterArray, ","), query.Database, query.Retention, query.Main,
-			(statisticObject.Timestamp.From * 1000000),
-			(statisticObject.Timestamp.To * 1000000),
-			tagName, indexRange, statisticObject.Param.Limit)
-
-		logger.Debug(infQuery)
+		infQuery = builtQuery
+		logger.Debug(infQuery.Command)
 	}
 
-	q := client.NewQuery(infQuery, "", "")
+	q := infQuery
 	reply := gabs.New()
 	dataEmpty := []string{}
 
@@ -140,16 +133,13 @@ func (ss *StatisticService) StatisticDataBaseList() (string, error) {
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.StatisticSearchObject) (string, error) {
 
-	if err := validateInfluxDatabase(statisticObject.Param.Search.Database); err != nil {
+	q, err := buildShowRetentionPoliciesQuery(statisticObject.Param.Search.Database)
+	if err != nil {
 		logger.Error("Rejected statistic database: ", err)
 		return "", err
 	}
 
-	infQuery := fmt.Sprintf("SHOW RETENTION POLICIES ON %s", statisticObject.Param.Search.Database)
-
-	logger.Debug(infQuery)
-
-	q := client.NewQuery(infQuery, statisticObject.Param.Search.Database, "")
+	logger.Debug(q.Command)
 	reply := gabs.New()
 	dataEmpty := []string{}
 
@@ -178,16 +168,13 @@ func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.Stati
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticMeasurementsList(dbId string) (string, error) {
 
-	if err := validateInfluxDatabase(dbId); err != nil {
+	q, err := buildShowMeasurementsQuery(dbId)
+	if err != nil {
 		logger.Error("Rejected statistic database: ", err)
 		return "", err
 	}
 
-	infQuery := fmt.Sprintf("SHOW MEASUREMENTS ON %s", dbId)
-
-	logger.Debug(infQuery)
-
-	q := client.NewQuery(infQuery, dbId, "")
+	logger.Debug(q.Command)
 	reply := gabs.New()
 	dataEmpty := []string{}
 
@@ -221,21 +208,13 @@ func (ss *StatisticService) StatisticMetricsList(statisticObject *model.Statisti
 	}
 
 	query := statisticObject.Param.Query[0]
-	if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, nil); err != nil {
+	q, err := buildShowFieldKeysQuery(query.Database, query.Retention, query.Main)
+	if err != nil {
 		logger.Error("Rejected statistic query parameters: ", err)
 		return "", err
 	}
 
-	var infQuery string
-
-	if statisticObject.Param.Query[0].Retention == "" || statisticObject.Param.Query[0].Retention == "none" {
-		infQuery = fmt.Sprintf("SHOW FIELD KEYS FROM %s", statisticObject.Param.Query[0].Main)
-	} else {
-		infQuery = fmt.Sprintf("SHOW FIELD KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
-	}
-	logger.Debug(infQuery)
-
-	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
+	logger.Debug(q.Command)
 	reply := gabs.New()
 	dataEmpty := []string{}
 
@@ -269,22 +248,13 @@ func (ss *StatisticService) StatisticTagsList(statisticObject *model.StatisticOb
 	}
 
 	query := statisticObject.Param.Query[0]
-	if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, nil); err != nil {
+	q, err := buildShowTagKeysQuery(query.Database, query.Retention, query.Main)
+	if err != nil {
 		logger.Error("Rejected statistic query parameters: ", err)
 		return "", err
 	}
 
-	var infQuery string
-
-	if statisticObject.Param.Query[0].Retention == "" || statisticObject.Param.Query[0].Retention == "none" {
-		infQuery = fmt.Sprintf("SHOW TAG KEYS FROM %s", statisticObject.Param.Query[0].Main)
-	} else {
-		infQuery = fmt.Sprintf("SHOW TAG KEYS FROM %s.%s", statisticObject.Param.Query[0].Retention, statisticObject.Param.Query[0].Main)
-	}
-
-	logger.Debug(infQuery)
-
-	q := client.NewQuery(infQuery, statisticObject.Param.Query[0].Database, "s")
+	logger.Debug(q.Command)
 	reply := gabs.New()
 	dataEmpty := []string{}
 

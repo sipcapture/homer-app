@@ -1,6 +1,11 @@
 package service
 
-import "testing"
+import (
+	"strings"
+	"testing"
+
+	client "github.com/influxdata/influxdb1-client/v2"
+)
 
 func TestValidateInfluxDatabase_rejectsInjection(t *testing.T) {
 	cases := []struct {
@@ -55,5 +60,40 @@ func TestValidateStatisticQueryEntry_rejectsBadFieldKey(t *testing.T) {
 	err := validateStatisticQueryEntry("homer", "autogen", "cpu", []string{`value") AS x --`})
 	if err == nil {
 		t.Fatal("expected invalid field key to be rejected")
+	}
+}
+
+func TestBuildShowRetentionPoliciesQuery_usesParameters(t *testing.T) {
+	q, err := buildShowRetentionPoliciesQuery("homer")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(q.Command, "$db") || strings.Contains(q.Command, "homer") {
+		t.Fatalf("expected parameterized command, got %q", q.Command)
+	}
+	if q.Parameters["db"] != client.Identifier("homer") {
+		t.Fatalf("unexpected db parameter: %#v", q.Parameters["db"])
+	}
+}
+
+func TestBuildStatisticDataQuery_usesParameters(t *testing.T) {
+	q, err := buildStatisticDataQuery("homer", "autogen", "cpu", []string{"value"}, 1, 2, 10, "60s")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	for _, forbidden := range []string{"homer", "autogen", "cpu", "value"} {
+		if strings.Contains(q.Command, forbidden) {
+			t.Fatalf("user input leaked into command %q", q.Command)
+		}
+	}
+	if len(q.Parameters) == 0 {
+		t.Fatal("expected bind parameters")
+	}
+}
+
+func TestBuildShowFieldKeysQuery_rejectsInjection(t *testing.T) {
+	_, err := buildShowFieldKeysQuery(`homer; DROP DATABASE homer`, "autogen", "cpu")
+	if err == nil {
+		t.Fatal("expected invalid database to be rejected")
 	}
 }

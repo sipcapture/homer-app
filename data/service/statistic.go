@@ -61,6 +61,11 @@ func (ss *StatisticService) StatisticData(statisticObject *model.StatisticObject
 		logger.Debug("inside of the array", index)
 		logger.Debug(query.Main)
 
+		if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, query.Type); err != nil {
+			logger.Error("Rejected statistic query parameters: ", err)
+			return "", err
+		}
+
 		counterArray := []string{}
 		for _, el := range query.Type {
 			meanEl := fmt.Sprintf("mean(\"%s%s\") AS %s", myPrefix, el, el)
@@ -135,6 +140,11 @@ func (ss *StatisticService) StatisticDataBaseList() (string, error) {
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.StatisticSearchObject) (string, error) {
 
+	if err := validateInfluxDatabase(statisticObject.Param.Search.Database); err != nil {
+		logger.Error("Rejected statistic database: ", err)
+		return "", err
+	}
+
 	infQuery := fmt.Sprintf("SHOW RETENTION POLICIES ON %s", statisticObject.Param.Search.Database)
 
 	logger.Debug(infQuery)
@@ -168,6 +178,11 @@ func (ss *StatisticService) StatisticRetentionsList(statisticObject *model.Stati
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticMeasurementsList(dbId string) (string, error) {
 
+	if err := validateInfluxDatabase(dbId); err != nil {
+		logger.Error("Rejected statistic database: ", err)
+		return "", err
+	}
+
 	infQuery := fmt.Sprintf("SHOW MEASUREMENTS ON %s", dbId)
 
 	logger.Debug(infQuery)
@@ -200,6 +215,16 @@ func (ss *StatisticService) StatisticMeasurementsList(dbId string) (string, erro
 
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticMetricsList(statisticObject *model.StatisticObject) (string, error) {
+
+	if len(statisticObject.Param.Query) == 0 {
+		return "", fmt.Errorf("statistic query is required")
+	}
+
+	query := statisticObject.Param.Query[0]
+	if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, nil); err != nil {
+		logger.Error("Rejected statistic query parameters: ", err)
+		return "", err
+	}
 
 	var infQuery string
 
@@ -238,6 +263,16 @@ func (ss *StatisticService) StatisticMetricsList(statisticObject *model.Statisti
 
 // StatisticData: this method create new user in the database
 func (ss *StatisticService) StatisticTagsList(statisticObject *model.StatisticObject) (string, error) {
+
+	if len(statisticObject.Param.Query) == 0 {
+		return "", fmt.Errorf("statistic query is required")
+	}
+
+	query := statisticObject.Param.Query[0]
+	if err := validateStatisticQueryEntry(query.Database, query.Retention, query.Main, nil); err != nil {
+		logger.Error("Rejected statistic query parameters: ", err)
+		return "", err
+	}
 
 	var infQuery string
 

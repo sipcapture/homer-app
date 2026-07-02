@@ -54,7 +54,8 @@ func (sc *StatisticController) StatisticData(c echo.Context) error {
 
 	responseData, err := sc.StatisticService.StatisticData(&searchObject)
 	if err != nil {
-		logger.Debug(responseData)
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -129,7 +130,8 @@ func (sc *StatisticController) GetStatisticRetentionsList(c echo.Context) error 
 
 	responseData, err := sc.StatisticService.StatisticRetentionsList(&searchObject)
 	if err != nil {
-		logger.Debug(responseData)
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -175,7 +177,8 @@ func (sc *StatisticController) GetStatisticMeasurementsList(c echo.Context) erro
 
 	responseData, err := sc.StatisticService.StatisticMeasurementsList(dbID)
 	if err != nil {
-		logger.Debug(responseData)
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -219,7 +222,8 @@ func (sc *StatisticController) GetStatisticMetricsList(c echo.Context) error {
 
 	responseData, err := sc.StatisticService.StatisticMetricsList(&searchObject)
 	if err != nil {
-		logger.Debug(responseData)
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }
@@ -263,7 +267,8 @@ func (sc *StatisticController) GetStatisticTagsList(c echo.Context) error {
 
 	responseData, err := sc.StatisticService.StatisticTagsList(&searchObject)
 	if err != nil {
-		logger.Debug(responseData)
+		logger.Error(err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, responseData)
 }

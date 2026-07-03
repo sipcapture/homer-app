@@ -15,7 +15,8 @@ var (
 		"protocol_header": {},
 	}
 
-	safeJSONKeyPattern = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+	safeJSONKeyPattern      = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+	safeSearchTableKeyPattern = regexp.MustCompile(`^\d+_[a-zA-Z0-9_]+$`)
 )
 
 func buildSearchFieldAllowlist(mappingJSON json.RawMessage) map[string]struct{} {
@@ -72,4 +73,22 @@ func validateSearchFieldName(formName string, allowlist map[string]struct{}) boo
 	}
 
 	return safeJSONKeyPattern.MatchString(parts[1])
+}
+
+func validateSearchTableKey(key string, allowedKeys map[string]json.RawMessage) bool {
+	if key == "" || allowedKeys == nil {
+		return false
+	}
+	if !safeSearchTableKeyPattern.MatchString(key) {
+		return false
+	}
+	_, ok := allowedKeys[key]
+	return ok
+}
+
+func buildSearchTableName(key string, allowedKeys map[string]json.RawMessage) (string, bool) {
+	if !validateSearchTableKey(key, allowedKeys) {
+		return "", false
+	}
+	return "hep_proto_" + key, true
 }

@@ -124,7 +124,12 @@ func (sc *SearchController) GetMessageById(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	responseData, err := sc.SearchService.GetMessageByID(&searchObject)
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logger.Error("mapping error select: ", err)
+	}
+
+	responseData, err := sc.SearchService.GetMessageByID(&searchObject, mapsFieldsData)
 	if err != nil {
 		logger.Debug("error during get message by id: ", err.Error())
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
@@ -172,7 +177,12 @@ func (sc *SearchController) GetDecodeMessageById(c echo.Context) error {
 		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, webmessages.UserRequestFormatIncorrect)
 	}
 
-	responseData, err := sc.SearchService.GetDecodedMessageByID(&searchObject)
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logger.Error("mapping error select: ", err)
+	}
+
+	responseData, err := sc.SearchService.GetDecodedMessageByID(&searchObject, mapsFieldsData)
 	if err != nil {
 		logger.Debug(responseData)
 	}
@@ -221,14 +231,22 @@ func (sc *SearchController) GetTransaction(c echo.Context) error {
 	transactionData, _ := json.Marshal(transactionObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&transactionObject)
 	aliases, _ := sc.AliasService.GetAllActiveAsMap()
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logger.Error("mapping error select: ", err)
+	}
 
-	searchTable := "hep_proto_1_default'"
+	searchTable := "hep_proto_1_default"
 
 	userGroup := auth.GetUserGroup(c)
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
+	reply, err := sc.SearchService.GetTransaction(searchTable, transactionData,
 		correlation, false, aliases, 0, transactionObject.Param.Location.Node,
-		sc.SettingService, userGroup, transactionObject.Param.WhiteList)
+		sc.SettingService, userGroup, mapsFieldsData, transactionObject.Param.WhiteList)
+	if err != nil {
+		logger.Error("error during transaction select: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	return httpresponse.CreateSuccessResponse(&c, http.StatusCreated, reply)
 
@@ -385,12 +403,20 @@ func (sc *SearchController) GetMessagesAsPCap(c echo.Context) error {
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
 	aliases := service.NewAliasMap(nil)
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logger.Error("mapping error select: ", err)
+	}
 
-	searchTable := "hep_proto_1_default'"
+	searchTable := "hep_proto_1_default"
 	userGroup := auth.GetUserGroup(c)
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliases, 1,
-		searchObject.Param.Location.Node, sc.SettingService, userGroup, searchObject.Param.WhiteList)
+	reply, err := sc.SearchService.GetTransaction(searchTable, transactionData, correlation, false, aliases, 1,
+		searchObject.Param.Location.Node, sc.SettingService, userGroup, mapsFieldsData, searchObject.Param.WhiteList)
+	if err != nil {
+		logger.Error("error during pcap export: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.pcap", time.Now().Format(time.RFC3339)))
 	if err := c.Blob(http.StatusOK, "application/octet-stream", []byte(reply)); err != nil {
@@ -444,14 +470,22 @@ func (sc *SearchController) GetMessagesAsText(c echo.Context) error {
 	transactionData, _ := json.Marshal(searchObject)
 	correlation, _ := sc.SettingService.GetCorrelationMap(&searchObject)
 	aliases := service.NewAliasMap(nil)
+	mapsFieldsData, err := sc.SettingService.GetAllMapping()
+	if err != nil {
+		logger.Error("mapping error select: ", err)
+	}
 
-	searchTable := "hep_proto_1_default'"
+	searchTable := "hep_proto_1_default"
 
 	userGroup := auth.GetUserGroup(c)
 
-	reply, _ := sc.SearchService.GetTransaction(searchTable, transactionData,
+	reply, err := sc.SearchService.GetTransaction(searchTable, transactionData,
 		correlation, false, aliases, 2, searchObject.Param.Location.Node,
-		sc.SettingService, userGroup, searchObject.Param.WhiteList)
+		sc.SettingService, userGroup, mapsFieldsData, searchObject.Param.WhiteList)
+	if err != nil {
+		logger.Error("error during text export: ", err.Error())
+		return httpresponse.CreateBadResponse(&c, http.StatusBadRequest, err.Error())
+	}
 
 	c.Response().Header().Set(echo.HeaderContentDisposition, fmt.Sprintf("attachment; filename=export-%s.txt", time.Now().Format(time.RFC3339)))
 	if err := c.String(http.StatusOK, reply); err != nil {

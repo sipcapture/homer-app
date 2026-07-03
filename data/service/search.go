@@ -389,7 +389,12 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliases *A
 	dataArrayValues = append(dataArrayValues, searchToTime)
 
 	for key, _ := range sData.ChildrenMap() {
-		table = "hep_proto_" + key
+		tableName, ok := buildSearchTableName(key, mapsFieldsData)
+		if !ok {
+			logger.Error("Rejected search table key: ", key)
+			continue
+		}
+		table = tableName
 		if sData.Exists(key) {
 			elems := sData.Search(key).Data().([]interface{})
 			mappingJSON := mapsFieldsData[key]
@@ -589,7 +594,7 @@ func (ss *SearchService) GetDBNodeList(searchObject *model.SearchObject) (string
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject) (string, error) {
+func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject, mapsFieldsData map[string]json.RawMessage) (string, error) {
 	table := "hep_proto_1_default"
 	sLimit := searchObject.Param.Limit
 	searchData := []model.HepTable{}
@@ -601,7 +606,11 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 	var doDecode = false
 
 	for key := range sData.ChildrenMap() {
-		table = "hep_proto_" + key
+		tableName, ok := buildSearchTableName(key, mapsFieldsData)
+		if !ok {
+			return "", fmt.Errorf("invalid search profile key: %q", key)
+		}
+		table = tableName
 		if sData.Exists(key) {
 
 			var elems float64
@@ -695,7 +704,7 @@ func (ss *SearchService) GetDecodedMessageByID(searchObject *model.SearchObject)
 
 // this method create new user in the database
 // it doesn't check internally whether all the validation are applied or not
-func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (string, error) {
+func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject, mapsFieldsData map[string]json.RawMessage) (string, error) {
 	table := "hep_proto_1_default"
 	sLimit := searchObject.Param.Limit
 	searchData := []model.HepTable{}
@@ -707,7 +716,11 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject) (strin
 	var sipExist = false
 
 	for key := range sData.ChildrenMap() {
-		table = "hep_proto_" + key
+		tableName, ok := buildSearchTableName(key, mapsFieldsData)
+		if !ok {
+			return "", fmt.Errorf("invalid search profile key: %q", key)
+		}
+		table = tableName
 		if sData.Exists(key) {
 			if key == "1_call" {
 				sipExist = true
@@ -913,11 +926,15 @@ func (ss *SearchService) excuteExternalDecoder(dataRecord *gabs.Container) (inte
 // it doesn't check internally whether all the validation are applied or not
 func (ss *SearchService) GetTransaction(table string, data []byte, correlationJSON []byte, doexp bool,
 	aliases *AliasMap, typeReport int, nodes []string, settingService *UserSettingsService,
-	userGroup string, whitelist []string) (string, error) {
+	userGroup string, mapsFieldsData map[string]json.RawMessage, whitelist []string) (string, error) {
 	var dataWhere []interface{}
 	requestData, _ := gabs.ParseJSON(data)
 	for key, value := range requestData.Search("param", "search").ChildrenMap() {
-		table = "hep_proto_" + key
+		tableName, ok := buildSearchTableName(key, mapsFieldsData)
+		if !ok {
+			return "", fmt.Errorf("invalid search profile key: %q", key)
+		}
+		table = tableName
 		dataWhere = append(dataWhere, value.Search("callid").Data().([]interface{})...)
 	}
 

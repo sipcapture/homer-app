@@ -107,3 +107,50 @@ func TestBuildQuery_allowsMappedField(t *testing.T) {
 		t.Fatalf("unexpected bind values: %v", values)
 	}
 }
+
+func TestValidateSearchTableKey_rejectsSQLInjection(t *testing.T) {
+	allowed := map[string]json.RawMessage{
+		"1_call":    json.RawMessage(`[]`),
+		"5_default": json.RawMessage(`[]`),
+	}
+
+	cases := []struct {
+		name string
+		key  string
+		want bool
+	}{
+		{name: "allowed profile", key: "1_call", want: true},
+		{name: "allowed numeric profile", key: "5_default", want: true},
+		{name: "injection in table key", key: `1_default" WHERE pg_sleep(3) AND "x`, want: false},
+		{name: "unknown profile", key: "99_evil", want: false},
+		{name: "empty key", key: "", want: false},
+		{name: "missing underscore", key: "1call", want: false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := validateSearchTableKey(tc.key, allowed); got != tc.want {
+				t.Fatalf("validateSearchTableKey(%q) = %v, want %v", tc.key, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestBuildSearchTableName(t *testing.T) {
+	allowed := map[string]json.RawMessage{
+		"1_call": json.RawMessage(`[]`),
+	}
+
+	table, ok := buildSearchTableName("1_call", allowed)
+	if !ok {
+		t.Fatal("expected allowed key to succeed")
+	}
+	if table != "hep_proto_1_call" {
+		t.Fatalf("unexpected table name: %q", table)
+	}
+
+	_, ok = buildSearchTableName(`1_call"; SELECT pg_sleep(1); --`, allowed)
+	if ok {
+		t.Fatal("expected injection attempt to be rejected")
+	}
+}

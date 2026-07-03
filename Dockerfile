@@ -4,7 +4,7 @@ RUN apk add git && git clone https://github.com/sipcapture/homer-ui /app
 WORKDIR /app
 RUN npm install && npm install -g @angular/cli && npm run build
 
-FROM golang:alpine AS webapi
+FROM golang:1.25-alpine AS webapi
 ENV BUILD=20220211-001
 RUN apk --update add git make
 COPY . /homer-app

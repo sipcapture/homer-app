@@ -15,8 +15,8 @@ require (
 	github.com/influxdata/influxdb1-client v0.0.0-20220302092344-a9ab5670611c
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo-jwt/v4 v4.3.1
-	github.com/labstack/echo/v4 v4.13.4
-	github.com/labstack/gommon v0.4.2
+	github.com/labstack/echo/v4 v4.15.3
+	github.com/labstack/gommon v0.5.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lib/pq v1.10.9
 	github.com/manifoldco/promptui v0.9.0
@@ -46,7 +46,7 @@ require (
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lestrrat-go/strftime v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sagikazarmark/locafero v0.10.0 // indirect
@@ -59,7 +59,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	golang.org/x/time v0.12.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

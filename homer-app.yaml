@@ -26,6 +26,8 @@ description: |
 vendor: "QXIP"
 homepage: "http://qxip.net"
 license: "AGPLv3"
+scripts:
+  postinstall: ./scripts/package-postinstall.sh
 contents:
   # Basic file that applies to all packagers
   - src: /tmp/pkg/homer-app

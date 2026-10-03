@@ -23,6 +23,7 @@ COPY --from=webapp /app/dist/homer-ui /usr/local/homer/dist
 # Configure entrypoint
 COPY ./docker/docker-entrypoint.sh /
 COPY ./docker/docker-entrypoint.d/* /docker-entrypoint.d/
-RUN chmod +x /docker-entrypoint.d/* /docker-entrypoint.sh
+RUN chmod 0600 /usr/local/homer/etc/webapp_config.json \
+ && chmod +x /docker-entrypoint.d/* /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/homer-app", "-webapp-config-path=/usr/local/homer/etc"]

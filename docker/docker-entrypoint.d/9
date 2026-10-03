@@ -33,6 +33,7 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
 #Populate DB
 /homer-app -populate-table-db-config -webapp-config-path=/usr/local/homer/etc -database-ssl-mode=$DB_SSL_MODE "-force-password=$PROVISIONED_USERS_PASS"
 
+   chmod 0600 /usr/local/homer/etc/webapp_config.json
    echo "Database provisioning completed!"
 
 else

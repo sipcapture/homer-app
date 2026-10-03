@@ -464,3 +464,25 @@ func ApplyPrefixIndexHtml(prefix, root string) error {
 
 	return nil
 }
+
+// RestrictSecretFile clears group and world permission bits on a file that
+// holds credentials. Owner bits are left unchanged, so a mode of 0400 stays
+// 0400. A file that is already owner-only is left untouched.
+func RestrictSecretFile(path string) (bool, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+	if !info.Mode().IsRegular() {
+		return false, fmt.Errorf("not a regular file: %s", path)
+	}
+	perm := info.Mode().Perm()
+	tightened := perm &^ 0077
+	if tightened == perm {
+		return false, nil
+	}
+	if err := os.Chmod(path, tightened); err != nil {
+		return false, err
+	}
+	return true, nil
+}

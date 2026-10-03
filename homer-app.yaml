@@ -46,3 +46,5 @@ contents:
   - src: /tmp/pkg/etc/webapp_config.json
     dst: /usr/local/homer/etc/webapp_config.json
     type: config
+    file_info:
+      mode: 0600

@@ -265,6 +265,8 @@ func main() {
 		if err != nil {
 			fmt.Println("No configuration file loaded: ", err)
 			logger.Error("No configuration file loaded - using defaults")
+		} else {
+			restrictConfigFile()
 		}
 		os.Exit(0)
 	}
@@ -1515,6 +1517,7 @@ func updateVersionApplication(configDBSession *gorm.DB) bool {
 			logger.Error("No configuration file loaded - using defaults")
 			return false
 		}
+		restrictConfigFile()
 	}
 
 	if err := configDBSession.Debug().Set(
@@ -1688,6 +1691,7 @@ func readConfig() {
 		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
 	}
+	restrictConfigFile()
 	if *appFlags.WatchConfig {
 		viper.OnConfigChange(func(in fsnotify.Event) {
 			configureLogging()
@@ -1717,6 +1721,7 @@ func applyDBDataParamToConfig(user *string, password *string, dbname *string, ho
 		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
 	}
+	restrictConfigFile()
 }
 
 func applyDBConfigParamToConfig(user *string, password *string, dbname *string, host *string, sslmode *string) {
@@ -1736,6 +1741,22 @@ func applyDBConfigParamToConfig(user *string, password *string, dbname *string, 
 		fmt.Println("No configuration file loaded: ", err)
 		logger.Error("No configuration file loaded - using defaults")
 		panic("DB configuration file not found: ")
+	}
+	restrictConfigFile()
+}
+
+func restrictConfigFile() {
+	path := viper.ConfigFileUsed()
+	if path == "" {
+		return
+	}
+	changed, err := heputils.RestrictSecretFile(path)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to restrict configuration file permissions [%s]: %v", path, err))
+		return
+	}
+	if changed {
+		logger.Info(fmt.Sprintf("restricted configuration file permissions to the owner [%s]", path))
 	}
 }
 

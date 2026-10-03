@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# sed -i replaces the file and applies the process umask. Keep the
+# credential file owner-only even when the image layer was rewritten.
+umask 0077
+
 DB_HOST=${DB_HOST:-localhost}
 DB_PORT=${DB_PORT:-5432}
 DB_KEEPALIVE=${DB_KEEPALIVE:-false} #default to false
@@ -84,6 +88,7 @@ if [ -f /usr/local/homer/etc/webapp_config.json ]; then
    if [ -n "$TSHARK_ACTIVE" ]; then sed -i "s/tshark_active/${TSHARK_ACTIVE}/g" /usr/local/homer/etc/webapp_config.json; fi
    if [ -n "$TSHARK_BIN" ]; then sed -i "s#tshark_bin#${TSHARK_BIN}#g" /usr/local/homer/etc/webapp_config.json; fi
 
+   chmod 0600 /usr/local/homer/etc/webapp_config.json
    echo "Pre-Flight provisioning completed!"
 
 else

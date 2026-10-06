@@ -799,9 +799,11 @@ func (ss *SearchService) GetMessageByID(searchObject *model.SearchObject, mapsFi
 		}
 
 		if dataElement.Exists("timeSeconds") {
-			createDate := int64(dataElement.S("timeSeconds").Data().(float64)*1000000 + dataElement.S("timeUseconds").Data().(float64))
-			dataElement.Set(createDate/1000, "create_ts")
-			dataElement.Set(createDate, "micro_ts")
+			sec := int64(dataElement.S("timeSeconds").Data().(float64))
+			usec := int64(dataElement.S("timeUseconds").Data().(float64))
+			millis := unixMillisFromHEP(sec, usec)
+			dataElement.Set(millis, "create_ts")
+			dataElement.Set(millis, "micro_ts")
 		}
 
 		//make back compatible to hepic DB
@@ -1146,12 +1148,21 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 	}
 }
 
+// unixMillisFromHEP converts HEP timeSeconds and timeUseconds to Unix
+// milliseconds. micro_ts stays in milliseconds: homer-ui formats it with
+// moment() and sends it back as timestamp.from/to, which this API also
+// treats as milliseconds. Sub-millisecond ordering uses microTsFromHepTable
+// before the response is built.
+func unixMillisFromHEP(timeSeconds, timeUseconds int64) int64 {
+	return (timeSeconds*1000000 + timeUseconds) / 1000
+}
+
 // microTsFromHepTable returns the microsecond-precision Unix timestamp for a
 // HepTable row. It first tries to reconstruct the value from the timeSeconds
 // and timeUseconds fields stored in the protocol_header JSON (sub-millisecond
 // precision). When those are absent it falls back to CreatedDate which is
 // sourced from the database create_date column and may only carry millisecond
-// precision.
+// precision. This value orders rows only; it is not written to micro_ts.
 func microTsFromHepTable(h model.HepTable) int64 {
 	var ph model.ProtocolHeader
 	if err := json.Unmarshal(h.ProtocolHeader, &ph); err != nil {
@@ -1374,9 +1385,11 @@ func (ss *SearchService) getTransactionSummary(data *gabs.Container, aliases *Al
 		}
 
 		if dataElement.Exists("timeSeconds") && dataElement.Exists("timeUseconds") {
-			ts := int64(heputils.CheckFloatValue(dataElement.S("timeSeconds").Data())*1000000 + heputils.CheckFloatValue(dataElement.S("timeUseconds").Data()))
-			callElement.CreateDate = ts / 1000
-			callElement.MicroTs = ts
+			sec := int64(heputils.CheckFloatValue(dataElement.S("timeSeconds").Data()))
+			usec := int64(heputils.CheckFloatValue(dataElement.S("timeUseconds").Data()))
+			millis := unixMillisFromHEP(sec, usec)
+			callElement.CreateDate = millis
+			callElement.MicroTs = millis
 			dataElement.Set(callElement.CreateDate, "create_date")
 			dataElement.Set(callElement.CreateDate, "create_ts")
 			dataElement.Set(callElement.MicroTs, "micro_ts")

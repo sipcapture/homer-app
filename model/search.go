@@ -187,7 +187,9 @@ type CallElement struct {
 	RuriUser string `json:"ruri_user"`
 	// example: 1
 	Destination int `json:"destination"`
-	// example: 1633374982350000
+	// Unix time in milliseconds. homer-ui parses this with moment() and reuses
+	// it as a search bound; do not switch the unit to microseconds.
+	// example: 1633374982350
 	MicroTs int64 `json:"micro_ts"`
 }
 

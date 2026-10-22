@@ -1,4 +1,4 @@
-FROM node:16-alpine AS webapp
+FROM node:22-alpine AS webapp
 ENV BUILD=20220211-001
 RUN apk add git && git clone https://github.com/sipcapture/homer-ui /app
 WORKDIR /app

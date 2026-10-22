@@ -72,22 +72,35 @@ NOTE: The default location for settings and provisioning files is `/usr/local/ho
 
 ##### Initialization
 The application is able to initialize its database and tables it requires with the following commands:
+
+Set credentials through the process environment when running provisioning commands:
+
+* `HOMER_DATABASE_ROOT_PASSWORD` for the database administrator password
+* `HOMER_DATABASE_HOMER_PASSWORD` for the Homer database user password
+* `HOMER_FORCE_PASSWORD` for the password used to populate the Homer administrator
+
+These values are used when the corresponding command-line flags are not provided. Avoid passing passwords as command-line arguments because they may be visible in process listings.
+
+Explicit flags take precedence, including an explicitly empty flag. Unset environment variables retain the existing defaults; variables set to an empty string supply an empty password. Environment values are read literally, without expanding expressions such as `${HOME}`. Help output does not include environment password values.
+
+Environment input avoids putting passwords in process arguments, but does not sanitize existing application or SQL logs. Process environments can also be inspected by sufficiently privileged users. Use dummy credentials for tests and avoid exposing provisioning output in automation logs.
+
 ###### Create User
 ```
-./homer-app -create-homer-user -database-root-user=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -create-homer-user -database-root-user=postgres -database-host=localhost
 ```
 ###### Show User
 ```
-./homer-app -show-db-users -database-root-user=postgres -database-host=localhost -database-root-password=postgres
+./homer-app -show-db-users -database-root-user=postgres -database-host=localhost
 ```
 ###### Create Homer DBs
 ```
-./homer-app -create-config-db -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
-./homer-app -create-data-db -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-user=homer_user
+./homer-app -create-config-db -database-root-user=postgres -database-host=localhost -database-homer-user=homer_user
+./homer-app -create-data-db -database-root-user=postgres -database-host=localhost -database-homer-user=homer_user
 ```
 ###### Create User permissions
 ```
-./homer-app -create-homer-role -database-root-user=postgres -database-host=localhost -database-root-password=postgres -database-homer-data=homer_data -database-homer-config=homer_config
+./homer-app -create-homer-role -database-root-user=postgres -database-host=localhost -database-homer-data=homer_data -database-homer-config=homer_config
 ```
 
 <!--

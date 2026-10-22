@@ -489,21 +489,7 @@ func (ss *SearchService) SearchData(searchObject *model.SearchObject, aliases *A
 
 		srcIPStr := dataElement.S("srcIp").Data().(string)
 		dstIPStr := dataElement.S("dstIp").Data().(string)
-
-		srcIPPort := srcIPStr + ":" + dstPortStr
-		dstIPPort := srcIPStr + ":" + dstPortStr
-
-		srcPort, _ := strconv.Atoi(srcPortStr)
-		srcIP := net.ParseIP(srcIPStr)
-		if srcIP.To4() == nil && srcIP.To16() != nil {
-			srcIPPort = fmt.Sprintf("[%s]:%d", srcIPStr, srcPort)
-		}
-
-		dstPort, _ := strconv.Atoi(dstPortStr)
-		dstIP := net.ParseIP(dstIPStr)
-		if dstIP.To4() == nil && dstIP.To16() != nil {
-			dstIPPort = fmt.Sprintf("[%s]:%d", dstIPStr, dstPort)
-		}
+		srcIPPort, dstIPPort, srcIP, dstIP, srcPort, dstPort := searchAliasIPPortKeys(srcIPStr, dstIPStr, srcPortStr, dstPortStr)
 
 		//add capture ID
 		if config.Setting.MAIN_SETTINGS.UseCaptureIDInAlias && dataElement.Exists("captureId") {
@@ -1146,6 +1132,29 @@ func (ss *SearchService) GetTransaction(table string, data []byte, correlationJS
 		}
 		return export.Buffer.String(), nil
 	}
+}
+
+// searchAliasIPPortKeys builds the alias cache keys for one search row.
+// IPv4 keys are "ip:port". IPv6 keys are "[ip]:port".
+// Source and destination stay independent. A shared key makes aliasDst
+// return the source alias (https://github.com/sipcapture/homer-app/issues/647).
+func searchAliasIPPortKeys(srcIPStr, dstIPStr, srcPortStr, dstPortStr string) (srcIPPort, dstIPPort string, srcIP, dstIP net.IP, srcPort, dstPort int) {
+	srcPort, _ = strconv.Atoi(srcPortStr)
+	dstPort, _ = strconv.Atoi(dstPortStr)
+
+	srcIPPort = srcIPStr + ":" + srcPortStr
+	dstIPPort = dstIPStr + ":" + dstPortStr
+
+	srcIP = net.ParseIP(srcIPStr)
+	if srcIP.To4() == nil && srcIP.To16() != nil {
+		srcIPPort = fmt.Sprintf("[%s]:%d", srcIPStr, srcPort)
+	}
+
+	dstIP = net.ParseIP(dstIPStr)
+	if dstIP.To4() == nil && dstIP.To16() != nil {
+		dstIPPort = fmt.Sprintf("[%s]:%d", dstIPStr, dstPort)
+	}
+	return srcIPPort, dstIPPort, srcIP, dstIP, srcPort, dstPort
 }
 
 // unixMillisFromHEP converts HEP timeSeconds and timeUseconds to Unix

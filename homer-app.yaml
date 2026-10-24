@@ -5,10 +5,9 @@ platform: "linux"
 version: "v${VERSION}"
 section: "default"
 priority: "extra"
-replaces:
-- homer-app
-provides:
-- homer-app
+# Do not replaces or provides this package's own name. nfpm maps replaces
+# to RPM Obsoletes, and an unversioned Obsoletes: homer-app makes yum treat
+# every newer homer-app as already obsoleted by the installed package.
 #depends:
 #- telegraf
 # recommends on rpm packages requires rpmbuild >= 4.13

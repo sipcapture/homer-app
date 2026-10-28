@@ -106,6 +106,7 @@ func loadPasswordEnvironment() {
 		{"database-root-password", "HOMER_DATABASE_ROOT_PASSWORD", appFlags.DatabaseRootPassword},
 		{"database-homer-password", "HOMER_DATABASE_HOMER_PASSWORD", appFlags.DatabaseHomerPassword},
 		{"force-password", "HOMER_FORCE_PASSWORD", appFlags.ForcePasswordDB},
+		{"update-ui-password", "HOMER_UPDATE_UI_PASSWORD", appFlags.UpdateUIPassword},
 	} {
 		if !explicitFlags[binding.flagName] {
 			if value, exists := os.LookupEnv(binding.envName); exists {
@@ -190,7 +191,7 @@ func initFlags() {
 	appFlags.ForcePasswordDB = flag.String("force-password", "", "force password for AWS setups (or HOMER_FORCE_PASSWORD)")
 
 	appFlags.UpdateUIUser = flag.String("update-ui-user", "", "update user ui")
-	appFlags.UpdateUIPassword = flag.String("update-ui-password", "", "update password for user")
+	appFlags.UpdateUIPassword = flag.String("update-ui-password", "", "update password for user (or HOMER_UPDATE_UI_PASSWORD)")
 
 	flag.Var(&appFlags.TablesPopulate, "populate-table", "force to populate only current tables")
 

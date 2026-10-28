@@ -80,6 +80,7 @@ Set credentials through the process environment when running provisioning comman
 * `HOMER_DATABASE_ROOT_PASSWORD` for the database administrator password
 * `HOMER_DATABASE_HOMER_PASSWORD` for the Homer database user password
 * `HOMER_FORCE_PASSWORD` for the password used to populate the Homer administrator
+* `HOMER_UPDATE_UI_PASSWORD` for `-update-ui-password`
 
 Example environment setup (all values below are placeholders, not usable credentials):
 
@@ -87,6 +88,7 @@ Example environment setup (all values below are placeholders, not usable credent
 export HOMER_DATABASE_ROOT_PASSWORD='<database-admin-password>'
 export HOMER_DATABASE_HOMER_PASSWORD='<homer-database-password>'
 export HOMER_FORCE_PASSWORD='<homer-ui-admin-password>'
+export HOMER_UPDATE_UI_PASSWORD='<replacement-ui-password>'
 ```
 
 In automation, inject these variables through your secret-management mechanism. Avoid entering real passwords in shell history or storing them in scripts. With the required variables set, omit the password flags, for example:
@@ -95,7 +97,7 @@ In automation, inject these variables through your secret-management mechanism. 
 ./homer-app -create-homer-user -database-root-user=postgres -database-host=localhost
 ```
 
-These values are used when the corresponding command-line flags are not provided. Avoid passing passwords as command-line arguments because they may be visible in process listings.
+These values are used when the corresponding command-line flags are not provided. Avoid passing passwords as command-line arguments because they may be visible in process listings. Setting `HOMER_DATABASE_HOMER_PASSWORD` to an empty value overrides the existing `homer_password` default; database-save commands can then persist an empty password to `webapp_config.json` if the corresponding flag is omitted.
 
 Explicit flags take precedence, including an explicitly empty flag. Unset environment variables retain the existing defaults; variables set to an empty string supply an empty password. Environment values are read literally, without expanding expressions such as `${HOME}`. Help output does not include environment password values.
 
@@ -163,10 +165,14 @@ or
 ./homer-app -populate-table-db-config -force-populate -populate-table=mapping_schema -populate-table=user_settings
 ```
 
-###### Reset UI password for any user: 
+###### Reset UI password for any user using the environment (recommended)
 ```
-./homer-app -update-ui-user=admin -update-ui-password=mypassword
+./homer-app -update-ui-user=admin
+```
 
+For compatibility, the password flag is still accepted, but may be visible in process listings and command auditing:
+```
+./homer-app -update-ui-user=admin -update-ui-password='<replacement-ui-password>'
 ```
 
 ------------

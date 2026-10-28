@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 )
@@ -17,6 +17,7 @@ func TestProvisioningPasswordEnvironment(t *testing.T) {
 		{"database-root-password", "HOMER_DATABASE_ROOT_PASSWORD", ""},
 		{"database-homer-password", "HOMER_DATABASE_HOMER_PASSWORD", "homer_password"},
 		{"force-password", "HOMER_FORCE_PASSWORD", ""},
+		{"update-ui-password", "HOMER_UPDATE_UI_PASSWORD", ""},
 	} {
 		for _, scenario := range []struct {
 			name     string
@@ -57,13 +58,59 @@ func TestProvisioningPasswordEnvironment(t *testing.T) {
 				if flag.Lookup(binding.flagName).Value.String() != scenario.expected {
 					t.Fatal("password precedence or literal preservation failed")
 				}
-				var help bytes.Buffer
-				flag.CommandLine.SetOutput(&help)
-				flag.PrintDefaults()
-				if scenario.envValue != "" && strings.Contains(help.String(), scenario.envValue) {
-					t.Fatal("help output contains an environment password")
-				}
 			})
 		}
+	}
+}
+
+func TestPasswordEnvironmentHelpSubprocess(t *testing.T) {
+	mode := os.Getenv("HOMER_PASSWORD_HELP_TEST_MODE")
+	if mode == "" {
+		return
+	}
+
+	flag.CommandLine = flag.NewFlagSet("homer-app", flag.ExitOnError)
+	os.Args = []string{"homer-app"}
+	if mode == "help" {
+		os.Args = append(os.Args, "-h")
+	} else {
+		os.Args = append(os.Args, "-unknown-password-test-flag")
+	}
+	initFlags()
+	checkHelpVersionFlags()
+}
+
+func TestPasswordEnvironmentNotPrintedByHelpOrParseErrors(t *testing.T) {
+	secrets := map[string]string{
+		"HOMER_DATABASE_ROOT_PASSWORD":  "dummy-root-secret-${HOME}",
+		"HOMER_DATABASE_HOMER_PASSWORD": "dummy-db-secret-${HOME}",
+		"HOMER_FORCE_PASSWORD":          "dummy-force-secret-${HOME}",
+		"HOMER_UPDATE_UI_PASSWORD":      "dummy-ui-secret-${HOME}",
+	}
+
+	for _, mode := range []string{"help", "invalid-flag"} {
+		t.Run(mode, func(t *testing.T) {
+			t.Setenv("HOMER_PASSWORD_HELP_TEST_MODE", mode)
+			for name, value := range secrets {
+				t.Setenv(name, value)
+			}
+
+			command := exec.Command(os.Args[0], "-test.run=^TestPasswordEnvironmentHelpSubprocess$")
+			output, err := command.CombinedOutput()
+			if mode == "help" && err != nil {
+				t.Fatalf("help subprocess failed: %v", err)
+			}
+			if mode == "invalid-flag" {
+				exitError, ok := err.(*exec.ExitError)
+				if !ok || exitError.ExitCode() != 2 {
+					t.Fatalf("invalid-flag subprocess error = %v, want exit code 2", err)
+				}
+			}
+			for _, secret := range secrets {
+				if strings.Contains(string(output), secret) {
+					t.Fatal("help or parse-error output disclosed an environment password")
+				}
+			}
+		})
 	}
 }

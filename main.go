@@ -688,6 +688,9 @@ func configureServiceObjects() {
 func configureAsHTTPServer() {
 
 	e := echo.New()
+	if err := configureClientIP(e); err != nil {
+		e.Logger.Fatal(err)
+	}
 	// add validation
 	e.Validator = &CustomValidator{validator: validator.New()}
 

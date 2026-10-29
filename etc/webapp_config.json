@@ -69,8 +69,9 @@
         "enable": true
     },
     "http_settings": {
-        "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
+        "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files. ip_extract controls the client address: xff (default, trust X-Forwarded-For only from loopback, link-local, and private peers), real-ip, or direct. Add public load-balancer CIDRs in trusted_proxies. The edge proxy must append the client address and must not forward a client-supplied forwarding header unchanged.",
         "host": "0.0.0.0",
+        "ip_extract": "xff",
         "port": 9080,
         "root": "/usr/local/homer/dist",
         "gzip": true,

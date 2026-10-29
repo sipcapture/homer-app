@@ -47,6 +47,7 @@
   },
   "http_settings": {
     "host": "0.0.0.0",
+    "ip_extract": "xff",
     "port": homer_web_port,
     "root": "/usr/local/homer/dist",
     "path": "homer_serve_path",

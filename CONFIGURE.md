@@ -102,9 +102,12 @@ This section defines the parameters used by `homer-app` to serve its API and Fro
     "port" : 9080,
     "root" : "/usr/local/homer/dist",
     "gzip" : true,
-    "debug" : false
+    "debug" : false,
+    "ip_extract": "xff"
   }
 ```
+
+`ip_extract` chooses how the server reads the client address (`xff`, `real-ip`, or `direct`). The default `xff` trusts `X-Forwarded-For` only when the TCP peer is loopback, link-local, or a private address. A client that connects directly cannot spoof that header, and the Grafana reverse proxy overwrites `X-Real-IP` with this address. `trusted_proxies` is a list of extra CIDRs (for a public load balancer). The edge proxy must append the client address and must not pass a client-supplied forwarding header through unchanged.
 
 ### System Settings
 This section defined the path and names used for `homer-app` generated logs. Configure when needed.

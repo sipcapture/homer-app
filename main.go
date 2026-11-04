@@ -93,6 +93,29 @@ func (i *arrayFlags) Set(value string) error {
 	return nil
 }
 
+func loadPasswordEnvironment() {
+	explicitFlags := make(map[string]bool)
+	flag.Visit(func(option *flag.Flag) {
+		explicitFlags[option.Name] = true
+	})
+	for _, binding := range []struct {
+		flagName string
+		envName  string
+		value    *string
+	}{
+		{"database-root-password", "HOMER_DATABASE_ROOT_PASSWORD", appFlags.DatabaseRootPassword},
+		{"database-homer-password", "HOMER_DATABASE_HOMER_PASSWORD", appFlags.DatabaseHomerPassword},
+		{"force-password", "HOMER_FORCE_PASSWORD", appFlags.ForcePasswordDB},
+		{"update-ui-password", "HOMER_UPDATE_UI_PASSWORD", appFlags.UpdateUIPassword},
+	} {
+		if !explicitFlags[binding.flagName] {
+			if value, exists := os.LookupEnv(binding.envName); exists {
+				*binding.value = value
+			}
+		}
+	}
+}
+
 // params for Flags
 type CommandLineFlags struct {
 	InitializeDB              *bool      `json:"initialize_db"`
@@ -165,10 +188,10 @@ func initFlags() {
 	appFlags.ShowDbUsers = flag.Bool("show-db-users", false, "show db users")
 
 	appFlags.ForcePopulate = flag.Bool("force-populate", false, "force populate all records to config")
-	appFlags.ForcePasswordDB = flag.String("force-password", "", "force password for AWS setups")
+	appFlags.ForcePasswordDB = flag.String("force-password", "", "force password for AWS setups (or HOMER_FORCE_PASSWORD)")
 
 	appFlags.UpdateUIUser = flag.String("update-ui-user", "", "update user ui")
-	appFlags.UpdateUIPassword = flag.String("update-ui-password", "", "update password for user")
+	appFlags.UpdateUIPassword = flag.String("update-ui-password", "", "update password for user (or HOMER_UPDATE_UI_PASSWORD)")
 
 	flag.Var(&appFlags.TablesPopulate, "populate-table", "force to populate only current tables")
 
@@ -182,14 +205,14 @@ func initFlags() {
 
 	appFlags.ShowHelpMessage = flag.Bool("help", false, "show help")
 	appFlags.DatabaseRootUser = flag.String("database-root-user", "postgres", "database-root-user")
-	appFlags.DatabaseRootPassword = flag.String("database-root-password", "", "database-root-password")
+	appFlags.DatabaseRootPassword = flag.String("database-root-password", "", "database-root-password (or HOMER_DATABASE_ROOT_PASSWORD)")
 	appFlags.DatabaseHost = flag.String("database-host", "localhost", "database-host")
 	appFlags.DatabasePort = flag.Int("database-port", 5432, "database-port")
 	appFlags.DatabaseSSLMode = flag.String("database-ssl-mode", "disable", "database-ssl-mode")
 	appFlags.DatabaseRootDB = flag.String("database-root-db", "postgres", "database-root-db")
 	appFlags.DatabaseHomerNode = flag.String("database-homer-node", "localnode", "database-homer-node")
 	appFlags.DatabaseHomerUser = flag.String("database-homer-user", "homer_user", "database-homer-user")
-	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password")
+	appFlags.DatabaseHomerPassword = flag.String("database-homer-password", "homer_password", "database-homer-password (or HOMER_DATABASE_HOMER_PASSWORD)")
 	appFlags.DatabaseHomerConfig = flag.String("database-homer-config", "homer_config", "database-homer-config")
 	appFlags.DatabaseHomerData = flag.String("database-homer-data", "homer_data", "database-homer-data")
 	appFlags.PathWebAppConfig = flag.String("webapp-config-path", "/usr/local/homer/etc", "the path to the webapp config file")
@@ -204,6 +227,7 @@ func initFlags() {
 	appFlags.GenerateJwtSecret = flag.Bool("generate-jwt-secret", false, "generate jwt secret")
 
 	flag.Parse()
+	loadPasswordEnvironment()
 }
 
 func main() {

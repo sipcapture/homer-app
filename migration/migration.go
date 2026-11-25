@@ -790,18 +790,28 @@ func seedDefaultUsers(configDBSession *gorm.DB, tableName, password string) erro
 			GUID:       heputils.GenereateNewUUID(),
 		},
 	}
+	if generated {
+		if err := storeBootstrapPassword("admin", adminPlain); err != nil {
+			return err
+		}
+		if err := storeBootstrapPassword("support", supportPlain); err != nil {
+			removeBootstrapPassword("admin")
+			return err
+		}
+	}
+
 	heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
 	configDBSession.Exec("TRUNCATE TABLE " + tableName)
 	for _, el := range usersData {
 		db := configDBSession.Save(&el)
 		if db != nil && db.Error != nil {
+			if generated {
+				removeBootstrapPassword("admin")
+				removeBootstrapPassword("support")
+			}
 			return fmt.Errorf("save user %s: %w", el.UserName, db.Error)
 		}
 		logger.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
-	}
-	if generated {
-		printBootstrapPassword("admin", adminPlain)
-		printBootstrapPassword("support", supportPlain)
 	}
 	return nil
 }

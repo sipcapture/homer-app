@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sipcapture/homer-app/migration/jsonschema"
@@ -60,13 +62,39 @@ func isWellKnownDefaultHash(hash string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(jsonschema.DisallowedDefaultPassword)) == nil
 }
 
-func printBootstrapPassword(username, password string) {
-	fmt.Printf("bootstrap password for %s: %s\n", username, password)
+// bootstrapPasswordDirectory is where a generated password is written.
+// The file is mode 0600. Logs only receive the path.
+var bootstrapPasswordDirectory = "/usr/local/homer"
+
+func bootstrapPasswordPath(username string) string {
+	return filepath.Join(bootstrapPasswordDirectory, "bootstrap-password-"+username)
+}
+
+func removeBootstrapPassword(username string) {
+	_ = os.Remove(bootstrapPasswordPath(username))
+}
+
+// storeBootstrapPassword writes the generated password for the operator to read
+// and prints only the file path. The password itself is not logged.
+func storeBootstrapPassword(username, plain string) error {
+	if err := os.MkdirAll(bootstrapPasswordDirectory, 0700); err != nil {
+		return fmt.Errorf("create bootstrap password directory: %w", err)
+	}
+	path := bootstrapPasswordPath(username)
+	if err := os.WriteFile(path, []byte(plain+"\n"), 0600); err != nil {
+		return fmt.Errorf("write bootstrap password file for %s: %w", username, err)
+	}
+	if err := os.Chmod(path, 0600); err != nil {
+		return fmt.Errorf("restrict bootstrap password file for %s: %w", username, err)
+	}
+	fmt.Printf("bootstrap password for %s written to %s\n", username, path)
+	return nil
 }
 
 // RotateWellKnownDefaultPasswords replaces admin and support passwords that
 // still match the historical default. A non-empty provisioned password is
-// stored and not printed. Otherwise a random password is printed once.
+// stored in the database and not written to disk. Otherwise a random password
+// is written once to a mode 0600 file.
 func RotateWellKnownDefaultPasswords(db *gorm.DB, supplied string) {
 	if db == nil {
 		return
@@ -99,17 +127,23 @@ func rotateWellKnownUser(db *gorm.DB, username, supplied string) error {
 	if err != nil {
 		return err
 	}
-	res := db.Model(&model.TableUser{}).Where("username = ?", username).UpdateColumn("hash", hashed)
-	if res.Error != nil {
-		return res.Error
+	if generated {
+		if err := storeBootstrapPassword(username, plain); err != nil {
+			return err
+		}
 	}
-	if res.RowsAffected == 0 {
+	res := db.Model(&model.TableUser{}).Where("username = ?", username).UpdateColumn("hash", hashed)
+	if res.Error != nil || res.RowsAffected == 0 {
+		if generated {
+			removeBootstrapPassword(username)
+		}
+		if res.Error != nil {
+			return res.Error
+		}
 		return fmt.Errorf("password for %s was not updated", username)
 	}
-	if generated {
-		printBootstrapPassword(username, plain)
-		return nil
+	if !generated {
+		fmt.Printf("replaced default password for %s with the provisioned password\n", username)
 	}
-	fmt.Printf("replaced default password for %s with the provisioned password\n", username)
 	return nil
 }

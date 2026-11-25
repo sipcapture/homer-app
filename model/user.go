@@ -100,7 +100,7 @@ type UserloginDetails struct {
 	// example: admin
 	// required: true
 	Username string `json:"username" validate:"required"`
-	// example: sipcapture
+	// example: example-password
 	// required: true
 	Password string `json:"password" validate:"required"`
 }

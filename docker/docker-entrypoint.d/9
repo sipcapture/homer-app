@@ -8,6 +8,9 @@ DB_PASS=${DB_PASS:-homerSeven}
 DB_ROOT_USER=${DB_ROOT_USER:-$DB_USER}
 DB_ROOT_PASS=${DB_ROOT_PASS:-$DB_PASS}
 DB_SSL_MODE=${DB_SSL_MODE:-disable}
+# Empty means homer-app generates a random admin and support password and
+# prints each once. A non-empty value is stored instead. The historical
+# default password is never seeded.
 PROVISIONED_USERS_PASS=${PROVISIONED_USERS_PASS:-}
 
 if [ -f /usr/local/homer/etc/webapp_config.json ]; then

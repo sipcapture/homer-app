@@ -1,7 +1,7 @@
 package main
 
 // VERSION
-var VERSION_APPLICATION = "1.5.25"
+var VERSION_APPLICATION = "1.5.26"
 
 // NAME
 var NAME_APPLICATION = "homer-app"

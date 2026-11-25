@@ -323,8 +323,14 @@ var CorrelationMappingdefault = json.RawMessage(`{
 
 var EmptyJson = json.RawMessage(`{}`)
 
-var DefaultAdminPassword = "sipcapture"
-var DefaultSupportPassword = "sipcapture"
+// DisallowedDefaultPassword is the historical bootstrap password. Fresh
+// seeds, password updates, and internal login must not accept it.
+const DisallowedDefaultPassword = "sipcapture"
+
+// DefaultAdminPassword and DefaultSupportPassword keep the historical value
+// for callers that still read it. PopulateHomerConfigTables does not seed it.
+var DefaultAdminPassword = DisallowedDefaultPassword
+var DefaultSupportPassword = DisallowedDefaultPassword
 
 var GrafanaConfig = json.RawMessage(`{"host": "http://grafana:3000","user": "admin","password":"admin","token": "ABCDEFGHKLMN"}`)
 

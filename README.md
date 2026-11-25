@@ -79,7 +79,7 @@ Set credentials through the process environment when running provisioning comman
 
 * `HOMER_DATABASE_ROOT_PASSWORD` for the database administrator password
 * `HOMER_DATABASE_HOMER_PASSWORD` for the Homer database user password
-* `HOMER_FORCE_PASSWORD` for the password used to populate the Homer administrator
+* `HOMER_FORCE_PASSWORD` for the password used to populate the Homer administrator. Leave it unset to generate a random `admin` and `support` password; each value is printed once on first population. An account that still has the historical default password is given a new random password on the next start, also printed once. A different provisioned password replaces that historical password and is not printed. Setting the historical default itself is treated as unset.
 * `HOMER_UPDATE_UI_PASSWORD` for `-update-ui-password`
 
 Example environment setup (all values below are placeholders, not usable credentials):

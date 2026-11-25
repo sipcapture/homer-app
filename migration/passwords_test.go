@@ -1,6 +1,8 @@
 package migration
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -39,6 +41,33 @@ func TestSeedUserPasswordsRefusesHistoricalDefault(t *testing.T) {
 		if strings.ContainsAny(admin, " \n") || strings.ContainsAny(support, " \n") {
 			t.Fatal("generated password is not a single token")
 		}
+	}
+}
+
+func TestStoreBootstrapPasswordWritesRestrictedFile(t *testing.T) {
+	dir := t.TempDir()
+	previous := bootstrapPasswordDirectory
+	bootstrapPasswordDirectory = dir
+	t.Cleanup(func() { bootstrapPasswordDirectory = previous })
+
+	const plain = "secret-value"
+	if err := storeBootstrapPassword("admin", plain); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(dir, "bootstrap-password-admin")
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.Mode().Perm() != 0600 {
+		t.Fatalf("mode = %o, want 0600", info.Mode().Perm())
+	}
+	body, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(body) != plain+"\n" {
+		t.Fatalf("body = %q", body)
 	}
 }
 

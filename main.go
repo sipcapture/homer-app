@@ -304,6 +304,7 @@ func main() {
 	if nameHomerConfig := viper.GetString("database_config.name"); nameHomerConfig != "" {
 		migration.CreateHomerConfigTables(servicesObject.configDBSession, nameHomerConfig, true, false)
 	}
+	migration.RotateWellKnownDefaultPasswords(servicesObject.configDBSession, *appFlags.ForcePasswordDB)
 
 	// update version
 	updateVersionApplication(servicesObject.configDBSession)

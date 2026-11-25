@@ -10,7 +10,6 @@ import (
 	"github.com/sipcapture/homer-app/model"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/logger"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type RollesTable struct {
@@ -269,39 +268,7 @@ func checkHomerConfigTables(configDBSession *gorm.DB) map[string]bool {
 
 func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, force bool, tablesPopulate []string, password string) {
 
-	if password != "" {
-		jsonschema.DefaultAdminPassword = password
-		jsonschema.DefaultSupportPassword = password
-	}
-
-	hashedAdminPassword, _ := bcrypt.GenerateFromPassword([]byte(jsonschema.DefaultAdminPassword), bcrypt.DefaultCost)
-	hashedSupportPassword, _ := bcrypt.GenerateFromPassword([]byte(jsonschema.DefaultSupportPassword), bcrypt.DefaultCost)
-
 	createString := fmt.Sprintf("\r\nHOMER - filling tables for the config DB [dbname=%s]", homerDBconfig)
-	usersData := []model.TableUser{
-		model.TableUser{
-			UserName:   "admin",
-			PartId:     10,
-			Email:      "root@localhost",
-			FirstName:  "Homer",
-			LastName:   "Admin",
-			Department: "Develop",
-			UserGroup:  "admin",
-			Hash:       string(hashedAdminPassword),
-			GUID:       heputils.GenereateNewUUID(),
-		},
-		model.TableUser{
-			UserName:   "support",
-			PartId:     10,
-			Email:      "support@localhost",
-			FirstName:  "Homer",
-			LastName:   "Support",
-			Department: "Develop",
-			UserGroup:  "admin",
-			Hash:       string(hashedSupportPassword),
-			GUID:       heputils.GenereateNewUUID(),
-		},
-	}
 
 	authTokens := []model.TableAuthToken{
 		model.TableAuthToken{
@@ -562,25 +529,23 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 		forceIt = false
 	}
 
+	seededUsers := false
 	if val, ok := createTables[tableName]; !ok || ok && val || forceIt {
 		/* User data */
 		if lenTable == 0 || heputils.YesNo(tableName) {
-
-			heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
-			configDBSession.Exec("TRUNCATE TABLE " + tableName)
-			for _, el := range usersData {
-				db := configDBSession.Save(&el)
-				if db != nil && db.Error != nil {
-					logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", tableName, db.Error, el.UserName))
-				} else {
-					logger.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
-				}
+			seededUsers = true
+			if err := seedDefaultUsers(configDBSession, tableName, password); err != nil {
+				logger.Error(fmt.Sprintf("Save failed for table [%s]: %v", tableName, err))
+				return
 			}
 			tableVersions = append(tableVersions, model.TableVersions{
 				NameTable:    tableName,
 				VersionTable: jsonschema.TableVersion[tableName],
 			})
 		}
+	}
+	if !seededUsers {
+		RotateWellKnownDefaultPasswords(configDBSession, password)
 	}
 
 	forceIt = force
@@ -788,7 +753,63 @@ func PopulateHomerConfigTables(configDBSession *gorm.DB, homerDBconfig string, f
 	heputils.Colorize(heputils.ColorYellow, "\r\nDONE")
 }
 
+func seedDefaultUsers(configDBSession *gorm.DB, tableName, password string) error {
+	adminPlain, supportPlain, generated, err := seedUserPasswords(password)
+	if err != nil {
+		return err
+	}
+	adminHash, err := hashPassword(adminPlain)
+	if err != nil {
+		return err
+	}
+	supportHash, err := hashPassword(supportPlain)
+	if err != nil {
+		return err
+	}
+	usersData := []model.TableUser{
+		{
+			UserName:   "admin",
+			PartId:     10,
+			Email:      "root@localhost",
+			FirstName:  "Homer",
+			LastName:   "Admin",
+			Department: "Develop",
+			UserGroup:  "admin",
+			Hash:       adminHash,
+			GUID:       heputils.GenereateNewUUID(),
+		},
+		{
+			UserName:   "support",
+			PartId:     10,
+			Email:      "support@localhost",
+			FirstName:  "Homer",
+			LastName:   "Support",
+			Department: "Develop",
+			UserGroup:  "admin",
+			Hash:       supportHash,
+			GUID:       heputils.GenereateNewUUID(),
+		},
+	}
+	heputils.Colorize(heputils.ColorRed, "reinstalling "+tableName)
+	configDBSession.Exec("TRUNCATE TABLE " + tableName)
+	for _, el := range usersData {
+		db := configDBSession.Save(&el)
+		if db != nil && db.Error != nil {
+			return fmt.Errorf("save user %s: %w", el.UserName, db.Error)
+		}
+		logger.Debug(fmt.Sprintf("Save for table [%s] was success. User: [%s]", tableName, el.UserName))
+	}
+	if generated {
+		printBootstrapPassword("admin", adminPlain)
+		printBootstrapPassword("support", supportPlain)
+	}
+	return nil
+}
+
 func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName string, userPassword string) error {
+	if userPassword == jsonschema.DisallowedDefaultPassword {
+		return fmt.Errorf("refusing the historical default password")
+	}
 
 	createString := fmt.Sprintf("\r\nHOMER - updating user [dbname=%s]", homerDBconfig)
 
@@ -803,13 +824,12 @@ func UpdateHomerUser(configDBSession *gorm.DB, homerDBconfig string, userName st
 
 	// get new instance of user data source
 	user.CreatedAt = time.Now()
-	password := []byte(userPassword)
-	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	hashedPassword, err := hashPassword(userPassword)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", "users", configDBSession.Error, userName))
+		logger.Error(fmt.Sprintf("Save failed for table [%s]: with error %s. User: [%s]", "users", err, userName))
 		return err
 	}
-	user.Hash = string(hashedPassword)
+	user.Hash = hashedPassword
 
 	err = configDBSession.Debug().Table("users").Model(&model.TableUser{}).Where("username =  ?", userName).Update(&user).Error
 	if err != nil {

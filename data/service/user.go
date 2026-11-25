@@ -13,6 +13,7 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sipcapture/homer-app/config"
+	"github.com/sipcapture/homer-app/migration/jsonschema"
 	"github.com/sipcapture/homer-app/utils/heputils"
 	"github.com/sipcapture/homer-app/utils/httpauth"
 	"github.com/sipcapture/homer-app/utils/logger"
@@ -96,6 +97,9 @@ func (us *UserService) CreateNewUser(user *model.TableUser) error {
 	if user.Password == "" {
 		return errors.New("empty password")
 	}
+	if user.Password == jsonschema.DisallowedDefaultPassword {
+		return errors.New("password is not allowed")
+	}
 
 	if !heputils.ElementRealExists(config.Setting.MAIN_SETTINGS.UserGroups, user.UserGroup) {
 		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
@@ -142,6 +146,10 @@ func (us *UserService) UpdateUser(user *model.TableUser, UserName string, isAdmi
 	if !heputils.ElementRealExists(config.Setting.MAIN_SETTINGS.UserGroups, user.UserGroup) {
 		logger.Error("create user with group that doesn't exist: ", user.UserGroup)
 		return fmt.Errorf("the user group '%s' doesn't exist", user.UserGroup)
+	}
+
+	if user.Password == jsonschema.DisallowedDefaultPassword {
+		return errors.New("password is not allowed")
 	}
 
 	if user.Password != "" {
@@ -292,6 +300,9 @@ func (us *UserService) LoginUser(username, password string) (string, model.Table
 	default:
 		if err := us.Session.Debug().Table("users").Where("username =?", username).Find(&userData).Error; err != nil {
 			return "", userData, errors.New("user is not found")
+		}
+		if password == jsonschema.DisallowedDefaultPassword {
+			return "", userData, errors.New("password is not correct")
 		}
 		if err := bcrypt.CompareHashAndPassword([]byte(userData.Hash), []byte(password)); err != nil {
 			return "", userData, errors.New("password is not correct")
